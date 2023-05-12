@@ -1,4 +1,4 @@
---8<-- "README.md:abstract"
+--8<-- "README.md:description"
 
 ## Usage
 
