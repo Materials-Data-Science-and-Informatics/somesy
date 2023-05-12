@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+type: software
+message: If you use this software, please cite it using this metadata.
+
+title: somesy
+version: 0.1.0
+abstract: A cli tool for synchronizing CITATION.CFF with project files.
+repository-code: https://github.com/Materials-Data-Science-and-Informatics/somesy
+license: MIT
+keywords:
+- metadata
+- FAIR
+authors:
+- email: m.soylu@fz-juelich.de
+  family-names: Soylu
+  given-names: Mustafa
+  orcid: https://orcid.org/0000-0003-2637-0432
+contact:
+- email: m.soylu@fz-juelich.de
+  family-names: Soylu
+  given-names: Mustafa
+  orcid: https://orcid.org/0000-0003-2637-0432
+url: https://materials-data-science-and-informatics.github.io/somesy

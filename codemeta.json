@@ -1,0 +1,102 @@
+{
+    "@context": [
+        "https://doi.org/10.5063/schema/codemeta-2.0",
+        "https://w3id.org/software-iodata",
+        "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+        "https://schema.org",
+        "https://w3id.org/software-types"
+    ],
+    "@type": "SoftwareSourceCode",
+    "applicationCategory": "Software Development > Libraries > Application Frameworks",
+    "audience": [
+        {
+            "@type": "Audience",
+            "audienceType": "Science/Research"
+        },
+        {
+            "@type": "Audience",
+            "audienceType": "Developers"
+        }
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "email": "m.soylu@fz-juelich.de",
+            "familyName": "Soylu",
+            "givenName": "Mustafa"
+        }
+    ],
+    "codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/somesy",
+    "description": "A cli tool for synchronizing CITATION.CFF with project files.",
+    "developmentStatus": "https://www.repostatus.org/#concept",
+    "identifier": "somesy",
+    "keywords": [
+        "FAIR",
+        "metadata"
+    ],
+    "license": "http://spdx.org/licenses/MIT",
+    "maintainer": "Mustafa Soylu",
+    "name": "somesy",
+    "operatingSystem": "POSIX > Linux",
+    "runtimePlatform": [
+        "Python 3",
+        "Python 3.10",
+        "Python 3.11",
+        "Python 3.8",
+        "Python 3.9"
+    ],
+    "softwareHelp": "https://materials-data-science-and-informatics.github.io/somesy",
+    "softwareRequirements": [
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "cffconvert",
+            "name": "cffconvert",
+            "runtimePlatform": "Python 3",
+            "version": ">=2.0.0,<3.0.0"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "importlib-metadata",
+            "name": "importlib-metadata",
+            "runtimePlatform": "Python 3",
+            "version": ">=6.0.0,<7.0.0"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "pydantic[email]",
+            "name": "pydantic[email]",
+            "runtimePlatform": "Python 3",
+            "version": ">=1.10.6,<2.0.0"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "ruamel-yaml",
+            "name": "ruamel-yaml",
+            "runtimePlatform": "Python 3",
+            "version": ">=0.17.21,<0.18.0"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "tomlkit",
+            "name": "tomlkit",
+            "runtimePlatform": "Python 3",
+            "version": ">=0.11.6,<0.12.0"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "typer[all]",
+            "name": "typer[all]",
+            "runtimePlatform": "Python 3",
+            "version": ">=0.7.0,<0.8.0"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "wrapt",
+            "name": "wrapt",
+            "runtimePlatform": "Python 3",
+            "version": ">=1.15.0,<2.0.0"
+        }
+    ],
+    "url": "https://materials-data-science-and-informatics.github.io/somesy",
+    "version": "0.1.0"
+}
