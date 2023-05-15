@@ -2,6 +2,8 @@
 
 Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.
 
+<!-- --8<-- [start:abstract] -->
+
 ## Description
 
 Many development tools allow or require to provide information about the software project they are used in.
@@ -66,40 +68,43 @@ The below table shows which fields are mapped to corresponding other fields in t
 
 Somesy config has the information on what is the most important for metadata and standard columns between different file formats. Somesy config columns are explained below.
 
--   name: Software name - String
--   version: Software version - String
--   description: Software description - String
--   authors: Software authors - List of `Person`s
--   maintainers: Software maintainers - List of `Person`s
--   contributors: Software contributors - List of `Person`s
--   keywords: Keywords that explain the software - List of strings
--   license: SPDX string of the license - String in SPDX string format
--   repository: The repository URL - String in URL format
--   homepage: The software website - String in URL format
+- name: Software name - String
+- version: Software version - String
+- description: Software description - String
+- authors: Software authors - List of `Person`s
+- maintainers: Software maintainers - List of `Person`s
+- contributors: Software contributors - List of `Person`s
+- keywords: Keywords that explain the software - List of strings
+- license: SPDX string of the license - String in SPDX string format
+- repository: The repository URL - String in URL format
+- homepage: The software website - String in URL format
 
 `Person` is a subclass of the Project Metadata, based on the CFF version 1.2.0 Person class. We added contribution relation fields to this `Person` class to appreciate all the contributions to the project. `Person` class fields:
 
--   address: The person's address. - String
--   affiliation: The person's affiliation. - String
--   alias: The person's alias. - String
--   city: The person's city. - String
--   country: The person's country abbreviation in two capital characters. - String
--   email: The person's email address. - String in email format
--   family-names: The person's family names. - String
--   fax: The person's fax number. - String
--   given-names: The person's given names. - String
--   name-particle: The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example, 'von' in 'Alexander von Humboldt'). - String
--   name-suffix: The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III. - String
--   orcid: The person's ORCID URL. - String in URL format
--   post_code: The person's post-code. - String
--   tel: The person's phone number. - String
--   website: The person's website. - String in URL format
--   contribution: Summary of how the person contributed to the project. - String
--   contribution_type: Contribution type of contributor using emoji from [all contributors](https://allcontributors.org/docs/en/emoji-key). - String in emoji name
--   contribution_begin: Beginning date of the contribution. - Date in YYYY-MM-DD format
--   contribution_end: Ending date of the contribution. - Date in YYYY-MM-DD format
+- address: The person's address. - String
+- affiliation: The person's affiliation. - String
+- alias: The person's alias. - String
+- city: The person's city. - String
+- country: The person's country abbreviation in two capital characters. - String
+- email: The person's email address. - String in email format
+- family-names: The person's family names. - String
+- fax: The person's fax number. - String
+- given-names: The person's given names. - String
+- name-particle: The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example, 'von' in 'Alexander von Humboldt'). - String
+- name-suffix: The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III. - String
+- orcid: The person's ORCID URL. - String in URL format
+- post_code: The person's post-code. - String
+- tel: The person's phone number. - String
+- website: The person's website. - String in URL format
+- contribution: Summary of how the person contributed to the project. - String
+- contribution_type: Contribution type of contributor using emoji from [all contributors](https://allcontributors.org/docs/en/emoji-key). - String in emoji name
+- contribution_begin: Beginning date of the contribution. - Date in YYYY-MM-DD format
+- contribution_end: Ending date of the contribution. - Date in YYYY-MM-DD format
 
 Config fields have to adhere above restrictions. If not, somesy tool will raise errors.
+
+<!-- --8<-- [end:abstract] -->
+<!-- --8<-- [start:quickstart] -->
 
 ## Getting Started
 
@@ -116,6 +121,8 @@ or, if you are adding it as a dependency into a poetry project:
 ```
 $ poetry add git+ssh://git@github.com:Materials-Data-Science-and-Informatics/somesy.git
 ```
+
+<!-- --8<-- [end:quickstart] -->
 
 ## Development
 
@@ -135,13 +142,24 @@ $ poetry install
 Common tasks are accessible via [poethepoet](https://github.com/nat-n/poethepoet),
 which can be installed by running `poetry self add 'poethepoet[poetry_plugin]'`.
 
--   Use `poetry poe init-dev` after cloning to enable automatic linting before each commit.
+- Use `poetry poe init-dev` after cloning to enable automatic linting before each commit.
 
--   Use `poetry poe lint` to run the same linters manually.
+- Use `poetry poe lint` to run the same linters manually.
 
--   Use `poetry poe test` to run tests, add `--cov` to also show test coverage.
+- Use `poetry poe test` to run tests, add `--cov` to also show test coverage.
 
--   Use `poetry poe docs` to generate local documentation.
+- Use `poetry poe docs` to generate local documentation.
+
+<!-- --8<-- [start:citation] -->
+
+## How to Cite
+
+If you want to cite this project in your scientific work,
+please use the [citation file](https://citation-file-format.github.io/)
+in the [repository](https://github.com/Materials-Data-Science-and-Informatics/somesy/blob/main/CITATION.cff).
+
+<!-- --8<-- [end:citation] -->
+<!-- --8<-- [start:acknowledgements] -->
 
 ## Acknowledgements
 
@@ -156,3 +174,5 @@ This project was developed at the Institute for Materials Data Science and Infor
 (IAS-9) of the Jülich Research Center and funded by the Helmholtz Metadata Collaboration
 (HMC), an incubator-platform of the Helmholtz Association within the framework of the
 Information and Data Science strategic initiative.
+
+<!-- --8<-- [end:acknowledgements] -->
