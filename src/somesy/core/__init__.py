@@ -1,0 +1,1 @@
+"""Somesy core module."""
