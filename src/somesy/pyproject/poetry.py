@@ -1,4 +1,5 @@
 """Poetry config file handler parsed from pyproject.toml."""
+import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -7,6 +8,8 @@ from tomlkit import dump, load
 from somesy.core.models import Person, ProjectMetadataOutputWrapper
 from somesy.pyproject.models import PoetryConfig
 from somesy.pyproject.utils import person_to_poetry_string
+
+logger = logging.getLogger("somesy")
 
 
 class Poetry(ProjectMetadataOutputWrapper):
@@ -46,6 +49,7 @@ class Poetry(ProjectMetadataOutputWrapper):
         Pydantic class only used for validation.
         """
         config = dict(self._data["tool"]["poetry"])
+        logger.debug(f"Validating poetry config: {config}")
         if config:
             PoetryConfig(**config)
 

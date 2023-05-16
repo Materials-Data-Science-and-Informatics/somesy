@@ -1,4 +1,5 @@
 """Setuptools config file handler parsed from pyproject.toml."""
+import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -7,6 +8,8 @@ from tomlkit import dump, inline_table, load, table
 from somesy.core.models import Person, ProjectMetadataOutputWrapper
 from somesy.pyproject.models import SetuptoolsConfig
 from somesy.pyproject.utils import person_to_setuptools_dict
+
+logger = logging.getLogger("somesy")
 
 
 class SetupTools(ProjectMetadataOutputWrapper):
@@ -46,6 +49,7 @@ class SetupTools(ProjectMetadataOutputWrapper):
         Pydantic class only used for validation.
         """
         config = dict(self._data["project"])
+        logger.debug(f"Validating setuptools config: {config}")
         if config:
             SetuptoolsConfig(**config)
 

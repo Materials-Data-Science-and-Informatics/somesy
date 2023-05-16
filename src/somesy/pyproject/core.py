@@ -1,4 +1,5 @@
 """Pyproject core."""
+import logging
 from pathlib import Path
 from typing import Union
 
@@ -7,6 +8,8 @@ from tomlkit import dump, load
 
 from somesy.pyproject.poetry import Poetry
 from somesy.pyproject.setuptools import SetupTools
+
+logger = logging.getLogger("somesy")
 
 
 class Pyproject(wrapt.ObjectProxy):
@@ -38,16 +41,21 @@ class Pyproject(wrapt.ObjectProxy):
 
         # setuptools has project object
         if "project" in data:
+            logger.verbose("Found setuptools config in pyproject.toml file")  # type: ignore
             self.__wrapped__: Union[SetupTools, Poetry] = SetupTools(
                 path, create_if_not_exists
             )
             super().__init__(self.__wrapped__)
         # poetry has tool.poetry object
         elif "tool" in data and "poetry" in data["tool"]:
+            logger.verbose("Found poetry config in pyproject.toml file")  # type: ignore
             self.__wrapped__ = Poetry(path, create_if_not_exists)
             super().__init__(self.__wrapped__)
         # if no project object is found, but file exists, add tool.poetry object
         elif create_if_not_exists:
+            logger.info(
+                "No config found in pyproject file, adding poetry config as default"
+            )
             data["tool"]["poetry"] = {}
             with open(path, "w") as f:
                 dump(data, f)
