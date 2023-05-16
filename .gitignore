@@ -1,5 +1,6 @@
 # don't add custom python shell scratchpad file
 scratch*.py
+scratch
 
 # generated badges
 docs/*_badge.svg
