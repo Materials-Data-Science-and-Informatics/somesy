@@ -95,8 +95,10 @@ class CFF(ProjectMetadataOutputWrapper):
         return self._get_property("contact")
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
+    def maintainers(self, maintainers: Optional[List[Person]] = None) -> None:
         """Set project maintainers."""
+        if maintainers is None:
+            return
         self._set_property(
             "contact", [person_to_cff_dict(maintainer) for maintainer in maintainers]
         )
