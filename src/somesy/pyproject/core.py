@@ -32,12 +32,13 @@ class Pyproject(wrapt.ObjectProxy):
             if create_if_not_exists:
                 path.touch()
                 # if empty file is created, add tool.poetry object
-                dump({"tool": {"poetry": {}}}, path)
+                with open(path, "w") as f:
+                    dump({"tool": {"poetry": {}}}, f)
             else:
                 raise FileNotFoundError(f"pyproject file {path} not found")
-        else:
-            with open(path) as f:
-                data = load(f)
+
+        with open(path) as f:
+            data = load(f)
 
         # setuptools has project object
         if "project" in data:
@@ -56,7 +57,7 @@ class Pyproject(wrapt.ObjectProxy):
             logger.info(
                 "No config found in pyproject file, adding poetry config as default"
             )
-            data["tool"]["poetry"] = {}
+            data = {"tool": {"poetry": {}}}
             with open(path, "w") as f:
                 dump(data, f)
             self.__wrapped__ = Poetry(path, create_if_not_exists)
