@@ -13,6 +13,32 @@ def setuptools():
     return SetupTools(Path("tests/pyproject/data/pyproject.setuptools.toml"))
 
 
+def test_init(tmp_path):
+    file_path = tmp_path / "pyproject.toml"
+
+    # check for error if file doesn't exist
+    with pytest.raises(FileNotFoundError):
+        SetupTools(file_path)
+
+    # check for error if file doesn't exist and create_if_not_exists is True
+    SetupTools(file_path, create_if_not_exists=True)
+    assert file_path.exists()
+
+
+def test_key_error(setuptools):
+    assert setuptools._get_property("not-existing") is None
+    assert setuptools._get_url("not-existing") is None
+    assert setuptools["not-existing"] is None
+
+
+def test_set_url(setuptools):
+    # delete urls
+    del setuptools._data["project"]["urls"]
+    # set homepage
+    setuptools.homepage = "https://test.test"
+    assert setuptools.homepage == "https://test.test"
+
+
 def test_name(setuptools):
     assert setuptools.name == "somesy"
     setuptools.name = "new name"
@@ -123,3 +149,15 @@ def test_repository(setuptools):
 
     setuptools.repository = parse_obj_as(AnyUrl, "https://test.test2")
     assert setuptools.repository == "https://test.test2"
+
+
+def test_dump(tmp_path):
+    # test dump with default path
+    file_path = tmp_path / "pyproject.toml"
+    cff = SetupTools(file_path, create_if_not_exists=True)
+    cff.dump()
+    assert file_path.exists()
+
+    # test dump with custom path
+    custom_path = tmp_path / "custom.toml"
+    cff.dump(custom_path)

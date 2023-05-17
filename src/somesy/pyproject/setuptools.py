@@ -34,13 +34,13 @@ class SetupTools(ProjectMetadataOutputWrapper):
                 self._create_empty_file()
             else:
                 raise FileNotFoundError(f"pyproject file {self.path} not found")
-        else:
-            with open(self.path) as f:
-                self._data = load(f)
+
+        with open(self.path) as f:
+            self._data = load(f)
 
         # create a Setuptools object if it doesn't exist
         if not ("project" in self._data):
-            self._data["project"] = {}
+            self._data = {"project": {}}
 
     def _validate(self) -> None:
         """Validate setuptools config using pydantic class.
@@ -90,10 +90,6 @@ class SetupTools(ProjectMetadataOutputWrapper):
             if not ("urls" in self._data["project"]):
                 self._data["project"]["urls"] = table()
             self._data["project"]["urls"][key] = value
-        else:
-            del self._data["project"]["urls"][key]
-            if not self._data["project"]["urls"]:
-                self._data["project"].pop("urls")
 
     @property
     def authors(self) -> Optional[List[dict]]:
