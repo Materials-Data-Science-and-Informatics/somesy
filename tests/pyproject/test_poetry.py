@@ -13,6 +13,23 @@ def poetry():
     return Poetry(Path("tests/pyproject/data/pyproject.full.toml"))
 
 
+def test_init(tmp_path):
+    file_path = tmp_path / "pyproject.toml"
+
+    # check for error if file doesn't exist
+    with pytest.raises(FileNotFoundError):
+        Poetry(file_path)
+
+    # check for error if file doesn't exist and create_if_not_exists is True
+    Poetry(file_path, create_if_not_exists=True)
+    assert file_path.exists()
+
+
+def test_key_error(poetry):
+    assert poetry._get_property("not-existing") is None
+    assert poetry["not-existing"] is None
+
+
 def test_name(poetry):
     assert poetry.name == "somesy"
     poetry.name = "new name"
@@ -119,3 +136,15 @@ def test_repository(poetry):
 
     poetry.repository = parse_obj_as(AnyUrl, "https://test.test2")
     assert poetry.repository == "https://test.test2"
+
+
+def test_dump(tmp_path):
+    # test dump with default path
+    file_path = tmp_path / "pyproject.toml"
+    cff = Poetry(file_path, create_if_not_exists=True)
+    cff.dump()
+    assert file_path.exists()
+
+    # test dump with custom path
+    custom_path = tmp_path / "custom.toml"
+    cff.dump(custom_path)

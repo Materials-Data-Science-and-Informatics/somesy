@@ -34,13 +34,13 @@ class Poetry(ProjectMetadataOutputWrapper):
                 self._create_empty_file()
             else:
                 raise FileNotFoundError(f"pyproject file {self.path} not found")
-        else:
-            with open(self.path) as f:
-                self._data = load(f)
+
+        with open(self.path) as f:
+            self._data = load(f)
 
         # create a Poetry object if it doesn't exist
         if not ("tool" in self._data and "poetry" in self._data["tool"]):
-            self._data["tool"]["poetry"] = {}
+            self._data = {"tool": {"poetry": {}}}
 
     def _validate(self) -> None:
         """Validate poetry config using pydantic class.
