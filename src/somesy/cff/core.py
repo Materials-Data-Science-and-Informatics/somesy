@@ -55,7 +55,7 @@ class CFF(ProjectMetadataOutputWrapper):
     def _validate(self):
         """Validate the CFF file."""
         if not validate_citation(self.path):
-            raise Exception("CFF file is invalid")
+            raise ValueError("CFF file is invalid")
 
     @property
     def name(self) -> str:

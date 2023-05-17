@@ -3,8 +3,23 @@ from pathlib import Path
 import pytest
 
 from somesy.cff.core import CFF
+from somesy.cff.utils import person_to_cff_dict
 from somesy.core.core import get_project_metadata
 from somesy.core.models import Person
+
+
+def test_load(tmp_path):
+    not_exist_path = Path("reject/CITATION.cff")
+    with pytest.raises(FileNotFoundError):
+        CFF(not_exist_path, create_if_not_exists=False)
+
+    file_path = tmp_path / "CITATION.cff"
+    CFF(file_path, create_if_not_exists=True)
+    assert file_path.exists()
+
+    reject_path = Path("tests/cff/data/reject.cff")
+    with pytest.raises(ValueError):
+        CFF(reject_path)
 
 
 @pytest.fixture
@@ -13,19 +28,35 @@ def cff():
 
 
 @pytest.fixture
-def people():
+def base_person():
     people = {
         "family-names": "Soylu",
         "given-names": "Mustafa",
         "email": "m.soylu@fz-juelich.de",
         "orcid": "https://orcid.org/0000-0003-2637-0432",
     }
-    return [Person(**people)]
+    return Person(**people)
+
+
+@pytest.fixture
+def new_person():
+    people = {
+        "family-names": "BB",
+        "given-names": "AA",
+        "email": "test@test.teset",
+        "orcid": "https://orcid.org/0000-0001-2345-6789",
+    }
+    return Person(**people)
 
 
 @pytest.fixture
 def project_metadata():
     return get_project_metadata(Path("tests/cff/data/pyproject.base.toml"))
+
+
+def test_name(cff):
+    # test existing name
+    assert cff.name == "somesy"
 
 
 def test_version(cff):
@@ -133,3 +164,37 @@ def test_homepage(cff):
 def test_sync(cff, project_metadata):
     cff.sync(project_metadata)
     assert cff.version == "0.1.0"
+
+
+def test_authors(cff, base_person, new_person):
+    # test existing authors
+    assert cff.authors == [person_to_cff_dict(base_person)]
+
+    # new authors
+    cff.authors = [new_person]
+    assert cff.authors == [person_to_cff_dict(new_person)]
+
+
+def test_maintainers(cff, base_person, new_person):
+    # test existing maintainers
+    assert cff.maintainers == [person_to_cff_dict(base_person)]
+
+    # empty entry
+    cff.maintainers = None
+    assert cff.maintainers == [person_to_cff_dict(base_person)]
+
+    # new maintainers
+    cff.maintainers = [new_person]
+    assert cff.maintainers == [person_to_cff_dict(new_person)]
+
+
+def test_dump(tmp_path):
+    # test dump with default path
+    file_path = tmp_path / "CITATION.cff"
+    cff = CFF(file_path, create_if_not_exists=True)
+    cff.dump()
+    assert file_path.exists()
+
+    # test dump with custom path
+    custom_path = tmp_path / "custom.cff"
+    cff.dump(custom_path)
