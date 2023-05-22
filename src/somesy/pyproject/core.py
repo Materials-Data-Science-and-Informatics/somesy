@@ -54,7 +54,7 @@ class Pyproject(wrapt.ObjectProxy):
             super().__init__(self.__wrapped__)
         # if no project object is found, but file exists, add tool.poetry object
         elif create_if_not_exists:
-            logger.info(
+            logger.verbose(  # type: ignore
                 "No config found in pyproject file, adding poetry config as default"
             )
             data = {"tool": {"poetry": {}}}
