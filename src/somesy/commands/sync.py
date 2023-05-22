@@ -35,6 +35,9 @@ def sync(
     if cff_file is not None:
         _sync_cff(metadata, cff_file, create_cff)
 
+    if pyproject_file is None and cff_file is None:
+        raise ValueError("At least one of the output files must be specified.")
+
 
 def _sync_python(
     metadata: ProjectMetadata,
