@@ -39,7 +39,16 @@ def test_app_sync(tmp_path):
     pyproject_file.touch()
     result = runner.invoke(
         app,
-        ["sync", "-i", str(input_file), "-c", str(cff_file), "-p", str(pyproject_file)],
+        [
+            "sync",
+            "-i",
+            str(input_file),
+            "-c",
+            str(cff_file),
+            "-p",
+            str(pyproject_file),
+            "-d",
+        ],
     )
     assert result.exit_code == 0
     assert "Syncing completed." in result.stdout
