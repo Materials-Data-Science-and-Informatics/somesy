@@ -42,6 +42,7 @@ importlib-metadata = "^6.0.0"
 typer = {extras = ["all"], version = "^0.7.0"}
 cffconvert = "^2.0.0"
 wrapt = "^1.15.0"
+packaging = "^23.1"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.18.1"
