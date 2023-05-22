@@ -23,7 +23,7 @@ def test_discover_input(mocker):
     # Test 2: input is is given but does not exist
     input = "tests/core/data/.somesy2.toml"
     result = discover.discover_input(input)
-    assert result == Path("pyproject.toml")
+    assert result == Path(".somesy.toml")
 
     mocker.patch.object(discover, "INPUT_FILES_ORDERED", [])
     input = "tests/core/data/.somesy2.toml"
