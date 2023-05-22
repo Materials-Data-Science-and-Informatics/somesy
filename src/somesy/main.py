@@ -95,7 +95,7 @@ def sync(
     """Sync project metadata input with metadata files."""
     try:
         set_logger(debug=debug, verbose=verbose)
-        logger.info("[bold green]Syncing project metadata...[/bold green]\n")
+        logger.verbose("[bold green]Syncing project metadata...[/bold green]\n")  # type: ignore
         logger.debug(
             f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
         )
@@ -109,11 +109,12 @@ def sync(
 
         # verbose output
         logger.verbose("Files to sync:")  # type: ignore
-        logger.verbose(  # type: ignore
-            f"  - [italic]Pyproject.toml[/italic] [grey]({pyproject_file})[/grey]"
-        )
+        if not no_sync_pyproject:
+            logger.verbose(  # type: ignore
+                f"  - [italic]Pyproject.toml[/italic] [grey]({pyproject_file})[/grey]"
+            )
 
-        if cff_file:
+        if not no_sync_cff:
             logger.verbose(  # type: ignore
                 f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]"
             )
@@ -122,11 +123,11 @@ def sync(
         # sync files
         sync_command(
             input_file=input_file,
-            pyproject_file=Path(pyproject_file) if pyproject_file else None,
-            cff_file=Path(cff_file) if cff_file else None,
+            pyproject_file=Path(pyproject_file) if not no_sync_pyproject else None,
+            cff_file=Path(cff_file) if not no_sync_cff else None,
         )
 
-        logger.info("[bold green]Syncing completed.[/bold green]")
+        logger.verbose("[bold green]Syncing completed.[/bold green]")  # type: ignore
     except Exception as e:
         logger.error(f"[bold red]Error: {e}[/bold red]")
         logger.debug(f"[red]{traceback.format_exc()}[/red]")
