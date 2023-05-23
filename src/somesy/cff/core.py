@@ -54,8 +54,7 @@ class CFF(ProjectMetadataWriter):
 
     def _validate(self):
         """Validate the CFF file."""
-        if not validate_citation(self.path):
-            raise ValueError("CFF file is invalid")
+        validate_citation(self.path)
 
     @property
     def name(self) -> str:
