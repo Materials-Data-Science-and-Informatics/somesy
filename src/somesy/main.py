@@ -106,7 +106,7 @@ def sync(
         )
 
         # check if input file exists, if not, try to find it from default list
-        input_file = discover_input(str(input_file) if input_file else None)
+        input_file = discover_input(input_file)
 
         # verbose output
         logger.verbose("Files to sync:")  # type: ignore
@@ -124,8 +124,8 @@ def sync(
         # sync files
         sync_command(
             input_file=input_file,
-            pyproject_file=Path(pyproject_file) if not no_sync_pyproject else None,
-            cff_file=Path(cff_file) if not no_sync_cff else None,
+            pyproject_file=pyproject_file if not no_sync_pyproject else None,
+            cff_file=cff_file if not no_sync_cff else None,
         )
 
         logger.verbose("[bold green]Syncing completed.[/bold green]")  # type: ignore
