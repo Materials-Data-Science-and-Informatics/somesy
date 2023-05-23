@@ -29,8 +29,8 @@ def discover_input(input_file: Optional[str] = None) -> Optional[Path]:
             logger.verbose(  # type: ignore
                 f"Given input file {p} does not exist. Trying to find somesy input file from defaults."
             )
-    for i in INPUT_FILES_ORDERED:
-        p = Path(i)
+    for filename in INPUT_FILES_ORDERED:
+        p = Path(filename)
         if p.is_file():
             logger.verbose(  # type: ignore
                 f"Using {p} from default somesy config list as somesy input file."
