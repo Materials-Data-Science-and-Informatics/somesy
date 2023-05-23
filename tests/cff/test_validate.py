@@ -14,12 +14,14 @@ def cff_reject_path():
 
 
 def test_validate_citation(cff_path):
-    assert validate_citation(cff_path) == True
+    validate_citation(cff_path)
 
 
 def test_validate_citation_none():
-    assert validate_citation(None) == False
+    with pytest.raises(ValueError):
+        validate_citation(None)
 
 
 def test_validate_citation_reject(cff_reject_path):
-    assert validate_citation(cff_reject_path) == False
+    with pytest.raises(ValueError):
+        validate_citation(cff_reject_path)
