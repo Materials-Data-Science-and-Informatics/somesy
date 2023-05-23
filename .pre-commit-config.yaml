@@ -76,3 +76,13 @@ repos:
       rev: '44e8fc9'
       hooks:
           - id: validate-cff
+    - repo: local
+      hooks:
+          - id: somesy
+            name: somesy
+            description: Sync your metadata files with somesy
+            entry: somesy sync
+            language: python
+            always-run: true
+            pass_filenames: false
+            files: '^\.somesy\.toml|pyproject\.toml$'

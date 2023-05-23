@@ -4,7 +4,11 @@ version = "0.1.0"
 description = "A cli tool for synchronizing CITATION.CFF with project files."
 authors = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
 maintainers = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
-contributors = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
+contributors = [
+    {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
+    {family-names = "Pirogov", given-names= "Anton", email = "a.pirogov@fz-juelich.de", orcid = "https://orcid.org/0000-0002-5077-7497", contribution = "The person behind the idea of somesy. Strongly contributed to architecture with ideas and reviews. Also, great contribution on documentation front.", contribution_begin = "2023-03-01", contribution_type = "review"},
+    {family-names = "Bröder", given-names= "Jens", email = "j.broeder@fz-juelich.de", orcid = "https://orcid.org/0000-0001-7939-226X", contribution = "The person we ask questions about metadata and its conventions, while developing somesy.", contribution_begin = "2023-03-01", contribution_type = "ideas"}
+]
 keywords = ["metadata", "FAIR"]
 license = "MIT"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
