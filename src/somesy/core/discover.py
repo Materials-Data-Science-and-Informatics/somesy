@@ -8,7 +8,7 @@ from .config import INPUT_FILES_ORDERED
 logger = logging.getLogger("somesy")
 
 
-def discover_input(input_file: Optional[str] = None) -> Optional[Path]:
+def discover_input(input_file: Optional[Path] = None) -> Optional[Path]:
     """Check given input file path. If not given, find somesy configuration file path from default list.
 
     Args:
@@ -21,19 +21,18 @@ def discover_input(input_file: Optional[str] = None) -> Optional[Path]:
         Optional[Path]:  somesy configuration file path.
     """
     if input_file:
-        p = Path(input_file)
-        if p.is_file():
-            logger.verbose(f"Using given {p} as somesy input file.")  # type: ignore
-            return p
+        if input_file.is_file():
+            logger.verbose(f"Using given {input_file} as somesy input file.")  # type: ignore
+            return input_file
         else:
             logger.verbose(  # type: ignore
-                f"Given input file {p} does not exist. Trying to find somesy input file from defaults."
+                f"Given input file {input_file} does not exist. Trying to find somesy input file from defaults."
             )
     for filename in INPUT_FILES_ORDERED:
-        p = Path(filename)
-        if p.is_file():
+        input_file = Path(filename)
+        if input_file.is_file():
             logger.verbose(  # type: ignore
-                f"Using {p} from default somesy config list as somesy input file."
+                f"Using {input_file} from default somesy config list as somesy input file."
             )
-            return p
+            return input_file
     raise FileNotFoundError("No somesy input file found.")
