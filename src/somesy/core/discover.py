@@ -22,7 +22,7 @@ def discover_input(input_file: Optional[str] = None) -> Optional[Path]:
     """
     if input_file:
         p = Path(input_file)
-        if p.exists():
+        if p.is_file():
             logger.verbose(f"Using given {p} as somesy input file.")  # type: ignore
             return p
         else:
@@ -31,7 +31,7 @@ def discover_input(input_file: Optional[str] = None) -> Optional[Path]:
             )
     for i in INPUT_FILES_ORDERED:
         p = Path(i)
-        if p.exists():
+        if p.is_file():
             logger.verbose(  # type: ignore
                 f"Using {p} from default somesy config list as somesy input file."
             )
