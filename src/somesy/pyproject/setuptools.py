@@ -5,14 +5,14 @@ from typing import Any, List, Optional
 
 from tomlkit import dump, inline_table, load, table
 
-from somesy.core.models import Person, ProjectMetadataOutputWrapper
+from somesy.core.models import Person, ProjectMetadataWriter
 from somesy.pyproject.models import SetuptoolsConfig
 from somesy.pyproject.utils import person_to_setuptools_dict
 
 logger = logging.getLogger("somesy")
 
 
-class SetupTools(ProjectMetadataOutputWrapper):
+class SetupTools(ProjectMetadataWriter):
     """Setuptools config file handler parsed from setup.cfg."""
 
     def __init__(self, path: Path, create_if_not_exists: bool = False):
@@ -137,8 +137,8 @@ class SetupTools(ProjectMetadataOutputWrapper):
         """Set repository url in setuptools config."""
         self._set_url("repository", repository)
 
-    def dump(self, path: Optional[Path] = None) -> None:
-        """Dump the pyproject file using instance."""
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the pyproject file using instance."""
         if path:
             with open(path, "w") as f:
                 dump(self._data, f)

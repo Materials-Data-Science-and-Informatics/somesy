@@ -188,13 +188,13 @@ def test_maintainers(cff, base_person, new_person):
     assert cff.maintainers == [person_to_cff_dict(new_person)]
 
 
-def test_dump(tmp_path):
-    # test dump with default path
+def test_save(tmp_path):
+    # test save with default path
     file_path = tmp_path / "CITATION.cff"
     cff = CFF(file_path, create_if_not_exists=True)
-    cff.dump()
+    cff.save()
     assert file_path.exists()
 
-    # test dump with custom path
+    # test save with custom path
     custom_path = tmp_path / "custom.cff"
-    cff.dump(custom_path)
+    cff.save(custom_path)

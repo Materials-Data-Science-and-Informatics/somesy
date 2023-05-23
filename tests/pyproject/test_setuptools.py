@@ -151,13 +151,13 @@ def test_repository(setuptools):
     assert setuptools.repository == "https://test.test2"
 
 
-def test_dump(tmp_path):
-    # test dump with default path
+def test_save(tmp_path):
+    # test save with default path
     file_path = tmp_path / "pyproject.toml"
     cff = SetupTools(file_path, create_if_not_exists=True)
-    cff.dump()
+    cff.save()
     assert file_path.exists()
 
-    # test dump with custom path
+    # test save with custom path
     custom_path = tmp_path / "custom.toml"
-    cff.dump(custom_path)
+    cff.save(custom_path)

@@ -55,7 +55,7 @@ def _sync_python(
     pyproject = Pyproject(pyproject_file, create_pyproject)
     logger.verbose("Syncing pyproject.toml file.")  # type: ignore
     pyproject.sync(metadata)
-    pyproject.dump()
+    pyproject.save()
     logger.verbose("Saved synced pyproject.toml file.\n")  # type: ignore
 
 
@@ -75,5 +75,5 @@ def _sync_cff(
     cff = CFF(cff_file, create_cff)
     logger.verbose("Syncing CITATION.cff file.")  # type: ignore
     cff.sync(metadata)
-    cff.dump()
+    cff.save()
     logger.verbose("Saved synced CITATION.cff file.\n")  # type: ignore

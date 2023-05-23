@@ -1,4 +1,4 @@
-"""Citation File Format (CFF) parser and dumper."""
+"""Citation File Format (CFF) parser and saver."""
 from pathlib import Path
 from typing import List, Optional
 
@@ -6,11 +6,11 @@ from ruamel.yaml import YAML
 
 from somesy.cff.utils import person_to_cff_dict
 from somesy.cff.validate import validate_citation
-from somesy.core.models import Person, ProjectMetadataOutputWrapper
+from somesy.core.models import Person, ProjectMetadataWriter
 
 
-class CFF(ProjectMetadataOutputWrapper):
-    """Citation File Format (CFF) parser and dumper."""
+class CFF(ProjectMetadataWriter):
+    """Citation File Format (CFF) parser and saver."""
 
     def __init__(
         self,
@@ -123,8 +123,8 @@ class CFF(ProjectMetadataOutputWrapper):
         """Set project repository url."""
         self._set_property("repository-code", repository)
 
-    def dump(self, path: Optional[Path] = None) -> None:
-        """Dump the CFF object to a file."""
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the CFF object to a file."""
         if path:
             self._yaml.dump(self._data, path)
         else:

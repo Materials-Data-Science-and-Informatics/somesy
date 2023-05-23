@@ -5,14 +5,14 @@ from typing import Any, List, Optional
 
 from tomlkit import dump, load
 
-from somesy.core.models import Person, ProjectMetadataOutputWrapper
+from somesy.core.models import Person, ProjectMetadataWriter
 from somesy.pyproject.models import PoetryConfig
 from somesy.pyproject.utils import person_to_poetry_string
 
 logger = logging.getLogger("somesy")
 
 
-class Poetry(ProjectMetadataOutputWrapper):
+class Poetry(ProjectMetadataWriter):
     """Poetry config file handler parsed from pyproject.toml."""
 
     def __init__(self, path: Path, create_if_not_exists: bool = False):
@@ -96,8 +96,8 @@ class Poetry(ProjectMetadataOutputWrapper):
                 "maintainers", [person_to_poetry_string(c) for c in maintainers]
             )
 
-    def dump(self, path: Optional[Path] = None) -> None:
-        """Dump the pyproject file using instance."""
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the pyproject file using instance."""
         if path:
             with open(path, "w") as f:
                 dump(self._data, f)
