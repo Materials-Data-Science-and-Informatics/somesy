@@ -1,4 +1,4 @@
-"""Sync CFF and pyproject.toml files using project metadata that resides in pyproject.toml."""
+"""Sync selected metadata files with given input file."""
 import logging
 from pathlib import Path
 from typing import Optional
@@ -17,7 +17,7 @@ def sync(
     cff_file: Optional[Path] = None,
     create_cff: bool = True,
 ):
-    """Sync CFF and pyproject.toml files using project metadata that resides in pyproject.toml.
+    """Sync selected metadata files with given input file.
 
     Args:
         input_file (Path): input file path to read project metadata from.
