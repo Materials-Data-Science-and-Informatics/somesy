@@ -100,7 +100,7 @@ def sync(
             f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
         )
 
-        # at least one of the sync options must be False
+        # at least one of the sync options must be enabled
         if no_sync_cff and no_sync_pyproject:
             raise ValueError("There should be at least one file to sync.")
 
