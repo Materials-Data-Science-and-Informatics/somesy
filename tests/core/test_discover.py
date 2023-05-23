@@ -16,16 +16,16 @@ def set_log():
 
 def test_discover_input(mocker):
     # Test 1: input is is given and exists
-    input = "tests/core/data/.somesy.toml"
+    input = Path("tests/core/data/.somesy.toml")
     result = discover.discover_input(input)
-    assert result == Path(input)
+    assert result == input
 
     # Test 2: input is is given but does not exist
-    input = "tests/core/data/.somesy2.toml"
+    input = Path("tests/core/data/.somesy2.toml")
     result = discover.discover_input(input)
     assert result == Path(".somesy.toml")
 
     mocker.patch.object(discover, "INPUT_FILES_ORDERED", [])
-    input = "tests/core/data/.somesy2.toml"
+    input = Path("tests/core/data/.somesy2.toml")
     with pytest.raises(FileNotFoundError):
         discover.discover_input(input)

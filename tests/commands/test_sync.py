@@ -16,11 +16,7 @@ def test_sync(tmp_path):
     cff_file = tmp_path / "CITATION.cff"
     pyproject_file = tmp_path / "pyproject.toml"
 
-    # TEST 1: no output file specified
-    with pytest.raises(ValueError):
-        sync(input_file=input_file)
-
-    # TEST 2: sync only pyproject.toml
+    # TEST 1: sync only pyproject.toml
     sync(input_file=input_file, pyproject_file=pyproject_file)
     assert pyproject_file.exists()
     assert cff_file.exists() is False
@@ -28,7 +24,7 @@ def test_sync(tmp_path):
     # delete pyproject.toml
     pyproject_file.unlink()
 
-    # TEST 3: sync only CITATION.cff
+    # TEST 2: sync only CITATION.cff
     sync(input_file=input_file, cff_file=cff_file)
     assert pyproject_file.exists() is False
     assert cff_file.exists()
@@ -36,7 +32,7 @@ def test_sync(tmp_path):
     # delete files
     cff_file.unlink()
 
-    # TEST 4: sync both pyproject.toml and CITATION.cff
+    # TEST 3: sync both pyproject.toml and CITATION.cff
     sync(input_file=input_file, pyproject_file=pyproject_file, cff_file=cff_file)
     assert pyproject_file.exists()
     assert cff_file.exists()

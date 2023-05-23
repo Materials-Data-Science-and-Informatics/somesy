@@ -18,7 +18,7 @@ def test_app_version():
 
 
 def test_app_sync(tmp_path):
-    input_file = Path("tests/core/data/.somesy.toml").resolve()
+    input_file = Path("tests/core/data/.somesy.toml")
     cff_file = tmp_path / "CITATION.cff"
     pyproject_file = tmp_path / "pyproject.toml"
 
@@ -28,12 +28,13 @@ def test_app_sync(tmp_path):
         [
             "sync",
             "-i",
-            str(input_file),
+            input_file,
             "--no-sync-pyproject",
             "--no-sync-cff",
         ],
     )
-    assert result.exit_code == 1
+    assert result.exit_code == 0
+    assert "There should be at least one file to sync." in result.stdout
 
     # test sync with output files
     pyproject_file.touch()
@@ -42,9 +43,9 @@ def test_app_sync(tmp_path):
         [
             "sync",
             "-i",
-            str(input_file),
+            input_file,
             "-c",
-            str(cff_file),
+            cff_file,
             "-p",
             str(pyproject_file),
             "-d",
