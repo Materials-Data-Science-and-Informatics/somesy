@@ -93,16 +93,17 @@ def sync(
     ),
 ):
     """Sync project metadata input with metadata files."""
+    set_logger(debug=debug, verbose=verbose)
+    # at least one of the sync options must be enabled
+    if no_sync_cff and no_sync_pyproject:
+        logger.warning("There should be at least one file to sync.")
+        typer.Exit(code=0)
+
     try:
-        set_logger(debug=debug, verbose=verbose)
         logger.verbose("[bold green]Syncing project metadata...[/bold green]\n")  # type: ignore
         logger.debug(
             f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
         )
-
-        # at least one of the sync options must be enabled
-        if no_sync_cff and no_sync_pyproject:
-            raise ValueError("There should be at least one file to sync.")
 
         # check if input file exists, if not, try to find it from default list
         input_file = discover_input(str(input_file) if input_file else None)

@@ -26,9 +26,6 @@ def sync(
         cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
         create_cff (bool, optional): Create CFF file if does not exist. Defaults to True.
     """
-    if pyproject_file is None and cff_file is None:
-        raise ValueError("At least one of the output files must be specified.")
-
     metadata = get_project_metadata(input_file)
     logger.debug(f"Project metadata: {metadata}")
 
