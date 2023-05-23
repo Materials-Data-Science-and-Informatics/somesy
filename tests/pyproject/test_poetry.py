@@ -20,10 +20,6 @@ def test_init(tmp_path):
     with pytest.raises(FileNotFoundError):
         Poetry(file_path)
 
-    # check for error if file doesn't exist and create_if_not_exists is True
-    Poetry(file_path, create_if_not_exists=True)
-    assert file_path.exists()
-
 
 def test_key_error(poetry):
     assert poetry._get_property("not-existing") is None
@@ -138,13 +134,14 @@ def test_repository(poetry):
     assert poetry.repository == "https://test.test2"
 
 
-def test_save(tmp_path):
+def test_save(tmp_path, create_poetry_file):
     # test save with default path
     file_path = tmp_path / "pyproject.toml"
-    cff = Poetry(file_path, create_if_not_exists=True)
-    cff.save()
+    create_poetry_file(file_path)
+    poetry = Poetry(file_path)
+    poetry.save()
     assert file_path.exists()
 
     # test save with custom path
     custom_path = tmp_path / "custom.toml"
-    cff.save(custom_path)
+    poetry.save(custom_path)

@@ -13,7 +13,6 @@ logger = logging.getLogger("somesy")
 def sync(
     input_file: Path,
     pyproject_file: Optional[Path] = None,
-    create_pyproject: bool = True,
     cff_file: Optional[Path] = None,
     create_cff: bool = True,
 ):
@@ -22,7 +21,6 @@ def sync(
     Args:
         input_file (Path): input file path to read project metadata from.
         pyproject_file (Path, optional): pyproject file to read project metadata from.
-        create_pyproject (bool, optional): Create Pyproject file if does not exist. Defaults to True.
         cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
         create_cff (bool, optional): Create CFF file if does not exist. Defaults to True.
     """
@@ -30,7 +28,7 @@ def sync(
     logger.debug(f"Project metadata: {metadata}")
 
     if pyproject_file is not None:
-        _sync_python(metadata, pyproject_file, create_pyproject)
+        _sync_python(metadata, pyproject_file)
 
     if cff_file is not None:
         _sync_cff(metadata, cff_file, create_cff)
@@ -39,17 +37,15 @@ def sync(
 def _sync_python(
     metadata: ProjectMetadata,
     pyproject_file: Optional[Path] = None,
-    create_pyproject: bool = True,
 ):
     """Sync pyproject.toml file using project metadata.
 
     Args:
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
         pyproject_file (Path, optional): pyproject file to read project metadata from.
-        create_pyproject (bool, optional): Create Pyproject file if does not exist. Defaults to True.
     """
     logger.verbose("Loading pyproject.toml file.")  # type: ignore
-    pyproject = Pyproject(pyproject_file, create_pyproject)
+    pyproject = Pyproject(pyproject_file)
     logger.verbose("Syncing pyproject.toml file.")  # type: ignore
     pyproject.sync(metadata)
     pyproject.save()

@@ -47,11 +47,7 @@ def test_pyproject_init(tmp_path):
 
     # test if it gives error when pyproject.toml file is not found
     with pytest.raises(FileNotFoundError):
-        Pyproject(path, create_if_not_exists=False)
-
-    # test if it creates pyproject.toml file if not exists
-    Pyproject(path, create_if_not_exists=True)
-    assert path.exists()
+        Pyproject(path)
 
 
 def test_init_poetry(pyproject_poetry):
@@ -70,15 +66,10 @@ def test_init_no_tool(tmp_path):
 
     # check if it raises error when no tool is found in pyproject.toml file
     with pytest.raises(ValueError):
-        Pyproject(file_path, create_if_not_exists=False)
+        Pyproject(file_path)
 
     file_path.unlink()
     file_path.touch()
-
-    # check if it adds tool.poetry object when no tool is found in pyproject.toml file
-    pyproject = Pyproject(file_path, create_if_not_exists=True)
-    assert file_path.exists()
-    assert isinstance(pyproject.__wrapped__, Poetry)
 
 
 def test_sync(pyproject_poetry, project_metadata):

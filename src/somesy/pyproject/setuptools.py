@@ -15,32 +15,23 @@ logger = logging.getLogger("somesy")
 class SetupTools(ProjectMetadataWriter):
     """Setuptools config file handler parsed from setup.cfg."""
 
-    def __init__(self, path: Path, create_if_not_exists: bool = False):
+    def __init__(self, path: Path):
         """Setuptools config file handler parsed from pyproject.toml.
 
         Args:
             path (Path): Path to pyproject.toml file.
-            create_if_not_exists (bool, optional): Create pyproject.toml file if not exists. Defaults to False.
         """
         self.path = path
-        self.create_if_not_exists = create_if_not_exists
         self._load()
         self._validate()
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
         if not self.path.exists():
-            if self.create_if_not_exists:
-                self._create_empty_file()
-            else:
-                raise FileNotFoundError(f"pyproject file {self.path} not found")
+            raise FileNotFoundError(f"pyproject file {self.path} not found")
 
         with open(self.path) as f:
             self._data = load(f)
-
-        # create a Setuptools object if it doesn't exist
-        if not ("project" in self._data):
-            self._data = {"project": {}}
 
     def _validate(self) -> None:
         """Validate setuptools config using pydantic class.
@@ -50,8 +41,7 @@ class SetupTools(ProjectMetadataWriter):
         """
         config = dict(self._data["project"])
         logger.debug(f"Validating setuptools config: {config}")
-        if config:
-            SetuptoolsConfig(**config)
+        SetuptoolsConfig(**config)
 
     def _get_property(self, key: str) -> Optional[Any]:
         """Get a property from the pyproject.toml file."""
