@@ -55,17 +55,17 @@
         </aside>
         <h2>
             <span class="text">875 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">864<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">11<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">865<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">10<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">15<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
-            <a id="prevFileLink" class="nav" href="d_596ffba9215ba05d_core_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="d_596ffba9215ba05d_discover_py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
-            <a id="nextFileLink" class="nav" href="d_97b113e3d51588b3_main_py.html">&#xbb; next</a>
+            <a id="nextFileLink" class="nav" href="d_596ffba9215ba05d_utils_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-05-15 08:47 +0000
+            created at 2023-05-24 13:58 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -996,7 +996,7 @@
     <p class="run"><span class="n"><a id="t914" href="#t914">914</a></span><span class="t">    <span class="nam">homepage</span><span class="op">:</span> <span class="nam">Optional</span><span class="op">[</span><span class="nam">AnyUrl</span><span class="op">]</span> <span class="op">=</span> <span class="nam">Field</span><span class="op">(</span><span class="key">None</span><span class="op">,</span> <span class="nam">description</span><span class="op">=</span><span class="str">"URL of the package homepage."</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t915" href="#t915">915</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t916" href="#t916">916</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t917" href="#t917">917</a></span><span class="t"><span class="key">class</span> <span class="nam">ProjectMetadataOutputWrapper</span><span class="op">(</span><span class="nam">ABC</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t917" href="#t917">917</a></span><span class="t"><span class="key">class</span> <span class="nam">ProjectMetadataWriter</span><span class="op">(</span><span class="nam">ABC</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t918" href="#t918">918</a></span><span class="t">    <span class="str">"""Base class for Project Metadata Output Wrapper."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t919" href="#t919">919</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t920" href="#t920">920</a></span><span class="t">    <span class="key">def</span> <span class="nam">__init__</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
@@ -1019,7 +1019,7 @@
     <p class="pln"><span class="n"><a id="t937" href="#t937">937</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t938" href="#t938">938</a></span><span class="t">    <span class="key">def</span> <span class="nam">_create_empty_file</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t939" href="#t939">939</a></span><span class="t">        <span class="str">"""Create an empty file if it does not exist."""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t940" href="#t940">940</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">path</span><span class="op">.</span><span class="nam">touch</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t940" href="#t940">940</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">path</span><span class="op">.</span><span class="nam">touch</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t941" href="#t941">941</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t942" href="#t942">942</a></span><span class="t">    <span class="key">def</span> <span class="nam">_get_property</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">key</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Optional</span><span class="op">[</span><span class="nam">Any</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t943" href="#t943">943</a></span><span class="t">        <span class="str">"""Get a property from the data."""</span>&nbsp;</span><span class="r"></span></p>
@@ -1137,18 +1137,18 @@
     <p class="run"><span class="n"><a id="t1055" href="#t1055">1055</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">repository</span> <span class="op">=</span> <span class="nam">str</span><span class="op">(</span><span class="nam">metadata</span><span class="op">.</span><span class="nam">repository</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t1056" href="#t1056">1056</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="exc show_exc"><span class="n"><a id="t1057" href="#t1057">1057</a></span><span class="t">    <span class="op">@</span><span class="nam">abstractmethod</span>&nbsp;</span><span class="r"></span></p>
-    <p class="exc show_exc"><span class="n"><a id="t1058" href="#t1058">1058</a></span><span class="t">    <span class="key">def</span> <span class="nam">dump</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">path</span><span class="op">:</span> <span class="nam">Optional</span><span class="op">[</span><span class="nam">Path</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="exc show_exc"><span class="n"><a id="t1059" href="#t1059">1059</a></span><span class="t">        <span class="str">"""Dump the output file to the given path."""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc show_exc"><span class="n"><a id="t1058" href="#t1058">1058</a></span><span class="t">    <span class="key">def</span> <span class="nam">save</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">path</span><span class="op">:</span> <span class="nam">Optional</span><span class="op">[</span><span class="nam">Path</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc show_exc"><span class="n"><a id="t1059" href="#t1059">1059</a></span><span class="t">        <span class="str">"""Save the output file to the given path."""</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
         <p>
-            <a id="prevFileLink" class="nav" href="d_596ffba9215ba05d_core_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="d_596ffba9215ba05d_discover_py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
-            <a id="nextFileLink" class="nav" href="d_97b113e3d51588b3_main_py.html">&#xbb; next</a>
+            <a id="nextFileLink" class="nav" href="d_596ffba9215ba05d_utils_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-05-15 08:47 +0000
+            created at 2023-05-24 13:58 +0000
         </p>
     </div>
 </footer>

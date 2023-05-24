@@ -709,7 +709,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="reference/somesy/cli/">cli</a>
+          <a href="reference/somesy/commands/">commands</a>
           
             <label for="__nav_2_2_1_2">
               <span class="md-nav__icon md-icon"></span>
@@ -720,7 +720,7 @@
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_2">
           <span class="md-nav__icon md-icon"></span>
-          cli
+          commands
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -730,7 +730,7 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/somesy/cli/sync/" class="md-nav__link">
+      <a href="reference/somesy/commands/sync/" class="md-nav__link">
         sync
       </a>
     </li>
@@ -763,7 +763,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="reference/somesy/commands/">commands</a>
+          <a href="reference/somesy/core/">core</a>
           
             <label for="__nav_2_2_1_3">
               <span class="md-nav__icon md-icon"></span>
@@ -774,7 +774,7 @@
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_3">
           <span class="md-nav__icon md-icon"></span>
-          commands
+          core
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -784,53 +784,13 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/somesy/commands/sync_from_pyproject/" class="md-nav__link">
-        sync_from_pyproject
+      <a href="reference/somesy/core/config/" class="md-nav__link">
+        config
       </a>
     </li>
   
 
             
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_4" >
-      
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="reference/somesy/core/">core</a>
-          
-            <label for="__nav_2_2_1_4">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_4_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_4">
-          <span class="md-nav__icon md-icon"></span>
-          core
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
           
             
               
@@ -852,8 +812,36 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/somesy/core/discover/" class="md-nav__link">
+        discover
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/somesy/core/models/" class="md-nav__link">
         models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/somesy/core/utils/" class="md-nav__link">
+        utils
       </a>
     </li>
   
@@ -892,7 +880,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_6" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_5" >
       
       
       
@@ -901,14 +889,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="reference/somesy/pyproject/">pyproject</a>
           
-            <label for="__nav_2_2_1_6">
+            <label for="__nav_2_2_1_5">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_6_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_6">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_5">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1230,7 +1218,7 @@ Maintaining this kind of information and updating it in various files and format
 <strong>Somesy automates the synchronization of general software project metadata</strong> and frees your time to focus on your <em>actual</em> work.</p>
 <h2 id="concepts">Concepts<a class="headerlink" href="#concepts" title="Permanent link">&para;</a></h2>
 <p>Because the same information is represented in different ways and more or less detail in different files, somesy requires to put all
-project information in a <strong>somesy-specific configuration section</strong> is located in a supported <strong>input file</strong>.
+project information in a <strong>somesy-specific input section</strong> is located in a supported <strong>input file</strong>.
 Somesy will use this as the single source of truth for the supported project metadata fields
 and can synchronize this information into different <strong>output files</strong>.</p>
 <p>Somesy first <strong>converts</strong> the information as needed for an output, while trying to preserve as much information as possible.
@@ -1255,8 +1243,8 @@ For files that are usually edited by hand, it will even make sure that the comme
 <td>TBD</td>
 </tr>
 <tr>
-<td>.somesy</td>
-<td>TBD</td>
+<td>.somesy.toml</td>
+<td>✓</td>
 </tr>
 </tbody>
 </table>
@@ -1296,7 +1284,7 @@ For files that are usually edited by hand, it will even make sure that the comme
 </table>
 <p>Somesy does not support <strong>setuptools dynamic fields</strong> in this version.</p>
 <h2 id="supported-metadata-fields">Supported Metadata Fields<a class="headerlink" href="#supported-metadata-fields" title="Permanent link">&para;</a></h2>
-<p>The below table shows which fields are mapped to corresponding other fields in the currently supported formats.</p>
+<p>The below table shows which fields are mapped to corresponding other fields in the currently supported formats. Some of the metadata fields are required inputs in the somesy input file. <code>somesy</code> will give an error if required fields are not filled.</p>
 <table>
 <thead>
 <tr>
@@ -1304,6 +1292,7 @@ For files that are usually edited by hand, it will even make sure that the comme
 <th>Poetry Config</th>
 <th>SetupTools Config</th>
 <th>CITATION.cff</th>
+<th>Requirement</th>
 </tr>
 </thead>
 <tbody>
@@ -1312,59 +1301,68 @@ For files that are usually edited by hand, it will even make sure that the comme
 <td>name</td>
 <td>name</td>
 <td>title</td>
+<td>required</td>
 </tr>
 <tr>
 <td>version</td>
 <td>version</td>
 <td>version</td>
 <td>version</td>
+<td>optional</td>
 </tr>
 <tr>
 <td>description</td>
 <td>description</td>
 <td>description</td>
 <td>abstract</td>
+<td>required</td>
 </tr>
 <tr>
 <td>authors</td>
 <td>authors</td>
 <td>authors</td>
 <td>authors</td>
+<td>required</td>
 </tr>
 <tr>
 <td>maintainers</td>
 <td>maintainers</td>
 <td>maintainers</td>
 <td>contact</td>
+<td>optional</td>
 </tr>
 <tr>
 <td>keywords</td>
 <td>keywords</td>
 <td>keywords</td>
 <td>keywords</td>
+<td>optional</td>
 </tr>
 <tr>
 <td>license</td>
 <td>license</td>
 <td>license</td>
 <td>license</td>
+<td>required</td>
 </tr>
 <tr>
 <td>repository</td>
 <td>repository</td>
 <td>urls.repository</td>
 <td>repository_code</td>
+<td>optional</td>
 </tr>
 <tr>
 <td>homepage</td>
 <td>homepage</td>
 <td>urls.homepage</td>
 <td>url</td>
+<td>optional</td>
 </tr>
 </tbody>
 </table>
 <h1 id="project-metadata">Project Metadata<a class="headerlink" href="#project-metadata" title="Permanent link">&para;</a></h1>
-<p>Somesy config has the information on what is the most important for metadata and standard columns between different file formats. Somesy config columns are explained below.</p>
+<p>Somesy input has the information on what is the most important for metadata and standard columns between different file formats. Somesy input columns are explained below.</p>
 <ul>
 <li>name: Software name - String</li>
 <li>version: Software version - String</li>
@@ -1399,7 +1397,7 @@ For files that are usually edited by hand, it will even make sure that the comme
 <li>contribution_begin: Beginning date of the contribution. - Date in YYYY-MM-DD format</li>
 <li>contribution_end: Ending date of the contribution. - Date in YYYY-MM-DD format</li>
 </ul>
-<p>Config fields have to adhere above restrictions. If not, somesy tool will raise errors.</p>
+<p>Input fields have to adhere above restrictions. If not, somesy tool will raise errors.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>To get started, please check out the <a href="quickstart/">quickstart guide</a>.</p>
 <h2 id="how-to-cite">How to Cite<a class="headerlink" href="#how-to-cite" title="Permanent link">&para;</a></h2>

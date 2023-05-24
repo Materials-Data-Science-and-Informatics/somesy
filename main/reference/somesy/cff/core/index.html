@@ -658,8 +658,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.cff.core.CFF.dump" class="md-nav__link">
-    dump()
+  <a href="#somesy.cff.core.CFF.save" class="md-nav__link">
+    save()
   </a>
   
 </li>
@@ -731,7 +731,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../cli/">cli</a>
+          <a href="../../commands/">commands</a>
           
             <label for="__nav_2_2_1_2">
               <span class="md-nav__icon md-icon"></span>
@@ -742,7 +742,7 @@
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_2">
           <span class="md-nav__icon md-icon"></span>
-          cli
+          commands
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -752,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cli/sync/" class="md-nav__link">
+      <a href="../../commands/sync/" class="md-nav__link">
         sync
       </a>
     </li>
@@ -785,7 +785,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../commands/">commands</a>
+          <a href="../../core/">core</a>
           
             <label for="__nav_2_2_1_3">
               <span class="md-nav__icon md-icon"></span>
@@ -796,7 +796,7 @@
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_3">
           <span class="md-nav__icon md-icon"></span>
-          commands
+          core
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -806,53 +806,13 @@
   
   
     <li class="md-nav__item">
-      <a href="../../commands/sync_from_pyproject/" class="md-nav__link">
-        sync_from_pyproject
+      <a href="../../core/config/" class="md-nav__link">
+        config
       </a>
     </li>
   
 
             
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-      
-      
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_4" >
-      
-      
-      
-        
-        
-        <div class="md-nav__link md-nav__link--index ">
-          <a href="../../core/">core</a>
-          
-            <label for="__nav_2_2_1_4">
-              <span class="md-nav__icon md-icon"></span>
-            </label>
-          
-        </div>
-      
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_4_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_4">
-          <span class="md-nav__icon md-icon"></span>
-          core
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
           
             
               
@@ -874,8 +834,36 @@
   
   
     <li class="md-nav__item">
+      <a href="../../core/discover/" class="md-nav__link">
+        discover
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../core/models/" class="md-nav__link">
         models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../core/utils/" class="md-nav__link">
+        utils
       </a>
     </li>
   
@@ -914,7 +902,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_6" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_5" >
       
       
       
@@ -923,14 +911,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../pyproject/">pyproject</a>
           
-            <label for="__nav_2_2_1_6">
+            <label for="__nav_2_2_1_5">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_6_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_6">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_5">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1213,8 +1201,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.cff.core.CFF.dump" class="md-nav__link">
-    dump()
+  <a href="#somesy.cff.core.CFF.save" class="md-nav__link">
+    save()
   </a>
   
 </li>
@@ -1263,7 +1251,7 @@
 <a id="somesy.cff.core"></a>
   <div class="doc doc-contents first">
   
-      <p>Citation File Format (CFF) parser and dumper.</p>
+      <p>Citation File Format (CFF) parser and saver.</p>
 
   
 
@@ -1289,10 +1277,10 @@
 
   <div class="doc doc-contents ">
       <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.models.ProjectMetadataOutputWrapper" href="../../core/models/#somesy.core.models.ProjectMetadataOutputWrapper">ProjectMetadataOutputWrapper</a></code></p>
+        Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.models.ProjectMetadataWriter" href="../../core/models/#somesy.core.models.ProjectMetadataWriter">ProjectMetadataWriter</a></code></p>
 
   
-      <p>Citation File Format (CFF) parser and dumper.</p>
+      <p>Citation File Format (CFF) parser and saver.</p>
 
 
         <details class="quote">
@@ -1414,8 +1402,10 @@
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
-<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataOutputWrapper</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Citation File Format (CFF) parser and dumper.&quot;&quot;&quot;</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Citation File Format (CFF) parser and saver.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1431,6 +1421,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_if_not_exists</span> <span class="o">=</span> <span class="n">create_if_not_exists</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">preserve_quotes</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># load and validate the CFF file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
@@ -1459,8 +1450,7 @@
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the CFF file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_citation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;CFF file is invalid&quot;</span><span class="p">)</span>
+        <span class="n">validate_citation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -1500,8 +1490,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="s2">&quot;contact&quot;</span><span class="p">)</span>
 
     <span class="nd">@maintainers</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maintainers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maintainers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set project maintainers.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">maintainers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span>
             <span class="s2">&quot;contact&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">person_to_cff_dict</span><span class="p">(</span><span class="n">maintainer</span><span class="p">)</span> <span class="k">for</span> <span class="n">maintainer</span> <span class="ow">in</span> <span class="n">maintainers</span><span class="p">]</span>
         <span class="p">)</span>
@@ -1526,8 +1518,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set project repository url.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="s2">&quot;repository-code&quot;</span><span class="p">,</span> <span class="n">repository</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dump the CFF object to a file.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the CFF object to a file.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1760,7 +1752,8 @@
 <span class="normal">29</span>
 <span class="normal">30</span>
 <span class="normal">31</span>
-<span class="normal">32</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">create_if_not_exists</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -1774,6 +1767,7 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">create_if_not_exists</span> <span class="o">=</span> <span class="n">create_if_not_exists</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">preserve_quotes</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># load and validate the CFF file</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
@@ -1788,27 +1782,27 @@
 
 
 
-<h3 id="somesy.cff.core.CFF.dump" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">dump</span>
+<h3 id="somesy.cff.core.CFF.save" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">save</span>
 
 
-<a href="#somesy.cff.core.CFF.dump" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">dump</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a href="#somesy.cff.core.CFF.save" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>Dump the CFF object to a file.</p>
+      <p>Save the CFF object to a file.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/cff/core.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
-<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump the CFF object to a file.&quot;&quot;&quot;</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the CFF object to a file.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
