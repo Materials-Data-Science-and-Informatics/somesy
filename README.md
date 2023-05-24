@@ -50,19 +50,19 @@ Somesy does not support **setuptools dynamic fields** in this version.
 
 ## Supported Metadata Fields
 
-The below table shows which fields are mapped to corresponding other fields in the currently supported formats.
+The below table shows which fields are mapped to corresponding other fields in the currently supported formats. Some of the metadata fields are required inputs in the somesy input file. `somesy` will give an error if required fields are not filled.
 
-| Project Metadata | Poetry Config | SetupTools Config | CITATION.cff    |
-| ---------------- | ------------- | ----------------- | --------------- |
-| name             | name          | name              | title           |
-| version          | version       | version           | version         |
-| description      | description   | description       | abstract        |
-| authors          | authors       | authors           | authors         |
-| maintainers      | maintainers   | maintainers       | contact         |
-| keywords         | keywords      | keywords          | keywords        |
-| license          | license       | license           | license         |
-| repository       | repository    | urls.repository   | repository_code |
-| homepage         | homepage      | urls.homepage     | url             |
+| Project Metadata | Poetry Config | SetupTools Config | CITATION.cff    | Requirement |
+| ---------------- | ------------- | ----------------- | --------------- | ----------- |
+| name             | name          | name              | title           | required    |
+| version          | version       | version           | version         | optional    |
+| description      | description   | description       | abstract        | required    |
+| authors          | authors       | authors           | authors         | required    |
+| maintainers      | maintainers   | maintainers       | contact         | optional    |
+| keywords         | keywords      | keywords          | keywords        | optional    |
+| license          | license       | license           | license         | required    |
+| repository       | repository    | urls.repository   | repository_code | optional    |
+| homepage         | homepage      | urls.homepage     | url             | optional    |
 
 # Project Metadata
 
