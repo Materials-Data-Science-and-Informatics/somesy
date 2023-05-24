@@ -13,10 +13,11 @@ documentation = "https://materials-data-science-and-informatics.github.io/somesy
 keywords = ["metadata", "FAIR"]
 classifiers = [
     "Operating System :: POSIX :: Linux",
-    "Development Status :: 2 - Pre-Alpha",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "License :: OSI Approved :: MIT License",
 ]
 
 # the Python packages that will be included in a built distribution:
