@@ -26,6 +26,7 @@ class CFF(ProjectMetadataWriter):
         self.path = path
         self.create_if_not_exists = create_if_not_exists
         self._yaml = YAML()
+        self._yaml.preserve_quotes = True
 
         # load and validate the CFF file
         self._load()
