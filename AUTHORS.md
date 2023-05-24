@@ -14,8 +14,8 @@ please inspect the git history of this repository.
 ## Main Authors
 
 - Mustafa Soylu (
-    [E-Mail](mailto:m.soylu@fz-juelich.de),
-    [ORCID](https://orcid.org/0000-0003-2637-0432)
+  [E-Mail](mailto:m.soylu@fz-juelich.de),
+  [ORCID](https://orcid.org/0000-0003-2637-0432)
   ): original author
 
 ## Additional Contributors
@@ -24,5 +24,15 @@ please inspect the git history of this repository.
 - Name (E-mail, ORCID):
 Summary of contribution
 -->
+
+- Anton Pirogov (
+  [E-Mail](mailto:a.pirogov@fz-juelich.de),
+  [ORCID](https://orcid.org/0000-0002-5077-7497)
+  ): documentation, review, and ideas
+
+- Jens Bröder (
+  [E-Mail](mailto:j.broeder@fz-juelich.de),
+  [ORCID](https://orcid.org/0000-0001-7939-226X)
+  ): ideas
 
 ... maybe **[you](https://materials-data-science-and-informatics.github.io/somesy/main/contributing)**?

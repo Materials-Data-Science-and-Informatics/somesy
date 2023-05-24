@@ -19,8 +19,4 @@ def person_to_cff_dict(person: Person) -> dict:
             exclude_unset=True,
         )
     )
-    # update the keys that has underscores to dashes
-    for key in list(cff_dict.keys()):
-        if "_" in key:
-            cff_dict[key.replace("_", "-")] = cff_dict.pop(key)
     return cff_dict

@@ -37,16 +37,6 @@ class PoetryConfig(BaseModel):
     documentation: Optional[HttpUrl] = None
     keywords: Optional[Set[str]] = None
     classifiers: Optional[List[str]] = None
-    packages: Optional[Dict[str, str]] = None
-    dependencies: Optional[
-        Dict[str, Union[str, Dict[str, Union[str, List[str]]]]]
-    ] = None
-    dev_dependencies: Optional[
-        Dict[str, Union[str, Dict[str, Union[str, List[str]]]]]
-    ] = None
-    scripts: Optional[Dict[str, Union[str, Dict[str, Union[str, List[str]]]]]] = None
-    extras: Optional[Dict[str, List[str]]] = None
-    plugins: Optional[Dict[str, str]] = None
     urls: Optional[Dict[str, HttpUrl]] = None
 
     @validator("version")
@@ -145,7 +135,6 @@ class SetuptoolsConfig(BaseModel):
     ]
     description: str
     readme: Optional[Union[Path, List[Path], File]] = None
-    requires_python: Annotated[str, Field(alias="requires-python")]
     license: Optional[Union[LicenseEnum, List[LicenseEnum]]] = Field(
         None, description="An SPDX license identifier."
     )

@@ -914,7 +914,7 @@ class ProjectMetadata(BaseModel):
     homepage: Optional[AnyUrl] = Field(None, description="URL of the package homepage.")
 
 
-class ProjectMetadataOutputWrapper(ABC):
+class ProjectMetadataWriter(ABC):
     """Base class for Project Metadata Output Wrapper."""
 
     def __init__(
@@ -1055,5 +1055,5 @@ class ProjectMetadataOutputWrapper(ABC):
         self.repository = str(metadata.repository)
 
     @abstractmethod
-    def dump(self, path: Optional[Path]) -> None:
-        """Dump the output file to the given path."""
+    def save(self, path: Optional[Path]) -> None:
+        """Save the output file to the given path."""

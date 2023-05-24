@@ -1,43 +1,37 @@
 """Setuptools config file handler parsed from pyproject.toml."""
+import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
 from tomlkit import dump, inline_table, load, table
 
-from somesy.core.models import Person, ProjectMetadataOutputWrapper
+from somesy.core.models import Person, ProjectMetadataWriter
 from somesy.pyproject.models import SetuptoolsConfig
 from somesy.pyproject.utils import person_to_setuptools_dict
 
+logger = logging.getLogger("somesy")
 
-class SetupTools(ProjectMetadataOutputWrapper):
+
+class SetupTools(ProjectMetadataWriter):
     """Setuptools config file handler parsed from setup.cfg."""
 
-    def __init__(self, path: Path, create_if_not_exists: bool = False):
+    def __init__(self, path: Path):
         """Setuptools config file handler parsed from pyproject.toml.
 
         Args:
             path (Path): Path to pyproject.toml file.
-            create_if_not_exists (bool, optional): Create pyproject.toml file if not exists. Defaults to False.
         """
         self.path = path
-        self.create_if_not_exists = create_if_not_exists
         self._load()
         self._validate()
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
         if not self.path.exists():
-            if self.create_if_not_exists:
-                self._create_empty_file()
-            else:
-                raise FileNotFoundError(f"pyproject file {self.path} not found")
-        else:
-            with open(self.path) as f:
-                self._data = load(f)
+            raise FileNotFoundError(f"pyproject file {self.path} not found")
 
-        # create a Setuptools object if it doesn't exist
-        if not ("project" in self._data):
-            self._data["project"] = {}
+        with open(self.path) as f:
+            self._data = load(f)
 
     def _validate(self) -> None:
         """Validate setuptools config using pydantic class.
@@ -46,8 +40,8 @@ class SetupTools(ProjectMetadataOutputWrapper):
         Pydantic class only used for validation.
         """
         config = dict(self._data["project"])
-        if config:
-            SetuptoolsConfig(**config)
+        logger.debug(f"Validating setuptools config: {config}")
+        SetuptoolsConfig(**config)
 
     def _get_property(self, key: str) -> Optional[Any]:
         """Get a property from the pyproject.toml file."""
@@ -86,10 +80,6 @@ class SetupTools(ProjectMetadataOutputWrapper):
             if not ("urls" in self._data["project"]):
                 self._data["project"]["urls"] = table()
             self._data["project"]["urls"][key] = value
-        else:
-            del self._data["project"]["urls"][key]
-            if not self._data["project"]["urls"]:
-                self._data["project"].pop("urls")
 
     @property
     def authors(self) -> Optional[List[dict]]:
@@ -137,8 +127,8 @@ class SetupTools(ProjectMetadataOutputWrapper):
         """Set repository url in setuptools config."""
         self._set_url("repository", repository)
 
-    def dump(self, path: Optional[Path] = None) -> None:
-        """Dump the pyproject file using instance."""
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the pyproject file using instance."""
         if path:
             with open(path, "w") as f:
                 dump(self._data, f)

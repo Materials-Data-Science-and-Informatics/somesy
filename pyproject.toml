@@ -1,15 +1,3 @@
-[tool.somesy.project]
-name = "somesy"
-version = "0.1.0"
-description = "A cli tool for synchronizing CITATION.CFF with project files."
-authors = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
-maintainers = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
-contributors = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
-keywords = ["metadata", "FAIR"]
-license = "MIT"
-repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
-homepage = "https://materials-data-science-and-informatics.github.io/somesy"
-
 [tool.poetry]
 name = "somesy"
 version = "0.1.0"
@@ -25,10 +13,10 @@ documentation = "https://materials-data-science-and-informatics.github.io/somesy
 keywords = ["metadata", "FAIR"]
 classifiers = [
     "Operating System :: POSIX :: Linux",
-    "Development Status :: 2 - Pre-Alpha",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "License :: OSI Approved :: MIT License",
 ]
 
 # the Python packages that will be included in a built distribution:
@@ -54,6 +42,7 @@ importlib-metadata = "^6.0.0"
 typer = {extras = ["all"], version = "^0.7.0"}
 cffconvert = "^2.0.0"
 wrapt = "^1.15.0"
+packaging = "^23.1"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.18.1"

@@ -1,43 +1,37 @@
 """Poetry config file handler parsed from pyproject.toml."""
+import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
 from tomlkit import dump, load
 
-from somesy.core.models import Person, ProjectMetadataOutputWrapper
+from somesy.core.models import Person, ProjectMetadataWriter
 from somesy.pyproject.models import PoetryConfig
 from somesy.pyproject.utils import person_to_poetry_string
 
+logger = logging.getLogger("somesy")
 
-class Poetry(ProjectMetadataOutputWrapper):
+
+class Poetry(ProjectMetadataWriter):
     """Poetry config file handler parsed from pyproject.toml."""
 
-    def __init__(self, path: Path, create_if_not_exists: bool = False):
+    def __init__(self, path: Path):
         """Poetry config file handler parsed from pyproject.toml.
 
         Args:
             path (Path): Path to pyproject.toml file.
-            create_if_not_exists (bool, optional): Create pyproject.toml file if not exists. Defaults to False.
         """
         self.path = path
-        self.create_if_not_exists = create_if_not_exists
         self._load()
         self._validate()
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
         if not self.path.exists():
-            if self.create_if_not_exists:
-                self._create_empty_file()
-            else:
-                raise FileNotFoundError(f"pyproject file {self.path} not found")
-        else:
-            with open(self.path) as f:
-                self._data = load(f)
+            raise FileNotFoundError(f"pyproject file {self.path} not found")
 
-        # create a Poetry object if it doesn't exist
-        if not ("tool" in self._data and "poetry" in self._data["tool"]):
-            self._data["tool"]["poetry"] = {}
+        with open(self.path) as f:
+            self._data = load(f)
 
     def _validate(self) -> None:
         """Validate poetry config using pydantic class.
@@ -46,8 +40,8 @@ class Poetry(ProjectMetadataOutputWrapper):
         Pydantic class only used for validation.
         """
         config = dict(self._data["tool"]["poetry"])
-        if config:
-            PoetryConfig(**config)
+        logger.debug(f"Validating poetry config: {config}")
+        PoetryConfig(**config)
 
     def _get_property(self, key: str) -> Optional[Any]:
         """Get a property from the pyproject.toml file."""
@@ -92,8 +86,8 @@ class Poetry(ProjectMetadataOutputWrapper):
                 "maintainers", [person_to_poetry_string(c) for c in maintainers]
             )
 
-    def dump(self, path: Optional[Path] = None) -> None:
-        """Dump the pyproject file using instance."""
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the pyproject file using instance."""
         if path:
             with open(path, "w") as f:
                 dump(self._data, f)

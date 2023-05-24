@@ -19,7 +19,7 @@ Maintaining this kind of information and updating it in various files and format
 ## Concepts
 
 Because the same information is represented in different ways and more or less detail in different files, somesy requires to put all
-project information in a **somesy-specific configuration section** is located in a supported **input file**.
+project information in a **somesy-specific input section** is located in a supported **input file**.
 Somesy will use this as the single source of truth for the supported project metadata fields
 and can synchronize this information into different **output files**.
 
@@ -35,7 +35,7 @@ Here is an overview of the supported files and formats.
 | -------------- | --------------------- |
 | pyproject.toml | `tool.somesy` section |
 | package.json   | TBD                   |
-| .somesy        | TBD                   |
+| .somesy.toml   | ✓                     |
 
 | Output Formats                | Status |
 | ----------------------------- | ------ |
@@ -50,23 +50,23 @@ Somesy does not support **setuptools dynamic fields** in this version.
 
 ## Supported Metadata Fields
 
-The below table shows which fields are mapped to corresponding other fields in the currently supported formats.
+The below table shows which fields are mapped to corresponding other fields in the currently supported formats. Some of the metadata fields are required inputs in the somesy input file. `somesy` will give an error if required fields are not filled.
 
-| Project Metadata | Poetry Config | SetupTools Config | CITATION.cff    |
-| ---------------- | ------------- | ----------------- | --------------- |
-| name             | name          | name              | title           |
-| version          | version       | version           | version         |
-| description      | description   | description       | abstract        |
-| authors          | authors       | authors           | authors         |
-| maintainers      | maintainers   | maintainers       | contact         |
-| keywords         | keywords      | keywords          | keywords        |
-| license          | license       | license           | license         |
-| repository       | repository    | urls.repository   | repository_code |
-| homepage         | homepage      | urls.homepage     | url             |
+| Project Metadata | Poetry Config | SetupTools Config | CITATION.cff    | Requirement |
+| ---------------- | ------------- | ----------------- | --------------- | ----------- |
+| name             | name          | name              | title           | required    |
+| version          | version       | version           | version         | optional    |
+| description      | description   | description       | abstract        | required    |
+| authors          | authors       | authors           | authors         | required    |
+| maintainers      | maintainers   | maintainers       | contact         | optional    |
+| keywords         | keywords      | keywords          | keywords        | optional    |
+| license          | license       | license           | license         | required    |
+| repository       | repository    | urls.repository   | repository_code | optional    |
+| homepage         | homepage      | urls.homepage     | url             | optional    |
 
 # Project Metadata
 
-Somesy config has the information on what is the most important for metadata and standard columns between different file formats. Somesy config columns are explained below.
+Somesy input has the information on what is the most important for metadata and standard columns between different file formats. Somesy input columns are explained below.
 
 - name: Software name - String
 - version: Software version - String
@@ -101,16 +101,16 @@ Somesy config has the information on what is the most important for metadata and
 - contribution_begin: Beginning date of the contribution. - Date in YYYY-MM-DD format
 - contribution_end: Ending date of the contribution. - Date in YYYY-MM-DD format
 
-Config fields have to adhere above restrictions. If not, somesy tool will raise errors.
+Input fields have to adhere above restrictions. If not, somesy tool will raise errors.
 
 <!-- --8<-- [end:abstract] -->
 <!-- --8<-- [start:quickstart] -->
 
 ## Getting Started
 
-Somesy requires Python `>=3.8`.
-You can install the package just as any other package into your
-current Python environment using:
+### Installing somesy
+
+Somesy requires Python `>=3.8`. You can install the package just as any other package into your current Python environment using:
 
 ```
 $ pip install git+ssh://git@github.com:Materials-Data-Science-and-Informatics/somesy.git
@@ -120,6 +120,89 @@ or, if you are adding it as a dependency into a poetry project:
 
 ```
 $ poetry add git+ssh://git@github.com:Materials-Data-Science-and-Informatics/somesy.git
+```
+
+### Use as a CLI tool
+
+After the installation with pip, you can use somesy as a CLI tool. `somesy sync` command checks input file in the working directory by default. `.somesy.toml` and `pyproject.toml` is checked as input files, ordinarily. Currently, there are 2 output methods for `somesy sync` command, `CITATION.cff` and `pyproject.toml` (either in poetry or setuptools format), and both are synced by default. `CITATION.cff` is created if file does not exists but `pyproject.toml` have to be created beforehand either in poetry or setuptools format. You can disable either output by CLI options.
+
+| Command     | Option                  | Option input        | Description                            |
+| ----------- | ----------------------- | ------------------- | -------------------------------------- |
+| somesy      | --version, -v           | -                   | Get somesy version                     |
+| somesy sync | --input-file, -i        | input file path     | set input file                         |
+| somesy sync | --no-sync-cff, -C       | -                   | Do not sync CITATION.cff file          |
+| somesy sync | --cff-file, -c          | cff file path       | set CITATION.cff file to sync          |
+| somesy sync | --no-sync-pyproject, -P | -                   | Do not sync pyproject file             |
+| somesy sync | --pyproject-file, -p    | pyproject file path | set pyproject file to sync             |
+| somesy sync | --verbose, -v           | -                   | show verbose messages                  |
+| somesy sync | --debug, -d             | -                   | show debug messages, overrides verbose |
+
+`somesy` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or either of verbose or debug flag is set. Also, `somesy` will give an error if there is no output to sync.
+
+### Use as a Pre-commit hook
+
+`somesy` can be used as a [pre-commit hook](https://pre-commit.com/). A pre-commit hook runs on every commit to automatically point out issues and/or fixing them. Thus, `somesy` syncs your data in every commit in a deterministic way.
+If you already use pre-commit, you can add somesy as a pre-commit hook. For people who are new to pre-commit, you can create a .pre-commit-config.yaml file in the root folder of your repository. You can set CLI options in `args` as in the example below.
+
+```yaml
+repos:
+  - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
+    rev: "0.1.0"
+    hooks:
+      - id: somesy
+        args: ["-C", "-p", "~/xx/xx/pyproject.toml"]
+```
+
+### Somesy input file
+
+This repository has a `.somesy.toml` file that can be used as a example. You can check this additional example for somesy project metadata inputs. Please pay attention to the toml table titles for each file example, the input itself is the same.
+
+_.somesy.toml_ example:
+
+```toml
+[project]
+name = "test"
+version = "0.1.0"
+description = "Test description."
+authors = [
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+]
+maintainers = [
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+]
+contributors = [
+    [
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
+    {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"}
+]
+keywords = ["key", "word"]
+license = "MIT"
+repository = "https://github.com/xx/test"
+homepage = "https://xx.github.io/test"
+```
+
+_pyproject.toml_ example:
+
+```toml
+[tool.somesy.project]
+name = "test"
+version = "0.1.0"
+description = "Test description."
+authors = [
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+]
+maintainers = [
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+]
+contributors = [
+    [
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
+    {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"}
+]
+keywords = ["key", "word"]
+license = "MIT"
+repository = "https://github.com/xx/test"
+homepage = "https://xx.github.io/test"
 ```
 
 <!-- --8<-- [end:quickstart] -->

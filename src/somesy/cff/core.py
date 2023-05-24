@@ -1,4 +1,4 @@
-"""Citation File Format (CFF) parser and dumper."""
+"""Citation File Format (CFF) parser and saver."""
 from pathlib import Path
 from typing import List, Optional
 
@@ -6,11 +6,11 @@ from ruamel.yaml import YAML
 
 from somesy.cff.utils import person_to_cff_dict
 from somesy.cff.validate import validate_citation
-from somesy.core.models import Person, ProjectMetadataOutputWrapper
+from somesy.core.models import Person, ProjectMetadataWriter
 
 
-class CFF(ProjectMetadataOutputWrapper):
-    """Citation File Format (CFF) parser and dumper."""
+class CFF(ProjectMetadataWriter):
+    """Citation File Format (CFF) parser and saver."""
 
     def __init__(
         self,
@@ -26,6 +26,7 @@ class CFF(ProjectMetadataOutputWrapper):
         self.path = path
         self.create_if_not_exists = create_if_not_exists
         self._yaml = YAML()
+        self._yaml.preserve_quotes = True
 
         # load and validate the CFF file
         self._load()
@@ -54,8 +55,7 @@ class CFF(ProjectMetadataOutputWrapper):
 
     def _validate(self):
         """Validate the CFF file."""
-        if not validate_citation(self.path):
-            raise Exception("CFF file is invalid")
+        validate_citation(self.path)
 
     @property
     def name(self) -> str:
@@ -95,8 +95,10 @@ class CFF(ProjectMetadataOutputWrapper):
         return self._get_property("contact")
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
+    def maintainers(self, maintainers: Optional[List[Person]] = None) -> None:
         """Set project maintainers."""
+        if maintainers is None:
+            return
         self._set_property(
             "contact", [person_to_cff_dict(maintainer) for maintainer in maintainers]
         )
@@ -121,8 +123,8 @@ class CFF(ProjectMetadataOutputWrapper):
         """Set project repository url."""
         self._set_property("repository-code", repository)
 
-    def dump(self, path: Optional[Path] = None) -> None:
-        """Dump the CFF object to a file."""
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the CFF object to a file."""
         if path:
             self._yaml.dump(self._data, path)
         else:
