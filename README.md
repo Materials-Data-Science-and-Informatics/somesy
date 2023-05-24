@@ -19,7 +19,7 @@ Maintaining this kind of information and updating it in various files and format
 ## Concepts
 
 Because the same information is represented in different ways and more or less detail in different files, somesy requires to put all
-project information in a **somesy-specific configuration section** is located in a supported **input file**.
+project information in a **somesy-specific input section** is located in a supported **input file**.
 Somesy will use this as the single source of truth for the supported project metadata fields
 and can synchronize this information into different **output files**.
 
@@ -66,7 +66,7 @@ The below table shows which fields are mapped to corresponding other fields in t
 
 # Project Metadata
 
-Somesy config has the information on what is the most important for metadata and standard columns between different file formats. Somesy config columns are explained below.
+Somesy input has the information on what is the most important for metadata and standard columns between different file formats. Somesy input columns are explained below.
 
 - name: Software name - String
 - version: Software version - String
@@ -101,7 +101,7 @@ Somesy config has the information on what is the most important for metadata and
 - contribution_begin: Beginning date of the contribution. - Date in YYYY-MM-DD format
 - contribution_end: Ending date of the contribution. - Date in YYYY-MM-DD format
 
-Config fields have to adhere above restrictions. If not, somesy tool will raise errors.
+Input fields have to adhere above restrictions. If not, somesy tool will raise errors.
 
 <!-- --8<-- [end:abstract] -->
 <!-- --8<-- [start:quickstart] -->
