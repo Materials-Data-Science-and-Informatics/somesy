@@ -22,7 +22,7 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
     """
     if input_file:
         if input_file.is_file():
-            logger.verbose(f"Using given {input_file} as somesy input file.")  # type: ignore
+            logger.info(f"Using given {input_file} as somesy input file.")
             return input_file
         else:
             logger.verbose(  # type: ignore

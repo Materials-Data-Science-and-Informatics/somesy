@@ -36,7 +36,7 @@ def sync(
 
 def _sync_python(
     metadata: ProjectMetadata,
-    pyproject_file: Optional[Path] = None,
+    pyproject_file: Path,
 ):
     """Sync pyproject.toml file using project metadata.
 
@@ -54,7 +54,7 @@ def _sync_python(
 
 def _sync_cff(
     metadata: ProjectMetadata,
-    cff_file: Optional[Path] = None,
+    cff_file: Path,
     create_cff: bool = True,
 ):
     """Sync CITATION.cff file using project metadata.
