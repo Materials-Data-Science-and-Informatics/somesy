@@ -134,10 +134,11 @@ After the installation with pip, you can use somesy as a CLI tool. `somesy sync`
 | somesy sync | --cff-file, -c          | cff file path       | set CITATION.cff file to sync          |
 | somesy sync | --no-sync-pyproject, -P | -                   | Do not sync pyproject file             |
 | somesy sync | --pyproject-file, -p    | pyproject file path | set pyproject file to sync             |
+| somesy sync | --show-info, -s         | -                   | show basic information messages        |
 | somesy sync | --verbose, -v           | -                   | show verbose messages                  |
 | somesy sync | --debug, -d             | -                   | show debug messages, overrides verbose |
 
-`somesy` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or either of verbose or debug flag is set. Also, `somesy` will give an error if there is no output to sync.
+`somesy` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, `somesy` will give an error if there is no output to sync.
 
 ### Use as a Pre-commit hook
 
