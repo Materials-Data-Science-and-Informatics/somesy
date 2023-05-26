@@ -79,11 +79,11 @@ def sync(
         resolve_path=True,
         help="Existing pyproject.toml file path",
     ),
-    no_quite: bool = typer.Option(
+    no_quiet: bool = typer.Option(
         False,
-        "--no-quite",
+        "--no-quiet",
         "-Q",
-        help="Get basic output (somesy is quite by default)",
+        help="Get basic output (somesy is quiet by default)",
     ),
     verbose: bool = typer.Option(
         False,
@@ -99,7 +99,7 @@ def sync(
     ),
 ):
     """Sync project metadata input with metadata files."""
-    set_logger(debug=debug, verbose=verbose, no_quite=no_quite)
+    set_logger(debug=debug, verbose=verbose, no_quiet=no_quiet)
     # at least one of the sync options must be enabled
     if no_sync_cff and no_sync_pyproject:
         logger.warning("There should be at least one file to sync.")

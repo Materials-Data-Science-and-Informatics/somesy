@@ -9,14 +9,14 @@ logger = logging.getLogger("somesy")
 
 
 def set_logger(
-    debug: bool = False, verbose: bool = False, no_quite: bool = False
+    debug: bool = False, verbose: bool = False, no_quiet: bool = False
 ) -> None:
     """Set logger to rich handler and add custom logging level.
 
     Args:
-        debug (bool): Debug mode, overrides verbose and no_quite modes.
+        debug (bool): Debug mode, overrides verbose and no_quiet modes.
         verbose (bool): Verbose mode.
-        no_quite (bool): NO Quite mode, prints basic output.
+        no_quiet (bool): NO quiet mode, prints basic output.
     """
     logging.addLevelName(level=VERBOSE, levelName="VERBOSE")
     logger.propagate = False
@@ -25,7 +25,7 @@ def set_logger(
         logger.setLevel(logging.DEBUG)
     elif verbose:
         logger.setLevel(VERBOSE)
-    elif no_quite:
+    elif no_quiet:
         logger.setLevel(logging.INFO)
     else:
         logger.setLevel(logging.WARNING)
