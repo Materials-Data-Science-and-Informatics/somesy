@@ -106,7 +106,7 @@ def sync(
         typer.Exit(code=0)
 
     try:
-        logger.info("[bold green]Syncing project metadata...[/bold green]\n") 
+        logger.info("[bold green]Syncing project metadata...[/bold green]\n")
         logger.debug(
             f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
         )
@@ -115,16 +115,14 @@ def sync(
         input_file = discover_input(input_file)
 
         # info output
-        logger.info("Files to sync:")  
+        logger.info("Files to sync:")
         if not no_sync_pyproject:
-            logger.info( 
+            logger.info(
                 f"  - [italic]Pyproject.toml[/italic] [grey]({pyproject_file})[/grey]"
             )
 
         if not no_sync_cff:
-            logger.info( 
-                f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]"
-            )
+            logger.info(f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]")
 
         # sync files
         sync_command(
@@ -133,7 +131,7 @@ def sync(
             cff_file=cff_file if not no_sync_cff else None,
         )
 
-        logger.info("[bold green]Syncing completed.[/bold green]") 
+        logger.info("[bold green]Syncing completed.[/bold green]")
     except Exception as e:
         logger.error(f"[bold red]Error: {e}[/bold red]")
         logger.debug(f"[red]{traceback.format_exc()}[/red]")

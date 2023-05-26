@@ -8,16 +8,19 @@ from somesy.core.config import VERBOSE
 logger = logging.getLogger("somesy")
 
 
-def set_logger(debug: bool = False, verbose: bool = False, no_quite: bool = False) -> None:
+def set_logger(
+    debug: bool = False, verbose: bool = False, no_quite: bool = False
+) -> None:
     """Set logger to rich handler and add custom logging level.
 
     Args:
-        debug (bool): Debug mode, overrides verbose mode.
+        debug (bool): Debug mode, overrides verbose and no_quite modes.
         verbose (bool): Verbose mode.
+        no_quite (bool): NO Quite mode, prints basic output.
     """
     logging.addLevelName(level=VERBOSE, levelName="VERBOSE")
     logger.propagate = False
-    
+
     if debug:
         logger.setLevel(logging.DEBUG)
     elif verbose:
