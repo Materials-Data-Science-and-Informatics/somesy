@@ -1150,9 +1150,7 @@
 
 
 <a href="#somesy.core.discover.discover_input" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">discover_input</span><span class="p">(</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="n">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
@@ -1212,7 +1210,7 @@
     <tbody>
         <tr>
           <td>
-                <code><span title="typing.Optional">Optional</span>[<span title="pathlib.Path">Path</span>]</code>
+                <code><span title="pathlib.Path">Path</span></code>
           </td>
           <td><p>Optional[Path]:  somesy configuration file path.</p></td>
         </tr>
@@ -1248,7 +1246,7 @@
 <span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]:</span>
+<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check given input file path. If not given, find somesy configuration file path from default list.</span>
 
 <span class="sd">    Args:</span>
@@ -1262,16 +1260,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">input_file</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using given </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> as somesy input file.&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using given </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> as somesy input file.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">input_file</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Given input file </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> does not exist. Trying to find somesy input file from defaults.&quot;</span>
             <span class="p">)</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">INPUT_FILES_ORDERED</span><span class="p">:</span>
         <span class="n">input_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Using </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2"> from default somesy config list as somesy input file.&quot;</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">input_file</span>

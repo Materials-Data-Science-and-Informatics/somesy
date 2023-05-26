@@ -1245,12 +1245,12 @@
 
         <span class="c1"># setuptools has project object</span>
         <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found setuptools config in pyproject.toml file&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found setuptools config in pyproject.toml file&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SetupTools</span><span class="p">,</span> <span class="n">Poetry</span><span class="p">]</span> <span class="o">=</span> <span class="n">SetupTools</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
         <span class="c1"># poetry has tool.poetry object</span>
         <span class="k">elif</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;poetry&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found poetry config in pyproject.toml file&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found poetry config in pyproject.toml file&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">Poetry</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
         <span class="c1"># value error if other project object is found</span>
@@ -1391,12 +1391,12 @@
 
     <span class="c1"># setuptools has project object</span>
     <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found setuptools config in pyproject.toml file&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found setuptools config in pyproject.toml file&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SetupTools</span><span class="p">,</span> <span class="n">Poetry</span><span class="p">]</span> <span class="o">=</span> <span class="n">SetupTools</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
     <span class="c1"># poetry has tool.poetry object</span>
     <span class="k">elif</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;poetry&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found poetry config in pyproject.toml file&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found poetry config in pyproject.toml file&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">Poetry</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
     <span class="c1"># value error if other project object is found</span>

@@ -1227,6 +1227,12 @@
 </tr>
 <tr>
 <td>somesy sync</td>
+<td>--show-info, -s</td>
+<td>-</td>
+<td>show basic information messages</td>
+</tr>
+<tr>
+<td>somesy sync</td>
 <td>--verbose, -v</td>
 <td>-</td>
 <td>show verbose messages</td>
@@ -1239,7 +1245,7 @@
 </tr>
 </tbody>
 </table>
-<p><code>somesy</code> is designed to be used as a pre-commit tool so it does not give any output unless there is an error or either of verbose or debug flag is set. Also, <code>somesy</code> will give an error if there is no output to sync.</p>
+<p><code>somesy</code> is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, <code>somesy</code> will give an error if there is no output to sync.</p>
 <h3 id="use-as-a-pre-commit-hook">Use as a Pre-commit hook<a class="headerlink" href="#use-as-a-pre-commit-hook" title="Permanent link">&para;</a></h3>
 <p><code>somesy</code> can be used as a <a href="https://pre-commit.com/">pre-commit hook</a>. A pre-commit hook runs on every commit to automatically point out issues and/or fixing them. Thus, <code>somesy</code> syncs your data in every commit in a deterministic way.
 If you already use pre-commit, you can add somesy as a pre-commit hook. For people who are new to pre-commit, you can create a .pre-commit-config.yaml file in the root folder of your repository. You can set CLI options in <code>args</code> as in the example below.</p>
