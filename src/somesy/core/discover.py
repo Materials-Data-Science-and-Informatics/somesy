@@ -8,7 +8,7 @@ from .config import INPUT_FILES_ORDERED
 logger = logging.getLogger("somesy")
 
 
-def discover_input(input_file: Optional[Path] = None) -> Optional[Path]:
+def discover_input(input_file: Optional[Path] = None) -> Path:
     """Check given input file path. If not given, find somesy configuration file path from default list.
 
     Args:
