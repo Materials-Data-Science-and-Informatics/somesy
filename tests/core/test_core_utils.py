@@ -20,7 +20,7 @@ def test_set_logger_verbose():
 
 def test_set_logger_info():
     # test debug mode
-    set_logger(no_quiet=True)
+    set_logger(info=True)
     assert logger.getEffectiveLevel() == logging.INFO
 
 
