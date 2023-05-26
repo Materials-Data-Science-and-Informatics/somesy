@@ -44,12 +44,12 @@ def _sync_python(
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
         pyproject_file (Path, optional): pyproject file to read project metadata from.
     """
-    logger.verbose("Loading pyproject.toml file.")  # type: ignore
+    logger.verbose("Loading pyproject.toml file.")
     pyproject = Pyproject(pyproject_file)
-    logger.verbose("Syncing pyproject.toml file.")  # type: ignore
+    logger.verbose("Syncing pyproject.toml file.")
     pyproject.sync(metadata)
     pyproject.save()
-    logger.verbose("Saved synced pyproject.toml file.\n")  # type: ignore
+    logger.verbose("Saved synced pyproject.toml file.\n")
 
 
 def _sync_cff(
@@ -64,9 +64,9 @@ def _sync_cff(
         cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
         create_cff (bool, optional): Create CFF file if does not exist. Defaults to True.
     """
-    logger.verbose("Loading CITATION.cff file.")  # type: ignore
+    logger.verbose("Loading CITATION.cff file.")
     cff = CFF(cff_file, create_cff)
-    logger.verbose("Syncing CITATION.cff file.")  # type: ignore
+    logger.verbose("Syncing CITATION.cff file.")
     cff.sync(metadata)
     cff.save()
-    logger.verbose("Saved synced CITATION.cff file.\n")  # type: ignore
+    logger.verbose("Saved synced CITATION.cff file.\n")

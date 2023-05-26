@@ -35,12 +35,12 @@ class Pyproject(wrapt.ObjectProxy):
 
         # setuptools has project object
         if "project" in data:
-            logger.verbose("Found setuptools config in pyproject.toml file")  # type: ignore
+            logger.verbose("Found setuptools config in pyproject.toml file")
             self.__wrapped__: Union[SetupTools, Poetry] = SetupTools(path)
             super().__init__(self.__wrapped__)
         # poetry has tool.poetry object
         elif "tool" in data and "poetry" in data["tool"]:
-            logger.verbose("Found poetry config in pyproject.toml file")  # type: ignore
+            logger.verbose("Found poetry config in pyproject.toml file")
             self.__wrapped__ = Poetry(path)
             super().__init__(self.__wrapped__)
         # value error if other project object is found
