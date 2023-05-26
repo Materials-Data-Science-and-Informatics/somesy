@@ -79,6 +79,12 @@ def sync(
         resolve_path=True,
         help="Existing pyproject.toml file path",
     ),
+    show_info: bool = typer.Option(
+        False,
+        "--show-info",
+        "-s",
+        help="Get basic output (somesy is quiet by default)",
+    ),
     verbose: bool = typer.Option(
         False,
         "--verbose",
@@ -93,14 +99,14 @@ def sync(
     ),
 ):
     """Sync project metadata input with metadata files."""
-    set_logger(debug=debug, verbose=verbose)
+    set_logger(debug=debug, verbose=verbose, info=show_info)
     # at least one of the sync options must be enabled
     if no_sync_cff and no_sync_pyproject:
         logger.warning("There should be at least one file to sync.")
         typer.Exit(code=0)
 
     try:
-        logger.verbose("[bold green]Syncing project metadata...[/bold green]\n")  # type: ignore
+        logger.info("[bold green]Syncing project metadata...[/bold green]\n")
         logger.debug(
             f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
         )
@@ -108,18 +114,15 @@ def sync(
         # check if input file exists, if not, try to find it from default list
         input_file = discover_input(input_file)
 
-        # verbose output
-        logger.verbose("Files to sync:")  # type: ignore
+        # info output
+        logger.info("Files to sync:")
         if not no_sync_pyproject:
-            logger.verbose(  # type: ignore
+            logger.info(
                 f"  - [italic]Pyproject.toml[/italic] [grey]({pyproject_file})[/grey]"
             )
 
         if not no_sync_cff:
-            logger.verbose(  # type: ignore
-                f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]"
-            )
-        logger.verbose("\n")  # type: ignore
+            logger.info(f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]")
 
         # sync files
         sync_command(
@@ -128,7 +131,7 @@ def sync(
             cff_file=cff_file if not no_sync_cff else None,
         )
 
-        logger.verbose("[bold green]Syncing completed.[/bold green]")  # type: ignore
+        logger.info("[bold green]Syncing completed.[/bold green]")
     except Exception as e:
         logger.error(f"[bold red]Error: {e}[/bold red]")
         logger.debug(f"[red]{traceback.format_exc()}[/red]")

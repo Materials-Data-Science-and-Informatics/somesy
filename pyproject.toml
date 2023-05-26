@@ -136,3 +136,6 @@ exclude_dirs = ["tests", "scripts"]
 
 [tool.licensecheck]
 using = "poetry"
+
+[tool.mypy]
+disable_error_code = ["attr-defined"]
