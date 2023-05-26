@@ -29,7 +29,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
         [
             "sync",
             "-i",
-            input_file,
+            str(input_file),
             "--no-sync-pyproject",
             "--no-sync-cff",
         ],
@@ -46,7 +46,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
         [
             "sync",
             "-i",
-            input_file,
+            str(input_file),
             "-c",
             cff_file,
             "-p",
@@ -67,7 +67,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
         [
             "sync",
             "-i",
-            input_file_reject,
+            str(input_file_reject),
             "-d",
         ],
     )
