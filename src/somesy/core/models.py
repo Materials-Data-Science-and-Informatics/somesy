@@ -953,7 +953,7 @@ class ProjectMetadataWriter(ABC):
         return None
 
     @property
-    def name(self) -> str:
+    def name(self):
         """Return the name of the project."""
         return self._get_property("name")
 
@@ -1046,10 +1046,16 @@ class ProjectMetadataWriter(ABC):
         """Sync output file with other metadata files."""
         self.name = metadata.name
         self.description = metadata.description
-        self.version = metadata.version
-        self.keywords = metadata.keywords
+
+        if metadata.version:
+            self.version = metadata.version
+
+        if metadata.keywords:
+            self.keywords = metadata.keywords
         self.authors = metadata.authors
-        self.maintainers = metadata.maintainers
+        if metadata.maintainers:
+            self.maintainers = metadata.maintainers
+
         self.license = metadata.license.value
         self.homepage = str(metadata.homepage)
         self.repository = str(metadata.repository)
@@ -1057,3 +1063,27 @@ class ProjectMetadataWriter(ABC):
     @abstractmethod
     def save(self, path: Optional[Path]) -> None:
         """Save the output file to the given path."""
+
+
+class SomesyCLIConfig(BaseModel):
+    """Pydantic model for Somesy Config Input. This is input will be used as default if there is no CLI option given."""
+
+    input_file: Optional[Path] = Field(None, description="Input file path.")
+    no_sync_cff: Optional[bool] = Field(None, description="Do not sync with CFF.")
+    cff_file: Optional[Path] = Field(None, description="CFF file path.")
+    no_sync_pyproject: Optional[bool] = Field(
+        None, description="Do not sync with pyproject.toml."
+    )
+    pyproject_file: Optional[Path] = Field(
+        None, description="pyproject.toml file path."
+    )
+    show_info: Optional[bool] = Field(
+        None, description="Show basic information messages on run."
+    )
+    verbose: Optional[bool] = Field(None, description="Show verbose messages on run.")
+    debug: Optional[bool] = Field(None, description="Show debug messages on run.")
+
+    class Config:
+        """Pydantic model config."""
+
+        extra = "forbid"
