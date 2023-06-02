@@ -42,4 +42,5 @@ def get_prioritized_sync_command_inputs(
         else:
             validated_inputs[key] = value
 
+    # TODO: log the validated inputs
     return validated_inputs

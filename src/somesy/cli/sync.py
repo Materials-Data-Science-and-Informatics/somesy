@@ -90,6 +90,7 @@ def sync(
         typer.Exit(code=0)
 
     try:
+        # TODO: input file cli options implementation
         logger.info("[bold green]Syncing project metadata...[/bold green]\n")
         logger.debug(
             f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
