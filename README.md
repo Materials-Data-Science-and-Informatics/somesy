@@ -1,8 +1,25 @@
+![Project status](https://img.shields.io/badge/project%20status-alpha-%23ff8000)
+[
+![Docs](https://img.shields.io/badge/read-docs-success)
+](https://materials-data-science-and-informatics.github.io/somesy)
+[
+![CI](https://img.shields.io/github/actions/workflow/status/Materials-Data-Science-and-Informatics/somesy/ci.yml?branch=main&label=ci)
+](https://github.com/Materials-Data-Science-and-Informatics/somesy/actions/workflows/ci.yml)
+[
+![Test Coverage](https://materials-data-science-and-informatics.github.io/somesy/main/coverage_badge.svg)
+](https://materials-data-science-and-informatics.github.io/somesy/main/coverage)
+[
+![Docs Coverage](https://materials-data-science-and-informatics.github.io/somesy/main/interrogate_badge.svg)
+](https://materials-data-science-and-informatics.github.io/somesy)
+[
+![PyPIPkgVersion](https://img.shields.io/pypi/v/somesy)
+](https://pypi.org/project/somesy/)
+
+<!-- --8<-- [start:abstract] -->
+
 # somesy
 
 Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.
-
-<!-- --8<-- [start:abstract] -->
 
 ## Description
 
