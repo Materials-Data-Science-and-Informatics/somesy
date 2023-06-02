@@ -143,17 +143,17 @@ $ poetry add git+ssh://git@github.com:Materials-Data-Science-and-Informatics/som
 
 After the installation with pip, you can use somesy as a CLI tool. `somesy sync` command checks input file in the working directory by default. `.somesy.toml` and `pyproject.toml` is checked as input files, ordinarily. Currently, there are 2 output methods for `somesy sync` command, `CITATION.cff` and `pyproject.toml` (either in poetry or setuptools format), and both are synced by default. `CITATION.cff` is created if file does not exists but `pyproject.toml` have to be created beforehand either in poetry or setuptools format. You can disable either output by CLI options.
 
-| Command     | Option                  | Option input        | Description                            |
-| ----------- | ----------------------- | ------------------- | -------------------------------------- |
-| somesy      | --version, -v           | -                   | Get somesy version                     |
-| somesy sync | --input-file, -i        | input file path     | set input file                         |
-| somesy sync | --no-sync-cff, -C       | -                   | Do not sync CITATION.cff file          |
-| somesy sync | --cff-file, -c          | cff file path       | set CITATION.cff file to sync          |
-| somesy sync | --no-sync-pyproject, -P | -                   | Do not sync pyproject file             |
-| somesy sync | --pyproject-file, -p    | pyproject file path | set pyproject file to sync             |
-| somesy sync | --show-info, -s         | -                   | show basic information messages        |
-| somesy sync | --verbose, -v           | -                   | show verbose messages                  |
-| somesy sync | --debug, -d             | -                   | show debug messages, overrides verbose |
+| Command     | Option                  | Option input        | Description                     |
+| ----------- | ----------------------- | ------------------- | ------------------------------- |
+| somesy      | --version, -v           | -                   | Get somesy version              |
+| somesy sync | --input-file, -i        | input file path     | set input file                  |
+| somesy sync | --no-sync-cff, -C       | -                   | Do not sync CITATION.cff file   |
+| somesy sync | --cff-file, -c          | cff file path       | set CITATION.cff file to sync   |
+| somesy sync | --no-sync-pyproject, -P | -                   | Do not sync pyproject file      |
+| somesy sync | --pyproject-file, -p    | pyproject file path | set pyproject file to sync      |
+| somesy sync | --show-info, -s         | -                   | show basic information messages |
+| somesy sync | --verbose, -v           | -                   | show verbose messages           |
+| somesy sync | --debug, -d             | -                   | show debug messages             |
 
 `somesy` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, `somesy` will give an error if there is no output to sync.
 
