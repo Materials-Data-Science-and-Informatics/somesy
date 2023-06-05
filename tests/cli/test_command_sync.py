@@ -9,7 +9,7 @@ runner = CliRunner()
 
 
 def test_app_sync(tmp_path, create_poetry_file, mocker):
-    input_file = Path("tests/core/data/.somesy.toml")
+    input_file = Path("tests/core/data/.somesy.with_config.toml")
     cff_file = tmp_path / "CITATION.cff"
     pyproject_file = tmp_path / "pyproject.toml"
 
