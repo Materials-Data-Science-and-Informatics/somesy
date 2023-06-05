@@ -1,10 +1,14 @@
 """Core somesy functions."""
+import logging
 from pathlib import Path
 from typing import Optional
 
-from tomlkit import TOMLDocument, load
+from tomlkit import TOMLDocument
 
 from somesy.core.models import ProjectMetadata, SomesyCLIConfig
+from somesy.core.utils import load_pyproject_content, load_somesy_content
+
+logger = logging.getLogger("somesy")
 
 
 def get_project_metadata(path: Path) -> ProjectMetadata:
@@ -52,25 +56,15 @@ def get_input_content(path: Path) -> TOMLDocument:
     Raises:
         ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.
     """
-    if path.suffix == ".toml":
-        with open(path, "r") as f:
-            input_content = load(f)
+    input_content = load_somesy_content(path)
+    if input_content is not None:
+        return input_content
 
-        # load project metadata
-        if "somesy" in path.name and "project" in input_content:
-            return input_content
-
-        elif (
-            "pyproject" in path.name
-            and "tool" in input_content
-            and "somesy" in input_content["tool"]
-            and "project" in input_content["tool"]["somesy"]
-        ):
-            return input_content["tool"]["somesy"]
-        else:
-            raise ValueError("Somesy input not found.")
+    input_content = load_pyproject_content(path)
+    if input_content is not None:
+        return input_content["tool"]["somesy"]
     else:
-        raise ValueError("Only toml files are supported for reading somesy input.")
+        raise ValueError("Unsupported input file.")
 
 
 def _extract_metadata(content: TOMLDocument) -> ProjectMetadata:
@@ -112,3 +106,29 @@ def _extract_cli_config(content: TOMLDocument) -> Optional[SomesyCLIConfig]:
             raise ValueError(f"Somesy config validation failed: {e}")
     else:
         return None
+
+
+def validate_somesy_input(input_file: Path) -> bool:
+    """Validate somesy input file.
+
+    Args:
+        input_file (Path): input file path
+
+    Returns:
+        bool: True if the input file is a valid somesy input file, otherwise False
+    """
+    # validate project metadata
+    try:
+        get_project_metadata(input_file)
+    except Exception as e:
+        logger.warning(f"Error on project metadata validation:\n{e}")
+        return False
+
+    # validate somesy cli config
+    try:
+        get_somesy_cli_config(input_file)
+    except Exception as e:
+        logger.warning(f"Error on cli config validation:\n{e}")
+        return False
+
+    return True

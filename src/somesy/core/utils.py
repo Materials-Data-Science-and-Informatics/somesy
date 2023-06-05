@@ -1,7 +1,10 @@
 """Utility functions for somesy."""
 import logging
+from pathlib import Path
+from typing import Optional
 
 from rich.logging import RichHandler
+from tomlkit import TOMLDocument, load
 
 from somesy.core.config import VERBOSE
 
@@ -49,3 +52,39 @@ def set_logger(debug: bool = False, verbose: bool = False, info: bool = False) -
                 markup=True,
             )
         )
+
+
+def load_somesy_content(input_path: Path) -> Optional[TOMLDocument]:
+    """Load somesy file content if a valid file.
+
+    Args:
+        input_path (Path): input path. Must have somesy in the name and be a TOML file.
+
+    Returns:
+        Optional[TOMLDocument]: TOMLDocument object if the input file is a valid somesy input file, otherwise None
+    """
+    if input_path.suffix == ".toml" and "somesy" in input_path.name:
+        with open(input_path, "r") as f:
+            input_content = load(f)
+            if "project" in input_content:
+                return input_content
+
+    return None
+
+
+def load_pyproject_content(input_path: Path) -> Optional[TOMLDocument]:
+    """Load pyproject file content if a valid file.
+
+    Args:
+        input_path (Path): input path. Must have pyproject in the name and be a TOML file.
+
+    Returns:
+        Optional[TOMLDocument]: TOMLDocument object if the input file is a valid pyproject input file, otherwise None
+    """
+    if input_path.suffix == ".toml" and "pyproject" in input_path.name:
+        with open(input_path, "r") as f:
+            input_content = load(f)
+            if "tool" in input_content and "somesy" in input_content["tool"]:
+                return input_content
+
+    return None

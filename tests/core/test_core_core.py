@@ -11,6 +11,7 @@ from somesy.core.core import (
     get_input_content,
     get_project_metadata,
     get_somesy_cli_config,
+    validate_somesy_input,
 )
 
 
@@ -100,3 +101,23 @@ def test_get_somesy_cli_config(somesy_with_config, somesy_metadata_only):
     # test with config does not exist
     config = get_somesy_cli_config(somesy_metadata_only)
     assert config is None
+
+
+def test_validate_somesy_input(somesy_metadata_only, somesy_with_config, tmp_path):
+    # test with valid input
+    validate_somesy_input(somesy_metadata_only)
+    validate_somesy_input(somesy_with_config)
+
+    # test with an empty file (not a valid somesy input file)
+    input_file = tmp_path / ".somesy.toml"
+    input_file.touch()
+    result = validate_somesy_input(input_file)
+    assert result == False
+
+    # test with invalid config
+
+    input_file.write_text(
+        somesy_metadata_only.read_text() + "\n[config.cli]\nshow_info = 3\n"
+    )
+    result = validate_somesy_input(input_file)
+    assert result == False
