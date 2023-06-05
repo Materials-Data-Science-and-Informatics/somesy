@@ -1,4 +1,4 @@
-"""Main entry point for the somesy CLI."""
+"""Sync command for somesy."""
 import logging
 import traceback
 from pathlib import Path
