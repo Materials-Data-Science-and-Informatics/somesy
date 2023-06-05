@@ -2,6 +2,8 @@
 import logging
 from pathlib import Path
 
+import typer
+
 from somesy.cli.models import SyncCommandOptions
 
 logger = logging.getLogger("somesy")
@@ -42,5 +44,16 @@ def get_prioritized_sync_command_inputs(
         else:
             validated_inputs[key] = value
 
-    # TODO: log the validated inputs
+    # if a output file is given by cli input, use it
+    if cli_options.cff_file is not None:
+        validated_inputs["no_sync_cff"] = False
+    if cli_options.pyproject_file is not None:
+        validated_inputs["no_sync_pyproject"] = False
+
+    # at least one of the sync options must be enabled
+    if validated_inputs["no_sync_cff"] and validated_inputs["no_sync_pyproject"]:
+        logger.warning("There should be at least one file to sync.")
+        typer.Exit(code=0)
+
+    logger.debug(f"validated inputs: {validated_inputs}")
     return validated_inputs
