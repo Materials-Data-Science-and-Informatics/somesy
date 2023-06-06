@@ -18,7 +18,7 @@ class SyncCommandOptions:
     verbose: Optional[bool] = None
     debug: Optional[bool] = None
 
-    def asdict(self, remove_keys: Optional[List[str]]):
+    def asdict(self, remove_keys: Optional[List[str]] = None):
         """Remove None values from dict and return absolute paths for Path objects."""
         if remove_keys is None:
             remove_keys = []
