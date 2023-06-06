@@ -1,5 +1,6 @@
-# See https://pre-commit.com for more information
-# See https://pre-commit.com/hooks.html for more hooks
+# SPDX-FileCopyrightText: 2018 Free Software Foundation Europe e.V. <https://fsfe.org>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 repos:
     # Various general + format-specific helpers
     - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -76,3 +77,13 @@ repos:
       rev: '44e8fc9'
       hooks:
           - id: validate-cff
+    - repo: https://github.com/fsfe/reuse-tool
+      rev: 'v1.1.2'
+      hooks:
+        - id: reuse
+
+    - repo: https://github.com/Materials-Data-Science-and-Informatics/dev-utils
+      rev: 'v0.1.0'
+      hooks:
+        - id: update-codemeta
+          files: ^pyproject.toml$
