@@ -143,9 +143,16 @@ $ poetry add git+ssh://git@github.com:Materials-Data-Science-and-Informatics/som
 
 After the installation with pip, you can use somesy as a CLI tool. `somesy sync` command checks input file in the working directory by default. `.somesy.toml` and `pyproject.toml` is checked as input files, ordinarily. Currently, there are 2 output methods for `somesy sync` command, `CITATION.cff` and `pyproject.toml` (either in poetry or setuptools format), and both are synced by default. `CITATION.cff` is created if file does not exists but `pyproject.toml` have to be created beforehand either in poetry or setuptools format. You can disable either output by CLI options.
 
+`somesy` command options:
+
+| Command | Option        | Option input | Description        |
+| ------- | ------------- | ------------ | ------------------ |
+| somesy  | --version, -v | -            | Get somesy version |
+
+`somesy sync` command options:
+
 | Command     | Option                  | Option input        | Description                     |
 | ----------- | ----------------------- | ------------------- | ------------------------------- |
-| somesy      | --version, -v           | -                   | Get somesy version              |
 | somesy sync | --input-file, -i        | input file path     | set input file                  |
 | somesy sync | --no-sync-cff, -C       | -                   | Do not sync CITATION.cff file   |
 | somesy sync | --cff-file, -c          | cff file path       | set CITATION.cff file to sync   |
@@ -155,7 +162,9 @@ After the installation with pip, you can use somesy as a CLI tool. `somesy sync`
 | somesy sync | --verbose, -v           | -                   | show verbose messages           |
 | somesy sync | --debug, -d             | -                   | show debug messages             |
 
-`somesy` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, `somesy` will give an error if there is no output to sync.
+`somesy sync` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, `somesy` will give an error if there is no output to sync.
+
+You can save your CLI inputs to your input file or you can use `somesy config init` command. It records CLI options for `somesy sync` command to given input file. All options are prompted with their default values. The options are saved under [config.cli] table in the input file. You can change the options later by editing the input file. Unlike `somesy sync` command, `somesy config init` command shows the basic output of the command, and shows more if verbose or debug is selected in prompt.
 
 ### Use as a Pre-commit hook
 
@@ -189,7 +198,6 @@ maintainers = [
     {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
 ]
 contributors = [
-    [
     {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
     {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"}
 ]
@@ -197,6 +205,15 @@ keywords = ["key", "word"]
 license = "MIT"
 repository = "https://github.com/xx/test"
 homepage = "https://xx.github.io/test"
+
+[config.cli]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = false
+pyproject_file = "pyproject.toml"
+show_info = false
+verbose = false
+debug = true
 ```
 
 _pyproject.toml_ example:
@@ -213,7 +230,6 @@ maintainers = [
     {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
 ]
 contributors = [
-    [
     {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
     {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"}
 ]
@@ -221,6 +237,15 @@ keywords = ["key", "word"]
 license = "MIT"
 repository = "https://github.com/xx/test"
 homepage = "https://xx.github.io/test"
+
+[tool.somesy.config.cli]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = false
+pyproject_file = "pyproject.toml"
+show_info = false
+verbose = false
+debug = true
 ```
 
 <!-- --8<-- [end:quickstart] -->
