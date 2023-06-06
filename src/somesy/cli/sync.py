@@ -112,6 +112,11 @@ def sync(
         validated_inputs = get_prioritized_sync_command_inputs(
             cli_options=cli_inputs, file_options=file_cli_input
         )
+        set_logger(
+            debug=validated_inputs["debug"],
+            verbose=validated_inputs["verbose"],
+            info=validated_inputs["show_info"],
+        )
 
         logger.info("[bold green]Syncing project metadata...[/bold green]\n")
 
