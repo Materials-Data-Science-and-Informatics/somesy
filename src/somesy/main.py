@@ -3,7 +3,7 @@
 import typer
 
 from somesy import __version__
-from somesy.cli import sync
+from somesy.cli import init, sync
 
 app = typer.Typer()
 
@@ -25,6 +25,7 @@ def common(
 
 # add subcommands
 app.add_typer(sync.app, name="sync")
+app.add_typer(init.app, name="init")
 
 if __name__ == "__main__":
     app()
