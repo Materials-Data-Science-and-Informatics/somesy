@@ -17,7 +17,7 @@ app = typer.Typer()
 @app.command()
 def config():
     """Set CLI configs for somesy."""
-    set_logger(debug=False, verbose=False, info=False)
+    set_logger(debug=False, verbose=False, info=True)
     try:
         # check if input file exists, if not, try to find it from default list
         input_file_default = discover_input()
