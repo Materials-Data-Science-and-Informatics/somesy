@@ -2,7 +2,7 @@
 import logging
 from pathlib import Path
 
-from tomlkit import TOMLDocument, dump
+from tomlkit import dump
 
 from somesy.cli.models import SyncCommandOptions
 from somesy.core.utils import load_pyproject_content, load_somesy_content
@@ -37,7 +37,7 @@ def init_config(input_path: Path, options: SyncCommandOptions) -> None:
     logger.debug(f"Input file content: {content}")
 
 
-def _load(input_path: Path) -> tuple[TOMLDocument, bool]:
+def _load(input_path: Path) -> list:
     """Load somesy file content if a valid file.
 
     Args:
@@ -46,16 +46,16 @@ def _load(input_path: Path) -> tuple[TOMLDocument, bool]:
     Raises:
         Exception: If the file is not a valid somesy file.
 
-    Returns: A tuple with:
+    Returns: A list with:
         TOMLDocument: content of the file.
         bool: True if the file is a somesy file, False if it is a pyproject file.
     """
     content = load_somesy_content(input_path)
     if content is not None:
-        return content, True
+        return [content, True]
 
     content = load_pyproject_content(input_path)
     if content is not None:
-        return content, False
+        return [content, False]
     else:
         raise ValueError("Input file is invalid.")
