@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 
 @dataclass
@@ -17,3 +17,16 @@ class SyncCommandOptions:
     show_info: Optional[bool] = None
     verbose: Optional[bool] = None
     debug: Optional[bool] = None
+
+    def asdict(self, remove_keys: Optional[List[str]]):
+        """Remove None values from dict and return absolute paths for Path objects."""
+        if remove_keys is None:
+            remove_keys = []
+
+        response = {}
+        for key, value in self.__dict__.items():
+            if key in remove_keys or value is None:
+                continue
+            else:
+                response[key] = value
+        return response
