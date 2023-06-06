@@ -1,6 +1,5 @@
 """CLI command to initialize somesy configuration file."""
 import logging
-from dataclasses import asdict
 from pathlib import Path
 
 from tomlkit import TOMLDocument, dump
@@ -23,13 +22,13 @@ def init_config(input_path: Path, options: SyncCommandOptions) -> None:
     logger.verbose(
         f"Found input file with {'somesy' if is_somesy else 'pyproject'} format."
     )
-    options_dict = asdict(
-        options, dict_factory=lambda x: {k: v for (k, v) in x if v is not None}
-    )
+    options_dict = options.asdict(remove_keys=["input_file"])
+    logger.debug(f"Input file content: {options_dict}")
+
     if is_somesy:
-        content["config.cli"] = options_dict
+        content["config"] = {"cli": options_dict}
     else:
-        content["tool.somesy.config.cli"] = options_dict
+        content["tool"]["somesy"]["config"] = {"cli": options_dict}
 
     with open(input_path, "w") as f:
         dump(content, f)
