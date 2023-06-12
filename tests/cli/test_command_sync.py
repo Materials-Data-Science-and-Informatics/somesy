@@ -24,7 +24,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
             "--no-sync-cff",
         ],
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert "There should be at least one file to sync." in result.stdout
 
     # create pyproject file beforehand
