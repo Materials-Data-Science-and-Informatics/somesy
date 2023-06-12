@@ -4,31 +4,31 @@ from pathlib import Path
 
 from tomlkit import dump
 
-from somesy.cli.models import SyncCommandOptions
 from somesy.core.utils import load_pyproject_content, load_somesy_content
 
 logger = logging.getLogger("somesy")
 
 
-def init_config(input_path: Path, options: SyncCommandOptions) -> None:
+def init_config(input_path: Path, options: dict) -> None:
     """Initialize somesy configuration file.
 
     Args:
         input_path (Path): Path to somesy file.
-        options (SyncCommandOptions): CLI options.
+        options (dict): CLI options.
     """
     logger.info(f"Updating input file ({input_path}) with CLI configurations...")
     content, is_somesy = _load(input_path)
     logger.verbose(
         f"Found input file with {'somesy' if is_somesy else 'pyproject'} format."
     )
-    options_dict = options.asdict(remove_keys=["input_file"])
-    logger.debug(f"Input file content: {options_dict}")
+    logger.debug(f"Input file content: {options}")
 
+    if "input_file" in options:
+        del options["input_file"]
     if is_somesy:
-        content["config"] = {"cli": options_dict}
+        content["config"] = {"cli": options}
     else:
-        content["tool"]["somesy"]["config"] = {"cli": options_dict}
+        content["tool"]["somesy"]["config"] = {"cli": options}
 
     with open(input_path, "w") as f:
         dump(content, f)

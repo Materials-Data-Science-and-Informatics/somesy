@@ -1068,20 +1068,22 @@ class ProjectMetadataWriter(ABC):
 class SomesyCLIConfig(BaseModel):
     """Pydantic model for Somesy Config Input. This is input will be used as default if there is no CLI option given."""
 
-    input_file: Optional[Path] = Field(None, description="Input file path.")
-    no_sync_cff: Optional[bool] = Field(None, description="Do not sync with CFF.")
-    cff_file: Optional[Path] = Field(None, description="CFF file path.")
+    input_file: Optional[Path] = Field(
+        Path(".somesy.toml"), description="Input file path."
+    )
+    no_sync_cff: Optional[bool] = Field(False, description="Do not sync with CFF.")
+    cff_file: Optional[Path] = Field(Path("CITATION.cff"), description="CFF file path.")
     no_sync_pyproject: Optional[bool] = Field(
-        None, description="Do not sync with pyproject.toml."
+        False, description="Do not sync with pyproject.toml."
     )
     pyproject_file: Optional[Path] = Field(
-        None, description="pyproject.toml file path."
+        Path("pyproject.toml"), description="pyproject.toml file path."
     )
     show_info: Optional[bool] = Field(
-        None, description="Show basic information messages on run."
+        False, description="Show basic information messages on run."
     )
-    verbose: Optional[bool] = Field(None, description="Show verbose messages on run.")
-    debug: Optional[bool] = Field(None, description="Show debug messages on run.")
+    verbose: Optional[bool] = Field(False, description="Show verbose messages on run.")
+    debug: Optional[bool] = Field(False, description="Show debug messages on run.")
 
     class Config:
         """Pydantic model config."""
