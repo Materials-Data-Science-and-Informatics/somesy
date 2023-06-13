@@ -1,10 +1,9 @@
 # SoMeSy
 
-**SoMeSy** (**So**ftware **Me**tadata **Sy**nc) is a CLI tool to keep project metadata organized.
+**SoMeSy** (**So**ftware **Me**tadata **Sy**nc) is a CLI tool to keep project metadata organized and in sync.
 
-Avoid ambiguous and contradictory metadata by syncing it between different commonly used standards automatically!
+[I think the above part needs to be visible in the documentation page too (ie move under "description" or extend this section to be included).]: #  
 
-[comment]: #  I think the above part needs to be visible in the documentation page too (ie move under "description" or extend this section to be included).
 
 <!-- --8<-- [start:abstract] -->
 
@@ -20,28 +19,27 @@ the project can be moved to a different location. As a consequence software meta
 locations and in the different formats it is stored in. Doing this manual is _tedious, error-prone and time consuming_ frequently reulting in incomplete, 
 ambiguous or contradicting metadata in software projects. 
 
-**SoMeSy** automates management the synchronization of software project metadata. 
+**SoMeSy automates management and synchronization of software project metadata.** 
 
-_This keeps your metadata in order, makes updates easy and frees your time to focus on your _actual_ work_.
+_Avoid ambiguous and contradictory metadata by syncing metadata between different commonly used standards automatically! SoMeSy keeps your metadata in order, 
+makes updating it easy and frees your time to focus on your actual work._
 
+[I would proopse to update the paragraph according to the following flow: ]: #
 
-[comment]: # I would proopse to update the paragraph according to the following flow: 
-1. metadata is important - there is a variety of places where it needs to go
-2. emerging standards have information that is overlapping between them 
-4. developing software (which is a moving target) is dynamic and therefore also metadata changes dynamically
-5. we need to keep things updated & in sync which is cumbersome if it needs to happen in many places. 
+[1. metadata is important - there is a variety of places where it needs to go ]: #
+[2. emerging standards have information that is overlapping between them ]: #
+[4. developing software (which is a moving target) is dynamic and therefore also metadata changes dynamically ]: #
+[5. we need to keep things updated & in sync which is cumbersome if it needs to happen in many places. ]: #
 
-[comment]: # the following is the old text
+[Many development tools allow or require to provide information about the software project they are used in. ]: #
+[These tools are often very specific to the programming-language and the task at hand and often come with their own configuration files. ]: #
+[Emerging best practices for FAIR(https://www.go-fair.org/fair-principles/) software metadata require to add even _more_ ]: #
+[files providing information such as the project name, description, version, repository url, license or authors. ]: #
 
-Many development tools allow or require to provide information about the software project they are used in.
-These tools are often very specific to the programming-language and the task at hand and often come with their own configuration files.
-Emerging best practices for [FAIR](https://www.go-fair.org/fair-principles/) software metadata require to add even _more_
-files providing information such as the project name, description, version, repository url, license or authors.
-
-If setting up the different files only once would be enough, there would not be an issue. But software is always in development and a moving target -
-versions and maintainers can change, contributors come and go, the version number is regularly increased, the project can be moved to a different location.
-Maintaining this kind of information and updating it in various files and formats used in the project by hand is _tedious, error-prone and time consuming_.
-**Somesy automates the synchronization of general software project metadata** and frees your time to focus on your _actual_ work.
+[If setting up the different files only once would be enough, there would not be an issue. But software is always in development and a moving target - ]: #
+[versions and maintainers can change, contributors come and go, the version number is regularly increased, the project can be moved to a different location. ]: #
+[Maintaining this kind of information and updating it in various files and formats used in the project by hand is _tedious, error-prone and time consuming_. ]: #
+[**Somesy automates the synchronization of general software project metadata** and frees your time to focus on your _actual_ work. ]: #
 
 ## Concepts
 
