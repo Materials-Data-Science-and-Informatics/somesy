@@ -1,12 +1,37 @@
-# somesy
+# SoMeSy
 
-Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to keep project metadata in sync. 
-Avoid ambiguous and contradicting metadata by automatically syncing metadata between common standards!
-[//]: # i would include the above statement in the documentation page /description
+**SoMeSy** (**So**ftware **Me**tadata **Sy**nc) is a CLI tool to keep project metadata organized.
+
+Avoid ambiguous and contradictory metadata by syncing it between different commonly used standards automatically!
+
+[comment]: #  I think the above part needs to be visible in the documentation page too (ie move under "description" or extend this section to be included).
 
 <!-- --8<-- [start:abstract] -->
 
 ## Description
+
+Good metadata is important to preserve, dicover, reuse and credit software. Emerging best practices for [FAIR](https://www.go-fair.org/fair-principles/) 
+software metadata require information to be added at different locations (e.g. tool and programming-language specific configuration files), according to 
+different standards (e.g. [Citation.cff](https://citation-file-format.github.io/) or [Codemeta](https://codemeta.github.io/)) and with partial overlap 
+between one another. 
+
+However, software is always in development - versions and maintainers can change, contributors come and go, the version number is regularly increased, 
+the project can be moved to a different location. As a consequence software metadata is a moving target and needs to be frequently updated - in the various 
+locations and in the different formats it is stored in. Doing this manual is _tedious, error-prone and time consuming_ frequently reulting in incomplete, 
+ambiguous or contradicting metadata in software projects. 
+
+**SoMeSy** automates management the synchronization of software project metadata. 
+
+_This keeps your metadata in order, makes updates easy and frees your time to focus on your _actual_ work_.
+
+
+[comment]: # I would proopse to update the paragraph according to the following flow: 
+1. metadata is important - there is a variety of places where it needs to go
+2. emerging standards have information that is overlapping between them 
+4. developing software (which is a moving target) is dynamic and therefore also metadata changes dynamically
+5. we need to keep things updated & in sync which is cumbersome if it needs to happen in many places. 
+
+[comment]: # the following is the old text
 
 Many development tools allow or require to provide information about the software project they are used in.
 These tools are often very specific to the programming-language and the task at hand and often come with their own configuration files.
