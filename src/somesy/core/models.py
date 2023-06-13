@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from datetime import date
 from enum import Enum
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from pydantic import AnyUrl, BaseModel, Extra, Field
 from typing_extensions import Annotated
@@ -859,9 +859,9 @@ class Person(BaseModel):
             ),
         ]
     ]
-    contribution_type: Optional[ContributionTypeEnum] = Field(
-        None, description="Contribution type of contributor."
-    )
+    contribution_type: Optional[
+        Union[ContributionTypeEnum, List[ContributionTypeEnum]]
+    ] = Field(None, description="Contribution type of contributor.")
     contribution_begin: Optional[date] = Field(
         None, description="Beginning date of the contribution."
     )

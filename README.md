@@ -97,7 +97,7 @@ Somesy input has the information on what is the most important for metadata and 
 - tel: The person's phone number. - String
 - website: The person's website. - String in URL format
 - contribution: Summary of how the person contributed to the project. - String
-- contribution_type: Contribution type of contributor using emoji from [all contributors](https://allcontributors.org/docs/en/emoji-key). - String in emoji name
+- contribution_type: Contribution type of contributor using emoji from [all contributors](https://allcontributors.org/docs/en/emoji-key). - String in emoji name or list of strings
 - contribution_begin: Beginning date of the contribution. - Date in YYYY-MM-DD format
 - contribution_end: Ending date of the contribution. - Date in YYYY-MM-DD format
 
