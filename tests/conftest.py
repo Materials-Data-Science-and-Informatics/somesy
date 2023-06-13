@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pytest
 
+from somesy.core.utils import set_logger
+
 
 @pytest.fixture
 def create_poetry_file():
@@ -25,3 +27,8 @@ def create_setuptools_file():
                 f2.write(pyproject_content)
 
     yield _create_setuptools_file
+
+
+@pytest.fixture(scope="session", autouse=True)
+def init_somesy_logger():
+    set_logger(debug=True)

@@ -4,14 +4,8 @@ from pathlib import Path
 import pytest
 
 from somesy.core import discover
-from somesy.core.utils import set_logger
 
 logger = logging.getLogger("somesy")
-
-
-@pytest.fixture(autouse=True)
-def set_log():
-    set_logger()
 
 
 def test_discover_input(mocker):

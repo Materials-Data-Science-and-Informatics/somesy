@@ -22,6 +22,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     input_file = Path("tests/core/data/.somesy.toml")
     cff_file = tmp_path / "CITATION.cff"
     pyproject_file = tmp_path / "pyproject.toml"
+    codemeta_file = tmp_path / "codemeta.json"
 
     # test sync without output files
     result = runner.invoke(
@@ -32,10 +33,11 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
             str(input_file),
             "--no-sync-pyproject",
             "--no-sync-cff",
+            "--no-sync-codemeta",
         ],
     )
     assert result.exit_code == 0
-    assert "There should be at least one file to sync." in result.stdout
+    assert "nothing to do" in result.stdout
 
     # create pyproject file beforehand
     create_poetry_file(pyproject_file)
@@ -51,6 +53,8 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
             cff_file,
             "-p",
             pyproject_file,
+            "-m",
+            codemeta_file,
             "-d",
         ],
     )
@@ -58,6 +62,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     assert "Syncing completed." in result.stdout
     assert cff_file.exists()
     assert pyproject_file.exists()
+    assert codemeta_file.exists()
 
     # create an error in the input file
     mocker.patch.object(discover, "INPUT_FILES_ORDERED", [])

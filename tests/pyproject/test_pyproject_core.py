@@ -3,13 +3,7 @@ from pathlib import Path
 import pytest
 
 from somesy.core.core import get_project_metadata
-from somesy.core.utils import set_logger
 from somesy.pyproject.core import Poetry, Pyproject, SetupTools
-
-
-@pytest.fixture(autouse=True)
-def set_log_level():
-    set_logger(debug=False, verbose=False)
 
 
 @pytest.fixture

@@ -79,6 +79,24 @@ def sync(
         resolve_path=True,
         help="Existing pyproject.toml file path",
     ),
+    no_sync_codemeta: bool = typer.Option(
+        False,
+        "--no-sync-codemeta",
+        "-M",
+        help="Do not sync codemeta.json file",
+    ),
+    codemeta_file: Path = typer.Option(
+        Path("codemeta.json"),
+        "--codemeta-file",
+        "-m",
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=True,
+        resolve_path=True,
+        help="Custom codemeta.json file path",
+    ),
     show_info: bool = typer.Option(
         False,
         "--show-info",
@@ -101,16 +119,22 @@ def sync(
     """Sync project metadata input with metadata files."""
     set_logger(debug=debug, verbose=verbose, info=show_info)
     # at least one of the sync options must be enabled
-    if no_sync_cff and no_sync_pyproject:
-        logger.warning("There should be at least one file to sync.")
+    if no_sync_cff and no_sync_pyproject and no_sync_codemeta:
+        logger.warning("No files are enabled for sync, nothing to do!")
         typer.Exit(code=0)
 
-    try:
-        logger.info("[bold green]Syncing project metadata...[/bold green]\n")
-        logger.debug(
-            f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
-        )
+    logger.info("[bold green]Syncing project metadata...[/bold green]\n")
+    logger.debug(
+        f"""CLI arguments:
+        {verbose=}, {debug=}
+        {input_file=},
+        {cff_file=}, {no_sync_cff=},
+        {pyproject_file=}, {no_sync_pyproject=},
+        {codemeta_file=}, {no_sync_codemeta=},
+        """
+    )
 
+    try:
         # check if input file exists, if not, try to find it from default list
         input_file = discover_input(input_file)
 
@@ -118,24 +142,29 @@ def sync(
         logger.info("Files to sync:")
         if not no_sync_pyproject:
             logger.info(
-                f"  - [italic]Pyproject.toml[/italic] [grey]({pyproject_file})[/grey]"
+                f"  - [italic]pyproject.toml[/italic]\t[grey]({pyproject_file})[/grey]"
             )
-
         if not no_sync_cff:
-            logger.info(f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]")
+            logger.info(f"  - [italic]CITATION.cff[/italic]\t[grey]({cff_file})[/grey]")
+        if not no_sync_codemeta:
+            logger.info(
+                f"  - [italic]codemeta.json[/italic]\t[grey]({codemeta_file})[/grey]"
+            )
 
         # sync files
         sync_command(
             input_file=input_file,
             pyproject_file=pyproject_file if not no_sync_pyproject else None,
             cff_file=cff_file if not no_sync_cff else None,
+            codemeta_file=codemeta_file if not no_sync_codemeta else None,
         )
 
-        logger.info("[bold green]Syncing completed.[/bold green]")
     except Exception as e:
         logger.error(f"[bold red]Error: {e}[/bold red]")
         logger.debug(f"[red]{traceback.format_exc()}[/red]")
         raise typer.Exit(code=1)
+
+    logger.info("[bold green]Syncing completed.[/bold green]")
 
 
 if __name__ == "__main__":

@@ -8,13 +8,17 @@ from somesy.core.config import VERBOSE
 logger = logging.getLogger("somesy")
 
 
-def set_logger(debug: bool = False, verbose: bool = False, info: bool = False) -> None:
+def set_logger(
+    *, debug: bool = False, verbose: bool = False, info: bool = False
+) -> None:
     """Set logger to rich handler and add custom logging level.
+
+    If no flag is set, will be mostly silent (only warnings and errors).
 
     Args:
         debug (bool): Debug mode, overrides verbose and info modes.
-        verbose (bool): Verbose mode.
-        info (bool): NO quiet mode, prints basic output.
+        verbose (bool): Verbose mode, overrides info mode.
+        info (bool): Prints basic output (instead of being silent).
     """
     logging.addLevelName(level=VERBOSE, levelName="VERBOSE")
     logger.propagate = False

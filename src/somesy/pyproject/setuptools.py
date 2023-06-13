@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
+from rich.pretty import pretty_repr
 from tomlkit import dump, inline_table, load, table
 
 from somesy.core.models import Person, ProjectMetadataWriter
@@ -40,7 +41,7 @@ class SetupTools(ProjectMetadataWriter):
         Pydantic class only used for validation.
         """
         config = dict(self._data["project"])
-        logger.debug(f"Validating setuptools config: {config}")
+        logger.debug(f"Validating setuptools config: {pretty_repr(config)}")
         SetuptoolsConfig(**config)
 
     def _get_property(self, key: str) -> Optional[Any]:

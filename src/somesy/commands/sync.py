@@ -3,7 +3,10 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+from rich.pretty import pretty_repr
+
 from somesy.cff.core import CFF
+from somesy.codemeta import update_codemeta
 from somesy.core.core import ProjectMetadata, get_project_metadata
 from somesy.pyproject.core import Pyproject
 
@@ -14,7 +17,7 @@ def sync(
     input_file: Path,
     pyproject_file: Optional[Path] = None,
     cff_file: Optional[Path] = None,
-    create_cff: bool = True,
+    codemeta_file: Optional[Path] = None,
 ):
     """Sync selected metadata files with given input file.
 
@@ -22,16 +25,22 @@ def sync(
         input_file (Path): input file path to read project metadata from.
         pyproject_file (Path, optional): pyproject file to read project metadata from.
         cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
-        create_cff (bool, optional): Create CFF file if does not exist. Defaults to True.
+        codemeta_file (Path, optional): codemeta file path if wanted to be synced. Defaults to None.
     """
     metadata = get_project_metadata(input_file)
-    logger.debug(f"Project metadata: {metadata}")
+    logger.debug(
+        f"Project metadata: {pretty_repr(metadata.dict(exclude_defaults=True))}"
+    )
 
     if pyproject_file is not None:
         _sync_python(metadata, pyproject_file)
 
     if cff_file is not None:
-        _sync_cff(metadata, cff_file, create_cff)
+        _sync_cff(metadata, cff_file)
+
+    # NOTE: codemeta should always be last, it uses (some of) the other targets
+    if codemeta_file is not None:
+        update_codemeta(codemeta_file, cff_file)
 
 
 def _sync_python(
@@ -55,17 +64,15 @@ def _sync_python(
 def _sync_cff(
     metadata: ProjectMetadata,
     cff_file: Path,
-    create_cff: bool = True,
 ):
     """Sync CITATION.cff file using project metadata.
 
     Args:
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
         cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
-        create_cff (bool, optional): Create CFF file if does not exist. Defaults to True.
     """
     logger.verbose("Loading CITATION.cff file.")
-    cff = CFF(cff_file, create_cff)
+    cff = CFF(cff_file)
     logger.verbose("Syncing CITATION.cff file.")
     cff.sync(metadata)
     cff.save()
