@@ -109,46 +109,43 @@ def sync(
         file_cli_input = get_cli_file_input(input_file)
         logger.debug(f"File CLI arguments:\n{file_cli_input}")
 
-        prioritized_inputs = {**file_cli_input, **cli_inputs}
+        prioritized_inputs = SomesyCLIConfig(**{**file_cli_input, **cli_inputs})
         set_logger(
-            debug=prioritized_inputs["debug"],
-            verbose=prioritized_inputs["verbose"],
-            info=prioritized_inputs["show_info"],
+            debug=prioritized_inputs.debug,
+            verbose=prioritized_inputs.verbose,
+            info=prioritized_inputs.show_info,
         )
 
         # check if there is at least one file to sync
-        if (
-            prioritized_inputs["no_sync_pyproject"]
-            and prioritized_inputs["no_sync_cff"]
-        ):
+        if prioritized_inputs.no_sync_pyproject and prioritized_inputs.no_sync_cff:
             raise ValueError("There should be at least one file to sync.")
 
         # if there is a cli output set, make no_sync to False
-        if prioritized_inputs["cff_file"] is not None:
-            prioritized_inputs["no_sync_cff"] = False
-        if prioritized_inputs["pyproject_file"] is not None:
-            prioritized_inputs["no_sync_pyproject"] = False
+        if prioritized_inputs.cff_file is not None:
+            prioritized_inputs.no_sync_cff = False
+        if prioritized_inputs.pyproject_file is not None:
+            prioritized_inputs.no_sync_pyproject = False
 
         logger.info("[bold green]Syncing project metadata...[/bold green]\n")
 
         # info output
         logger.info("Files to sync:")
-        if not prioritized_inputs["no_sync_pyproject"]:
+        if not prioritized_inputs.no_sync_pyproject:
             logger.info(
                 f"  - [italic]Pyproject.toml[/italic] [grey]({pyproject_file})[/grey]"
             )
 
-        if not prioritized_inputs["no_sync_cff"]:
+        if not prioritized_inputs.no_sync_cff:
             logger.info(f"  - [italic]CITATION.cff[/italic] [grey]({cff_file})[/grey]")
 
         # sync files
         sync_command(
             input_file=input_file,
-            pyproject_file=prioritized_inputs["pyproject_file"]
-            if not prioritized_inputs["no_sync_pyproject"]
+            pyproject_file=prioritized_inputs.pyproject_file
+            if not prioritized_inputs.no_sync_pyproject
             else None,
-            cff_file=prioritized_inputs["cff_file"]
-            if not prioritized_inputs["no_sync_cff"]
+            cff_file=prioritized_inputs.cff_file
+            if not prioritized_inputs.no_sync_cff
             else None,
         )
 
