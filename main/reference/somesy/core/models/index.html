@@ -3297,9 +3297,9 @@
             <span class="p">),</span>
         <span class="p">]</span>
     <span class="p">]</span>
-    <span class="n">contribution_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Contribution type of contributor.&quot;</span>
-    <span class="p">)</span>
+    <span class="n">contribution_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">]]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Contribution type of contributor.&quot;</span><span class="p">)</span>
     <span class="n">contribution_begin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Beginning date of the contribution.&quot;</span>
     <span class="p">)</span>
@@ -3835,8 +3835,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.name" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3859,8 +3859,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.version" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3883,8 +3883,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.description" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3907,8 +3907,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.authors" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3931,8 +3931,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.maintainers" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3955,8 +3955,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.keywords" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -3979,8 +3979,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.license" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4003,8 +4003,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.homepage" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -4027,8 +4027,8 @@
 
   
   <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
       <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
 <a href="#somesy.core.models.ProjectMetadataWriter.repository" class="headerlink" title="Permanent link">&para;</a></h3>
