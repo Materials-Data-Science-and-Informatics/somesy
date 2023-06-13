@@ -2,6 +2,7 @@
 
 Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.
 
+
 <!-- --8<-- [start:abstract] -->
 
 ## Description
