@@ -13,3 +13,12 @@ keywords = ["metadata", "FAIR"]
 license = "MIT"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
+
+[config.cli]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = false
+pyproject_file = "pyproject.toml"
+show_info = false
+verbose = false
+debug = true

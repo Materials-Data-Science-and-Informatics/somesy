@@ -28,75 +28,99 @@
     ],
     "codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/somesy",
     "description": "A cli tool for synchronizing CITATION.CFF with project files.",
-    "developmentStatus": "https://www.repostatus.org/#concept",
     "identifier": "somesy",
     "keywords": [
         "FAIR",
         "metadata"
     ],
     "license": "http://spdx.org/licenses/MIT",
-    "maintainer": "Mustafa Soylu",
     "name": "somesy",
     "operatingSystem": "POSIX > Linux",
-    "runtimePlatform": [
-        "Python 3",
-        "Python 3.10",
-        "Python 3.11",
-        "Python 3.8",
-        "Python 3.9"
-    ],
-    "softwareHelp": "https://materials-data-science-and-informatics.github.io/somesy",
+    "runtimePlatform": "Python 3",
     "softwareRequirements": [
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "'version':",
+            "name": "'version':",
+            "runtimePlatform": "Python 3",
+            "version": "'^1.10.6'}"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "'version':",
+            "name": "'version':",
+            "runtimePlatform": "Python 3",
+            "version": "'^0.7.0'}"
+        },
         {
             "@type": "SoftwareApplication",
             "identifier": "cffconvert",
             "name": "cffconvert",
             "runtimePlatform": "Python 3",
-            "version": ">=2.0.0,<3.0.0"
+            "version": "^2.0.0"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "importlib-metadata",
             "name": "importlib-metadata",
             "runtimePlatform": "Python 3",
-            "version": ">=6.0.0,<7.0.0"
+            "version": "^6.0.0"
         },
         {
             "@type": "SoftwareApplication",
-            "identifier": "pydantic[email]",
-            "name": "pydantic[email]",
+            "identifier": "packaging",
+            "name": "packaging",
             "runtimePlatform": "Python 3",
-            "version": ">=1.10.6,<2.0.0"
+            "version": "^23.1"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "pydantic",
+            "name": "pydantic",
+            "runtimePlatform": "Python 3",
+            "version": "{'extras': ['email'"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "python",
+            "name": "python",
+            "runtimePlatform": "Python 3",
+            "version": "^3.8"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "ruamel-yaml",
             "name": "ruamel-yaml",
             "runtimePlatform": "Python 3",
-            "version": ">=0.17.21,<0.18.0"
+            "version": "^0.17.21"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "tomlkit",
             "name": "tomlkit",
             "runtimePlatform": "Python 3",
-            "version": ">=0.11.6,<0.12.0"
+            "version": "^0.11.6"
         },
         {
             "@type": "SoftwareApplication",
-            "identifier": "typer[all]",
-            "name": "typer[all]",
+            "identifier": "typer",
+            "name": "typer",
             "runtimePlatform": "Python 3",
-            "version": ">=0.7.0,<0.8.0"
+            "version": "{'extras': ['all'"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "wrapt",
             "name": "wrapt",
             "runtimePlatform": "Python 3",
-            "version": ">=1.15.0,<2.0.0"
+            "version": "^1.15.0"
         }
     ],
-    "url": "https://materials-data-science-and-informatics.github.io/somesy",
+    "targetProduct": {
+        "@type": "CommandLineApplication",
+        "executableName": "somesy",
+        "name": "somesy",
+        "runtimePlatform": "Python 3"
+    },
     "version": "0.1.0"
 }
