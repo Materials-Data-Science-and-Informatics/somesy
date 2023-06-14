@@ -18,7 +18,7 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
         FileNotFoundError: Raised if no somesy input file found from cli input or the defaults.
 
     Returns:
-        Optional[Path]:  somesy configuration file path.
+        somesy configuration file path.
     """
     if input_file:
         if input_file.is_file():

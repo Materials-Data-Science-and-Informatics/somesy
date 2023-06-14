@@ -99,6 +99,7 @@ licensecheck = "licensecheck"  # run this when you add new deps
 pythonpath = ["src"]
 addopts = "--cov-report=term-missing:skip-covered"
 filterwarnings = [
+"ignore::DeprecationWarning:pkg_resources.*"
 # Example:
 # "ignore::DeprecationWarning:importlib_metadata.*"
 ]
