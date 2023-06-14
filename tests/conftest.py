@@ -5,6 +5,11 @@ import pytest
 from somesy.core.utils import set_logger
 
 
+@pytest.fixture(scope="session", autouse=True)
+def init_somesy_logger():
+    set_logger(debug=True)
+
+
 @pytest.fixture
 def create_poetry_file():
     def _create_poetry_file(pyproject_file: Path):
@@ -29,6 +34,25 @@ def create_setuptools_file():
     yield _create_setuptools_file
 
 
-@pytest.fixture(scope="session", autouse=True)
-def init_somesy_logger():
-    set_logger(debug=True)
+@pytest.fixture
+def create_somesy_metadata():
+    def _create_somesy_metadata(somesy_file: Path):
+        # create somesy file beforehand
+        with open("tests/core/data/.somesy.toml", "r") as f:
+            content = f.read()
+            with open(somesy_file, "w+") as f2:
+                f2.write(content)
+
+    yield _create_somesy_metadata
+
+
+@pytest.fixture
+def create_somesy_metadata_config():
+    def _create_somesy_metadata_config(somesy_file: Path):
+        # create somesy file beforehand
+        with open("tests/core/data/.somesy.with_config.toml", "r") as f:
+            content = f.read()
+            with open(somesy_file, "w+") as f2:
+                f2.write(content)
+
+    yield _create_somesy_metadata_config

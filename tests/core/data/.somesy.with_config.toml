@@ -1,0 +1,15 @@
+[project]
+name = "somesy"
+version = "0.1.0"
+description = "A cli tool for synchronizing CITATION.CFF with project files."
+authors = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
+maintainers = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
+contributors = [{family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}]
+keywords = ["metadata", "FAIR"]
+license = "MIT"
+repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
+homepage = "https://materials-data-science-and-informatics.github.io/somesy"
+
+[config.cli]
+debug=true
+no_sync_cff=true

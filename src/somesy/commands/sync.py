@@ -14,6 +14,7 @@ logger = logging.getLogger("somesy")
 
 
 def sync(
+    *,
     input_file: Path,
     pyproject_file: Optional[Path] = None,
     cff_file: Optional[Path] = None,
