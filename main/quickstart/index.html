@@ -690,7 +690,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../reference/somesy/commands/">commands</a>
+          <a href="../reference/somesy/cli/">cli</a>
           
             <label for="__nav_2_2_1_2">
               <span class="md-nav__icon md-icon"></span>
@@ -701,9 +701,105 @@
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_2">
           <span class="md-nav__icon md-icon"></span>
+          cli
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/cli/init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/cli/sync/" class="md-nav__link">
+        sync
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/cli/utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_3" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../reference/somesy/commands/">commands</a>
+          
+            <label for="__nav_2_2_1_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
           commands
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/commands/init_config/" class="md-nav__link">
+        init_config
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -737,7 +833,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_4" >
       
       
       
@@ -746,14 +842,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../reference/somesy/core/">core</a>
           
-            <label for="__nav_2_2_1_3">
+            <label for="__nav_2_2_1_4">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_3">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_4">
           <span class="md-nav__icon md-icon"></span>
           core
         </label>
@@ -861,7 +957,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_5" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_6" >
       
       
       
@@ -870,14 +966,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../reference/somesy/pyproject/">pyproject</a>
           
-            <label for="__nav_2_2_1_5">
+            <label for="__nav_2_2_1_6">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_5_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_5">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_6">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1179,6 +1275,7 @@
 </code></pre></div>
 <h3 id="use-as-a-cli-tool">Use as a CLI tool<a class="headerlink" href="#use-as-a-cli-tool" title="Permanent link">&para;</a></h3>
 <p>After the installation with pip, you can use somesy as a CLI tool. <code>somesy sync</code> command checks input file in the working directory by default. <code>.somesy.toml</code> and <code>pyproject.toml</code> is checked as input files, ordinarily. Currently, there are 2 output methods for <code>somesy sync</code> command, <code>CITATION.cff</code> and <code>pyproject.toml</code> (either in poetry or setuptools format), and both are synced by default. <code>CITATION.cff</code> is created if file does not exists but <code>pyproject.toml</code> have to be created beforehand either in poetry or setuptools format. You can disable either output by CLI options.</p>
+<p><code>somesy</code> command options:</p>
 <table>
 <thead>
 <tr>
@@ -1195,6 +1292,19 @@
 <td>-</td>
 <td>Get somesy version</td>
 </tr>
+</tbody>
+</table>
+<p><code>somesy sync</code> command options:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Option</th>
+<th>Option input</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td>somesy sync</td>
 <td>--input-file, -i</td>
@@ -1241,11 +1351,12 @@
 <td>somesy sync</td>
 <td>--debug, -d</td>
 <td>-</td>
-<td>show debug messages, overrides verbose</td>
+<td>show debug messages</td>
 </tr>
 </tbody>
 </table>
-<p><code>somesy</code> is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, <code>somesy</code> will give an error if there is no output to sync.</p>
+<p><code>somesy sync</code> is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, <code>somesy</code> will give an error if there is no output to sync.</p>
+<p>You can save your CLI inputs to your input file or you can use <code>somesy config init</code> command. It records CLI options for <code>somesy sync</code> command to given input file. All options are prompted with their default values. The options are saved under [config.cli] table in the input file. You can change the options later by editing the input file. Unlike <code>somesy sync</code> command, <code>somesy config init</code> command shows the basic output of the command, and shows more if verbose or debug is selected in prompt.</p>
 <h3 id="use-as-a-pre-commit-hook">Use as a Pre-commit hook<a class="headerlink" href="#use-as-a-pre-commit-hook" title="Permanent link">&para;</a></h3>
 <p><code>somesy</code> can be used as a <a href="https://pre-commit.com/">pre-commit hook</a>. A pre-commit hook runs on every commit to automatically point out issues and/or fixing them. Thus, <code>somesy</code> syncs your data in every commit in a deterministic way.
 If you already use pre-commit, you can add somesy as a pre-commit hook. For people who are new to pre-commit, you can create a .pre-commit-config.yaml file in the root folder of your repository. You can set CLI options in <code>args</code> as in the example below.</p>
@@ -1270,7 +1381,6 @@ If you already use pre-commit, you can add somesy as a pre-commit hook. For peop
 <span class="w">    </span><span class="p">{</span><span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">given-names</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test@test.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0001-2345-5678&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The main author, maintainer and tester.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2023-03-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 <span class="n">contributors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span><span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">given-names</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test@test.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0001-2345-5678&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The main author, maintainer and tester.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2023-03-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Dow&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">given-names</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test2@test.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0012-3456-7890&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Reviewer&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2023-03-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;review&quot;</span><span class="p">}</span>
 <span class="p">]</span>
@@ -1278,6 +1388,15 @@ If you already use pre-commit, you can add somesy as a pre-commit hook. For peop
 <span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MIT&quot;</span>
 <span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/xx/test&quot;</span>
 <span class="n">homepage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://xx.github.io/test&quot;</span>
+
+<span class="k">[config.cli]</span>
+<span class="n">no_sync_cff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">cff_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;CITATION.cff&quot;</span>
+<span class="n">no_sync_pyproject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">pyproject_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pyproject.toml&quot;</span>
+<span class="n">show_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 <p><em>pyproject.toml</em> example:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[tool.somesy.project]</span>
@@ -1291,7 +1410,6 @@ If you already use pre-commit, you can add somesy as a pre-commit hook. For peop
 <span class="w">    </span><span class="p">{</span><span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">given-names</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test@test.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0001-2345-5678&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The main author, maintainer and tester.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2023-03-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">}</span>
 <span class="p">]</span>
 <span class="n">contributors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span><span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">given-names</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test@test.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0001-2345-5678&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;The main author, maintainer and tester.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2023-03-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">},</span>
 <span class="w">    </span><span class="p">{</span><span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Dow&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">given-names</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test2@test.test&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0012-3456-7890&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Reviewer&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_begin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2023-03-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">contribution_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;review&quot;</span><span class="p">}</span>
 <span class="p">]</span>
@@ -1299,6 +1417,15 @@ If you already use pre-commit, you can add somesy as a pre-commit hook. For peop
 <span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MIT&quot;</span>
 <span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/xx/test&quot;</span>
 <span class="n">homepage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://xx.github.io/test&quot;</span>
+
+<span class="k">[tool.somesy.config.cli]</span>
+<span class="n">no_sync_cff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">cff_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;CITATION.cff&quot;</span>
+<span class="n">no_sync_pyproject</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">pyproject_file</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pyproject.toml&quot;</span>
+<span class="n">show_info</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
+<span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
 
 

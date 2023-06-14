@@ -623,7 +623,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../commands/">commands</a>
+          <a href="../cli/">cli</a>
           
             <label for="__nav_2_2_1_2">
               <span class="md-nav__icon md-icon"></span>
@@ -634,9 +634,105 @@
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_2_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_2">
           <span class="md-nav__icon md-icon"></span>
+          cli
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/init/" class="md-nav__link">
+        init
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/sync/" class="md-nav__link">
+        sync
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cli/utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_3" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../commands/">commands</a>
+          
+            <label for="__nav_2_2_1_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
           commands
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/init_config/" class="md-nav__link">
+        init_config
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -670,7 +766,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_3" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_4" >
       
       
       
@@ -679,14 +775,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../core/">core</a>
           
-            <label for="__nav_2_2_1_3">
+            <label for="__nav_2_2_1_4">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_3">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_4">
           <span class="md-nav__icon md-icon"></span>
           core
         </label>
@@ -825,13 +921,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#somesy.main.sync" class="md-nav__link">
-    sync()
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -852,7 +941,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_5" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_6" >
       
       
       
@@ -861,14 +950,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../pyproject/">pyproject</a>
           
-            <label for="__nav_2_2_1_5">
+            <label for="__nav_2_2_1_6">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_5_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_5">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_6_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_6">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1107,13 +1196,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#somesy.main.sync" class="md-nav__link">
-    sync()
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1185,11 +1267,11 @@
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/main.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">version_callback</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">version_callback</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print version information.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
         <span class="n">typer</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;somesy version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -1223,315 +1305,17 @@
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/main.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">()</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">common</span><span class="p">(</span>
     <span class="n">ctx</span><span class="p">:</span> <span class="n">typer</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">version_callback</span><span class="p">),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Response for version information.&quot;&quot;&quot;</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="somesy.main.sync" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">sync</span>
-
-
-<a href="#somesy.main.sync" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">sync</span><span class="p">(</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.somesy.toml&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;--input-file&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Somesy input file path&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--no-sync-cff&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-C&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync CITATION.cff file&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;--cff-file&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;CITATION.cff file path&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--no-sync-pyproject&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync pyproject.toml file&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;--pyproject-file&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--show-info&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Get basic output (somesy is quiet by default)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Verbose output&quot;</span>
-    <span class="p">),</span>
-    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;--debug&quot;</span><span class="p">,</span> <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Debug output&quot;</span>
-    <span class="p">),</span>
-<span class="p">)</span>
-</code></pre></div>
-
-  <div class="doc doc-contents ">
-  
-      <p>Sync project metadata input with metadata files.</p>
-
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/main.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 32</span>
-<span class="normal"> 33</span>
-<span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.somesy.toml&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;--input-file&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Somesy input file path&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--no-sync-cff&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-C&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync CITATION.cff file&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;--cff-file&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;CITATION.cff file path&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--no-sync-pyproject&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync pyproject.toml file&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;--pyproject-file&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
-        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--show-info&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Get basic output (somesy is quiet by default)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Verbose output&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">False</span><span class="p">,</span>
-        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Debug output&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync project metadata input with metadata files.&quot;&quot;&quot;</span>
-    <span class="n">set_logger</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">show_info</span><span class="p">)</span>
-    <span class="c1"># at least one of the sync options must be enabled</span>
-    <span class="k">if</span> <span class="n">no_sync_cff</span> <span class="ow">and</span> <span class="n">no_sync_pyproject</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There should be at least one file to sync.&quot;</span><span class="p">)</span>
-        <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing project metadata...[/bold green]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;CLI arguments:</span><span class="se">\n</span><span class="si">{</span><span class="n">input_file</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">no_sync_cff</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">cff_file</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">no_sync_pyproject</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">pyproject_file</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">verbose</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">debug</span><span class="si">=}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-        <span class="c1"># check if input file exists, if not, try to find it from default list</span>
-        <span class="n">input_file</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
-
-        <span class="c1"># info output</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Files to sync:&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">no_sync_pyproject</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]Pyproject.toml[/italic] [grey](</span><span class="si">{</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">)[/grey]&quot;</span>
-            <span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">no_sync_cff</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - [italic]CITATION.cff[/italic] [grey](</span><span class="si">{</span><span class="n">cff_file</span><span class="si">}</span><span class="s2">)[/grey]&quot;</span><span class="p">)</span>
-
-        <span class="c1"># sync files</span>
-        <span class="n">sync_command</span><span class="p">(</span>
-            <span class="n">input_file</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span>
-            <span class="n">pyproject_file</span><span class="o">=</span><span class="n">pyproject_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">no_sync_pyproject</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">cff_file</span><span class="o">=</span><span class="n">cff_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">no_sync_cff</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing completed.[/bold green]&quot;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red]Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">[/bold red]&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[red]</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">[/red]&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
