@@ -137,7 +137,11 @@ def sync(
         )
 
         # check if there is at least one file to sync
-        if prioritized_inputs.no_sync_pyproject and prioritized_inputs.no_sync_cff:
+        if (
+            prioritized_inputs.no_sync_pyproject
+            and prioritized_inputs.no_sync_cff
+            and prioritized_inputs.no_sync_codemeta
+        ):
             raise ValueError(
                 "No sync target is enabled, nothing to do. Probably you did not intend this?"
             )
