@@ -4,11 +4,12 @@ import traceback
 from pathlib import Path
 
 import typer
+from rich.pretty import pretty_repr
 
-from somesy.cli.utils import get_cli_file_input
 from somesy.commands import sync as sync_command
+from somesy.core.core import get_somesy_cli_config
 from somesy.core.discover import discover_input
-from somesy.core.models import SomesyCLIConfig
+from somesy.core.models import SomesyConfig
 from somesy.core.utils import set_logger
 
 logger = logging.getLogger("somesy")
@@ -66,13 +67,13 @@ def sync(
         help="Existing pyproject.toml file path (default: pyproject.toml)",
     ),
     no_sync_codemeta: bool = typer.Option(
-        False,
+        None,
         "--no-sync-codemeta",
         "-M",
         help="Do not sync codemeta.json file",
     ),
     codemeta_file: Path = typer.Option(
-        Path("codemeta.json"),
+        None,
         "--codemeta-file",
         "-m",
         exists=False,
@@ -106,80 +107,71 @@ def sync(
     set_logger(debug=debug, verbose=verbose, info=show_info)
 
     try:
+        # ---------------
+        # config assembly
+
+        # config from CLI
+        passed_cli_args = {
+            k: v
+            for k, v in dict(
+                no_sync_cff=no_sync_cff,
+                cff_file=cff_file,
+                no_sync_pyproject=no_sync_pyproject,
+                pyproject_file=pyproject_file,
+                no_sync_codemeta=no_sync_codemeta,
+                codemeta_file=codemeta_file,
+                show_info=show_info,
+                verbose=verbose,
+                debug=debug,
+            ).items()
+            if v is not None
+        }
+        cli_conf = SomesyConfig(**passed_cli_args)
+        cli_conf = cli_conf.dict(exclude_none=True, exclude_defaults=True)
+        logger.debug(f"CLI config (excluding defaults):\n{pretty_repr(cli_conf)}")
+
+        # config from file
         # check if input file exists, if not, try to find it from default list
-        input_file = discover_input(input_file)
+        somesy_conf_file: Path = discover_input(input_file)
+        file_conf = get_somesy_cli_config(somesy_conf_file)
+        file_conf = file_conf.dict(exclude_none=True, exclude_defaults=True)
+        logger.debug(f"File config (excluding defaults):\n{pretty_repr(file_conf)}")
 
-        # get prioritized inputs
-        cli_inputs = SomesyCLIConfig(
-            no_sync_cff=no_sync_cff,
-            cff_file=cff_file,
-            no_sync_pyproject=no_sync_pyproject,
-            pyproject_file=pyproject_file,
-            no_sync_codemeta=no_sync_codemeta,
-            codemeta_file=codemeta_file,
-            show_info=show_info,
-            verbose=verbose,
-            debug=debug,
+        # prioritized combination
+        conf = SomesyConfig(**{**file_conf, **cli_conf})
+
+        # --------
+
+        set_logger(  # re-init logger (level could be overridden)
+            debug=conf.debug,
+            verbose=conf.verbose,
+            info=conf.show_info,
         )
-        cli_inputs = cli_inputs.dict(exclude_none=True, exclude_defaults=True)
-        logger.debug(
-            f"CLI arguments:\n{input_file=}, {no_sync_cff=}, {cff_file=}, {no_sync_pyproject=}, {pyproject_file=}, {verbose=}, {debug=}"
-        )
-
-        file_cli_input = get_cli_file_input(input_file)
-        logger.debug(f"File CLI arguments:\n{file_cli_input}")
-
-        prioritized_inputs = SomesyCLIConfig(**{**file_cli_input, **cli_inputs})
-        set_logger(
-            debug=prioritized_inputs.debug,
-            verbose=prioritized_inputs.verbose,
-            info=prioritized_inputs.show_info,
-        )
-
-        # check if there is at least one file to sync
-        if (
-            prioritized_inputs.no_sync_pyproject
-            and prioritized_inputs.no_sync_cff
-            and prioritized_inputs.no_sync_codemeta
-        ):
-            raise ValueError(
-                "No sync target is enabled, nothing to do. Probably you did not intend this?"
-            )
-
-        # if there is a cli output set, make no_sync to False
-        if prioritized_inputs.cff_file is not None:
-            prioritized_inputs.no_sync_cff = False
-        if prioritized_inputs.pyproject_file is not None:
-            prioritized_inputs.no_sync_pyproject = False
-
-        logger.info("[bold green]Syncing project metadata...[/bold green]\n")
+        logger.debug(f"Combined config (Defaults + File + CLI):\n{pretty_repr(conf)}")
 
         # info output
+        logger.info("[bold green]Syncing project metadata...[/bold green]\n")
         logger.info("Files to sync:")
-        if not prioritized_inputs.no_sync_pyproject:
+        if not conf.no_sync_pyproject:
             logger.info(
-                f"  - [italic]pyproject.toml[/italic]\t[grey]({pyproject_file})[/grey]"
+                f"  - [italic]pyproject.toml[/italic]\t[grey]{conf.pyproject_file}[/grey]"
+            )
+        if not conf.no_sync_cff:
+            logger.info(
+                f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]"
+            )
+        if not conf.no_sync_codemeta:
+            logger.info(
+                f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]"
             )
 
-        if not prioritized_inputs.no_sync_cff:
-            logger.info(f"  - [italic]CITATION.cff[/italic]\t[grey]({cff_file})[/grey]")
-        if not prioritized_inputs.no_sync_codemeta:
-            logger.info(
-                f"  - [italic]codemeta.json[/italic]\t[grey]({codemeta_file})[/grey]"
-            )
-
-        # sync files
+        # ----------
+        # sync files (passing paths only if the target is not disabled)
         sync_command(
-            input_file=input_file,
-            pyproject_file=prioritized_inputs.pyproject_file
-            if not prioritized_inputs.no_sync_pyproject
-            else None,
-            cff_file=prioritized_inputs.cff_file
-            if not prioritized_inputs.no_sync_cff
-            else None,
-            codemeta_file=prioritized_inputs.codemeta_file
-            if not prioritized_inputs.no_sync_codemeta
-            else None,
+            input_file=conf.input_file,
+            pyproject_file=conf.pyproject_file if not conf.no_sync_pyproject else None,
+            cff_file=conf.cff_file if not conf.no_sync_cff else None,
+            codemeta_file=conf.codemeta_file if not conf.no_sync_codemeta else None,
         )
 
         logger.info("[bold green]Syncing completed.[/bold green]")

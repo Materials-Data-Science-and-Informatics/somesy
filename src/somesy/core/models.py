@@ -4,7 +4,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Extra, Field
+from pydantic import AnyUrl, BaseModel, Extra, Field, root_validator
 from typing_extensions import Annotated
 
 from .types import ContributionTypeEnum, Country, LicenseEnum
@@ -13,36 +13,50 @@ from .types import ContributionTypeEnum, Country, LicenseEnum
 # Somesy configuration model
 
 
-class SomesyCLIConfig(BaseModel):
-    """Pydantic model for Somesy Config Input. This is input will be used as default if there is no CLI option given."""
+TARGETS = ["cff", "pyproject", "codemeta"]
 
-    input_file: Optional[Path] = Field(
-        Path(".somesy.toml"), description="Input file path."
-    )
-    no_sync_cff: Optional[bool] = Field(False, description="Do not sync with CFF.")
-    cff_file: Optional[Path] = Field(Path("CITATION.cff"), description="CFF file path.")
-    no_sync_pyproject: Optional[bool] = Field(
-        False, description="Do not sync with pyproject.toml."
-    )
-    pyproject_file: Optional[Path] = Field(
-        Path("pyproject.toml"), description="pyproject.toml file path."
-    )
-    no_sync_codemeta: Optional[bool] = Field(
-        False, description="Do not sync with codemeta.json."
-    )
-    codemeta_file: Optional[Path] = Field(
-        Path("codemeta.json"), description="codemeta.json file path."
-    )
-    show_info: Optional[bool] = Field(
-        False, description="Show basic information messages on run."
-    )
-    verbose: Optional[bool] = Field(False, description="Show verbose messages on run.")
-    debug: Optional[bool] = Field(False, description="Show debug messages on run.")
+
+class SomesyConfig(BaseModel):
+    """Pydantic model for somesy configuration.
+
+    All fields that are not explicitly passed are initialized with default values.
+    """
 
     class Config:
         """Pydantic model config."""
 
         extra = "forbid"
+
+    @root_validator
+    def at_least_one_target(cls, values):
+        """Check that at least one output file is enabled."""
+        if all(map(lambda x: values.get(f"no_sync_{x}"), TARGETS)):
+            msg = "No sync target enabled, nothing to do. Probably this is a mistake?"
+            raise ValueError(msg)
+
+        return values
+
+    input_file: Path = Field(
+        Path(".somesy.toml"), description="Project metadata input file path."
+    )
+
+    no_sync_cff: bool = Field(False, description="Do not sync with CFF.")
+    cff_file: Path = Field(Path("CITATION.cff"), description="CFF file path.")
+    no_sync_pyproject: bool = Field(
+        False, description="Do not sync with pyproject.toml."
+    )
+    pyproject_file: Path = Field(
+        Path("pyproject.toml"), description="pyproject.toml file path."
+    )
+    no_sync_codemeta: bool = Field(False, description="Do not sync with codemeta.json.")
+    codemeta_file: Path = Field(
+        Path("codemeta.json"), description="codemeta.json file path."
+    )
+    show_info: bool = Field(
+        False, description="Show basic information messages on run."
+    )
+    verbose: bool = Field(False, description="Show verbose messages on run.")
+    debug: bool = Field(False, description="Show debug messages on run.")
 
 
 # --------

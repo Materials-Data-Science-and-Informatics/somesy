@@ -11,11 +11,11 @@
     "audience": [
         {
             "@type": "Audience",
-            "audienceType": "Science/Research"
+            "audienceType": "Developers"
         },
         {
             "@type": "Audience",
-            "audienceType": "Developers"
+            "audienceType": "Science/Research"
         }
     ],
     "author": [
@@ -43,14 +43,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.10.6'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^1.10.6'}"
         },
         {
             "@type": "SoftwareApplication",

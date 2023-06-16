@@ -50,7 +50,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     )
     assert result.exit_code == 0
     assert "Syncing completed." in result.stdout
-    assert cff_file.exists()
+    assert not cff_file.exists()  # disabled in input_file!
     assert pyproject_file.exists()
     assert codemeta_file.exists()
 

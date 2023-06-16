@@ -5,7 +5,7 @@ from typing import Optional
 
 from tomlkit import TOMLDocument
 
-from somesy.core.models import ProjectMetadata, SomesyCLIConfig
+from somesy.core.models import ProjectMetadata, SomesyConfig
 from somesy.core.utils import load_pyproject_content, load_somesy_content
 
 logger = logging.getLogger("somesy")
@@ -18,13 +18,13 @@ def get_project_metadata(path: Path) -> ProjectMetadata:
         path (Path): input source path
 
     Returns:
-        ProjectMetadata: project metadata input to sync output files
+        project metadata input to sync output files
     """
     content = get_input_content(path)
     return _extract_metadata(content)
 
 
-def get_somesy_cli_config(path: Path) -> Optional[SomesyCLIConfig]:
+def get_somesy_cli_config(path: Path) -> Optional[SomesyConfig]:
     """Load somesy cli config from config file.
 
     Given a path to a TOML file, this function reads the file and extracts the somesy config from it.
@@ -34,7 +34,7 @@ def get_somesy_cli_config(path: Path) -> Optional[SomesyCLIConfig]:
         path (Path): path to the input file
 
     Returns:
-        Optional[SomesyCLIConfig]: somesy config if it exists in the input file, otherwise None
+        somesy config if it exists in the input file, otherwise None
     """
     content = get_input_content(path)
     return _extract_cli_config(content)
@@ -51,7 +51,7 @@ def get_input_content(path: Path) -> TOMLDocument:
         path (Path): path to the input file
 
     Returns:
-        TOMLDocument: the content of the input file as a TOMLDocument object
+        the content of the input file as a TOMLDocument object
 
     Raises:
         ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.
@@ -74,7 +74,7 @@ def _extract_metadata(content: TOMLDocument) -> ProjectMetadata:
         content (TOMLDocument): TOMLDocument object
 
     Returns:
-        ProjectMetadata: project metadata
+        project metadata
     """
     metadata = content["project"]
     try:
@@ -84,14 +84,14 @@ def _extract_metadata(content: TOMLDocument) -> ProjectMetadata:
         raise ValueError(f"Somesy input validation failed: {e}")
 
 
-def _extract_cli_config(content: TOMLDocument) -> Optional[SomesyCLIConfig]:
+def _extract_cli_config(content: TOMLDocument) -> Optional[SomesyConfig]:
     """Extract config from TOMLDocument.
 
     Args:
         content (TOMLDocument): TOMLDocument object
 
     Returns:
-        Optional[SomesyCLIConfig]: somesy config
+        somesy config
     """
     if (
         "config" in content
@@ -101,7 +101,7 @@ def _extract_cli_config(content: TOMLDocument) -> Optional[SomesyCLIConfig]:
         config = content["config"]["cli"]
         try:
             config = config.unwrap()
-            return SomesyCLIConfig(**config)
+            return SomesyConfig(**config)
         except Exception as e:
             raise ValueError(f"Somesy config validation failed: {e}")
     else:
@@ -115,7 +115,7 @@ def validate_somesy_input(input_file: Path) -> bool:
         input_file (Path): input file path
 
     Returns:
-        bool: True if the input file is a valid somesy input file, otherwise False
+        True if the input file is a valid somesy input file, otherwise False
     """
     # validate project metadata
     try:
