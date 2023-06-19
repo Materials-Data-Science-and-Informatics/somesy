@@ -16,7 +16,7 @@
         <link rel="prev" href="../init/">
       
       
-        <link rel="next" href="../utils/">
+        <link rel="next" href="../../codemeta/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
@@ -712,20 +712,6 @@
 
             
           
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../utils/" class="md-nav__link">
-        utils
-      </a>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -751,7 +737,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../commands/">commands</a>
+          <a href="../../codemeta/">codemeta</a>
           
             <label for="__nav_2_2_1_3">
               <span class="md-nav__icon md-icon"></span>
@@ -761,6 +747,74 @@
       
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          codemeta
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../codemeta/exec/" class="md-nav__link">
+        exec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../codemeta/utils/" class="md-nav__link">
+        utils
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_4" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../commands/">commands</a>
+          
+            <label for="__nav_2_2_1_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_4">
           <span class="md-nav__icon md-icon"></span>
           commands
         </label>
@@ -812,7 +866,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_4" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_5" >
       
       
       
@@ -821,14 +875,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../core/">core</a>
           
-            <label for="__nav_2_2_1_4">
+            <label for="__nav_2_2_1_5">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_4_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_4">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_5_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_5">
           <span class="md-nav__icon md-icon"></span>
           core
         </label>
@@ -896,6 +950,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../../core/types/" class="md-nav__link">
+        types
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../core/utils/" class="md-nav__link">
         utils
       </a>
@@ -936,7 +1004,7 @@
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_6" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1_7" >
       
       
       
@@ -945,14 +1013,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../pyproject/">pyproject</a>
           
-            <label for="__nav_2_2_1_6">
+            <label for="__nav_2_2_1_7">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
-      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_6_label" aria-expanded="false">
-        <label class="md-nav__title" for="__nav_2_2_1_6">
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_2_1_7_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_1_7">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1295,6 +1363,24 @@
         <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path (default: pyproject.toml)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--no-sync-codemeta&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-M&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync codemeta.json file&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--codemeta-file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+        <span class="n">exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
     <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--show-info&quot;</span><span class="p">,</span>
@@ -1322,8 +1408,7 @@
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 18</span>
-<span class="normal"> 19</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 19</span>
 <span class="normal"> 20</span>
 <span class="normal"> 21</span>
 <span class="normal"> 22</span>
@@ -1460,7 +1545,33 @@
 <span class="normal">153</span>
 <span class="normal">154</span>
 <span class="normal">155</span>
-<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
     <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1510,6 +1621,24 @@
         <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path (default: pyproject.toml)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--no-sync-codemeta&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-M&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync codemeta.json file&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--codemeta-file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
+        <span class="n">exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
     <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--show-info&quot;</span><span class="p">,</span>
@@ -1533,68 +1662,75 @@
     <span class="n">set_logger</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">show_info</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># ---------------</span>
+        <span class="c1"># config assembly</span>
+
+        <span class="c1"># config from CLI</span>
+        <span class="n">passed_cli_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="n">no_sync_cff</span><span class="o">=</span><span class="n">no_sync_cff</span><span class="p">,</span>
+                <span class="n">cff_file</span><span class="o">=</span><span class="n">cff_file</span><span class="p">,</span>
+                <span class="n">no_sync_pyproject</span><span class="o">=</span><span class="n">no_sync_pyproject</span><span class="p">,</span>
+                <span class="n">pyproject_file</span><span class="o">=</span><span class="n">pyproject_file</span><span class="p">,</span>
+                <span class="n">no_sync_codemeta</span><span class="o">=</span><span class="n">no_sync_codemeta</span><span class="p">,</span>
+                <span class="n">codemeta_file</span><span class="o">=</span><span class="n">codemeta_file</span><span class="p">,</span>
+                <span class="n">show_info</span><span class="o">=</span><span class="n">show_info</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">}</span>
+        <span class="n">cli_conf</span> <span class="o">=</span> <span class="n">SomesyConfig</span><span class="p">(</span><span class="o">**</span><span class="n">passed_cli_args</span><span class="p">)</span>
+        <span class="n">cli_conf</span> <span class="o">=</span> <span class="n">cli_conf</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLI config (excluding defaults):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">cli_conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># config from file</span>
         <span class="c1"># check if input file exists, if not, try to find it from default list</span>
-        <span class="n">input_file</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="n">somesy_conf_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="n">file_conf</span> <span class="o">=</span> <span class="n">get_somesy_cli_config</span><span class="p">(</span><span class="n">somesy_conf_file</span><span class="p">)</span>
+        <span class="n">file_conf</span> <span class="o">=</span> <span class="n">file_conf</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File config (excluding defaults):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">file_conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># get prioritized inputs</span>
-        <span class="n">cli_inputs</span> <span class="o">=</span> <span class="n">SomesyCLIConfig</span><span class="p">(</span>
-            <span class="n">no_sync_cff</span><span class="o">=</span><span class="n">no_sync_cff</span><span class="p">,</span>
-            <span class="n">cff_file</span><span class="o">=</span><span class="n">cff_file</span><span class="p">,</span>
-            <span class="n">no_sync_pyproject</span><span class="o">=</span><span class="n">no_sync_pyproject</span><span class="p">,</span>
-            <span class="n">pyproject_file</span><span class="o">=</span><span class="n">pyproject_file</span><span class="p">,</span>
-            <span class="n">show_info</span><span class="o">=</span><span class="n">show_info</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
+        <span class="c1"># prioritized combination</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">SomesyConfig</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">file_conf</span><span class="p">,</span> <span class="o">**</span><span class="n">cli_conf</span><span class="p">})</span>
+
+        <span class="c1"># --------</span>
+
+        <span class="n">set_logger</span><span class="p">(</span>  <span class="c1"># re-init logger (level could be overridden)</span>
+            <span class="n">debug</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">show_info</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">cli_inputs</span> <span class="o">=</span> <span class="n">cli_inputs</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;CLI arguments:</span><span class="se">\n</span><span class="si">{</span><span class="n">input_file</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">no_sync_cff</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">cff_file</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">no_sync_pyproject</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">pyproject_file</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">verbose</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="n">debug</span><span class="si">=}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-
-        <span class="n">file_cli_input</span> <span class="o">=</span> <span class="n">get_cli_file_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File CLI arguments:</span><span class="se">\n</span><span class="si">{</span><span class="n">file_cli_input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="n">prioritized_inputs</span> <span class="o">=</span> <span class="n">SomesyCLIConfig</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">file_cli_input</span><span class="p">,</span> <span class="o">**</span><span class="n">cli_inputs</span><span class="p">})</span>
-        <span class="n">set_logger</span><span class="p">(</span>
-            <span class="n">debug</span><span class="o">=</span><span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">info</span><span class="o">=</span><span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">show_info</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="c1"># check if there is at least one file to sync</span>
-        <span class="k">if</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_pyproject</span> <span class="ow">and</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There should be at least one file to sync.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># if there is a cli output set, make no_sync to False</span>
-        <span class="k">if</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_cff</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_pyproject</span> <span class="o">=</span> <span class="kc">False</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing project metadata...[/bold green]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined config (Defaults + File + CLI):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># info output</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing project metadata...[/bold green]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Files to sync:&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]Pyproject.toml[/italic] [grey](</span><span class="si">{</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">)[/grey]&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  - [italic]pyproject.toml[/italic]</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;  - [italic]CITATION.cff[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;  - [italic]codemeta.json[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
             <span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - [italic]CITATION.cff[/italic] [grey](</span><span class="si">{</span><span class="n">cff_file</span><span class="si">}</span><span class="s2">)[/grey]&quot;</span><span class="p">)</span>
-
-        <span class="c1"># sync files</span>
+        <span class="c1"># ----------</span>
+        <span class="c1"># sync files (passing paths only if the target is not disabled)</span>
         <span class="n">sync_command</span><span class="p">(</span>
-            <span class="n">input_file</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span>
-            <span class="n">pyproject_file</span><span class="o">=</span><span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">pyproject_file</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_pyproject</span>
-            <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">cff_file</span><span class="o">=</span><span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">cff_file</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">prioritized_inputs</span><span class="o">.</span><span class="n">no_sync_cff</span>
-            <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">input_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span>
+            <span class="n">pyproject_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">cff_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">codemeta_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing completed.[/bold green]&quot;</span><span class="p">)</span>
+
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red]Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">[/bold red]&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[red]</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">[/red]&quot;</span><span class="p">)</span>
@@ -1654,13 +1790,13 @@
         
         
           
-          <a href="../utils/" class="md-footer__link md-footer__link--next" aria-label="Next: utils" rel="next">
+          <a href="../../codemeta/" class="md-footer__link md-footer__link--next" aria-label="Next: codemeta" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                utils
+                codemeta
               </div>
             </div>
             <div class="md-footer__button md-icon">
