@@ -78,9 +78,3 @@ repos:
       rev: 'v1.1.2'
       hooks:
         - id: reuse
-
-    - repo: https://github.com/Materials-Data-Science-and-Informatics/dev-utils
-      rev: 'v0.1.0'
-      hooks:
-        - id: update-codemeta
-          files: ^pyproject.toml$
