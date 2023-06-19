@@ -17,56 +17,32 @@
 
 <!-- --8<-- [start:abstract] -->
 
-# SoMeSy
+# somesy
 
-**SoMeSy** (**So**ftware **Me**tadata **Sy**nc) is a CLI tool to keep project metadata organized and in sync.
-
-[I think the above part needs to be visible in the documentation page too (ie move under "description" or extend this section to be included).]: #
-[Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.]:#
+Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.
 
 ## Description
 
-To preserve, dicover, reuse and credit software, rich metadata is the key. Best practices for [FAIR](https://www.go-fair.org/fair-principles/) software 
-require metadata to be present at different locations (e.g. tool and programming-language specific configuration files), and mapped according to
-different standards (e.g. [Citation.cff](https://citation-file-format.github.io/) or [Codemeta](https://codemeta.github.io/)).
+Many development tools allow or require to provide information about the software project they are used in.
+These tools are often very specific to the programming-language and the task at hand and often come with their own configuration files.
+Emerging best practices for [FAIR](https://www.go-fair.org/fair-principles/) software metadata require to add even _more_
+files providing information such as the project name, description, version, repository url, license or authors.
 
-Software is always in development - versions and maintainers can change, contributors come and go, the version number is regularly increased, the project can 
-be moved to a different location. Consequently software metadata is a moving target and needs frequent updates. This can be _tedious, error-prone 
-and time consuming_ if done manually. Then software project metadata is often rendered incomplete, ambiguous or contradictory over time.
-
-**SoMeSy automates management and synchronization of software project metadata.**
-
-_With using SoMeSy, you update your metadata easily and keep it in order. SoMeSy automatically syncs metadata between different commonly 
-used standards and lets you focus on what matters to you: your actual work._
-
-[I would proopse to update the paragraph according to the following flow: ]: #
-[1. metadata is important - there is a variety of places where it needs to go ]: #
-[2. emerging standards have information that is overlapping between them ]: #
-[4. developing software (which is a moving target) is dynamic and therefore also metadata changes dynamically ]: #
-[5. we need to keep things updated & in sync which is cumbersome if it needs to happen in many places. ]: #
-[Many development tools allow or require to provide information about the software project they are used in. ]: #
-[These tools are often very specific to the programming-language and the task at hand and often come with their own configuration files. ]: #
-[Emerging best practices for FAIR(https://www.go-fair.org/fair-principles/) software metadata require to add even _more_ ]: #
-[files providing information such as the project name, description, version, repository url, license or authors. ]: #
-[If setting up the different files only once would be enough, there would not be an issue. But software is always in development and a moving target - ]: #
-[versions and maintainers can change, contributors come and go, the version number is regularly increased, the project can be moved to a different location. ]: #
-[Maintaining this kind of information and updating it in various files and formats used in the project by hand is _tedious, error-prone and time consuming_. ]: #
-[**Somesy automates the synchronization of general software project metadata** and frees your time to focus on your _actual_ work. ]: #
+If setting up the different files only once would be enough, there would not be an issue. But software is always in development and a moving target -
+versions and maintainers can change, contributors come and go, the version number is regularly increased, the project can be moved to a different location.
+Maintaining this kind of information and updating it in various files and formats used in the project by hand is _tedious, error-prone and time consuming_.
+**Somesy automates the synchronization of general software project metadata** and frees your time to focus on your _actual_ work.
 
 ## Concepts
 
-Providing rich metadata for you software project, requires representing it differently and at different places in parallel.
-SoMeSy uses a **SoMeSy-specific input section** in your **input file** as a ground truth. Here all relevant project metadata is 
-stored and synchronized to different desired **output files**.
+Because the same information is represented in different ways and more or less detail in different files, somesy requires to put all
+project information in a **somesy-specific input section** is located in a supported **input file**.
+Somesy will use this as the single source of truth for the supported project metadata fields
+and can synchronize this information into different **output files**.
 
-[Because the same information is represented in different ways and more or less detail in different files, somesy requires to put all]: #
-[project information in a **somesy-specific input section** is located in a supported **input file**.]: #
-[Somesy will use this as the single source of truth for the supported project metadata fields]: #
-[and can synchronize this information into different **output files**.]: #
-
-SoMeSy **converts** the input information based on our mapping that maximizes information preservation during this process. 
-Then it **updates** the relevant fields in the target file, while keeping other fields unalterd. Furhte rit will updates comments 
-in your TOML and YAML files - which are typically edited manually.
+Somesy first **converts** the information as needed for an output, while trying to preserve as much information as possible.
+Then it **carefully updates** the file, while keeping all other fields in the target file unchanged.
+For files that are usually edited by hand, it will even make sure that the comments in your TOML and YAML files stay in place.
 
 ## Supported File Formats
 
@@ -83,41 +59,31 @@ Here is an overview of the supported files and formats.
 | pyproject.toml _(poetry)_     | ✓      |
 | pyproject.toml _(setuptools)_ | ✓      |
 | package.json                  | TBD    |
-| mkdocs.yml                    | coming soon |
+| mkdocs.yml                    | TBD    |
 | CITATION.cff                  | ✓      |
-| codemeta.json                 | coming soon |
+| codemeta.json                 | ✓      |
 
 Somesy does not support **setuptools dynamic fields** in this version.
-[I am not so sure what this means - is this self-explanatory? to me not...]: #
 
 ## Supported Metadata Fields
 
-The below table shows mappings between fields in the currently supported formats. Some of the metadata fields are required inputs in the somesy input file. `somesy` will give an error if required fields are not filled.
+The below table shows which fields are mapped to corresponding other fields in the currently supported formats. Some of the metadata fields are required inputs in the somesy input file. `somesy` will give an error if required fields are not filled.
 
-| Project Metadata <br> (SoMeSy input) | Poetry Config | SetupTools Config | CITATION.cff    | Requirement  |
-| -------------------------------------| ------------- | ----------------- | --------------- | -------------|
-| name                                 | name          | name              | title           | _required_   |
-| version                              | version       | version           | version         | optional     |
-| description                          | description   | description       | abstract        | _required_   |
-| authors                              | authors       | authors           | authors         | _required_   |
-| maintainers                          | maintainers   | maintainers       | contact         | optional     |
-| keywords                             | keywords      | keywords          | keywords        | optional     |
-| license                              | license       | license           | license         | _required_   |
-| repository                           | repository    | urls.repository   | repository_code | optional     |
-| homepage                             | homepage      | urls.homepage     | url             | optional     |
+| Project Metadata | Poetry Config | SetupTools Config | CITATION.cff    | Requirement |
+| ---------------- | ------------- | ----------------- | --------------- | ----------- |
+| name             | name          | name              | title           | required    |
+| version          | version       | version           | version         | optional    |
+| description      | description   | description       | abstract        | required    |
+| authors          | authors       | authors           | authors         | required    |
+| maintainers      | maintainers   | maintainers       | contact         | optional    |
+| keywords         | keywords      | keywords          | keywords        | optional    |
+| license          | license       | license           | license         | required    |
+| repository       | repository    | urls.repository   | repository_code | optional    |
+| homepage         | homepage      | urls.homepage     | url             | optional    |
 
-# Project Metadata
+## Project Metadata
 
-SoMeSy input requires the following information to satisfy the currently supported standards: 
-
-| Field       | Explanation                | IRI to external reference | supported datatype  |
-|-------------|----------------------------|---------------------------|---------------------|
-| name        | name of software project   |                           | String              |
-| version     | current version of project |                           | String              |
-| description | descritption of project    |                           | String              |
-| authors     | software authors           |                           | List of `Person`s   |
-
-[i would propose to alter the below input definitions to a table-like representation similar to the above ]: #
+Somesy input has the information on what is the most important for metadata and standard columns between different file formats. Somesy input columns are explained below.
 
 - name: Software name - String
 - version: Software version - String
@@ -130,13 +96,7 @@ SoMeSy input requires the following information to satisfy the currently support
 - repository: The repository URL - String in URL format
 - homepage: The software website - String in URL format
 
-`Person` is a subclass of the Project Metadata, based on the [Citation.CFF version 1.2.0 Person class](add link]. We added contribution relation fields to this `Person` class to differentiate different kinds of contributions to the project. `Person` class fields contain:
-
-| Field       | Explanation                | IRI to external reference | supported datatype  |
-|-------------|----------------------------|---------------------------|---------------------|
-| address     | adress of person           |                           | String              |
-
-[same as above - i would respresent this as a table]: #
+`Person` is a subclass of the Project Metadata, based on the CFF version 1.2.0 Person class. We added contribution relation fields to this `Person` class to appreciate all the contributions to the project. `Person` class fields:
 
 - address: The person's address. - String
 - affiliation: The person's affiliation. - String
@@ -167,53 +127,45 @@ Input fields have to adhere above restrictions. If not, somesy tool will raise e
 
 ### Installing somesy
 
-Somesy requires Python `>=3.8`. You can install the package into your current Python environment using:
+Somesy requires Python `>=3.8`. You can install the package just as any other package into your current Python environment using:
 
-```
+```bash
 $ pip install git+ssh://git@github.com:Materials-Data-Science-and-Informatics/somesy.git
 ```
 
-alternatively you can add it as a dependency into your poetry project:
+or, if you are adding it as a dependency into a poetry project:
 
-```
+```bash
 $ poetry add git+ssh://git@github.com:Materials-Data-Science-and-Informatics/somesy.git
 ```
 
 ### Use as a CLI tool
 
-After the installation with pip, you can use somesy as a CLI tool. `somesy sync` command checks input file in the working directory by default. `.somesy.toml` and `pyproject.toml` is checked as input files, ordinarily. Currently, there are 2 output methods for `somesy sync` command, `CITATION.cff` and `pyproject.toml` (either in poetry or setuptools format), and both are synced by default. `CITATION.cff` is created if file does not exists but `pyproject.toml` has to be created beforehand either in poetry or setuptools format. You can disable either output by CLI options.
+After the installation with pip, you can use somesy as a CLI tool.
 
-[it is unclear to me what setuptools format is]: #
+You can see all supported somesy CLI command options using `somesy --help`.
 
-`somesy` command options:
+The `somesy sync` command checks input file in the working directory by default.
 
-| Command | Option        | Option input | Description        |
-| ------- | ------------- | ------------ | ------------------ |
-| somesy  | --version, -v | -            | Get somesy version |
+The files `.somesy.toml` and `pyproject.toml` are supported as input files, `somesy` picks the first one (in listed order) which provides somesy configuration and metadata.
 
-`somesy sync` command options:
+Currently, there are 3 output targets for `somesy sync` command, `CITATION.cff`, `codemeta.json` and `pyproject.toml` (either in poetry or setuptools format), and all are synced by default.
 
-| Command     | Option                  | Option input        | Description                     |
-| ----------- | ----------------------- | ------------------- | ------------------------------- |
-| somesy sync | --input-file, -i        | input file path     | set input file                  |
-| somesy sync | --no-sync-cff, -C       | -                   | Do not sync CITATION.cff file   |
-| somesy sync | --cff-file, -c          | cff file path       | set CITATION.cff file to sync   |
-| somesy sync | --no-sync-pyproject, -P | -                   | Do not sync pyproject file      |
-| somesy sync | --pyproject-file, -p    | pyproject file path | set pyproject file to sync      |
-| somesy sync | --show-info, -s         | -                   | show basic information messages |
-| somesy sync | --verbose, -v           | -                   | show verbose messages           |
-| somesy sync | --debug, -d             | -                   | show debug messages             |
+The `codemeta.json` and `CITATION.cff` are automatically created if the respective file does not exist yet,
+but a `pyproject.toml` must be created beforehand either in poetry or setuptools format (as somesy does not know which is preferred).
 
-`somesy sync` is designed to be used as a pre-commit tool so it does not give any output unless there is an error or one of the related flags is set. Also, `somesy` will give an error if there is no output to sync.
+If you do not want that somesy creates/synchronizes these files, you can disable them by CLI options or in your somesy configuration.
 
-[should there not be an output in the CLI like "metadata synced to ... and ... ? ]: #
+Configuration of somesy in an input file overrides the defaults, and options passed as CLI arguments override the configuration.
+
+`somesy sync` is designed to be used as a pre-commit hook, so it does not give any output unless there is an error or one of the related flags is set. Also, `somesy` will give an error if there is no output to sync.
 
 You can save your CLI inputs to your input file or you can use `somesy config init` command. It records CLI options for `somesy sync` command to given input file. All options are prompted with their default values. The options are saved under [config.cli] table in the input file. You can change the options later by editing the input file. Unlike `somesy sync` command, `somesy config init` command shows the basic output of the command, and shows more if verbose or debug is selected in prompt.
 
 ### Use as a Pre-commit hook
 
 `somesy` can be used as a [pre-commit hook](https://pre-commit.com/). A pre-commit hook runs on every commit to automatically point out issues and/or fixing them. Thus, `somesy` syncs your data in every commit in a deterministic way.
-If you already use pre-commit, you can add somesy as a pre-commit hook. For people who are new to pre-commit, you can create a .pre-commit-config.yaml file in the root folder of your repository. You can set CLI options in `args` as in the example below.
+If you already use pre-commit, you can add somesy as a pre-commit hook. For people who are new to pre-commit, you can create a `.pre-commit-config.yaml` file in the root folder of your repository. You can set CLI options in `args` as in the example below, or provide configuration in your input file (`.somesy` or `pyproject.toml`).
 
 ```yaml
 repos:
@@ -224,9 +176,11 @@ repos:
         args: ["-C", "-p", "~/xx/xx/pyproject.toml"]
 ```
 
-### SoMeSy input file
+### Somesy input file
 
-This repository has a `.somesy.toml` file that can be used as a example. You can check this additional example for somesy project metadata inputs. Please pay attention to the toml table titles for each file example, the input itself is the same.
+This repository has a `.somesy.toml` file that can be used as a example.
+You can check this additional example for somesy project metadata inputs.
+Please pay attention to the toml table titles for each file example, the input itself is the same.
 
 _.somesy.toml_ example:
 
@@ -236,14 +190,14 @@ name = "test"
 version = "0.1.0"
 description = "Test description."
 authors = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
 ]
 maintainers = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
 ]
 contributors = [
     {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-    {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"}
+    {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"},
 ]
 keywords = ["key", "word"]
 license = "MIT"
@@ -303,7 +257,7 @@ for a development setup for working on this package.
 
 Then you can run the following lines to setup the project:
 
-```
+```bash
 $ git clone git@github.com:Materials-Data-Science-and-Informatics/somesy.git
 $ cd somesy
 $ poetry install
@@ -327,7 +281,6 @@ which can be installed by running `poetry self add 'poethepoet[poetry_plugin]'`.
 If you want to cite this project in your scientific work,
 please use the [citation file](https://citation-file-format.github.io/)
 in the [repository](https://github.com/Materials-Data-Science-and-Informatics/somesy/blob/main/CITATION.cff).
-[this should simply link to the specific citation file, not to the specification of citation cff]: #
 
 <!-- --8<-- [end:citation] -->
 <!-- --8<-- [start:acknowledgements] -->

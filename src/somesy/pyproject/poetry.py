@@ -3,6 +3,7 @@ import logging
 from pathlib import Path
 from typing import Any, List, Optional
 
+from rich.pretty import pretty_repr
 from tomlkit import dump, load
 
 from somesy.core.models import Person, ProjectMetadataWriter
@@ -40,7 +41,7 @@ class Poetry(ProjectMetadataWriter):
         Pydantic class only used for validation.
         """
         config = dict(self._data["tool"]["poetry"])
-        logger.debug(f"Validating poetry config: {config}")
+        logger.debug(f"Validating poetry config: {pretty_repr(config)}")
         PoetryConfig(**config)
 
     def _get_property(self, key: str) -> Optional[Any]:

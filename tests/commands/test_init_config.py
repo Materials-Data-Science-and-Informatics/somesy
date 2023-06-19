@@ -1,12 +1,6 @@
 import pytest
 
 from somesy.commands.init_config import init_config
-from somesy.core.utils import set_logger
-
-
-@pytest.fixture(autouse=True)
-def set_log():
-    set_logger()
 
 
 @pytest.fixture
