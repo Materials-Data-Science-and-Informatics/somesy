@@ -1,14 +1,6 @@
 from pathlib import Path
 
-import pytest
-
 from somesy.commands.sync import sync
-from somesy.core.utils import set_logger
-
-
-@pytest.fixture(autouse=True)
-def set_log():
-    set_logger()
 
 
 def test_sync(tmp_path, create_poetry_file):

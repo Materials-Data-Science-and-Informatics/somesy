@@ -43,6 +43,8 @@ typer = {extras = ["all"], version = "^0.7.0"}
 cffconvert = "^2.0.0"
 wrapt = "^1.15.0"
 packaging = "^23.1"
+rdflib = "^6.3.2"
+codemetapy = "^2.5.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.18.1"
@@ -97,6 +99,7 @@ licensecheck = "licensecheck"  # run this when you add new deps
 pythonpath = ["src"]
 addopts = "--cov-report=term-missing:skip-covered"
 filterwarnings = [
+"ignore::DeprecationWarning:pkg_resources.*"
 # Example:
 # "ignore::DeprecationWarning:importlib_metadata.*"
 ]

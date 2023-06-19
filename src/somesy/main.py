@@ -26,6 +26,3 @@ def common(
 # add subcommands
 app.add_typer(sync.app, name="sync")
 app.add_typer(init.app, name="init")
-
-if __name__ == "__main__":
-    app()

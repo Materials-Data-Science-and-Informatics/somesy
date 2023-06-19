@@ -5,7 +5,7 @@ from tomlkit import parse
 
 from somesy.core.core import (
     ProjectMetadata,
-    SomesyCLIConfig,
+    SomesyConfig,
     _extract_cli_config,
     _extract_metadata,
     get_input_content,
@@ -69,7 +69,7 @@ def test_extract_cli_config(somesy_with_config, somesy_metadata_only):
     # test with config exists
     content = get_input_content(somesy_with_config)
     config = _extract_cli_config(content)
-    assert isinstance(config, SomesyCLIConfig)
+    assert isinstance(config, SomesyConfig)
     assert config.debug == True
 
     # test with config does not exist
@@ -95,7 +95,7 @@ def test_get_project_metadata(somesy_metadata_only):
 def test_get_somesy_cli_config(somesy_with_config, somesy_metadata_only):
     # test with config exists
     config = get_somesy_cli_config(somesy_with_config)
-    assert isinstance(config, SomesyCLIConfig)
+    assert isinstance(config, SomesyConfig)
     assert config.debug == True
 
     # test with config does not exist

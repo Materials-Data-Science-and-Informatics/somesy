@@ -2,6 +2,13 @@ from pathlib import Path
 
 import pytest
 
+from somesy.core.utils import set_logger
+
+
+@pytest.fixture(scope="session", autouse=True)
+def init_somesy_logger():
+    set_logger(debug=True)
+
 
 @pytest.fixture
 def create_poetry_file():
