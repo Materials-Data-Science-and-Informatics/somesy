@@ -20,8 +20,8 @@
     ],
     "author": [
         {
+            "@id": "https://orcid.org/0000-0003-2637-0432",
             "@type": "Person",
-            "email": "m.soylu@fz-juelich.de",
             "familyName": "Soylu",
             "givenName": "Mustafa"
         }
@@ -43,14 +43,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^1.10.6'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.10.6'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
@@ -132,9 +132,11 @@
     ],
     "targetProduct": {
         "@type": "CommandLineApplication",
+        "description": "Main entry point for the somesy CLI.",
         "executableName": "somesy",
         "name": "somesy",
         "runtimePlatform": "Python 3"
     },
+    "url": "https://materials-data-science-and-informatics.github.io/somesy",
     "version": "0.1.0"
 }
