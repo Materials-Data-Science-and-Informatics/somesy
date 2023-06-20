@@ -45,6 +45,13 @@ def config():
         if pyproject_file is not None or pyproject_file != "":
             options["pyproject_file"] = pyproject_file
 
+        options["no_sync_codemeta"] = not typer.confirm(
+            "Do you want to sync codemeta.json file?", default=True
+        )
+        codemeta_file = typer.prompt("codemeta.json file path", default="codemeta.json")
+        if codemeta_file is not None or codemeta_file != "":
+            options["codemeta_file"] = codemeta_file
+
         options["show_info"] = typer.confirm(
             "Do you want to show info about the sync process?"
         )
