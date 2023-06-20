@@ -1376,7 +1376,14 @@
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set CLI configs for somesy.&quot;&quot;&quot;</span>
     <span class="n">set_logger</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1407,6 +1414,13 @@
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pyproject_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">options</span><span class="p">[</span><span class="s2">&quot;pyproject_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyproject_file</span>
+
+        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_codemeta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+            <span class="s2">&quot;Do you want to sync codemeta.json file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="n">codemeta_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;codemeta.json file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;codemeta.json&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">codemeta_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">codemeta_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">options</span><span class="p">[</span><span class="s2">&quot;codemeta_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">codemeta_file</span>
 
         <span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
             <span class="s2">&quot;Do you want to show info about the sync process?&quot;</span>
