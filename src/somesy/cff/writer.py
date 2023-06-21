@@ -20,7 +20,7 @@ class CFF(ProjectMetadataWriter):
     ):
         """Citation File Format (CFF) parser.
 
-        See [somesy.core.models.ProjectMetadataWriter.__init__][].
+        See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self._yaml = YAML()
         self._yaml.preserve_quotes = True

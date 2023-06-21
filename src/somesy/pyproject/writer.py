@@ -24,7 +24,7 @@ class PyprojectCommon(ProjectMetadataWriter):
     ):
         """Poetry config file handler parsed from pyproject.toml.
 
-        See [somesy.core.models.ProjectMetadataWriter.__init__][].
+        See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self._model_cls = model_cls
         self._section = section
@@ -81,7 +81,7 @@ class Poetry(PyprojectCommon):
     def __init__(self, path: Path):
         """Poetry config file handler parsed from pyproject.toml.
 
-        See [somesy.core.models.ProjectMetadataWriter.__init__][].
+        See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         super().__init__(path, section=["tool", "poetry"], model_cls=PoetryConfig)
 
@@ -97,7 +97,7 @@ class SetupTools(PyprojectCommon):
     def __init__(self, path: Path):
         """Setuptools config file handler parsed from pyproject.toml.
 
-        See [somesy.core.models.ProjectMetadataWriter.__init__][].
+        See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         section = ["project"]
         mappings = {
