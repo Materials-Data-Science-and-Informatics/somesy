@@ -4,7 +4,7 @@ from pathlib import Path
 
 from tomlkit import dump
 
-from somesy.core.utils import load_pyproject_content, load_somesy_content
+from somesy.core.core import load_pyproject_content, load_somesy_content
 
 logger = logging.getLogger("somesy")
 

@@ -8,7 +8,7 @@ from somesy.core.core import (
     SomesyConfig,
     _extract_cli_config,
     _extract_metadata,
-    get_input_content,
+    _get_input_content,
     get_project_metadata,
     get_somesy_cli_config,
     validate_somesy_input,
@@ -29,29 +29,29 @@ def test_get_input_content(tmp_path, somesy_metadata_only):
     # test with a file that is not a TOML file
     file = tmp_path / ".somesy.yaml"
     with pytest.raises(ValueError):
-        get_input_content(file)
+        _get_input_content(file)
 
     # with an empty file
     file = tmp_path / ".somesy.toml"
     file.touch()
     with pytest.raises(ValueError):
-        get_input_content(file)
+        _get_input_content(file)
 
     # with a valid pyproject file
     file = Path("tests/core/data/pyproject.toml")
-    content = get_input_content(file)
+    content = _get_input_content(file)
     assert isinstance(content, dict)
     assert "project" in content
 
     # with a valid somesy file
-    content = get_input_content(somesy_metadata_only)
+    content = _get_input_content(somesy_metadata_only)
     assert isinstance(content, dict)
     assert "project" in content
 
 
 def test_extract_metadata(somesy_metadata_only):
     # valid somesy file
-    content = get_input_content(somesy_metadata_only)
+    content = _get_input_content(somesy_metadata_only)
     metadata = _extract_metadata(content)
     assert isinstance(metadata, ProjectMetadata)
     assert metadata.name == "somesy"
@@ -67,13 +67,13 @@ def test_extract_metadata(somesy_metadata_only):
 
 def test_extract_cli_config(somesy_with_config, somesy_metadata_only):
     # test with config exists
-    content = get_input_content(somesy_with_config)
+    content = _get_input_content(somesy_with_config)
     config = _extract_cli_config(content)
     assert isinstance(config, SomesyConfig)
     assert config.debug == True
 
     # test with config does not exist
-    content = get_input_content(somesy_metadata_only)
+    content = _get_input_content(somesy_metadata_only)
     config = _extract_cli_config(content)
     assert config is None
 

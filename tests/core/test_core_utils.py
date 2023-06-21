@@ -1,7 +1,7 @@
 import logging
 
 from somesy.core.config import VERBOSE
-from somesy.core.utils import set_logger
+from somesy.core.log import set_logger
 
 logger = logging.getLogger("somesy")
 

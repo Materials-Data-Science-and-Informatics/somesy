@@ -6,7 +6,8 @@ from typing import Optional
 from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
 
-from somesy.core.models import Person, ProjectMetadataWriter
+from somesy.core.models import Person
+from somesy.core.writer import ProjectMetadataWriter
 
 
 class CFF(ProjectMetadataWriter):

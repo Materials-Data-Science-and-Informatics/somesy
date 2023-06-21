@@ -6,7 +6,7 @@ from typing import Any, List, Optional, Union
 import tomlkit
 from rich.pretty import pretty_repr
 
-from somesy.core.models import ProjectMetadataWriter
+from somesy.core.writer import ProjectMetadataWriter
 
 logger = logging.getLogger("somesy")
 

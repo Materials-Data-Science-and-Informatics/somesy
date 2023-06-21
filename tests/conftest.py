@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.utils import set_logger
+from somesy.core.log import set_logger
 
 
 @pytest.fixture(scope="session", autouse=True)
