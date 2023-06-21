@@ -15,6 +15,8 @@ logger = logging.getLogger("somesy")
 class Pyproject(wrapt.ObjectProxy):
     """Class for syncing pyproject file with other metadata files."""
 
+    __wrapped__: Union[SetupTools, Poetry]
+
     def __init__(self, path: Path):
         """Pyproject wrapper class. Wraps either setuptools or poetry.
 
@@ -26,25 +28,21 @@ class Pyproject(wrapt.ObjectProxy):
             ValueError: Neither project nor tool.poetry object is found in pyproject.toml file.
         """
         data = None
-        # load the pyproject.toml file
-        if not path.exists():
+        if not path.is_file():
             raise FileNotFoundError(f"pyproject file {path} not found")
 
-        with open(path) as f:
+        with open(path, "r") as f:
             data = load(f)
 
-        # setuptools has project object
+        # inspect file to pick suitable project metadata writer
         if "project" in data:
-            logger.verbose("Found setuptools config in pyproject.toml file")
-            self.__wrapped__: Union[SetupTools, Poetry] = SetupTools(path)
-            super().__init__(self.__wrapped__)
-        # poetry has tool.poetry object
+            logger.verbose("Found setuptools-based metadata in pyproject.toml")
+            self.__wrapped__ = SetupTools(path)
         elif "tool" in data and "poetry" in data["tool"]:
-            logger.verbose("Found poetry config in pyproject.toml file")
+            logger.verbose("Found poetry-based metadata in pyproject.toml")
             self.__wrapped__ = Poetry(path)
-            super().__init__(self.__wrapped__)
-        # value error if other project object is found
         else:
-            raise ValueError(
-                "pyproject file is invalid, either add project or tool.poetry object"
-            )
+            msg = "The pyproject.toml file is ambiguous, either add a [project] or [tool.poetry] section"
+            raise ValueError(msg)
+
+        super().__init__(self.__wrapped__)

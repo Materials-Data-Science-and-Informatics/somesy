@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from somesy.core.core import get_project_metadata
-from somesy.pyproject.core import Poetry, Pyproject, SetupTools
+from somesy.pyproject.writer import Poetry, Pyproject, SetupTools
 
 
 @pytest.fixture

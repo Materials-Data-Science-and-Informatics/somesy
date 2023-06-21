@@ -2,7 +2,7 @@
 from abc import ABC, abstractmethod
 from datetime import date
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import AnyUrl, BaseModel, Extra, Field, root_validator
 from typing_extensions import Annotated
@@ -219,39 +219,113 @@ class ProjectMetadataWriter(ABC):
     """
 
     def __init__(
-        self, path: Path, create_if_not_exists: Optional[bool] = False
+        self, path: Path, *, create_if_not_exists: Optional[bool] = False
     ) -> None:
-        """Initialize the Project Metadata Output Wrapper."""
+        """Initialize the Project Metadata Output Wrapper.
+
+        Args:
+            path: Path to target output file.
+            create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
+        """
+        self._data: Dict = {}
         self.path = path
         self.create_if_not_exists = create_if_not_exists
 
-        # fill in load
-        self._data: dict = {}
+        if self.path.is_file():
+            self._load()
+            self._validate()
+        else:
+            if self.create_if_not_exists:
+                self._init_new_file()
+            else:
+                raise FileNotFoundError(f"The file {self.path} does not exist.")
+
+    def _init_new_file(self) -> None:
+        """Create an new suitable target file.
+
+        Override to initialize file with minimal contents, if needed.
+        Make sure to set `self._data` to match the contents.
+        """
+        self.path.touch()
 
     @abstractmethod
     def _load(self):
-        """Load the output file and validate it."""
+        """Load the output file and validate it.
+
+        Implement this method so that it loads the file `self.path`
+        into the `self._data` dict.
+
+        The file is guaranteed to exist.
+        """
 
     @abstractmethod
     def _validate(self):
-        """Validate the output file."""
+        """Validate the target file data.
 
-    def _create_empty_file(self) -> None:
-        """Create an empty file if it does not exist."""
-        self.path.touch()
+        Implement this method so that it checks
+        the validity of the metadata (relevant to somesy)
+        in that file and raises exceptions on failure.
+        """
 
-    def _get_property(self, key: str) -> Optional[Any]:
-        """Get a property from the data."""
-        try:
-            return self._data[key]
-        except KeyError:
-            return None
+    @abstractmethod
+    def save(self, path: Optional[Path]) -> None:
+        """Save the output file to the given path.
+
+        Implement this in a way that will carefully
+        update the target file with new metadata
+        without destroying its other contents or structure.
+        """
+
+    def _get_property(self, key: Union[str, List[str]]) -> Optional[Any]:
+        """Get a property from the data.
+
+        Override this to e.g. rewrite the retrieved key
+        (e.g. if everything relevant is in some suboject).
+        """
+        key_path = [key] if isinstance(key, str) else key
+
+        curr = self._data
+        for k in key_path:
+            curr = curr.get(k)
+            if curr is None:
+                return None
+
+        return curr
 
     def _set_property(self, key: str, value: Any) -> None:
-        """Set a property in the data."""
+        """Set a property in the data.
+
+        Override this to e.g. rewrite the retrieved key
+        (e.g. if everything relevant is in some suboject).
+        """
         if value:
             self._data[key] = value
-        return None
+
+    def sync(self, metadata: ProjectMetadata) -> None:
+        """Sync output file with other metadata files."""
+        self.name = metadata.name
+        self.description = metadata.description
+
+        if metadata.version:
+            self.version = metadata.version
+
+        if metadata.keywords:
+            self.keywords = metadata.keywords
+        self.authors = metadata.authors
+        if metadata.maintainers:
+            self.maintainers = metadata.maintainers
+
+        self.license = metadata.license.value
+        self.homepage = str(metadata.homepage)
+        self.repository = str(metadata.repository)
+
+    @staticmethod
+    @abstractmethod
+    def _from_person(person: Person) -> Any:
+        """Convert a `Person` object into suitable target format."""
+
+    # ----
+    # individual magic getters and setters
 
     @property
     def name(self):
@@ -289,9 +363,10 @@ class ProjectMetadataWriter(ABC):
         return self._get_property("authors")
 
     @authors.setter
-    @abstractmethod
     def authors(self, authors: List[Person]) -> None:
         """Set the authors of the project."""
+        authors = [self._from_person(c) for c in authors]
+        self._set_property("authors", authors)
 
     @property
     def maintainers(self):
@@ -299,9 +374,10 @@ class ProjectMetadataWriter(ABC):
         return self._get_property("maintainers")
 
     @maintainers.setter
-    @abstractmethod
     def maintainers(self, maintainers: List[Person]) -> None:
         """Set the maintainers of the project."""
+        maintainers = [self._from_person(c) for c in maintainers]
+        self._set_property("maintainers", maintainers)
 
     @property
     def keywords(self) -> Optional[List[str]]:
@@ -342,25 +418,3 @@ class ProjectMetadataWriter(ABC):
     def repository(self, repository: Optional[str]) -> None:
         """Set the repository url of the project."""
         self._set_property("repository", repository)
-
-    def sync(self, metadata: ProjectMetadata) -> None:
-        """Sync output file with other metadata files."""
-        self.name = metadata.name
-        self.description = metadata.description
-
-        if metadata.version:
-            self.version = metadata.version
-
-        if metadata.keywords:
-            self.keywords = metadata.keywords
-        self.authors = metadata.authors
-        if metadata.maintainers:
-            self.maintainers = metadata.maintainers
-
-        self.license = metadata.license.value
-        self.homepage = str(metadata.homepage)
-        self.repository = str(metadata.repository)
-
-    @abstractmethod
-    def save(self, path: Optional[Path]) -> None:
-        """Save the output file to the given path."""

@@ -4,7 +4,7 @@ import sys
 import pytest
 import rdflib
 
-from somesy.cff.core import CFF
+from somesy.cff.writer import CFF
 from somesy.codemeta import update_codemeta
 from somesy.codemeta.utils import (
     _codemeta_context,

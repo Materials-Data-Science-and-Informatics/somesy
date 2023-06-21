@@ -5,10 +5,10 @@ from typing import Optional
 
 from rich.pretty import pretty_repr
 
-from somesy.cff.core import CFF
+from somesy.cff.writer import CFF
 from somesy.codemeta import update_codemeta
 from somesy.core.core import ProjectMetadata, get_project_metadata
-from somesy.pyproject.core import Pyproject
+from somesy.pyproject.writer import Pyproject
 
 logger = logging.getLogger("somesy")
 
