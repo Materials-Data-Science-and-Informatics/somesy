@@ -5,7 +5,7 @@ from pydantic import AnyUrl
 from pydantic.tools import parse_obj_as
 
 from somesy.core.models import Person
-from somesy.pyproject.setuptools import SetupTools
+from somesy.pyproject.writer import SetupTools
 
 
 @pytest.fixture
