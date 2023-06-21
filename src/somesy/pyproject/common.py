@@ -14,14 +14,18 @@ logger = logging.getLogger("somesy")
 class PyprojectCommon(ProjectMetadataWriter):
     """Poetry config file handler parsed from pyproject.toml."""
 
-    def __init__(self, path: Path, *, section: List[str], model_cls):
+    def __init__(
+        self, path: Path, *, section: List[str], model_cls, direct_mappings=None
+    ):
         """Poetry config file handler parsed from pyproject.toml.
 
         See [somesy.core.models.ProjectMetadataWriter.__init__][].
         """
         self._model_cls = model_cls
         self._section = section
-        super().__init__(path, create_if_not_exists=False)
+        super().__init__(
+            path, create_if_not_exists=False, direct_mappings=direct_mappings or {}
+        )
 
     def _load(self) -> None:
         """Load pyproject.toml file."""

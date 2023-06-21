@@ -1,7 +1,7 @@
 """Citation File Format (CFF) parser and saver."""
 from json import loads
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
@@ -24,7 +24,16 @@ class CFF(ProjectMetadataWriter):
         self._yaml = YAML()
         self._yaml.preserve_quotes = True
 
-        super().__init__(path, create_if_not_exists=create_if_not_exists)
+        mappings = {
+            "name": ["title"],
+            "description": ["abstract"],
+            "homepage": ["url"],
+            "repository": ["repository-code"],
+            "maintainers": ["contact"],
+        }
+        super().__init__(
+            path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings
+        )
 
     def _init_new_file(self):
         """Initialize new CFF file."""
@@ -73,57 +82,3 @@ class CFF(ProjectMetadataWriter):
             )
         )
         return cff_dict
-
-    # ----
-    # getters/setters performing the mapping
-
-    @property
-    def name(self) -> str:
-        """Project name."""
-        return self._get_property("title")
-
-    @name.setter
-    def name(self, name: str) -> None:
-        """Set project name."""
-        self._set_property("title", name)
-
-    @property
-    def description(self) -> Optional[str]:
-        """Project description."""
-        return self._get_property("abstract")
-
-    @description.setter
-    def description(self, description: str) -> None:
-        """Set project description."""
-        self._set_property("abstract", description)
-
-    @property
-    def maintainers(self):
-        """Return the maintainers of the project."""
-        return self._get_property("contact")
-
-    @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
-        """Set the maintainers of the project."""
-        maintainers = [self._from_person(c) for c in maintainers]
-        self._set_property("contact", maintainers)
-
-    @property
-    def homepage(self) -> Optional[str]:
-        """Project homepage url."""
-        return self._get_property("url")
-
-    @homepage.setter
-    def homepage(self, homepage: Optional[str]) -> None:
-        """Set project homepage url."""
-        self._set_property("url", homepage)
-
-    @property
-    def repository(self) -> Optional[str]:
-        """Project repository url."""
-        return self._get_property("repository-code")
-
-    @repository.setter
-    def repository(self, repository: Optional[str]) -> None:
-        """Set project repository url."""
-        self._set_property("repository-code", repository)

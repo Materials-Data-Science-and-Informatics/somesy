@@ -219,17 +219,28 @@ class ProjectMetadataWriter(ABC):
     """
 
     def __init__(
-        self, path: Path, *, create_if_not_exists: Optional[bool] = False
+        self,
+        path: Path,
+        *,
+        create_if_not_exists: Optional[bool] = False,
+        direct_mappings: Dict[str, List[str]] = None,
     ) -> None:
         """Initialize the Project Metadata Output Wrapper.
+
+        Use the `direct_mappings` dict to define
+        format-specific location for certain fields,
+        if no additional processing is needed that
+        requires a customized setter.
 
         Args:
             path: Path to target output file.
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
+            direct_mappings: Dict with direct mappings of keys between somesy and target
         """
         self._data: Dict = {}
         self.path = path
         self.create_if_not_exists = create_if_not_exists
+        self.direct_mappings = direct_mappings or {}
 
         if self.path.is_file():
             self._load()
@@ -292,14 +303,22 @@ class ProjectMetadataWriter(ABC):
 
         return curr
 
-    def _set_property(self, key: str, value: Any) -> None:
+    def _set_property(self, key: Union[str, List[str]], value: Any) -> None:
         """Set a property in the data.
 
         Override this to e.g. rewrite the retrieved key
         (e.g. if everything relevant is in some suboject).
         """
-        if value:
-            self._data[key] = value
+        if not value:
+            return
+        key_path = [key] if isinstance(key, str) else key
+        # create path on the fly if needed
+        curr = self._data
+        for key in key_path[:-1]:
+            if key not in curr:
+                curr[key] = {}
+            curr = curr[key]
+        curr[key_path[-1]] = value
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
@@ -327,94 +346,97 @@ class ProjectMetadataWriter(ABC):
     # ----
     # individual magic getters and setters
 
+    def _get_key(self, key):
+        return self.direct_mappings.get(key) or key
+
     @property
     def name(self):
         """Return the name of the project."""
-        return self._get_property("name")
+        return self._get_property(self._get_key("name"))
 
     @name.setter
     def name(self, name: str) -> None:
         """Set the name of the project."""
-        self._set_property("name", name)
+        self._set_property(self._get_key("name"), name)
 
     @property
     def version(self) -> Optional[str]:
         """Return the version of the project."""
-        return self._get_property("version")
+        return self._get_property(self._get_key("version"))
 
     @version.setter
     def version(self, version: str) -> None:
         """Set the version of the project."""
-        self._set_property("version", version)
+        self._set_property(self._get_key("version"), version)
 
     @property
     def description(self) -> Optional[str]:
         """Return the description of the project."""
-        return self._get_property("description")
+        return self._get_property(self._get_key("description"))
 
     @description.setter
     def description(self, description: str) -> None:
         """Set the description of the project."""
-        self._set_property("description", description)
+        self._set_property(self._get_key("description"), description)
 
     @property
     def authors(self):
         """Return the authors of the project."""
-        return self._get_property("authors")
+        return self._get_property(self._get_key("authors"))
 
     @authors.setter
     def authors(self, authors: List[Person]) -> None:
         """Set the authors of the project."""
         authors = [self._from_person(c) for c in authors]
-        self._set_property("authors", authors)
+        self._set_property(self._get_key("authors"), authors)
 
     @property
     def maintainers(self):
         """Return the maintainers of the project."""
-        return self._get_property("maintainers")
+        return self._get_property(self._get_key("maintainers"))
 
     @maintainers.setter
     def maintainers(self, maintainers: List[Person]) -> None:
         """Set the maintainers of the project."""
         maintainers = [self._from_person(c) for c in maintainers]
-        self._set_property("maintainers", maintainers)
+        self._set_property(self._get_key("maintainers"), maintainers)
 
     @property
     def keywords(self) -> Optional[List[str]]:
         """Return the keywords of the project."""
-        return self._get_property("keywords")
+        return self._get_property(self._get_key("keywords"))
 
     @keywords.setter
     def keywords(self, keywords: List[str]) -> None:
         """Set the keywords of the project."""
-        self._set_property("keywords", keywords)
+        self._set_property(self._get_key("keywords"), keywords)
 
     @property
     def license(self) -> Optional[str]:
         """Return the license of the project."""
-        return self._get_property("license")
+        return self._get_property(self._get_key("license"))
 
     @license.setter
     def license(self, license: Optional[str]) -> None:
         """Set the license of the project."""
-        self._set_property("license", license)
+        self._set_property(self._get_key("license"), license)
 
     @property
     def homepage(self) -> Optional[str]:
         """Return the homepage url of the project."""
-        return self._get_property("homepage")
+        return self._get_property(self._get_key("homepage"))
 
     @homepage.setter
     def homepage(self, homepage: Optional[str]) -> None:
         """Set the homepage url of the project."""
-        self._set_property("homepage", homepage)
+        self._set_property(self._get_key("homepage"), homepage)
 
     @property
     def repository(self) -> Optional[str]:
         """Return the repository url of the project."""
-        return self._get_property("repository")
+        return self._get_property(self._get_key("repository"))
 
     @repository.setter
     def repository(self, repository: Optional[str]) -> None:
         """Set the repository url of the project."""
-        self._set_property("repository", repository)
+        self._set_property(self._get_key("repository"), repository)
