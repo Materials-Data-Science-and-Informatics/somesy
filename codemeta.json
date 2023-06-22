@@ -24,6 +24,12 @@
             "@type": "Person",
             "familyName": "Soylu",
             "givenName": "Mustafa"
+        },
+        {
+            "@id": "https://orcid.org/0000-0002-5077-7497",
+            "@type": "Person",
+            "familyName": "Pirogov",
+            "givenName": "Anton"
         }
     ],
     "codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/somesy",
