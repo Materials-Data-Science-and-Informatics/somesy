@@ -3,12 +3,48 @@ import logging
 from pathlib import Path
 from typing import Optional
 
+import tomlkit
 from tomlkit import TOMLDocument
 
 from somesy.core.models import ProjectMetadata, SomesyConfig
-from somesy.core.utils import load_pyproject_content, load_somesy_content
 
 logger = logging.getLogger("somesy")
+
+
+def load_somesy_content(input_path: Path) -> Optional[TOMLDocument]:
+    """Load somesy file content if a valid file.
+
+    Args:
+        input_path (Path): input path. Must have somesy in the name and be a TOML file.
+
+    Returns:
+        TOMLDocument object if the input file is a valid somesy input file, otherwise None
+    """
+    if input_path.suffix == ".toml" and "somesy" in input_path.name:
+        with open(input_path, "r") as f:
+            input_content = tomlkit.load(f)
+            if "project" in input_content:
+                return input_content
+
+    return None
+
+
+def load_pyproject_content(input_path: Path) -> Optional[TOMLDocument]:
+    """Load pyproject file content if a valid file.
+
+    Args:
+        input_path (Path): input path. Must have pyproject in the name and be a TOML file.
+
+    Returns:
+        TOMLDocument object if the input file is a valid pyproject input file, otherwise None
+    """
+    if input_path.suffix == ".toml" and "pyproject" in input_path.name:
+        with open(input_path, "r") as f:
+            input_content = tomlkit.load(f)
+            if "tool" in input_content and "somesy" in input_content["tool"]:
+                return input_content
+
+    return None
 
 
 def get_project_metadata(path: Path) -> ProjectMetadata:
@@ -20,7 +56,7 @@ def get_project_metadata(path: Path) -> ProjectMetadata:
     Returns:
         project metadata input to sync output files
     """
-    content = get_input_content(path)
+    content = _get_input_content(path)
     return _extract_metadata(content)
 
 
@@ -36,11 +72,40 @@ def get_somesy_cli_config(path: Path) -> Optional[SomesyConfig]:
     Returns:
         somesy config if it exists in the input file, otherwise None
     """
-    content = get_input_content(path)
+    content = _get_input_content(path)
     return _extract_cli_config(content)
 
 
-def get_input_content(path: Path) -> TOMLDocument:
+def validate_somesy_input(input_file: Path) -> bool:
+    """Validate somesy input file.
+
+    Args:
+        input_file (Path): input file path
+
+    Returns:
+        True if the input file is a valid somesy input file, otherwise False
+    """
+    # validate project metadata
+    try:
+        get_project_metadata(input_file)
+    except Exception as e:
+        logger.warning(f"Error on project metadata validation:\n{e}")
+        return False
+
+    # validate somesy cli config
+    try:
+        get_somesy_cli_config(input_file)
+    except Exception as e:
+        logger.warning(f"Error on cli config validation:\n{e}")
+        return False
+
+    return True
+
+
+# ----
+
+
+def _get_input_content(path: Path) -> TOMLDocument:
     """Read contents of a somesy input file.
 
     Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.
@@ -106,29 +171,3 @@ def _extract_cli_config(content: TOMLDocument) -> Optional[SomesyConfig]:
             raise ValueError(f"Somesy config validation failed: {e}")
     else:
         return None
-
-
-def validate_somesy_input(input_file: Path) -> bool:
-    """Validate somesy input file.
-
-    Args:
-        input_file (Path): input file path
-
-    Returns:
-        True if the input file is a valid somesy input file, otherwise False
-    """
-    # validate project metadata
-    try:
-        get_project_metadata(input_file)
-    except Exception as e:
-        logger.warning(f"Error on project metadata validation:\n{e}")
-        return False
-
-    # validate somesy cli config
-    try:
-        get_somesy_cli_config(input_file)
-    except Exception as e:
-        logger.warning(f"Error on cli config validation:\n{e}")
-        return False
-
-    return True

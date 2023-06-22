@@ -13,16 +13,16 @@ def test_sync(tmp_path, create_poetry_file):
 
     # TEST 1: sync only pyproject.toml
     sync(input_file=input_file, pyproject_file=pyproject_file)
-    assert pyproject_file.exists()
-    assert cff_file.exists() is False
+    assert pyproject_file.is_file()
+    assert cff_file.is_file() is False
 
     # delete pyproject.toml
     pyproject_file.unlink()
 
     # TEST 2: sync only CITATION.cff
     sync(input_file=input_file, cff_file=cff_file)
-    assert pyproject_file.exists() is False
-    assert cff_file.exists()
+    assert pyproject_file.is_file() is False
+    assert cff_file.is_file()
 
     # delete files
     cff_file.unlink()
@@ -32,5 +32,5 @@ def test_sync(tmp_path, create_poetry_file):
 
     # TEST 3: sync both pyproject.toml and CITATION.cff
     sync(input_file=input_file, pyproject_file=pyproject_file, cff_file=cff_file)
-    assert pyproject_file.exists()
-    assert cff_file.exists()
+    assert pyproject_file.is_file()
+    assert cff_file.is_file()

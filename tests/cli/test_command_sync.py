@@ -50,9 +50,9 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     )
     assert result.exit_code == 0
     assert "Syncing completed." in result.stdout
-    assert not cff_file.exists()  # disabled in input_file!
-    assert pyproject_file.exists()
-    assert codemeta_file.exists()
+    assert not cff_file.is_file()  # disabled in input_file!
+    assert pyproject_file.is_file()
+    assert codemeta_file.is_file()
 
     # create an error in the input file
     mocker.patch.object(discover, "INPUT_FILES_ORDERED", [])

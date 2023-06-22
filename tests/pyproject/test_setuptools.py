@@ -5,7 +5,7 @@ from pydantic import AnyUrl
 from pydantic.tools import parse_obj_as
 
 from somesy.core.models import Person
-from somesy.pyproject.setuptools import SetupTools
+from somesy.pyproject.writer import SetupTools
 
 
 @pytest.fixture
@@ -23,8 +23,6 @@ def test_init(tmp_path):
 
 def test_key_error(setuptools):
     assert setuptools._get_property("not-existing") is None
-    assert setuptools._get_url("not-existing") is None
-    assert setuptools["not-existing"] is None
 
 
 def test_set_url(setuptools):
@@ -153,7 +151,7 @@ def test_save(tmp_path, create_setuptools_file):
     create_setuptools_file(file_path)
     setuptools = SetupTools(file_path)
     setuptools.save()
-    assert file_path.exists()
+    assert file_path.is_file()
 
     # test save with custom path
     custom_path = tmp_path / "custom.toml"

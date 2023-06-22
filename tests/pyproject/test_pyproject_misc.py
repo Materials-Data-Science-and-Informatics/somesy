@@ -3,7 +3,8 @@ from pathlib import Path
 import pytest
 
 from somesy.core.core import get_project_metadata
-from somesy.pyproject.core import Poetry, Pyproject, SetupTools
+from somesy.core.models import Person
+from somesy.pyproject.writer import Poetry, Pyproject, SetupTools
 
 
 @pytest.fixture
@@ -70,3 +71,26 @@ def test_sync(pyproject_poetry, project_metadata):
     pyproject_poetry.sync(project_metadata)
 
     assert pyproject_poetry.version == "0.1.0"
+
+
+@pytest.fixture
+def person():
+    p = {
+        "given-names": "John",
+        "family-names": "Doe",
+        "email": "test@test.test",
+    }
+    return Person(**p)
+
+
+def test_person_to_poetry_string(person):
+    poetry_string = Poetry._from_person(person)
+    assert poetry_string == "John Doe <test@test.test>"
+
+
+def test_person_to_setuptools_dict(person):
+    setuptools_dict = SetupTools._from_person(person)
+    assert setuptools_dict == {
+        "name": "John Doe",
+        "email": "test@test.test",
+    }

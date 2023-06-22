@@ -7,7 +7,7 @@ import typer
 
 from somesy.commands import init_config
 from somesy.core.discover import discover_input
-from somesy.core.utils import set_logger
+from somesy.core.log import set_logger
 
 logger = logging.getLogger("somesy")
 app = typer.Typer()

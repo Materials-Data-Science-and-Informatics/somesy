@@ -2,8 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.cff.core import CFF
-from somesy.cff.utils import person_to_cff_dict
+from somesy.cff.writer import CFF
 from somesy.core.core import get_project_metadata
 from somesy.core.models import Person
 
@@ -15,7 +14,7 @@ def test_load(tmp_path):
 
     file_path = tmp_path / "CITATION.cff"
     CFF(file_path, create_if_not_exists=True)
-    assert file_path.exists()
+    assert file_path.is_file()
 
     reject_path = Path("tests/cff/data/reject.cff")
     with pytest.raises(ValueError):
@@ -168,24 +167,20 @@ def test_sync(cff, project_metadata):
 
 def test_authors(cff, base_person, new_person):
     # test existing authors
-    assert cff.authors == [person_to_cff_dict(base_person)]
+    assert cff.authors == [CFF._from_person(base_person)]
 
     # new authors
     cff.authors = [new_person]
-    assert cff.authors == [person_to_cff_dict(new_person)]
+    assert cff.authors == [CFF._from_person(new_person)]
 
 
 def test_maintainers(cff, base_person, new_person):
     # test existing maintainers
-    assert cff.maintainers == [person_to_cff_dict(base_person)]
-
-    # empty entry
-    cff.maintainers = None
-    assert cff.maintainers == [person_to_cff_dict(base_person)]
+    assert cff.maintainers == [CFF._from_person(base_person)]
 
     # new maintainers
     cff.maintainers = [new_person]
-    assert cff.maintainers == [person_to_cff_dict(new_person)]
+    assert cff.maintainers == [CFF._from_person(new_person)]
 
 
 def test_save(tmp_path):
@@ -193,8 +188,27 @@ def test_save(tmp_path):
     file_path = tmp_path / "CITATION.cff"
     cff = CFF(file_path, create_if_not_exists=True)
     cff.save()
-    assert file_path.exists()
+    assert file_path.is_file()
 
     # test save with custom path
     custom_path = tmp_path / "custom.cff"
     cff.save(custom_path)
+
+
+@pytest.fixture
+def person():
+    p = {
+        "given-names": "John",
+        "family-names": "Doe",
+        "email": "test@test.test",
+    }
+    return Person(**p)
+
+
+def test_from_person(person):
+    cff_dict = CFF._from_person(person)
+    assert cff_dict == {
+        "given-names": "John",
+        "family-names": "Doe",
+        "email": "test@test.test",
+    }

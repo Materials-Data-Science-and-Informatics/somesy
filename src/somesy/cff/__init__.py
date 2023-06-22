@@ -1,4 +1,4 @@
 """CFF module."""
-from .core import CFF
+from .writer import CFF
 
 __all__ = ["CFF"]

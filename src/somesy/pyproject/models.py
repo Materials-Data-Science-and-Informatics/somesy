@@ -64,10 +64,10 @@ class PoetryConfig(BaseModel):
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
         if type(v) is list:
-            if any(not e.exists() for e in v):
+            if any(not e.is_file() for e in v):
                 raise ValidationError("Some file(s) do not exist")
         else:
-            if not v.exists():
+            if not v.is_file():
                 raise ValidationError("File does not exist")
 
     class Config:
@@ -157,13 +157,13 @@ class SetuptoolsConfig(BaseModel):
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
         if type(v) is list:
-            if any(not e.exists() for e in v):
+            if any(not e.is_file() for e in v):
                 raise ValidationError("Some file(s) do not exist")
         elif type(v) is File:
-            if not Path(v.file).exists():
+            if not Path(v.file).is_file():
                 raise ValidationError("File does not exist")
         else:
-            if not v.exists():
+            if not v.is_file():
                 raise ValidationError("File does not exist")
 
     @validator("authors", "maintainers")

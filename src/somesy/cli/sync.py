@@ -9,8 +9,8 @@ from rich.pretty import pretty_repr
 from somesy.commands import sync as sync_command
 from somesy.core.core import get_somesy_cli_config
 from somesy.core.discover import discover_input
+from somesy.core.log import set_logger
 from somesy.core.models import SomesyConfig
-from somesy.core.utils import set_logger
 
 logger = logging.getLogger("somesy")
 app = typer.Typer()

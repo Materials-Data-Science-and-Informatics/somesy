@@ -12,7 +12,7 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
     """Check given input file path. If not given, find somesy configuration file path from default list.
 
     Args:
-        input_file (Optional[str], optional): somesy configuration file path. Defaults to None.
+        input_file: somesy configuration file path. Defaults to None.
 
     Raises:
         FileNotFoundError: Raised if no somesy input file found from cli input or the defaults.

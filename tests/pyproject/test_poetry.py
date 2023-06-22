@@ -5,7 +5,7 @@ from pydantic import AnyUrl
 from pydantic.tools import parse_obj_as
 
 from somesy.core.models import Person
-from somesy.pyproject.poetry import Poetry
+from somesy.pyproject.writer import Poetry
 
 
 @pytest.fixture
@@ -23,7 +23,6 @@ def test_init(tmp_path):
 
 def test_key_error(poetry):
     assert poetry._get_property("not-existing") is None
-    assert poetry["not-existing"] is None
 
 
 def test_name(poetry):
@@ -140,7 +139,7 @@ def test_save(tmp_path, create_poetry_file):
     create_poetry_file(file_path)
     poetry = Poetry(file_path)
     poetry.save()
-    assert file_path.exists()
+    assert file_path.is_file()
 
     # test save with custom path
     custom_path = tmp_path / "custom.toml"
