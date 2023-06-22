@@ -1,4 +1,7 @@
 """Main entry point for the somesy CLI."""
+import logging
+import sys
+
 import typer
 
 from somesy import __version__
@@ -6,6 +9,8 @@ from somesy.cli import init, sync
 from somesy.core.log import SomesyLogLevel, init_log, set_log_level
 
 app = typer.Typer()
+
+logger = logging.getLogger("somesy")
 
 
 @app.callback()
@@ -42,11 +47,14 @@ def common(
     ),
 ):
     """General flags and arguments for somesy."""
-    if sum(map(int, map(bool, [show_info, verbose, debug]))) > 1:
-        typer.echo("Only one of --info, --verbose or --debug may be set!")
-        typer.Exit(1)
-
     init_log()
+
+    if sum(map(int, map(bool, [show_info, verbose, debug]))) > 1:
+        typer.echo(
+            "Only one of --info, --verbose or --debug may be set!", file=sys.stderr
+        )
+        raise typer.Exit(1)
+
     if show_info or verbose or debug:
         # NOTE: only explicitly setting log level if a flag is passed,
         # in order to distinguish from using the "default log level"
