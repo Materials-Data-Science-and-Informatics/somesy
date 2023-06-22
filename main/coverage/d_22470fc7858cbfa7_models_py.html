@@ -60,12 +60,12 @@
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
-            <a id="prevFileLink" class="nav" href="d_22470fc7858cbfa7_core_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="d_22470fc7858cbfa7___init___py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
-            <a id="nextFileLink" class="nav" href="d_22470fc7858cbfa7_poetry_py.html">&#xbb; next</a>
+            <a id="nextFileLink" class="nav" href="d_22470fc7858cbfa7_writer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-06-20 07:49 +0000
+            created at 2023-06-22 08:17 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -146,10 +146,10 @@
     <p class="run"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">    <span class="key">def</span> <span class="nam">validate_readme</span><span class="op">(</span><span class="nam">cls</span><span class="op">,</span> <span class="nam">v</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">        <span class="str">"""Validate readme file(s) by checking whether files exist."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t">        <span class="key">if</span> <span class="nam">type</span><span class="op">(</span><span class="nam">v</span><span class="op">)</span> <span class="key">is</span> <span class="nam">list</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t67" href="#t67">67</a></span><span class="t">            <span class="key">if</span> <span class="nam">any</span><span class="op">(</span><span class="key">not</span> <span class="nam">e</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">e</span> <span class="key">in</span> <span class="nam">v</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t67" href="#t67">67</a></span><span class="t">            <span class="key">if</span> <span class="nam">any</span><span class="op">(</span><span class="key">not</span> <span class="nam">e</span><span class="op">.</span><span class="nam">is_file</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">e</span> <span class="key">in</span> <span class="nam">v</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t68" href="#t68">68</a></span><span class="t">                <span class="key">raise</span> <span class="nam">ValidationError</span><span class="op">(</span><span class="str">"Some file(s) do not exist"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t69" href="#t69">69</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t70" href="#t70">70</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">v</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t70" href="#t70">70</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">v</span><span class="op">.</span><span class="nam">is_file</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t71" href="#t71">71</a></span><span class="t">                <span class="key">raise</span> <span class="nam">ValidationError</span><span class="op">(</span><span class="str">"File does not exist"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t72" href="#t72">72</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t73" href="#t73">73</a></span><span class="t">    <span class="key">class</span> <span class="nam">Config</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -239,13 +239,13 @@
     <p class="run"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">    <span class="key">def</span> <span class="nam">validate_readme</span><span class="op">(</span><span class="nam">cls</span><span class="op">,</span> <span class="nam">v</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">        <span class="str">"""Validate readme file(s) by checking whether files exist."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">        <span class="key">if</span> <span class="nam">type</span><span class="op">(</span><span class="nam">v</span><span class="op">)</span> <span class="key">is</span> <span class="nam">list</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">            <span class="key">if</span> <span class="nam">any</span><span class="op">(</span><span class="key">not</span> <span class="nam">e</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">e</span> <span class="key">in</span> <span class="nam">v</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">            <span class="key">if</span> <span class="nam">any</span><span class="op">(</span><span class="key">not</span> <span class="nam">e</span><span class="op">.</span><span class="nam">is_file</span><span class="op">(</span><span class="op">)</span> <span class="key">for</span> <span class="nam">e</span> <span class="key">in</span> <span class="nam">v</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">                <span class="key">raise</span> <span class="nam">ValidationError</span><span class="op">(</span><span class="str">"Some file(s) do not exist"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">        <span class="key">elif</span> <span class="nam">type</span><span class="op">(</span><span class="nam">v</span><span class="op">)</span> <span class="key">is</span> <span class="nam">File</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">Path</span><span class="op">(</span><span class="nam">v</span><span class="op">.</span><span class="nam">file</span><span class="op">)</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">Path</span><span class="op">(</span><span class="nam">v</span><span class="op">.</span><span class="nam">file</span><span class="op">)</span><span class="op">.</span><span class="nam">is_file</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t164" href="#t164">164</a></span><span class="t">                <span class="key">raise</span> <span class="nam">ValidationError</span><span class="op">(</span><span class="str">"File does not exist"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t165" href="#t165">165</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t166" href="#t166">166</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">v</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t166" href="#t166">166</a></span><span class="t">            <span class="key">if</span> <span class="key">not</span> <span class="nam">v</span><span class="op">.</span><span class="nam">is_file</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t167" href="#t167">167</a></span><span class="t">                <span class="key">raise</span> <span class="nam">ValidationError</span><span class="op">(</span><span class="str">"File does not exist"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t168" href="#t168">168</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t169" href="#t169">169</a></span><span class="t">    <span class="op">@</span><span class="nam">validator</span><span class="op">(</span><span class="str">"authors"</span><span class="op">,</span> <span class="str">"maintainers"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -265,12 +265,12 @@
 <footer>
     <div class="content">
         <p>
-            <a id="prevFileLink" class="nav" href="d_22470fc7858cbfa7_core_py.html">&#xab; prev</a> &nbsp; &nbsp;
+            <a id="prevFileLink" class="nav" href="d_22470fc7858cbfa7___init___py.html">&#xab; prev</a> &nbsp; &nbsp;
             <a id="indexLink" class="nav" href="covindex.html">&Hat; index</a> &nbsp; &nbsp;
-            <a id="nextFileLink" class="nav" href="d_22470fc7858cbfa7_poetry_py.html">&#xbb; next</a>
+            <a id="nextFileLink" class="nav" href="d_22470fc7858cbfa7_writer_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-06-20 07:49 +0000
+            created at 2023-06-22 08:17 +0000
         </p>
     </div>
 </footer>

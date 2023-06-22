@@ -562,36 +562,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cff/core/" class="md-nav__link">
-        core
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cff/utils/" class="md-nav__link">
-        utils
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cff/validate/" class="md-nav__link">
-        validate
+      <a href="../../cff/writer/" class="md-nav__link">
+        writer
       </a>
     </li>
   
@@ -901,6 +873,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#somesy.core.core.load_somesy_content" class="md-nav__link">
+    load_somesy_content()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#somesy.core.core.load_pyproject_content" class="md-nav__link">
+    load_pyproject_content()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#somesy.core.core.get_project_metadata" class="md-nav__link">
     get_project_metadata()
   </a>
@@ -910,13 +896,6 @@
         <li class="md-nav__item">
   <a href="#somesy.core.core.get_somesy_cli_config" class="md-nav__link">
     get_somesy_cli_config()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#somesy.core.core.get_input_content" class="md-nav__link">
-    get_input_content()
   </a>
   
 </li>
@@ -957,6 +936,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
         models
       </a>
@@ -985,8 +978,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../utils/" class="md-nav__link">
-        utils
+      <a href="../writer/" class="md-nav__link">
+        writer
       </a>
     </li>
   
@@ -1053,20 +1046,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../pyproject/core/" class="md-nav__link">
-        core
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../pyproject/models/" class="md-nav__link">
         models
       </a>
@@ -1081,36 +1060,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../pyproject/poetry/" class="md-nav__link">
-        poetry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../pyproject/setuptools/" class="md-nav__link">
-        setuptools
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../pyproject/utils/" class="md-nav__link">
-        utils
+      <a href="../../pyproject/writer/" class="md-nav__link">
+        writer
       </a>
     </li>
   
@@ -1267,6 +1218,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#somesy.core.core.load_somesy_content" class="md-nav__link">
+    load_somesy_content()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#somesy.core.core.load_pyproject_content" class="md-nav__link">
+    load_pyproject_content()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#somesy.core.core.get_project_metadata" class="md-nav__link">
     get_project_metadata()
   </a>
@@ -1276,13 +1241,6 @@
         <li class="md-nav__item">
   <a href="#somesy.core.core.get_somesy_cli_config" class="md-nav__link">
     get_somesy_cli_config()
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#somesy.core.core.get_input_content" class="md-nav__link">
-    get_input_content()
   </a>
   
 </li>
@@ -1351,6 +1309,204 @@
 
 
 
+<h2 id="somesy.core.core.load_somesy_content" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">load_somesy_content</span>
+
+
+<a href="#somesy.core.core.load_somesy_content" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">load_somesy_content</span><span class="p">(</span>
+    <span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TOMLDocument</span><span class="p">]</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Load somesy file content if a valid file.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_path</code></td>
+          <td>
+                <code><span title="pathlib.Path">Path</span></code>
+          </td>
+          <td><p>input path. Must have somesy in the name and be a TOML file.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="tomlkit.TOMLDocument">TOMLDocument</span>]</code>
+          </td>
+          <td><p>TOMLDocument object if the input file is a valid somesy input file, otherwise None</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/core/core.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_somesy_content</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TOMLDocument</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load somesy file content if a valid file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_path (Path): input path. Must have somesy in the name and be a TOML file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TOMLDocument object if the input file is a valid somesy input file, otherwise None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">input_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.toml&quot;</span> <span class="ow">and</span> <span class="s2">&quot;somesy&quot;</span> <span class="ow">in</span> <span class="n">input_path</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">input_content</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">input_content</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">input_content</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="somesy.core.core.load_pyproject_content" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">load_pyproject_content</span>
+
+
+<a href="#somesy.core.core.load_pyproject_content" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">load_pyproject_content</span><span class="p">(</span>
+    <span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TOMLDocument</span><span class="p">]</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Load pyproject file content if a valid file.</p>
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>input_path</code></td>
+          <td>
+                <code><span title="pathlib.Path">Path</span></code>
+          </td>
+          <td><p>input path. Must have pyproject in the name and be a TOML file.</p></td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="tomlkit.TOMLDocument">TOMLDocument</span>]</code>
+          </td>
+          <td><p>TOMLDocument object if the input file is a valid pyproject input file, otherwise None</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/core/core.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">load_pyproject_content</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TOMLDocument</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load pyproject file content if a valid file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_path (Path): input path. Must have pyproject in the name and be a TOML file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        TOMLDocument object if the input file is a valid pyproject input file, otherwise None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">input_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.toml&quot;</span> <span class="ow">and</span> <span class="s2">&quot;pyproject&quot;</span> <span class="ow">in</span> <span class="n">input_path</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">input_content</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">input_content</span> <span class="ow">and</span> <span class="s2">&quot;somesy&quot;</span> <span class="ow">in</span> <span class="n">input_content</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="n">input_content</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
 <h2 id="somesy.core.core.get_project_metadata" class="doc doc-heading">
         <span class="doc doc-object-name doc-function-name">get_project_metadata</span>
 
@@ -1407,17 +1563,17 @@
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/core.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_project_metadata</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectMetadata</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_project_metadata</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectMetadata</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return project metadata to from different sources as a simple dict. Currently, only pyproject.toml inputs are supported.</span>
 
 <span class="sd">    Args:</span>
@@ -1426,7 +1582,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        project metadata input to sync output files</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">content</span> <span class="o">=</span> <span class="n">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">_get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_extract_metadata</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
@@ -1496,20 +1652,20 @@ If the input file is not a valid somesy input file or if the file is not a TOML 
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/core.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_somesy_cli_config</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomesyConfig</span><span class="p">]:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_somesy_cli_config</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomesyConfig</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load somesy cli config from config file.</span>
 
 <span class="sd">    Given a path to a TOML file, this function reads the file and extracts the somesy config from it.</span>
@@ -1521,144 +1677,8 @@ If the input file is not a valid somesy input file or if the file is not a TOML 
 <span class="sd">    Returns:</span>
 <span class="sd">        somesy config if it exists in the input file, otherwise None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">content</span> <span class="o">=</span> <span class="n">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">_get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_extract_cli_config</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
-<h2 id="somesy.core.core.get_input_content" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">get_input_content</span>
-
-
-<a href="#somesy.core.core.get_input_content" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TOMLDocument</span>
-</code></pre></div>
-
-  <div class="doc doc-contents ">
-  
-      <p>Read contents of a somesy input file.</p>
-<p>Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.
-The function checks if the file is a valid somesy input file by checking its name and content.
-If the file is not a valid somesy input file, the function raises a ValueError.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>path</code></td>
-          <td>
-                <code><span title="pathlib.Path">Path</span></code>
-          </td>
-          <td><p>path to the input file</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Returns:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code><span title="tomlkit.TOMLDocument">TOMLDocument</span></code>
-          </td>
-          <td><p>the content of the input file as a TOMLDocument object</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-  <p><strong>Raises:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td>
-                <code>ValueError</code>
-          </td>
-          <td><p>if the input file is not a valid somesy input file or if the file is not a TOML file.</p></td>
-        </tr>
-    </tbody>
-  </table>
-
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/core/core.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TOMLDocument</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read contents of a somesy input file.</span>
-
-<span class="sd">    Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.</span>
-<span class="sd">    The function checks if the file is a valid somesy input file by checking its name and content.</span>
-<span class="sd">    If the file is not a valid somesy input file, the function raises a ValueError.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        path (Path): path to the input file</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        the content of the input file as a TOMLDocument object</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">input_content</span> <span class="o">=</span> <span class="n">load_somesy_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">input_content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">input_content</span>
-
-    <span class="n">input_content</span> <span class="o">=</span> <span class="n">load_pyproject_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">input_content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">input_content</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">][</span><span class="s2">&quot;somesy&quot;</span><span class="p">]</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported input file.&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
@@ -1725,30 +1745,30 @@ If the file is not a valid somesy input file, the function raises a ValueError.<
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/core.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_somesy_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">validate_somesy_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate somesy input file.</span>
 
 <span class="sd">    Args:</span>

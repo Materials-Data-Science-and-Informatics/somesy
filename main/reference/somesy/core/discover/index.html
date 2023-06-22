@@ -16,7 +16,7 @@
         <link rel="prev" href="../core/">
       
       
-        <link rel="next" href="../models/">
+        <link rel="next" href="../log/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
@@ -562,36 +562,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../cff/core/" class="md-nav__link">
-        core
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cff/utils/" class="md-nav__link">
-        utils
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../cff/validate/" class="md-nav__link">
-        validate
+      <a href="../../cff/writer/" class="md-nav__link">
+        writer
       </a>
     </li>
   
@@ -936,6 +908,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../log/" class="md-nav__link">
+        log
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../models/" class="md-nav__link">
         models
       </a>
@@ -964,8 +950,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../utils/" class="md-nav__link">
-        utils
+      <a href="../writer/" class="md-nav__link">
+        writer
       </a>
     </li>
   
@@ -1032,20 +1018,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../pyproject/core/" class="md-nav__link">
-        core
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../pyproject/models/" class="md-nav__link">
         models
       </a>
@@ -1060,36 +1032,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../pyproject/poetry/" class="md-nav__link">
-        poetry
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../pyproject/setuptools/" class="md-nav__link">
-        setuptools
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../pyproject/utils/" class="md-nav__link">
-        utils
+      <a href="../../pyproject/writer/" class="md-nav__link">
+        writer
       </a>
     </li>
   
@@ -1335,7 +1279,7 @@
         <tr>
           <td><code>input_file</code></td>
           <td>
-                <code><span title="typing.Optional">Optional</span>[str]</code>
+                <code><span title="typing.Optional">Optional</span>[<span title="pathlib.Path">Path</span>]</code>
           </td>
           <td><p>somesy configuration file path. Defaults to None.</p></td>
           <td>
@@ -1414,7 +1358,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check given input file path. If not given, find somesy configuration file path from default list.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input_file (Optional[str], optional): somesy configuration file path. Defaults to None.</span>
+<span class="sd">        input_file: somesy configuration file path. Defaults to None.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        FileNotFoundError: Raised if no somesy input file found from cli input or the defaults.</span>
@@ -1493,13 +1437,13 @@
         
         
           
-          <a href="../models/" class="md-footer__link md-footer__link--next" aria-label="Next: models" rel="next">
+          <a href="../log/" class="md-footer__link md-footer__link--next" aria-label="Next: log" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                models
+                log
               </div>
             </div>
             <div class="md-footer__button md-icon">
