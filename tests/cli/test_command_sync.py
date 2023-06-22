@@ -36,8 +36,8 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     result = runner.invoke(
         app,
         [
+            "-vvv",
             "sync",
-            "-d",
             "-i",
             str(input_file),
             "-c",
@@ -60,10 +60,10 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     result = runner.invoke(
         app,
         [
+            "-vvv",
             "sync",
             "-i",
             str(input_file_reject),
-            "-d",
         ],
     )
     assert result.exit_code == 1

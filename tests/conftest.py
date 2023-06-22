@@ -2,12 +2,12 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.log import set_logger
+from somesy.core.log import SomesyLogLevel, set_log_level
 
 
 @pytest.fixture(scope="session", autouse=True)
 def init_somesy_logger():
-    set_logger(debug=True)
+    set_log_level(SomesyLogLevel.DEBUG)
 
 
 @pytest.fixture

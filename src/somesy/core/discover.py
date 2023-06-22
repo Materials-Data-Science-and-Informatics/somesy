@@ -3,9 +3,11 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from .config import INPUT_FILES_ORDERED
-
 logger = logging.getLogger("somesy")
+
+
+INPUT_FILES_ORDERED = [".somesy.toml", "pyproject.toml"]
+"""Input files ordered by priority for discovery."""
 
 
 def discover_input(input_file: Optional[Path] = None) -> Path:

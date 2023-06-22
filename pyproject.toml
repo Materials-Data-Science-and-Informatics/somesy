@@ -2,7 +2,7 @@
 name = "somesy"
 version = "0.1.0"
 description = "A cli tool for synchronizing CITATION.CFF with project files."
-authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
+authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>", "Anton Pirogov <a.pirogov@fz-juelich.de>"]
 maintainers = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
 license = "MIT"
 

@@ -7,7 +7,7 @@ import typer
 
 from somesy.commands import init_config
 from somesy.core.discover import discover_input
-from somesy.core.log import set_logger
+from somesy.core.log import SomesyLogLevel, set_log_level
 
 logger = logging.getLogger("somesy")
 app = typer.Typer()
@@ -16,7 +16,6 @@ app = typer.Typer()
 @app.command()
 def config():
     """Set CLI configs for somesy."""
-    set_logger(debug=False, verbose=False, info=True)
     try:
         # check if input file exists, if not, try to find it from default list
         input_file_default = discover_input()
@@ -57,10 +56,13 @@ def config():
         )
         options["verbose"] = typer.confirm("Do you want to show verbose logs?")
         options["debug"] = typer.confirm("Do you want to show debug logs?")
-        set_logger(
-            debug=options["debug"],
-            verbose=options["verbose"],
-            info=options["show_info"],
+
+        set_log_level(
+            SomesyLogLevel.from_flags(
+                debug=options["debug"],
+                verbose=options["verbose"],
+                info=options["show_info"],
+            )
         )
 
         logger.debug(f"CLI options entered: {options}")
