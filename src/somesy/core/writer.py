@@ -85,7 +85,7 @@ class ProjectMetadataWriter(ABC):
         """Get a property from the data.
 
         Override this to e.g. rewrite the retrieved key
-        (e.g. if everything relevant is in some suboject).
+        (e.g. if everything relevant is in some subobject).
         """
         key_path = [key] if isinstance(key, str) else key
 
@@ -101,7 +101,7 @@ class ProjectMetadataWriter(ABC):
         """Set a property in the data.
 
         Override this to e.g. rewrite the retrieved key
-        (e.g. if everything relevant is in some suboject).
+        (e.g. if everything relevant is in some subobject).
         """
         if not value:
             return
