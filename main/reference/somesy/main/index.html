@@ -820,20 +820,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../core/config/" class="md-nav__link">
-        config
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../core/core/" class="md-nav__link">
         core
       </a>
@@ -962,8 +948,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#somesy.main.version_callback" class="md-nav__link">
-    version_callback()
+  <a href="#somesy.main.version" class="md-nav__link">
+    version()
   </a>
   
 </li>
@@ -1195,8 +1181,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#somesy.main.version_callback" class="md-nav__link">
-    version_callback()
+  <a href="#somesy.main.version" class="md-nav__link">
+    version()
   </a>
   
 </li>
@@ -1265,26 +1251,28 @@
 
 
 
-<h2 id="somesy.main.version_callback" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">version_callback</span>
+<h2 id="somesy.main.version" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">version</span>
 
 
-<a href="#somesy.main.version_callback" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">version_callback</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span>
+<a href="#somesy.main.version" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">version</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>Print version information.</p>
+      <p>Show somesy version and exit.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/main.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">version_callback</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print version information.&quot;&quot;&quot;</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Show somesy version and exit.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
         <span class="n">typer</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;somesy version: </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">()</span>
@@ -1306,28 +1294,116 @@
 <div class="highlight"><pre><span></span><code><span class="n">common</span><span class="p">(</span>
     <span class="n">ctx</span><span class="p">:</span> <span class="n">typer</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
     <span class="n">version</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">version_callback</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--version&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">version</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--info&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable basic logging.&quot;</span>
+    <span class="p">),</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-vv&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable verbose logging.&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-vvv&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable debug logging.&quot;</span><span class="p">,</span>
     <span class="p">),</span>
 <span class="p">)</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>Response for version information.</p>
+      <p>General flags and arguments for somesy.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/main.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">()</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">common</span><span class="p">(</span>
     <span class="n">ctx</span><span class="p">:</span> <span class="n">typer</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
-    <span class="n">version</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">version_callback</span><span class="p">),</span>
+    <span class="n">version</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="n">version</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="n">version</span>
+    <span class="p">),</span>
+    <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--info&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable basic logging.&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-vv&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable verbose logging.&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-vvv&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Enable debug logging.&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Response for version information.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;General flags and arguments for somesy.&quot;&quot;&quot;</span>
+    <span class="n">init_log</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="nb">bool</span><span class="p">,</span> <span class="p">[</span><span class="n">show_info</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">debug</span><span class="p">])))</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">typer</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span>
+            <span class="s2">&quot;Only one of --info, --verbose or --debug may be set!&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">show_info</span> <span class="ow">or</span> <span class="n">verbose</span> <span class="ow">or</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="c1"># NOTE: only explicitly setting log level if a flag is passed,</span>
+        <span class="c1"># in order to distinguish from using the &quot;default log level&quot;</span>
+        <span class="c1"># (needed to check if the user did override the log level as a CLI flag)</span>
+        <span class="n">set_log_level</span><span class="p">(</span>
+            <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">from_flags</span><span class="p">(</span><span class="n">info</span><span class="o">=</span><span class="n">show_info</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">)</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>

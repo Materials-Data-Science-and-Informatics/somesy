@@ -866,20 +866,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../core/config/" class="md-nav__link">
-        config
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../core/core/" class="md-nav__link">
         core
       </a>
@@ -1325,24 +1311,6 @@
         <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;--show-info&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Get basic output (somesy is quiet by default) (default: False)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Verbose output (default: False)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Debug output (default: False)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 </code></pre></div>
 
@@ -1352,9 +1320,7 @@
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 21</span>
 <span class="normal"> 22</span>
 <span class="normal"> 23</span>
 <span class="normal"> 24</span>
@@ -1508,14 +1474,7 @@
 <span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
     <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1583,33 +1542,17 @@
         <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">show_info</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;--show-info&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-s&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Get basic output (somesy is quiet by default) (default: False)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;--verbose&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Verbose output (default: False)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
-    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Debug output (default: False)&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync project metadata input with metadata files.&quot;&quot;&quot;</span>
-    <span class="n">set_logger</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="n">show_info</span><span class="p">)</span>
-
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># ---------------</span>
         <span class="c1"># config assembly</span>
 
-        <span class="c1"># config from CLI</span>
+        <span class="c1"># cli_log_level is None if the user did not pass a log level (-&gt; &quot;default&quot;)</span>
+        <span class="n">cli_log_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomesyLogLevel</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_log_level</span><span class="p">()</span>
+
+        <span class="c1"># config from CLI (merged with possibly set CLI flags for logging)</span>
+        <span class="n">curr_log_level</span><span class="p">:</span> <span class="n">SomesyLogLevel</span> <span class="o">=</span> <span class="n">cli_log_level</span> <span class="ow">or</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">SILENT</span>
         <span class="n">passed_cli_args</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span>
@@ -1619,9 +1562,9 @@
                 <span class="n">pyproject_file</span><span class="o">=</span><span class="n">pyproject_file</span><span class="p">,</span>
                 <span class="n">no_sync_codemeta</span><span class="o">=</span><span class="n">no_sync_codemeta</span><span class="p">,</span>
                 <span class="n">codemeta_file</span><span class="o">=</span><span class="n">codemeta_file</span><span class="p">,</span>
-                <span class="n">show_info</span><span class="o">=</span><span class="n">show_info</span><span class="p">,</span>
-                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span>
+                <span class="n">show_info</span><span class="o">=</span><span class="n">curr_log_level</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">curr_log_level</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">VERBOSE</span><span class="p">,</span>
+                <span class="n">debug</span><span class="o">=</span><span class="n">curr_log_level</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
             <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">}</span>
@@ -1629,31 +1572,38 @@
         <span class="n">cli_conf</span> <span class="o">=</span> <span class="n">cli_conf</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLI config (excluding defaults):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">cli_conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># config from file</span>
+        <span class="c1"># ----</span>
+        <span class="c1"># now try to get config from a config file</span>
         <span class="c1"># check if input file exists, if not, try to find it from default list</span>
         <span class="n">somesy_conf_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
         <span class="n">file_conf</span> <span class="o">=</span> <span class="n">get_somesy_cli_config</span><span class="p">(</span><span class="n">somesy_conf_file</span><span class="p">)</span>
+
+        <span class="c1"># convert logging flags into somesy log level (for comparison)</span>
+        <span class="n">config_log_level</span> <span class="o">=</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">from_flags</span><span class="p">(</span>
+            <span class="n">info</span><span class="o">=</span><span class="n">file_conf</span><span class="o">.</span><span class="n">show_info</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">file_conf</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="n">file_conf</span><span class="o">.</span><span class="n">debug</span>
+        <span class="p">)</span>
+        <span class="c1"># convert into dict</span>
         <span class="n">file_conf</span> <span class="o">=</span> <span class="n">file_conf</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File config (excluding defaults):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">file_conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="c1"># prioritized combination</span>
+        <span class="c1"># prioritized combination of config settings (cli overrides config file)</span>
         <span class="n">conf</span> <span class="o">=</span> <span class="n">SomesyConfig</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">file_conf</span><span class="p">,</span> <span class="o">**</span><span class="n">cli_conf</span><span class="p">})</span>
+
+        <span class="c1"># if the log level was not initialized using a common CLI flag yet,</span>
+        <span class="c1"># set it according to the loaded configuration</span>
+        <span class="k">if</span> <span class="n">cli_log_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">set_log_level</span><span class="p">(</span><span class="n">config_log_level</span><span class="p">)</span>
 
         <span class="c1"># --------</span>
 
-        <span class="n">set_logger</span><span class="p">(</span>  <span class="c1"># re-init logger (level could be overridden)</span>
-            <span class="n">debug</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">verbose</span><span class="p">,</span>
-            <span class="n">info</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">show_info</span><span class="p">,</span>
-        <span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined config (Defaults + File + CLI):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># info output</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing project metadata...[/bold green]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing project metadata...[/bold green]&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Files to sync:&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]pyproject.toml[/italic]</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  - [italic]pyproject.toml[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -1661,7 +1611,7 @@
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]codemeta.json[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;  - [italic]codemeta.json[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="si">}</span><span class="s2">[/grey]</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="c1"># ----------</span>

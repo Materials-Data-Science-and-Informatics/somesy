@@ -866,20 +866,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../core/config/" class="md-nav__link">
-        config
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../core/core/" class="md-nav__link">
         core
       </a>
@@ -1327,10 +1313,11 @@
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set CLI configs for somesy.&quot;&quot;&quot;</span>
-    <span class="n">set_logger</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># check if input file exists, if not, try to find it from default list</span>
         <span class="n">input_file_default</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">()</span>
@@ -1371,10 +1358,13 @@
         <span class="p">)</span>
         <span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span><span class="s2">&quot;Do you want to show verbose logs?&quot;</span><span class="p">)</span>
         <span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span><span class="s2">&quot;Do you want to show debug logs?&quot;</span><span class="p">)</span>
-        <span class="n">set_logger</span><span class="p">(</span>
-            <span class="n">debug</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">],</span>
-            <span class="n">verbose</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">],</span>
-            <span class="n">info</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">],</span>
+
+        <span class="n">set_log_level</span><span class="p">(</span>
+            <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">from_flags</span><span class="p">(</span>
+                <span class="n">debug</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">],</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">],</span>
+                <span class="n">info</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
         <span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLI options entered: </span><span class="si">{</span><span class="n">options</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

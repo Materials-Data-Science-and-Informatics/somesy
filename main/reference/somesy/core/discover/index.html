@@ -822,20 +822,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../config/" class="md-nav__link">
-        config
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../core/" class="md-nav__link">
         core
       </a>
@@ -882,6 +868,13 @@
         <li class="md-nav__item">
   <a href="#somesy.core.discover" class="md-nav__link">
     somesy.core.discover
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#somesy.core.discover.INPUT_FILES_ORDERED" class="md-nav__link">
+    INPUT_FILES_ORDERED
   </a>
   
 </li>
@@ -1190,6 +1183,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#somesy.core.discover.INPUT_FILES_ORDERED" class="md-nav__link">
+    INPUT_FILES_ORDERED
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#somesy.core.discover.discover_input" class="md-nav__link">
     discover_input()
   </a>
@@ -1246,6 +1246,29 @@
 
 
 
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h2 id="somesy.core.discover.INPUT_FILES_ORDERED" class="doc doc-heading">
+        <span class="doc doc-object-name doc-attribute-name">INPUT_FILES_ORDERED</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-module-attribute"><code>module-attribute</code></small>
+  </span>
+
+<a href="#somesy.core.discover.INPUT_FILES_ORDERED" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">INPUT_FILES_ORDERED</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.somesy.toml&#39;</span><span class="p">,</span> <span class="s1">&#39;pyproject.toml&#39;</span><span class="p">]</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Input files ordered by priority for discovery.</p>
+  </div>
+
+</div>
 
 
 
@@ -1327,9 +1350,7 @@
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/discover.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
@@ -1354,7 +1375,9 @@
 <span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
-<span class="normal">38</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check given input file path. If not given, find somesy configuration file path from default list.</span>
 
 <span class="sd">    Args:</span>

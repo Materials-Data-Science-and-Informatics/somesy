@@ -116,11 +116,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/core/config/</loc>
-         <lastmod>2023-06-22</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/core/core/</loc>
          <lastmod>2023-06-22</lastmod>
          <changefreq>daily</changefreq>
