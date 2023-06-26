@@ -675,6 +675,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#somesy.cli.sync.run_sync" class="md-nav__link">
+    run_sync()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1182,6 +1189,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#somesy.cli.sync.run_sync" class="md-nav__link">
+    run_sync()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1447,34 +1461,7 @@
 <span class="normal">145</span>
 <span class="normal">146</span>
 <span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
     <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1594,41 +1581,73 @@
         <span class="k">if</span> <span class="n">cli_log_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">set_log_level</span><span class="p">(</span><span class="n">config_log_level</span><span class="p">)</span>
 
-        <span class="c1"># --------</span>
-
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined config (Defaults + File + CLI):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="c1"># info output</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing project metadata...[/bold green]&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Files to sync:&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]pyproject.toml[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]CITATION.cff[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
-            <span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;  - [italic]codemeta.json[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="si">}</span><span class="s2">[/grey]</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
-
-        <span class="c1"># ----------</span>
-        <span class="c1"># sync files (passing paths only if the target is not disabled)</span>
-        <span class="n">sync_command</span><span class="p">(</span>
-            <span class="n">input_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span>
-            <span class="n">pyproject_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">cff_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">codemeta_file</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Syncing completed.[/bold green]&quot;</span><span class="p">)</span>
+        <span class="c1"># --------</span>
+        <span class="n">run_sync</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red]Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">[/bold red]&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[red]</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">[/red]&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="somesy.cli.sync.run_sync" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">run_sync</span>
+
+
+<a href="#somesy.cli.sync.run_sync" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">run_sync</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Write log messages and run synchronization based on passed config.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write log messages and run synchronization based on passed config.&quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Synchronizing project metadata...[/bold green]&quot;</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Files to sync:&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;  - [italic]pyproject.toml[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - [italic]CITATION.cff[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;  - [italic]codemeta.json[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="si">}</span><span class="s2">[/grey]</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+    <span class="c1"># ----</span>
+    <span class="n">sync_command</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+    <span class="c1"># ----</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Metadata synchronization completed.[/bold green]&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>

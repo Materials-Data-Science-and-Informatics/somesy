@@ -1244,72 +1244,12 @@
 
 
 <a href="#somesy.commands.sync.sync" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">sync</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">sync</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
       <p>Sync selected metadata files with given input file.</p>
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>input_file</code></td>
-          <td>
-                <code><span title="pathlib.Path">Path</span></code>
-          </td>
-          <td><p>input file path to read project metadata from.</p></td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-        <tr>
-          <td><code>pyproject_file</code></td>
-          <td>
-                <code><span title="pathlib.Path">Path</span></code>
-          </td>
-          <td><p>pyproject file to read project metadata from.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>cff_file</code></td>
-          <td>
-                <code><span title="pathlib.Path">Path</span></code>
-          </td>
-          <td><p>CFF file path if wanted to be synced. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-        <tr>
-          <td><code>codemeta_file</code></td>
-          <td>
-                <code><span title="pathlib.Path">Path</span></code>
-          </td>
-          <td><p>codemeta file path if wanted to be synced. Defaults to None.</p></td>
-          <td>
-                <code>None</code>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/commands/sync.py</code></summary>
@@ -1328,48 +1268,22 @@
 <span class="normal">28</span>
 <span class="normal">29</span>
 <span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        input_file (Path): input file path to read project metadata from.</span>
-<span class="sd">        pyproject_file (Path, optional): pyproject file to read project metadata from.</span>
-<span class="sd">        cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.</span>
-<span class="sd">        codemeta_file (Path, optional): codemeta file path if wanted to be synced. Defaults to None.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_project_metadata</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.&quot;&quot;&quot;</span>
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">get_project_metadata</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">&quot;Project metadata: </span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_sync_python</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">pyproject_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
+        <span class="n">_sync_python</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">_sync_cff</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">cff_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
+        <span class="n">_sync_cff</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="p">)</span>
 
     <span class="c1"># NOTE: codemeta should always be last, it uses (some of) the other targets</span>
-    <span class="k">if</span> <span class="n">codemeta_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">update_codemeta</span><span class="p">(</span><span class="n">codemeta_file</span><span class="p">,</span> <span class="n">cff_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
+        <span class="n">_sync_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>

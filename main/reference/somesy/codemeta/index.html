@@ -1132,6 +1132,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#somesy.codemeta.collect_cm_sources" class="md-nav__link">
+    collect_cm_sources()
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#somesy.codemeta.update_codemeta" class="md-nav__link">
     update_codemeta()
   </a>
@@ -1195,25 +1202,22 @@
 
 
 
-<h2 id="somesy.codemeta.update_codemeta" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">update_codemeta</span>
+<h2 id="somesy.codemeta.collect_cm_sources" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">collect_cm_sources</span>
 
 
-<a href="#somesy.codemeta.update_codemeta" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">update_codemeta</span><span class="p">(</span>
-    <span class="n">cm_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">cff_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
+<a href="#somesy.codemeta.collect_cm_sources" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>Generate or update codemeta file based on sources that somesy supports.</p>
-<p>Returns True if file has been written, False if it was up to date.</p>
+      <p>Assemble list of inputs for codemetapy based on somesy config.</p>
+<p>Returns files that are supported by both somesy and codemetapy and are enabled for somesy.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/codemeta/__init__.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">12</span>
-<span class="normal">13</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
 <span class="normal">14</span>
 <span class="normal">15</span>
 <span class="normal">16</span>
@@ -1227,10 +1231,47 @@
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble list of inputs for codemetapy based on somesy config.</span>
+
+<span class="sd">    Returns files that are supported by both somesy and codemetapy and are enabled for somesy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cm_sources</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span>
+        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+    <span class="p">):</span>
+        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="p">)</span>
+    <span class="c1"># NOTE: we don&#39;t add CFF directly, because it must be handled separately</span>
+    <span class="c1"># NOTE: add other suitable somesy targets / codemeta sources (except CFF and codemeta) here</span>
+    <span class="k">return</span> <span class="n">cm_sources</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="somesy.codemeta.update_codemeta" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">update_codemeta</span>
+
+
+<a href="#somesy.codemeta.update_codemeta" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">update_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Generate or update codemeta file based on sources that somesy supports.</p>
+<p>Returns True if file has been written, False if it was up to date.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/codemeta/__init__.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
 <span class="normal">33</span>
@@ -1243,38 +1284,30 @@
 <span class="normal">40</span>
 <span class="normal">41</span>
 <span class="normal">42</span>
-<span class="normal">43</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_codemeta</span><span class="p">(</span><span class="n">cm_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">cff_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate or update codemeta file based on sources that somesy supports.</span>
 
 <span class="sd">    Returns True if file has been written, False if it was up to date.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">log</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Updating codemeta.json file.&quot;</span><span class="p">)</span>
+    <span class="n">cm_sources</span> <span class="o">=</span> <span class="n">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
 
-    <span class="c1"># NOTE: other files that should be listed here are files</span>
-    <span class="c1"># * supported by somesy, and</span>
-    <span class="c1"># * enabled by somesy config (created/synced), and</span>
-    <span class="c1"># * supported by codemetapy</span>
-    <span class="n">cm_sources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">]</span>
+    <span class="c1"># if cff file is given, convert it to codemeta tempfile and pass as extra input</span>
+    <span class="n">temp_cff_cm</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span> <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">temp_cff_cm</span> <span class="o">=</span> <span class="n">cff_codemeta_tempfile</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="p">)</span>
+        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">temp_cff_cm</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 
-    <span class="c1"># if cff file is given, convert it to codemeta and pass as extra input</span>
-    <span class="n">temp_cff_cm</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">temp_cff_cm</span> <span class="o">=</span> <span class="n">cff_codemeta_tempfile</span><span class="p">(</span><span class="n">cff_file</span><span class="p">)</span>
-        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_cff_cm</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="c1"># run codemetapy</span>
+    <span class="k">with</span> <span class="n">temp_cff_cm</span><span class="p">:</span>
+        <span class="n">cm_harvest</span> <span class="o">=</span> <span class="n">gen_codemeta</span><span class="p">(</span><span class="n">cm_sources</span><span class="p">)</span>
 
-    <span class="c1"># harvest suitable files</span>
-    <span class="n">cm_harvest</span> <span class="o">=</span> <span class="n">gen_codemeta</span><span class="p">(</span><span class="n">cm_sources</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">temp_cff_cm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># close + auto-remove temp file</span>
-        <span class="n">temp_cff_cm</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">update_codemeta_file</span><span class="p">(</span><span class="n">cm_file</span><span class="p">,</span> <span class="n">cm_harvest</span><span class="p">):</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;New codemeta graph written to </span><span class="si">{</span><span class="n">cm_file</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">log</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Codemeta graph unchanged, keeping old </span><span class="si">{</span><span class="n">cm_file</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">False</span>
+    <span class="c1"># check output and write file if needed</span>
+    <span class="k">return</span> <span class="n">update_codemeta_file</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="p">,</span> <span class="n">cm_harvest</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>

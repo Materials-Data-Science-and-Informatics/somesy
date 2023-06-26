@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="d_52da451127691ee7___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-06-22 11:29 +0000
+            created at 2023-06-26 09:40 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -183,7 +183,7 @@
     <p class="run"><span class="n"><a id="t101" href="#t101">101</a></span><span class="t"><span class="key">def</span> <span class="nam">cff_codemeta_tempfile</span><span class="op">(</span><span class="nam">cff_file</span><span class="op">:</span> <span class="nam">Path</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t102" href="#t102">102</a></span><span class="t">    <span class="str">"""Returns named temporary file with codemeta export of citation file."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t103" href="#t103">103</a></span><span class="t">    <span class="nam">cm_cff</span> <span class="op">=</span> <span class="nam">cff_to_codemeta</span><span class="op">(</span><span class="nam">cff_file</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t104" href="#t104">104</a></span><span class="t">    <span class="nam">temp_cff_cm</span> <span class="op">=</span> <span class="nam">NamedTemporaryFile</span><span class="op">(</span><span class="nam">suffix</span><span class="op">=</span><span class="str">".json"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t104" href="#t104">104</a></span><span class="t">    <span class="nam">temp_cff_cm</span> <span class="op">=</span> <span class="nam">NamedTemporaryFile</span><span class="op">(</span><span class="nam">prefix</span><span class="op">=</span><span class="str">"cff_cm_"</span><span class="op">,</span> <span class="nam">suffix</span><span class="op">=</span><span class="str">".json"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t105" href="#t105">105</a></span><span class="t">    <span class="nam">temp_cff_cm</span><span class="op">.</span><span class="nam">write</span><span class="op">(</span><span class="nam">json</span><span class="op">.</span><span class="nam">dumps</span><span class="op">(</span><span class="nam">cm_cff</span><span class="op">)</span><span class="op">.</span><span class="nam">encode</span><span class="op">(</span><span class="str">"utf-8"</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t106" href="#t106">106</a></span><span class="t">    <span class="nam">temp_cff_cm</span><span class="op">.</span><span class="nam">flush</span><span class="op">(</span><span class="op">)</span>  <span class="com"># needed, or it won't be readable yet</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t107" href="#t107">107</a></span><span class="t">    <span class="key">return</span> <span class="nam">temp_cff_cm</span>&nbsp;</span><span class="r"></span></p>
@@ -196,7 +196,7 @@
             <a id="nextFileLink" class="nav" href="d_52da451127691ee7___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-06-22 11:29 +0000
+            created at 2023-06-26 09:40 +0000
         </p>
     </div>
 </footer>
