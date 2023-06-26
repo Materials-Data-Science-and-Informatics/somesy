@@ -138,38 +138,31 @@ def sync(
         if cli_log_level is None:
             set_log_level(config_log_level)
 
-        # --------
-
         logger.debug(f"Combined config (Defaults + File + CLI):\n{pretty_repr(conf)}")
-
-        # info output
-        logger.info("[bold green]Syncing project metadata...[/bold green]")
-        logger.info("Files to sync:")
-        if not conf.no_sync_pyproject:
-            logger.info(
-                f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
-            )
-        if not conf.no_sync_cff:
-            logger.info(
-                f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]"
-            )
-        if not conf.no_sync_codemeta:
-            logger.info(
-                f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
-            )
-
-        # ----------
-        # sync files (passing paths only if the target is not disabled)
-        sync_command(
-            input_file=conf.input_file,
-            pyproject_file=conf.pyproject_file if not conf.no_sync_pyproject else None,
-            cff_file=conf.cff_file if not conf.no_sync_cff else None,
-            codemeta_file=conf.codemeta_file if not conf.no_sync_codemeta else None,
-        )
-
-        logger.info("[bold green]Syncing completed.[/bold green]")
+        # --------
+        run_sync(conf)
 
     except Exception as e:
         logger.error(f"[bold red]Error: {e}[/bold red]")
         logger.debug(f"[red]{traceback.format_exc()}[/red]")
         raise typer.Exit(code=1)
+
+
+def run_sync(conf: SomesyConfig):
+    """Write log messages and run synchronization based on passed config."""
+    logger.info("[bold green]Synchronizing project metadata...[/bold green]")
+    logger.info("Files to sync:")
+    if not conf.no_sync_pyproject:
+        logger.info(
+            f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
+        )
+    if not conf.no_sync_cff:
+        logger.info(f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]")
+    if not conf.no_sync_codemeta:
+        logger.info(
+            f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
+        )
+    # ----
+    sync_command(conf)
+    # ----
+    logger.info("[bold green]Metadata synchronization completed.[/bold green]")

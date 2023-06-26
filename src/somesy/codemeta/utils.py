@@ -101,7 +101,7 @@ def update_codemeta_file(cm_file: Path, cm_dict: Dict) -> bool:
 def cff_codemeta_tempfile(cff_file: Path):
     """Returns named temporary file with codemeta export of citation file."""
     cm_cff = cff_to_codemeta(cff_file)
-    temp_cff_cm = NamedTemporaryFile(suffix=".json")
+    temp_cff_cm = NamedTemporaryFile(prefix="cff_cm_", suffix=".json")
     temp_cff_cm.write(json.dumps(cm_cff).encode("utf-8"))
     temp_cff_cm.flush()  # needed, or it won't be readable yet
     return temp_cff_cm

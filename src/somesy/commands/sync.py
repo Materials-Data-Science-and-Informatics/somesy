@@ -1,47 +1,34 @@
 """Sync selected metadata files with given input file."""
 import logging
 from pathlib import Path
-from typing import Optional
 
 from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
 from somesy.codemeta import update_codemeta
 from somesy.core.core import ProjectMetadata, get_project_metadata
+from somesy.core.models import SomesyConfig
 from somesy.pyproject.writer import Pyproject
 
 logger = logging.getLogger("somesy")
 
 
-def sync(
-    *,
-    input_file: Path,
-    pyproject_file: Optional[Path] = None,
-    cff_file: Optional[Path] = None,
-    codemeta_file: Optional[Path] = None,
-):
-    """Sync selected metadata files with given input file.
-
-    Args:
-        input_file (Path): input file path to read project metadata from.
-        pyproject_file (Path, optional): pyproject file to read project metadata from.
-        cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
-        codemeta_file (Path, optional): codemeta file path if wanted to be synced. Defaults to None.
-    """
-    metadata = get_project_metadata(input_file)
+def sync(conf: SomesyConfig):
+    """Sync selected metadata files with given input file."""
+    metadata = get_project_metadata(conf.input_file)
     logger.debug(
         f"Project metadata: {pretty_repr(metadata.dict(exclude_defaults=True))}"
     )
 
-    if pyproject_file is not None:
-        _sync_python(metadata, pyproject_file)
+    if not conf.no_sync_pyproject:
+        _sync_python(metadata, conf.pyproject_file)
 
-    if cff_file is not None:
-        _sync_cff(metadata, cff_file)
+    if not conf.no_sync_cff:
+        _sync_cff(metadata, conf.cff_file)
 
     # NOTE: codemeta should always be last, it uses (some of) the other targets
-    if codemeta_file is not None:
-        update_codemeta(codemeta_file, cff_file)
+    if not conf.no_sync_codemeta:
+        _sync_codemeta(conf)
 
 
 def _sync_python(
@@ -78,3 +65,11 @@ def _sync_cff(
     cff.sync(metadata)
     cff.save()
     logger.verbose("Saved synced CITATION.cff file.\n")
+
+
+def _sync_codemeta(conf: SomesyConfig):
+    logger.verbose("Updating codemeta.json file.")
+    if update_codemeta(conf):
+        logger.verbose(f"New codemeta graph written to {conf.codemeta_file}.")
+    else:
+        logger.verbose(f"Codemeta graph unchanged, keeping old {conf.codemeta_file}.")
