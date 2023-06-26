@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from somesy.commands.sync import sync
+from somesy.core.models import SomesyConfig
 
 
 def test_sync(tmp_path, create_poetry_file):
@@ -12,7 +13,10 @@ def test_sync(tmp_path, create_poetry_file):
     create_poetry_file(pyproject_file)
 
     # TEST 1: sync only pyproject.toml
-    sync(input_file=input_file, pyproject_file=pyproject_file)
+    conf = SomesyConfig(
+        input_file=input_file, pyproject_file=pyproject_file, no_sync_cff=True
+    )
+    sync(conf)
     assert pyproject_file.is_file()
     assert cff_file.is_file() is False
 
@@ -20,7 +24,10 @@ def test_sync(tmp_path, create_poetry_file):
     pyproject_file.unlink()
 
     # TEST 2: sync only CITATION.cff
-    sync(input_file=input_file, cff_file=cff_file)
+    conf = SomesyConfig(
+        input_file=input_file, no_sync_pyproject=True, cff_file=cff_file
+    )
+    sync(conf)
     assert pyproject_file.is_file() is False
     assert cff_file.is_file()
 
@@ -31,6 +38,9 @@ def test_sync(tmp_path, create_poetry_file):
     create_poetry_file(pyproject_file)
 
     # TEST 3: sync both pyproject.toml and CITATION.cff
-    sync(input_file=input_file, pyproject_file=pyproject_file, cff_file=cff_file)
+    conf = SomesyConfig(
+        input_file=input_file, pyproject_file=pyproject_file, cff_file=cff_file
+    )
+    sync(conf)
     assert pyproject_file.is_file()
     assert cff_file.is_file()

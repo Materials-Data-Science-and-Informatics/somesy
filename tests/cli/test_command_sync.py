@@ -48,8 +48,9 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
             codemeta_file,
         ],
     )
+    print(result.output)
     assert result.exit_code == 0
-    assert "Syncing completed." in result.stdout
+    assert "Metadata synchronization completed." in result.stdout
     assert not cff_file.is_file()  # disabled in input_file!
     assert pyproject_file.is_file()
     assert codemeta_file.is_file()

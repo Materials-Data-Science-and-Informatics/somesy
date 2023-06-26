@@ -20,6 +20,7 @@ def cff_to_codemeta(cff_file: Path) -> Dict:
 
 def gen_codemeta(sources: List[str], *, with_entrypoints: bool = True) -> Dict:
     """Harvest codemeta LD dict via codemetapy."""
+    log.debug(f"Running codemetapy with sources {sources}")
     with redirect_stderr(StringIO()) as cm_log:
         g, res, args, _ = build(
             inputsources=list(map(str, sources)),
