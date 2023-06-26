@@ -1,5 +1,6 @@
 """Pyproject writers for setuptools and poetry."""
 import logging
+import re
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
@@ -90,6 +91,24 @@ class Poetry(PyprojectCommon):
         """Convert project metadata person object to poetry string for person format "full name <email>."""
         return f"{person.full_name} <{person.email}>"
 
+    @staticmethod
+    def _to_person(person_obj: str) -> Person:
+        """Parse poetry person string to a Person."""
+        m = re.match(r"\s*([^<]+)<([^>]+)>", person_obj)
+        names, mail = (
+            list(map(lambda s: s.strip(), m.group(1).split())),
+            m.group(2).strip(),
+        )
+        # NOTE: for our purposes, does not matter what are given or family names,
+        # we only compare on full_name anyway.
+        return Person(
+            **{
+                "given-names": " ".join(names[:-1]),
+                "family-names": names[-1],
+                "email": mail,
+            }
+        )
+
 
 class SetupTools(PyprojectCommon):
     """Setuptools config file handler parsed from setup.cfg."""
@@ -112,6 +131,20 @@ class SetupTools(PyprojectCommon):
     def _from_person(person: Person):
         """Convert project metadata person object to setuptools dict for person format."""
         return {"name": person.full_name, "email": person.email}
+
+    @staticmethod
+    def _to_person(person_obj) -> Person:
+        """Parse setuptools person string to a Person."""
+        # NOTE: for our purposes, does not matter what are given or family names,
+        # we only compare on full_name anyway.
+        names = list(map(lambda s: s.strip(), person_obj["name"].split()))
+        return Person(
+            **{
+                "given-names": " ".join(names[:-1]),
+                "family-names": names[-1],
+                "email": person_obj["email"].strip(),
+            }
+        )
 
 
 # ----

@@ -1,9 +1,11 @@
 """Core models for the somesy package."""
+import json
 from datetime import date
 from pathlib import Path
 from typing import List, Optional, Union
 
 from pydantic import AnyUrl, BaseModel, Extra, Field, root_validator
+from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
 from .types import ContributionTypeEnum, Country, LicenseEnum
@@ -69,6 +71,32 @@ class Person(BaseModel):
         """Configuration for the Person model."""
 
         extra = Extra.forbid
+        underscore_attrs_are_private = True
+
+    _key_order: List[str] = []
+    """List of keys in the order they should be written in."""
+
+    def _reorder_dict(self, dct):
+        """Return dict with patched key order (according to `self._key_order`).
+
+        Keys in `dct` not listed in `self._key_order` come after all others.
+
+        Used to patch up `dict()` and `json()`.
+        """
+        key_order = self._key_order or []
+        existing = set(key_order).intersection(set(dct.keys()))
+        key_order = [k for k in key_order if k in existing]
+        key_order += list(set(dct.keys()) - set(key_order))
+        return {k: dct[k] for k in key_order}
+
+    def dict(self, *args, **kwargs):
+        """Patched method to preserve key order."""
+        return self._reorder_dict(super().dict(*args, **kwargs))
+
+    def json(self, *args, **kwargs):
+        """Patched method to preserve key order."""
+        dct = json.loads(super().json(*args, **kwargs))
+        return json.dumps(self._reorder_dict(dct))
 
     address: Optional[
         Annotated[str, Field(min_length=1, description="The person's address.")]
@@ -187,9 +215,47 @@ class Person(BaseModel):
             return ""
         return " ".join(names)
 
+    def same_person(self, other) -> bool:
+        """Return whether two Person metadata records are about the same real person.
+
+        Uses heuristic match based on orcid, email and name (whichever are provided).
+        """
+        if self.orcid is not None and other.orcid is not None:
+            # having orcids is the best case, a real identifier
+            return self.orcid == other.orcid
+
+        # otherwise, try to match according to mail/name
+        if self.email is not None and other.email is not None:
+            if self.email == other.email:
+                # an email address belongs to exactly one person
+                # => same email -> same person
+                return True
+            # otherwise, need to check name
+            # (a person often has multiple email addresses)
+
+        # no orcids, no/distinct email address
+        # -> decide based on full_name (which is always present)
+        return self.full_name == other.full_name
+
 
 class ProjectMetadata(BaseModel):
     """Pydantic model for Project Metadata Input."""
+
+    @root_validator
+    def ensure_distinct_people(cls, values):
+        """Make sure that no person is listed twice in the same person list."""
+        for key in ["authors", "maintainers", "contributors"]:
+            ps = values[key]
+            for i in range(len(ps)):
+                for j in range(i + 1, len(ps)):
+                    if ps[i].same_person(ps[j]):
+                        p1 = pretty_repr(json.loads(ps[i].json(exclude_none=True)))
+                        p2 = pretty_repr(json.loads(ps[j].json(exclude_none=True)))
+                        msg = (
+                            f"Same person is listed twice in '{key}' list:\n{p1}\n{p2}"
+                        )
+                        raise ValueError(msg)
+        return values
 
     name: Annotated[str, Field(min_length=2, description="Package name.")]
     description: Annotated[str, Field(min_length=1, description="Package description.")]
