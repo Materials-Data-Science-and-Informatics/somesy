@@ -14,24 +14,63 @@ from .types import ContributionTypeEnum, Country, LicenseEnum
 # Somesy configuration model
 
 
-TARGETS = ["cff", "pyproject", "codemeta"]
+SOMESY_TARGETS = ["cff", "pyproject", "codemeta"]
 
 
-class SomesyConfig(BaseModel):
+class SomesyBaseModel(BaseModel):
+    """Customized pydantic BaseModel for somesy."""
+
+    class Config:
+        """Pydantic config."""
+
+        extra = Extra.forbid
+        allow_population_by_field_name = True
+        underscore_attrs_are_private = True
+
+    _key_order: List[str] = []
+    """List of keys in the order they should be written in."""
+
+    @staticmethod
+    def _patch_kwargs_defaults(kwargs):
+        for key in ["by_alias", "exclude_defaults", "exclude_none", "exclude_unset"]:
+            if not kwargs.get(key):
+                kwargs[key] = True
+
+    def _reorder_dict(self, dct):
+        """Return dict with patched key order (according to `self._key_order`).
+
+        Keys in `dct` not listed in `self._key_order` come after all others.
+
+        Used to patch up `dict()` and `json()`.
+        """
+        key_order = self._key_order or []
+        existing = set(key_order).intersection(set(dct.keys()))
+        key_order = [k for k in key_order if k in existing]
+        key_order += list(set(dct.keys()) - set(key_order))
+        return {k: dct[k] for k in key_order}
+
+    def dict(self, *args, **kwargs):
+        """Patched method to preserve key order."""
+        self._patch_kwargs_defaults(kwargs)
+        return self._reorder_dict(super().dict(*args, **kwargs))
+
+    def json(self, *args, **kwargs):
+        """Patched method to preserve key order."""
+        self._patch_kwargs_defaults(kwargs)
+        dct = json.loads(super().json(*args, **kwargs))
+        return json.dumps(self._reorder_dict(dct))
+
+
+class SomesyConfig(SomesyBaseModel):
     """Pydantic model for somesy configuration.
 
     All fields that are not explicitly passed are initialized with default values.
     """
 
-    class Config:
-        """Pydantic model config."""
-
-        extra = "forbid"
-
     @root_validator
     def at_least_one_target(cls, values):
         """Check that at least one output file is enabled."""
-        if all(map(lambda x: values.get(f"no_sync_{x}"), TARGETS)):
+        if all(map(lambda x: values.get(f"no_sync_{x}"), SOMESY_TARGETS)):
             msg = "No sync target enabled, nothing to do. Probably this is a mistake?"
             raise ValueError(msg)
 
@@ -64,39 +103,8 @@ class SomesyConfig(BaseModel):
 # Project metadata model (modified from CITATION.cff)
 
 
-class Person(BaseModel):
+class Person(SomesyBaseModel):
     """A person that is used in project metadata. Required fields are given-names, family-names, and  email."""
-
-    class Config:
-        """Configuration for the Person model."""
-
-        extra = Extra.forbid
-        underscore_attrs_are_private = True
-
-    _key_order: List[str] = []
-    """List of keys in the order they should be written in."""
-
-    def _reorder_dict(self, dct):
-        """Return dict with patched key order (according to `self._key_order`).
-
-        Keys in `dct` not listed in `self._key_order` come after all others.
-
-        Used to patch up `dict()` and `json()`.
-        """
-        key_order = self._key_order or []
-        existing = set(key_order).intersection(set(dct.keys()))
-        key_order = [k for k in key_order if k in existing]
-        key_order += list(set(dct.keys()) - set(key_order))
-        return {k: dct[k] for k in key_order}
-
-    def dict(self, *args, **kwargs):
-        """Patched method to preserve key order."""
-        return self._reorder_dict(super().dict(*args, **kwargs))
-
-    def json(self, *args, **kwargs):
-        """Patched method to preserve key order."""
-        dct = json.loads(super().json(*args, **kwargs))
-        return json.dumps(self._reorder_dict(dct))
 
     address: Optional[
         Annotated[str, Field(min_length=1, description="The person's address.")]
@@ -238,19 +246,26 @@ class Person(BaseModel):
         return self.full_name == other.full_name
 
 
-class ProjectMetadata(BaseModel):
+class ProjectMetadata(SomesyBaseModel):
     """Pydantic model for Project Metadata Input."""
+
+    class Config:
+        """Pydantic config."""
+
+        extra = Extra.ignore
 
     @root_validator
     def ensure_distinct_people(cls, values):
         """Make sure that no person is listed twice in the same person list."""
         for key in ["authors", "maintainers", "contributors"]:
-            ps = values[key]
+            ps = values.get(key)
+            if not values:
+                continue
             for i in range(len(ps)):
                 for j in range(i + 1, len(ps)):
                     if ps[i].same_person(ps[j]):
-                        p1 = pretty_repr(json.loads(ps[i].json(exclude_none=True)))
-                        p2 = pretty_repr(json.loads(ps[j].json(exclude_none=True)))
+                        p1 = pretty_repr(json.loads(ps[i].json()))
+                        p2 = pretty_repr(json.loads(ps[j].json()))
                         msg = (
                             f"Same person is listed twice in '{key}' list:\n{p1}\n{p2}"
                         )

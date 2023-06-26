@@ -183,6 +183,13 @@ def test_maintainers(cff, base_person, new_person):
     assert cff.maintainers == [CFF._from_person(new_person)]
 
 
+def test_from_to_person(cff, base_person):
+    p = CFF._to_person(CFF._from_person(base_person))
+    assert p.full_name == base_person.full_name
+    assert p.email == base_person.email
+    assert p.orcid == base_person.orcid
+
+
 def test_save(tmp_path):
     # test save with default path
     file_path = tmp_path / "CITATION.cff"
@@ -212,3 +219,9 @@ def test_from_person(person):
         "family-names": "Doe",
         "email": "test@test.test",
     }
+
+
+def test_person_merge():
+    # TODO: test various cases for correct person merge
+    # (add, modify, remove people)
+    raise NotImplementedError

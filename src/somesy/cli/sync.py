@@ -113,7 +113,7 @@ def sync(
             if v is not None
         }
         cli_conf = SomesyConfig(**passed_cli_args)
-        cli_conf = cli_conf.dict(exclude_none=True, exclude_defaults=True)
+        cli_conf = cli_conf.dict()
         logger.debug(f"CLI config (excluding defaults):\n{pretty_repr(cli_conf)}")
 
         # ----
@@ -127,7 +127,7 @@ def sync(
             info=file_conf.show_info, verbose=file_conf.verbose, debug=file_conf.debug
         )
         # convert into dict
-        file_conf = file_conf.dict(exclude_none=True, exclude_defaults=True)
+        file_conf = file_conf.dict()
         logger.debug(f"File config (excluding defaults):\n{pretty_repr(file_conf)}")
 
         # prioritized combination of config settings (cli overrides config file)

@@ -133,9 +133,7 @@ class ProjectMetadataWriter(ABC):
             modified_people[i]._key_order = old[i]._key_order
 
         for person_meta in new:
-            person_update = person_meta.dict(
-                exclude_none=True, exclude_defaults=True, by_alias=True
-            )
+            person_update = person_meta.dict()
             person_existed = False
             for i in range(len(modified_people)):
                 person = modified_people[i]

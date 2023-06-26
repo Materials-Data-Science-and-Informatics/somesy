@@ -70,15 +70,12 @@ class CFF(ProjectMetadataWriter):
     def _from_person(person: Person):
         """Convert project metadata person object to cff dict for person format."""
         json_str = person.json(
-            by_alias=True,
-            exclude_none=True,
             exclude={
                 "contribution",
                 "contribution_type",
                 "contribution_begin",
                 "contribution_end",
             },
-            exclude_unset=True,
         )
         cff_dict = json.loads(json_str)
         print("cff dict", cff_dict)
