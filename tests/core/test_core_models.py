@@ -87,20 +87,23 @@ def test_custom_key_order():
             "family-names": "Doe",
         }
     )
-    p._key_order = key_order
+    p.set_key_order(key_order)
 
     # correct subsequence of order
-    expected_order = ["given-names", "family-names", "email"]
+    expected_order = ["given_names", "family_names", "email"]
     assert list(p.dict(exclude_none=True).keys()) == expected_order
     assert list(json.loads(p.json(exclude_none=True)).keys()) == expected_order
 
     # added field appears in right spot
     p.orcid = "https://orcid.org/1234-5678-9101"
-    assert list(p.dict(exclude_none=True).keys()) == key_order
-    assert list(json.loads(p.json(exclude_none=True)).keys()) == key_order
+    assert list(p.dict(exclude_none=True).keys()) == p._key_order
+    assert list(json.loads(p.json(exclude_none=True)).keys()) == p._key_order
 
     # fields not in key order come after all the listed ones
     p.affiliation = "Some institution"
-    expected_order = key_order + ["affiliation"]
+    expected_order = p._key_order + ["affiliation"]
     assert list(p.dict(exclude_none=True).keys()) == expected_order
     assert list(json.loads(p.json(exclude_none=True)).keys()) == expected_order
+
+    # key order also preserved by copy
+    assert p.copy()._key_order == p._key_order

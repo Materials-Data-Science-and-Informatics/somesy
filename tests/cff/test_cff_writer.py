@@ -204,15 +204,13 @@ def person():
         "orcid": "https://orcid.org/0123-4567-8910",
     }
     ret = Person(**p)
-    ret._key_order = list(p.keys())
+    ret.set_key_order(list(p.keys()))  # custom order!
     return ret
 
 
-def test_from_person(person):
-    assert CFF._from_person(person) == person.dict()
-
-
 def test_from_to_person(person):
+    assert CFF._from_person(person) == person.dict(by_alias=True)
+
     p = CFF._to_person(CFF._from_person(person))
     assert p.full_name == person.full_name
     assert p.email == person.email
@@ -220,6 +218,9 @@ def test_from_to_person(person):
 
 
 def test_person_merge(tmp_path, person):
+    def to_cff_keys(lst):
+        return list(map(lambda s: s.replace("_", "-"), lst))
+
     cff_path = tmp_path / "CITATION.cff"
     cff = CFF(cff_path, create_if_not_exists=True)
 
@@ -232,12 +233,13 @@ def test_person_merge(tmp_path, person):
     cff.sync(pm)
     cff.save()
 
-    # serialization preserves key order
+    # check that serialization preserves key order
+    # (load raw dict from yaml and see order of keys)
     dct = cff._yaml.load(open(cff_path))
-    assert list(dct["authors"][0].keys()) == person._key_order
+    assert list(dct["authors"][0].keys()) == to_cff_keys(person._key_order)
 
     # jane becomes john -> modified person
-    person1b = person.copy(update={"given-names": "John"})
+    person1b = person.copy(update={"given_names": "John"})
 
     # different Jane Doe with different orcid -> new person
     person2 = person.copy(
@@ -247,7 +249,7 @@ def test_person_merge(tmp_path, person):
         }
     )
     # use different order, just for some difference
-    person2._key_order = ["given-names", "orcid", "family-names", "email"]
+    person2.set_key_order(["given_names", "orcid", "family_names", "email"])
 
     # listed in "arbitrary" order in somesy metadata (new person comes first)
     pm.authors = [person2, person1b]  # need to assign like that to keep _key_order
@@ -255,18 +257,18 @@ def test_person_merge(tmp_path, person):
     cff.save()
 
     # existing author order preserved
-    assert cff.authors[0] == person1b
-    assert cff.authors[1] == person2
+    assert cff.authors[0] == person1b.dict(by_alias=True)
+    assert cff.authors[1] == person2.dict(by_alias=True)
     # existing author field order preserved
-    dct = cff._yaml.load(open(cff_path))
-    assert list(dct["authors"][0].keys()) == person1b._key_order
-    assert list(dct["authors"][1].keys()) == person2._key_order
+    dct = cff._yaml.load(open(cff_path, "r"))
+    assert list(dct["authors"][0].keys()) == to_cff_keys(person1b._key_order)
+    assert list(dct["authors"][1].keys()) == to_cff_keys(person2._key_order)
 
     # new person
     person3 = Person(
         **{
-            "given-names": "Janice",
-            "family-names": "Doethan",
+            "given_names": "Janice",
+            "family_names": "Doethan",
             "email": "jane93@gmail.com",
         }
     )
@@ -278,7 +280,7 @@ def test_person_merge(tmp_path, person):
     cff.save()
 
     assert len(cff.authors) == 2
-    assert cff.authors[0] == person1c
-    assert cff.authors[1] == person3
-    dct = cff._yaml.load(open(cff_path))
-    assert list(dct["authors"][0].keys()) == person1c._key_order
+    assert cff.authors[0] == person1c.dict(by_alias=True)
+    assert cff.authors[1] == person3.dict(by_alias=True)
+    dct = cff._yaml.load(open(cff_path, "r"))
+    assert list(dct["authors"][0].keys()) == to_cff_keys(person1c._key_order)

@@ -1,8 +1,9 @@
 """Core models for the somesy package."""
+import functools
 import json
 from datetime import date
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from pydantic import (
     AnyUrl,
@@ -31,6 +32,12 @@ class SomesyBaseModel(BaseModel):
     Apart from some general tweaks for better defaults,
     adds a private `_key_order` field, which is used to track the
     preferred order for serialization (usually coming from some existing input).
+
+    It can be set on an instance using the set_key_order method,
+    and is preserved by `copy()`.
+
+    NOTE: The custom order is intended for leaf models (no further nested models),
+    custom order will not work correctly across nesting layers.
     """
 
     class Config:
@@ -40,9 +47,6 @@ class SomesyBaseModel(BaseModel):
         allow_population_by_field_name = True
         underscore_attrs_are_private = True
 
-    _key_order: List[str] = PrivateAttr([])
-    """List of keys in the order they should be written in."""
-
     @validator("*", pre=True)
     def empty_str_to_none(cls, v):
         """Turn all empty strings into None to treat them as missing."""
@@ -50,9 +54,42 @@ class SomesyBaseModel(BaseModel):
             return None
         return v
 
+    # ----
+    # Key order magic
+
+    _key_order: List[str] = PrivateAttr([])
+    """List of field names (NOT aliases!) in the order they should be written in."""
+
+    @classmethod
+    @functools.lru_cache()  # compute once per class
+    def _aliases(cls) -> Dict[str, str]:
+        """Map back from alias field names to internal field names."""
+        return {v.alias: k for k, v in cls.__fields__.items()}
+
+    @classmethod
+    def make_partial(cls, dct):
+        """Construct unvalidated partial model from dict.
+
+        Handles aliases correctly, unlike `construct`.
+        """
+        un_alias = cls._aliases()
+        return cls.construct(**{un_alias.get(k) or k: v for k, v in dct.items()})
+
+    def set_key_order(self, keys: List[str]):
+        """Setter for custom key order used in serialization."""
+        un_alias = self._aliases()
+        # make sure we use the _actual_ field names
+        self._key_order = list(map(lambda k: un_alias.get(k) or k, keys))
+
+    def copy(self, *args, **kwargs):
+        """Patched copy method (to preserve custom key order)."""
+        ret = super().copy(*args, **kwargs)
+        ret.set_key_order(list(self._key_order))
+        return ret
+
     @staticmethod
     def _patch_kwargs_defaults(kwargs):
-        for key in ["by_alias", "exclude_defaults", "exclude_none", "exclude_unset"]:
+        for key in ["exclude_defaults", "exclude_none", "exclude_unset"]:
             if not kwargs.get(key):
                 kwargs[key] = True
 
@@ -70,24 +107,29 @@ class SomesyBaseModel(BaseModel):
         return {k: dct[k] for k in key_order}
 
     def dict(self, *args, **kwargs):
-        """Patched method to preserve key order."""
+        """Patched dict method (to preserve custom key order)."""
         self._patch_kwargs_defaults(kwargs)
-        dct = super().dict(*args, **kwargs)
-        return self._reorder_dict(dct)
+        by_alias = kwargs.pop("by_alias", False)
+
+        dct = super().dict(*args, **kwargs, by_alias=False)
+        ret = self._reorder_dict(dct)
+
+        if by_alias:
+            ret = {self.__fields__[k].alias: v for k, v in ret.items()}
+        return ret
 
     def json(self, *args, **kwargs):
-        """Patched method to preserve key order."""
+        """Patched json method (to preserve custom key order)."""
         self._patch_kwargs_defaults(kwargs)
-        # turn into json (to remove pydantic classes)
-        dct = json.loads(super().json(*args, **kwargs))
-        # loop it back through a dict to reorder keys
-        return json.dumps(self._reorder_dict(dct))
+        by_alias = kwargs.pop("by_alias", False)
 
-    def copy(self, *args, **kwargs):
-        """Patched copy to also preserve defined key order."""
-        ret = super().copy(*args, **kwargs)
-        ret._key_order = list(self._key_order)
-        return ret
+        # loop back json through dict to apply custom key order
+        dct = json.loads(super().json(*args, **kwargs, by_alias=False))
+        ret = self._reorder_dict(dct)
+
+        if by_alias:
+            ret = {self.__fields__[k].alias: v for k, v in ret.items()}
+        return json.dumps(ret)
 
 
 class SomesyConfig(SomesyBaseModel):
