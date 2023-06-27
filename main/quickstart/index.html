@@ -516,6 +516,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#person-identification" class="md-nav__link">
+    Person Identification
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1225,6 +1232,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#person-identification" class="md-nav__link">
+    Person Identification
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1355,6 +1369,32 @@ Please pay attention to the toml table titles for each file example, the input i
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span>
 <span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
+<h3 id="person-identification">Person Identification<a class="headerlink" href="#person-identification" title="Permanent link">&para;</a></h3>
+<p>One frequent source of high-level project metadata changes is fluctuation of authors, maintainers and contributors
+and eventual changes of the respective contact and identification information.</p>
+<p>Somesy will try its best to keep track of persons involved in your software project, but to avoid possible problems and unexpected behavior,
+it might be helpful to <strong>understand how somesy determines whether two metadata records describe the same real person</strong>.</p>
+<p>When somesy compares two metadata records about a person, it will proceed as follows:</p>
+<ol>
+<li>If both records contain an ORCID, then the person is the same if the attached ORCIDs are equal, and different if it is not.</li>
+<li>Otherwise, if both records have an attached email address, and it is the same email, then they are the same person.</li>
+<li>Otherwise, the records are considered to be about the same person if they agree on the full name (i.e. given, middle and family name sequence).</li>
+</ol>
+<p>Ideally, you should state ORCIDs for persons whenever possible.
+However even if this is not possible, somesy will usually correctly understand cases such as:</p>
+<ol>
+<li>An ORCID being added to a person (i.e. if it was not present before)</li>
+<li>A changed email address (if the name stays the same)</li>
+<li>A changed name (if the email address stays the same)</li>
+<li>Any other relevant metadata attached to the person</li>
+</ol>
+<p>Nevertheless, you should <strong>check the changes somesy does</strong> before committing them to your repository,
+especially <strong>after you significantly modified your project metadata</strong>.</p>
+<p>Note that <strong>changing the ORCID will not be recognized</strong>, because ORCIDs are assumed to be unique per person.
+If you initially have stated an incorrect ORCID for a person and then change it, <strong>somesy will think that this is a new person</strong>.
+Therefore, <strong>in such a case you will need to fix the ORCID in all configured somesy targets</strong> either
+before running somesy (so somesy will not create new person entries), or
+after running somesy (to remove the duplicate entries with the incorrect ORCID).</p>
 
 
 

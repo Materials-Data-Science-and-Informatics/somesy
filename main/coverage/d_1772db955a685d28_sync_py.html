@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="d_3187dccd59625139___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-06-26 09:40 +0000
+            created at 2023-06-27 14:16 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -195,7 +195,7 @@
     <p class="pln"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">            <span class="key">if</span> <span class="nam">v</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">        <span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">        <span class="nam">cli_conf</span> <span class="op">=</span> <span class="nam">SomesyConfig</span><span class="op">(</span><span class="op">**</span><span class="nam">passed_cli_args</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">        <span class="nam">cli_conf</span> <span class="op">=</span> <span class="nam">cli_conf</span><span class="op">.</span><span class="nam">dict</span><span class="op">(</span><span class="nam">exclude_none</span><span class="op">=</span><span class="key">True</span><span class="op">,</span> <span class="nam">exclude_defaults</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">        <span class="nam">cli_conf</span> <span class="op">=</span> <span class="nam">cli_conf</span><span class="op">.</span><span class="nam">dict</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">        <span class="nam">logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">f"CLI config (excluding defaults):\n{pretty_repr(cli_conf)}"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t119" href="#t119">119</a></span><span class="t">        <span class="com"># ----</span>&nbsp;</span><span class="r"></span></p>
@@ -209,7 +209,7 @@
     <p class="pln"><span class="n"><a id="t127" href="#t127">127</a></span><span class="t">            <span class="nam">info</span><span class="op">=</span><span class="nam">file_conf</span><span class="op">.</span><span class="nam">show_info</span><span class="op">,</span> <span class="nam">verbose</span><span class="op">=</span><span class="nam">file_conf</span><span class="op">.</span><span class="nam">verbose</span><span class="op">,</span> <span class="nam">debug</span><span class="op">=</span><span class="nam">file_conf</span><span class="op">.</span><span class="nam">debug</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t128" href="#t128">128</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t129" href="#t129">129</a></span><span class="t">        <span class="com"># convert into dict</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">        <span class="nam">file_conf</span> <span class="op">=</span> <span class="nam">file_conf</span><span class="op">.</span><span class="nam">dict</span><span class="op">(</span><span class="nam">exclude_none</span><span class="op">=</span><span class="key">True</span><span class="op">,</span> <span class="nam">exclude_defaults</span><span class="op">=</span><span class="key">True</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">        <span class="nam">file_conf</span> <span class="op">=</span> <span class="nam">file_conf</span><span class="op">.</span><span class="nam">dict</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t">        <span class="nam">logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">f"File config (excluding defaults):\n{pretty_repr(file_conf)}"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">        <span class="com"># prioritized combination of config settings (cli overrides config file)</span>&nbsp;</span><span class="r"></span></p>
@@ -257,7 +257,7 @@
             <a id="nextFileLink" class="nav" href="d_3187dccd59625139___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-06-26 09:40 +0000
+            created at 2023-06-27 14:16 +0000
         </p>
     </div>
 </footer>
