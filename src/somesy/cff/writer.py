@@ -42,8 +42,6 @@ class CFF(ProjectMetadataWriter):
             "cff-version": "1.2.0",
             "message": "If you use this software, please cite it using these metadata.",
             "type": "software",
-            "title": "SOMESY_PLACEHOLDER",
-            "authors": [],
         }
         with open(self.path, "w") as f:
             self._yaml.dump(self._data, f)
@@ -77,14 +75,12 @@ class CFF(ProjectMetadataWriter):
                 "contribution_end",
             },
         )
-        cff_dict = json.loads(json_str)
-        print("cff dict", cff_dict)
-        return cff_dict
+        return json.loads(json_str)
 
     @staticmethod
     def _to_person(person_obj) -> Person:
         """Parse CFF Person to a somesy Person."""
-        # construct Person while preserving key order from YAML
+        # construct (partial) Person while preserving key order from YAML
         ret = Person.construct(**person_obj)
         ret._key_order = list(person_obj.keys())
         return ret

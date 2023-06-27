@@ -118,7 +118,7 @@ class ProjectMetadataWriter(ABC):
     # special handling for person metadata
 
     @staticmethod
-    def _sync_person_list(old: List[Person], new: List[Person]) -> List[Person]:
+    def _merge_person_metadata(old: List[Person], new: List[Person]) -> List[Person]:
         """Update metadata of a list of persons.
 
         Will identify people based on orcid, email or full name.
@@ -127,10 +127,12 @@ class ProjectMetadataWriter(ABC):
         the resulting list will too (we cannot correctly merge for external formats.)
         """
         new_people = []  # list for new people (e.g. added authors)
-        still_exists = [False for i in range(len(old))]  # flag: person was not removed
-        modified_people = [p.copy() for p in old]  # copies to be modified
-        for i in range(len(old)):  # copy private field
-            modified_people[i]._key_order = old[i]._key_order
+        still_exists = [
+            False for i in range(len(old))
+        ]  # flag: "person was not removed"
+        modified_people = [
+            p.copy() for p in old
+        ]  # copies of old person data, to be modified
 
         for person_meta in new:
             person_update = person_meta.dict()
@@ -140,28 +142,30 @@ class ProjectMetadataWriter(ABC):
                 if not person.same_person(person_meta):
                     continue
 
-                person_existed = True  # not new person (-> will not append new record)
-                still_exists[
-                    i
-                ] = True  # still exists (-> will not be removed from list)
+                # not new person (-> will not append new record)
+                person_existed = True
+                # still exists (-> will not be removed from list)
+                still_exists[i] = True
 
                 # if there were changes -> update person
-                # (without destroying existing key order)
                 overlapping_fields = person.dict(include=set(person_update.keys()))
                 if person_update != overlapping_fields:
                     modified_people[i] = person.copy(update=person_update)
-                    modified_people[
-                        i
-                    ]._key_order = person._key_order  # copy private field
-                    print(modified_people[i]._key_order)
-                    print(modified_people[i].dict(exclude_none=True))
 
             if not person_existed:
                 new_people.append(person_meta)
-        # return updated list of people, with new people coming last, and without people not present in update
-        return [
-            modified_people[i] for i in range(len(modified_people)) if still_exists[i]
-        ] + new_people
+
+        # return updated old list of people,
+        # with people not listed in new list removed
+        # and new people coming added last.
+        existing_modified = [
+            modified_people[i] for i in range(len(old)) if still_exists[i]
+        ]
+        return existing_modified + new_people
+
+    def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
+        old_people: List[Person] = self._parse_people(old)
+        return self._merge_person_metadata(old_people, new)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
@@ -174,13 +178,10 @@ class ProjectMetadataWriter(ABC):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
-        self.authors = self._sync_person_list(
-            self._parse_people(self.authors), metadata.authors
-        )
-
+        self.authors = self._sync_person_list(self.authors, metadata.authors)
         if metadata.maintainers:
             self.maintainers = self._sync_person_list(
-                self._parse_people(self.maintainers), metadata.maintainers
+                self.maintainers, metadata.maintainers
             )
 
         self.license = metadata.license.value

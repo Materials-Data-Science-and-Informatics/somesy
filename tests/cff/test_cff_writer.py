@@ -4,7 +4,7 @@ import pytest
 
 from somesy.cff.writer import CFF
 from somesy.core.core import get_project_metadata
-from somesy.core.models import Person
+from somesy.core.models import LicenseEnum, Person, ProjectMetadata
 
 
 def test_load(tmp_path):
@@ -183,13 +183,6 @@ def test_maintainers(cff, base_person, new_person):
     assert cff.maintainers == [CFF._from_person(new_person)]
 
 
-def test_from_to_person(cff, base_person):
-    p = CFF._to_person(CFF._from_person(base_person))
-    assert p.full_name == base_person.full_name
-    assert p.email == base_person.email
-    assert p.orcid == base_person.orcid
-
-
 def test_save(tmp_path):
     # test save with default path
     file_path = tmp_path / "CITATION.cff"
@@ -205,23 +198,87 @@ def test_save(tmp_path):
 @pytest.fixture
 def person():
     p = {
-        "given-names": "John",
+        "given-names": "Jane",
+        "email": "j.doe@example.com",
         "family-names": "Doe",
-        "email": "test@test.test",
+        "orcid": "https://orcid.org/0123-4567-8910",
     }
-    return Person(**p)
+    ret = Person(**p)
+    ret._key_order = list(p.keys())
+    return ret
 
 
 def test_from_person(person):
-    cff_dict = CFF._from_person(person)
-    assert cff_dict == {
-        "given-names": "John",
-        "family-names": "Doe",
-        "email": "test@test.test",
-    }
+    assert CFF._from_person(person) == person.dict()
 
 
-def test_person_merge():
-    # TODO: test various cases for correct person merge
-    # (add, modify, remove people)
-    raise NotImplementedError
+def test_from_to_person(person):
+    p = CFF._to_person(CFF._from_person(person))
+    assert p.full_name == person.full_name
+    assert p.email == person.email
+    assert p.orcid == person.orcid
+
+
+def test_person_merge(tmp_path, person):
+    cff_path = tmp_path / "CITATION.cff"
+    cff = CFF(cff_path, create_if_not_exists=True)
+
+    pm = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        authors=[person.copy()],
+    )
+    cff.sync(pm)
+    cff.save()
+
+    # serialization preserves key order
+    dct = cff._yaml.load(open(cff_path))
+    assert list(dct["authors"][0].keys()) == person._key_order
+
+    # jane becomes john -> modified person
+    person1b = person.copy(update={"given-names": "John"})
+
+    # different Jane Doe with different orcid -> new person
+    person2 = person.copy(
+        update={
+            "orcid": "https://orcid.org/4321-0987-3231",
+            "email": "i.am.jane@doe.com",
+        }
+    )
+    # use different order, just for some difference
+    person2._key_order = ["given-names", "orcid", "family-names", "email"]
+
+    # listed in "arbitrary" order in somesy metadata (new person comes first)
+    pm.authors = [person2, person1b]  # need to assign like that to keep _key_order
+    cff.sync(pm)
+    cff.save()
+
+    # existing author order preserved
+    assert cff.authors[0] == person1b
+    assert cff.authors[1] == person2
+    # existing author field order preserved
+    dct = cff._yaml.load(open(cff_path))
+    assert list(dct["authors"][0].keys()) == person1b._key_order
+    assert list(dct["authors"][1].keys()) == person2._key_order
+
+    # new person
+    person3 = Person(
+        **{
+            "given-names": "Janice",
+            "family-names": "Doethan",
+            "email": "jane93@gmail.com",
+        }
+    )
+    # john has a new email address
+    person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
+    # jane 2 is removed
+    pm.authors = [person3, person1c]
+    cff.sync(pm)
+    cff.save()
+
+    assert len(cff.authors) == 2
+    assert cff.authors[0] == person1c
+    assert cff.authors[1] == person3
+    dct = cff._yaml.load(open(cff_path))
+    assert list(dct["authors"][0].keys()) == person1c._key_order

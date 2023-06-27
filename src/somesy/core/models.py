@@ -4,7 +4,15 @@ from datetime import date
 from pathlib import Path
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Extra, Field, root_validator
+from pydantic import (
+    AnyUrl,
+    BaseModel,
+    Extra,
+    Field,
+    PrivateAttr,
+    root_validator,
+    validator,
+)
 from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
@@ -18,7 +26,12 @@ SOMESY_TARGETS = ["cff", "pyproject", "codemeta"]
 
 
 class SomesyBaseModel(BaseModel):
-    """Customized pydantic BaseModel for somesy."""
+    """Customized pydantic BaseModel for somesy.
+
+    Apart from some general tweaks for better defaults,
+    adds a private `_key_order` field, which is used to track the
+    preferred order for serialization (usually coming from some existing input).
+    """
 
     class Config:
         """Pydantic config."""
@@ -27,8 +40,15 @@ class SomesyBaseModel(BaseModel):
         allow_population_by_field_name = True
         underscore_attrs_are_private = True
 
-    _key_order: List[str] = []
+    _key_order: List[str] = PrivateAttr([])
     """List of keys in the order they should be written in."""
+
+    @validator("*", pre=True)
+    def empty_str_to_none(cls, v):
+        """Turn all empty strings into None to treat them as missing."""
+        if v == "":
+            return None
+        return v
 
     @staticmethod
     def _patch_kwargs_defaults(kwargs):
@@ -52,13 +72,22 @@ class SomesyBaseModel(BaseModel):
     def dict(self, *args, **kwargs):
         """Patched method to preserve key order."""
         self._patch_kwargs_defaults(kwargs)
-        return self._reorder_dict(super().dict(*args, **kwargs))
+        dct = super().dict(*args, **kwargs)
+        return self._reorder_dict(dct)
 
     def json(self, *args, **kwargs):
         """Patched method to preserve key order."""
         self._patch_kwargs_defaults(kwargs)
+        # turn into json (to remove pydantic classes)
         dct = json.loads(super().json(*args, **kwargs))
+        # loop it back through a dict to reorder keys
         return json.dumps(self._reorder_dict(dct))
+
+    def copy(self, *args, **kwargs):
+        """Patched copy to also preserve defined key order."""
+        ret = super().copy(*args, **kwargs)
+        ret._key_order = list(self._key_order)
+        return ret
 
 
 class SomesyConfig(SomesyBaseModel):
@@ -259,7 +288,7 @@ class ProjectMetadata(SomesyBaseModel):
         """Make sure that no person is listed twice in the same person list."""
         for key in ["authors", "maintainers", "contributors"]:
             ps = values.get(key)
-            if not values:
+            if not ps:
                 continue
             for i in range(len(ps)):
                 for j in range(i + 1, len(ps)):
@@ -272,21 +301,14 @@ class ProjectMetadata(SomesyBaseModel):
                         raise ValueError(msg)
         return values
 
-    name: Annotated[str, Field(min_length=2, description="Package name.")]
-    description: Annotated[str, Field(min_length=1, description="Package description.")]
-    version: Optional[
-        Annotated[str, Field(min_length=1, description="Package version.")]
-    ]
-    authors: List[Person] = Field(None, description="Package authors.")
-    maintainers: Optional[List[Person]] = Field(
-        None, description="Package maintainers."
-    )
-    contributors: Optional[List[Person]] = Field(
-        None, description="Package contributors."
-    )
-    keywords: Optional[List[str]] = Field(
-        None, description="Keywords that describe the package."
-    )
-    license: LicenseEnum = Field(None, description="SPDX License string.")
+    name: str = Field(description="Package name.")
+    description: str = Field(description="Package description.")
+    version: Optional[str] = Field(description="Package version.")
+    license: LicenseEnum = Field(description="SPDX License string.")
     repository: Optional[AnyUrl] = Field(None, description="URL of the repository.")
     homepage: Optional[AnyUrl] = Field(None, description="URL of the package homepage.")
+
+    keywords: List[str] = Field([], description="Keywords that describe the package.")
+    authors: List[Person] = Field(min_items=1, description="Package authors.")
+    maintainers: List[Person] = Field([], description="Package maintainers.")
+    contributors: List[Person] = Field([], description="Package contributors.")
