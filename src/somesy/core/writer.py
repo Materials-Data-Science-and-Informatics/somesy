@@ -150,11 +150,7 @@ class ProjectMetadataWriter(ABC):
                 # if there were changes -> update person
                 overlapping_fields = person.dict(include=set(person_update.keys()))
                 if person_update != overlapping_fields:
-                    print("updating ", modified_people[i], "->", person_update)
-                    print("old person", person)
-                    print("updaded person", person.copy(update=person_update))
                     modified_people[i] = person.copy(update=person_update)
-                    print("result", modified_people[i])
 
             if not person_existed:
                 new_people.append(person_meta)

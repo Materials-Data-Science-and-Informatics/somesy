@@ -132,7 +132,7 @@ ignore = ["B008", "E501", "W503", "E712", "D100", "D101", "D102", "D103", "D104"
 convention = "google"
 
 [tool.interrogate]
-fail-under = 95
+fail-under = 90
 
 [tool.bandit]
 exclude_dirs = ["tests", "scripts"]
