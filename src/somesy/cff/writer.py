@@ -1,5 +1,5 @@
 """Citation File Format (CFF) parser and saver."""
-from json import loads
+import json
 from pathlib import Path
 from typing import Optional
 
@@ -42,8 +42,6 @@ class CFF(ProjectMetadataWriter):
             "cff-version": "1.2.0",
             "message": "If you use this software, please cite it using these metadata.",
             "type": "software",
-            "title": "SOMESY_PLACEHOLDER",
-            "authors": [],
         }
         with open(self.path, "w") as f:
             self._yaml.dump(self._data, f)
@@ -69,17 +67,22 @@ class CFF(ProjectMetadataWriter):
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to cff dict for person format."""
-        cff_dict = loads(
-            person.json(
-                by_alias=True,
-                exclude_none=True,
-                exclude={
-                    "contribution",
-                    "contribution_type",
-                    "contribution_begin",
-                    "contribution_end",
-                },
-                exclude_unset=True,
-            )
+        json_str = person.json(
+            exclude={
+                "contribution",
+                "contribution_type",
+                "contribution_begin",
+                "contribution_end",
+            },
+            by_alias=True,  # e.g. family_names -> family-names, etc.
         )
-        return cff_dict
+        return json.loads(json_str)
+
+    @staticmethod
+    def _to_person(person_obj) -> Person:
+        """Parse CFF Person to a somesy Person."""
+        # construct (partial) Person while preserving key order from YAML
+        Person._aliases()
+        ret = Person.make_partial(person_obj)
+        ret.set_key_order(list(person_obj.keys()))
+        return ret

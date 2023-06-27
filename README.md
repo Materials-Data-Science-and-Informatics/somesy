@@ -246,6 +246,37 @@ verbose = false
 debug = true
 ```
 
+### Person Identification
+
+One frequent source of high-level project metadata changes is fluctuation of authors, maintainers and contributors
+and eventual changes of the respective contact and identification information.
+
+Somesy will try its best to keep track of persons involved in your software project, but to avoid possible problems and unexpected behavior,
+it might be helpful to **understand how somesy determines whether two metadata records describe the same real person**.
+
+When somesy compares two metadata records about a person, it will proceed as follows:
+
+1. If both records contain an ORCID, then the person is the same if the attached ORCIDs are equal, and different if it is not.
+2. Otherwise, if both records have an attached email address, and it is the same email, then they are the same person.
+3. Otherwise, the records are considered to be about the same person if they agree on the full name (i.e. given, middle and family name sequence).
+
+Ideally, you should state ORCIDs for persons whenever possible.
+However even if this is not possible, somesy will usually correctly understand cases such as:
+
+1. An ORCID being added to a person (i.e. if it was not present before)
+2. A changed email address (if the name stays the same)
+3. A changed name (if the email address stays the same)
+4. Any other relevant metadata attached to the person
+
+Nevertheless, you should **check the changes somesy does** before committing them to your repository,
+especially **after you significantly modified your project metadata**.
+
+Note that **changing the ORCID will not be recognized**, because ORCIDs are assumed to be unique per person.
+If you initially have stated an incorrect ORCID for a person and then change it, **somesy will think that this is a new person**.
+Therefore, **in such a case you will need to fix the ORCID in all configured somesy targets** either
+before running somesy (so somesy will not create new person entries), or
+after running somesy (to remove the duplicate entries with the incorrect ORCID).
+
 <!-- --8<-- [end:quickstart] -->
 
 ## Development

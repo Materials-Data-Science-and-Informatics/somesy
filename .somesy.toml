@@ -7,7 +7,7 @@ authors = [
     {family-names = "Pirogov", given-names= "Anton", email = "a.pirogov@fz-juelich.de", orcid = "https://orcid.org/0000-0002-5077-7497", contribution = "Initial somesy concept, code reviews, documentation, codemeta support implementation, refactoring and enhancement.", contribution_begin = "2023-03-01", contribution_type = "code"},
 ]
 maintainers = [
-    {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
+    {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
 ]
 contributors = [
     {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},

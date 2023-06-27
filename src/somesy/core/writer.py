@@ -1,9 +1,12 @@
 """Project metadata writer base-class."""
+import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from somesy.core.models import Person, ProjectMetadata
+
+log = logging.getLogger("somesy")
 
 
 class ProjectMetadataWriter(ABC):
@@ -114,6 +117,72 @@ class ProjectMetadataWriter(ABC):
             curr = curr[key]
         curr[key_path[-1]] = value
 
+    # ----
+    # special handling for person metadata
+
+    def _merge_person_metadata(
+        self, old: List[Person], new: List[Person]
+    ) -> List[Person]:
+        """Update metadata of a list of persons.
+
+        Will identify people based on orcid, email or full name.
+
+        If old list has same person listed multiple times,
+        the resulting list will too (we cannot correctly merge for external formats.)
+        """
+        new_people = []  # list for new people (e.g. added authors)
+        # flag, meaning "person was not removed"
+        still_exists = [False for i in range(len(old))]
+        # copies of old person data, to be modified
+        modified_people = [p.copy() for p in old]
+
+        for person_meta in new:
+            person_update = person_meta.dict()
+            person_existed = False
+            for i in range(len(modified_people)):
+                person = modified_people[i]
+                if not person.same_person(person_meta):
+                    continue
+
+                # not new person (-> will not append new record)
+                person_existed = True
+                # still exists (-> will not be removed from list)
+                still_exists[i] = True
+
+                # if there were changes -> update person
+                overlapping_fields = person.dict(include=set(person_update.keys()))
+                if person_update != overlapping_fields:
+                    modified_people[i] = person.copy(update=person_update)
+
+                    # show effective update in debug log
+                    old_fmt = self._from_person(person)
+                    new_fmt = self._from_person(modified_people[i])
+                    if old_fmt != new_fmt:
+                        log.debug(f"Updating person\n{old_fmt}\nto\n{new_fmt}")
+
+            if not person_existed:
+                new_people.append(person_meta)
+
+        # show added and removed people in debug log
+        removed_people = [old[i] for i in range(len(old)) if not still_exists[i]]
+        for person in removed_people:
+            pers_fmt = self._from_person(person)
+            log.debug(f"Removing person\n{pers_fmt}")
+        for person in new_people:
+            pers_fmt = self._from_person(person)
+            log.debug(f"Adding person\n{pers_fmt}")
+
+        # return updated list of (still existing) people,
+        # and all new people coming after them.
+        existing_modified = [
+            modified_people[i] for i in range(len(old)) if still_exists[i]
+        ]
+        return existing_modified + new_people
+
+    def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
+        old_people: List[Person] = self._parse_people(old)
+        return self._merge_person_metadata(old_people, new)
+
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
         self.name = metadata.name
@@ -124,9 +193,12 @@ class ProjectMetadataWriter(ABC):
 
         if metadata.keywords:
             self.keywords = metadata.keywords
-        self.authors = metadata.authors
+
+        self.authors = self._sync_person_list(self.authors, metadata.authors)
         if metadata.maintainers:
-            self.maintainers = metadata.maintainers
+            self.maintainers = self._sync_person_list(
+                self.maintainers, metadata.maintainers
+            )
 
         self.license = metadata.license.value
         self.homepage = str(metadata.homepage)
@@ -136,6 +208,16 @@ class ProjectMetadataWriter(ABC):
     @abstractmethod
     def _from_person(person: Person) -> Any:
         """Convert a `Person` object into suitable target format."""
+
+    @staticmethod
+    @abstractmethod
+    def _to_person(person_obj: Any) -> Person:
+        """Convert an object representing a person into a `Person` object."""
+
+    @classmethod
+    def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
+        """Return a list of Persons parsed from list format-specific people representations."""
+        return list(map(cls._to_person, people or []))
 
     # ----
     # individual magic getters and setters

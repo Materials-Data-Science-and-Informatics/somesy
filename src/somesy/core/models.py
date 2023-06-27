@@ -1,9 +1,20 @@
 """Core models for the somesy package."""
+import functools
+import json
 from datetime import date
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, Extra, Field, root_validator
+from pydantic import (
+    AnyUrl,
+    BaseModel,
+    Extra,
+    Field,
+    PrivateAttr,
+    root_validator,
+    validator,
+)
+from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
 from .types import ContributionTypeEnum, Country, LicenseEnum
@@ -12,24 +23,125 @@ from .types import ContributionTypeEnum, Country, LicenseEnum
 # Somesy configuration model
 
 
-TARGETS = ["cff", "pyproject", "codemeta"]
+SOMESY_TARGETS = ["cff", "pyproject", "codemeta"]
 
 
-class SomesyConfig(BaseModel):
+class SomesyBaseModel(BaseModel):
+    """Customized pydantic BaseModel for somesy.
+
+    Apart from some general tweaks for better defaults,
+    adds a private `_key_order` field, which is used to track the
+    preferred order for serialization (usually coming from some existing input).
+
+    It can be set on an instance using the set_key_order method,
+    and is preserved by `copy()`.
+
+    NOTE: The custom order is intended for leaf models (no further nested models),
+    custom order will not work correctly across nesting layers.
+    """
+
+    class Config:
+        """Pydantic config."""
+
+        extra = Extra.forbid
+        allow_population_by_field_name = True
+        underscore_attrs_are_private = True
+
+    @validator("*", pre=True)
+    def empty_str_to_none(cls, v):
+        """Turn all empty strings into None to treat them as missing."""
+        if v == "":
+            return None
+        return v
+
+    # ----
+    # Key order magic
+
+    _key_order: List[str] = PrivateAttr([])
+    """List of field names (NOT aliases!) in the order they should be written in."""
+
+    @classmethod
+    @functools.lru_cache()  # compute once per class
+    def _aliases(cls) -> Dict[str, str]:
+        """Map back from alias field names to internal field names."""
+        return {v.alias: k for k, v in cls.__fields__.items()}
+
+    @classmethod
+    def make_partial(cls, dct):
+        """Construct unvalidated partial model from dict.
+
+        Handles aliases correctly, unlike `construct`.
+        """
+        un_alias = cls._aliases()
+        return cls.construct(**{un_alias.get(k) or k: v for k, v in dct.items()})
+
+    def set_key_order(self, keys: List[str]):
+        """Setter for custom key order used in serialization."""
+        un_alias = self._aliases()
+        # make sure we use the _actual_ field names
+        self._key_order = list(map(lambda k: un_alias.get(k) or k, keys))
+
+    def copy(self, *args, **kwargs):
+        """Patched copy method (to preserve custom key order)."""
+        ret = super().copy(*args, **kwargs)
+        ret.set_key_order(list(self._key_order))
+        return ret
+
+    @staticmethod
+    def _patch_kwargs_defaults(kwargs):
+        for key in ["exclude_defaults", "exclude_none", "exclude_unset"]:
+            if not kwargs.get(key):
+                kwargs[key] = True
+
+    def _reorder_dict(self, dct):
+        """Return dict with patched key order (according to `self._key_order`).
+
+        Keys in `dct` not listed in `self._key_order` come after all others.
+
+        Used to patch up `dict()` and `json()`.
+        """
+        key_order = self._key_order or []
+        existing = set(key_order).intersection(set(dct.keys()))
+        key_order = [k for k in key_order if k in existing]
+        key_order += list(set(dct.keys()) - set(key_order))
+        return {k: dct[k] for k in key_order}
+
+    def dict(self, *args, **kwargs):
+        """Patched dict method (to preserve custom key order)."""
+        self._patch_kwargs_defaults(kwargs)
+        by_alias = kwargs.pop("by_alias", False)
+
+        dct = super().dict(*args, **kwargs, by_alias=False)
+        ret = self._reorder_dict(dct)
+
+        if by_alias:
+            ret = {self.__fields__[k].alias: v for k, v in ret.items()}
+        return ret
+
+    def json(self, *args, **kwargs):
+        """Patched json method (to preserve custom key order)."""
+        self._patch_kwargs_defaults(kwargs)
+        by_alias = kwargs.pop("by_alias", False)
+
+        # loop back json through dict to apply custom key order
+        dct = json.loads(super().json(*args, **kwargs, by_alias=False))
+        ret = self._reorder_dict(dct)
+
+        if by_alias:
+            ret = {self.__fields__[k].alias: v for k, v in ret.items()}
+        return json.dumps(ret)
+
+
+class SomesyConfig(SomesyBaseModel):
     """Pydantic model for somesy configuration.
 
     All fields that are not explicitly passed are initialized with default values.
     """
 
-    class Config:
-        """Pydantic model config."""
-
-        extra = "forbid"
-
     @root_validator
     def at_least_one_target(cls, values):
         """Check that at least one output file is enabled."""
-        if all(map(lambda x: values.get(f"no_sync_{x}"), TARGETS)):
+        if all(map(lambda x: values.get(f"no_sync_{x}"), SOMESY_TARGETS)):
             msg = "No sync target enabled, nothing to do. Probably this is a mistake?"
             raise ValueError(msg)
 
@@ -62,13 +174,8 @@ class SomesyConfig(BaseModel):
 # Project metadata model (modified from CITATION.cff)
 
 
-class Person(BaseModel):
+class Person(SomesyBaseModel):
     """A person that is used in project metadata. Required fields are given-names, family-names, and  email."""
-
-    class Config:
-        """Configuration for the Person model."""
-
-        extra = Extra.forbid
 
     address: Optional[
         Annotated[str, Field(min_length=1, description="The person's address.")]
@@ -187,25 +294,63 @@ class Person(BaseModel):
             return ""
         return " ".join(names)
 
+    def same_person(self, other) -> bool:
+        """Return whether two Person metadata records are about the same real person.
 
-class ProjectMetadata(BaseModel):
+        Uses heuristic match based on orcid, email and name (whichever are provided).
+        """
+        if self.orcid is not None and other.orcid is not None:
+            # having orcids is the best case, a real identifier
+            return self.orcid == other.orcid
+
+        # otherwise, try to match according to mail/name
+        if self.email is not None and other.email is not None:
+            if self.email == other.email:
+                # an email address belongs to exactly one person
+                # => same email -> same person
+                return True
+            # otherwise, need to check name
+            # (a person often has multiple email addresses)
+
+        # no orcids, no/distinct email address
+        # -> decide based on full_name (which is always present)
+        return self.full_name == other.full_name
+
+
+class ProjectMetadata(SomesyBaseModel):
     """Pydantic model for Project Metadata Input."""
 
-    name: Annotated[str, Field(min_length=2, description="Package name.")]
-    description: Annotated[str, Field(min_length=1, description="Package description.")]
-    version: Optional[
-        Annotated[str, Field(min_length=1, description="Package version.")]
-    ]
-    authors: List[Person] = Field(None, description="Package authors.")
-    maintainers: Optional[List[Person]] = Field(
-        None, description="Package maintainers."
-    )
-    contributors: Optional[List[Person]] = Field(
-        None, description="Package contributors."
-    )
-    keywords: Optional[List[str]] = Field(
-        None, description="Keywords that describe the package."
-    )
-    license: LicenseEnum = Field(None, description="SPDX License string.")
+    class Config:
+        """Pydantic config."""
+
+        extra = Extra.ignore
+
+    @root_validator
+    def ensure_distinct_people(cls, values):
+        """Make sure that no person is listed twice in the same person list."""
+        for key in ["authors", "maintainers", "contributors"]:
+            ps = values.get(key)
+            if not ps:
+                continue
+            for i in range(len(ps)):
+                for j in range(i + 1, len(ps)):
+                    if ps[i].same_person(ps[j]):
+                        p1 = pretty_repr(json.loads(ps[i].json()))
+                        p2 = pretty_repr(json.loads(ps[j].json()))
+                        msg = (
+                            f"Same person is listed twice in '{key}' list:\n{p1}\n{p2}"
+                        )
+                        raise ValueError(msg)
+        return values
+
+    name: str = Field(description="Package name.")
+    description: str = Field(description="Package description.")
+    version: Optional[str] = Field(description="Package version.")
+    license: LicenseEnum = Field(description="SPDX License string.")
     repository: Optional[AnyUrl] = Field(None, description="URL of the repository.")
     homepage: Optional[AnyUrl] = Field(None, description="URL of the package homepage.")
+
+    keywords: List[str] = Field([], description="Keywords that describe the package.")
+    authors: List[Person] = Field(min_items=1, description="Package authors.")
+    maintainers: List[Person] = Field([], description="Package maintainers.")
+    contributors: List[Person] = Field([], description="Package contributors.")
