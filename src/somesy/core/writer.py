@@ -1,9 +1,12 @@
 """Project metadata writer base-class."""
+import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from somesy.core.models import Person, ProjectMetadata
+
+log = logging.getLogger("somesy")
 
 
 class ProjectMetadataWriter(ABC):
@@ -117,8 +120,9 @@ class ProjectMetadataWriter(ABC):
     # ----
     # special handling for person metadata
 
-    @staticmethod
-    def _merge_person_metadata(old: List[Person], new: List[Person]) -> List[Person]:
+    def _merge_person_metadata(
+        self, old: List[Person], new: List[Person]
+    ) -> List[Person]:
         """Update metadata of a list of persons.
 
         Will identify people based on orcid, email or full name.
@@ -127,12 +131,10 @@ class ProjectMetadataWriter(ABC):
         the resulting list will too (we cannot correctly merge for external formats.)
         """
         new_people = []  # list for new people (e.g. added authors)
-        still_exists = [
-            False for i in range(len(old))
-        ]  # flag: "person was not removed"
-        modified_people = [
-            p.copy() for p in old
-        ]  # copies of old person data, to be modified
+        # flag, meaning "person was not removed"
+        still_exists = [False for i in range(len(old))]
+        # copies of old person data, to be modified
+        modified_people = [p.copy() for p in old]
 
         for person_meta in new:
             person_update = person_meta.dict()
@@ -152,12 +154,26 @@ class ProjectMetadataWriter(ABC):
                 if person_update != overlapping_fields:
                     modified_people[i] = person.copy(update=person_update)
 
+                    # show effective update in debug log
+                    old_fmt = self._from_person(person)
+                    new_fmt = self._from_person(modified_people[i])
+                    if old_fmt != new_fmt:
+                        log.debug(f"Updating person\n{old_fmt}\nto\n{new_fmt}")
+
             if not person_existed:
                 new_people.append(person_meta)
 
-        # return updated old list of people,
-        # with people not listed in new list removed
-        # and new people coming added last.
+        # show added and removed people in debug log
+        removed_people = [old[i] for i in range(len(old)) if not still_exists[i]]
+        for person in removed_people:
+            pers_fmt = self._from_person(person)
+            log.debug(f"Removing person\n{pers_fmt}")
+        for person in new_people:
+            pers_fmt = self._from_person(person)
+            log.debug(f"Adding person\n{pers_fmt}")
+
+        # return updated list of (still existing) people,
+        # and all new people coming after them.
         existing_modified = [
             modified_people[i] for i in range(len(old)) if still_exists[i]
         ]
