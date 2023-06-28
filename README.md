@@ -186,65 +186,48 @@ _.somesy.toml_ example:
 
 ```toml
 [project]
-name = "test"
+name = "my-amazing-project"
 version = "0.1.0"
-description = "Test description."
-authors = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-]
-maintainers = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-]
-contributors = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-    {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"},
-]
+description = "Description of my amazing software."
+
 keywords = ["key", "word"]
 license = "MIT"
 repository = "https://github.com/xx/test"
 homepage = "https://xx.github.io/test"
+
+[[project.people]]
+given-names = "Jane"
+family-names = "Doe"
+email = "j.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0001"
+
+author = true
+maintainer = true
+
+[[project.people]]
+given-names = "Goodwin"
+family-names = "Researcher"
+email = "g.researcher@example.com"
+
+author = true
+
+[[project.people]]
+given-names = "Friendly"
+family-names = "Contributor"
+email = "contributor@institution.com"
+
+contribution = "Valuable feedback and early testing."
+contribution_begin = "2023-03-01"
+contribution_type = "ideas"
 
 [config.cli]
-no_sync_cff = false
-cff_file = "CITATION.cff"
-no_sync_pyproject = false
-pyproject_file = "pyproject.toml"
-show_info = false
-verbose = false
-debug = true
+verbose = true
 ```
 
-_pyproject.toml_ example:
-
-```toml
-[tool.somesy.project]
-name = "test"
-version = "0.1.0"
-description = "Test description."
-authors = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
-]
-maintainers = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"}
-]
-contributors = [
-    {family-names = "Doe", given-names= "John", email = "test@test.test", orcid = "https://orcid.org/0000-0001-2345-5678", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-    {family-names = "Dow", given-names= "John", email = "test2@test.test", orcid = "https://orcid.org/0000-0012-3456-7890", contribution = "Reviewer", contribution_begin = "2023-03-01", contribution_type = "review"}
-]
-keywords = ["key", "word"]
-license = "MIT"
-repository = "https://github.com/xx/test"
-homepage = "https://xx.github.io/test"
-
-[tool.somesy.config.cli]
-no_sync_cff = false
-cff_file = "CITATION.cff"
-no_sync_pyproject = false
-pyproject_file = "pyproject.toml"
-show_info = false
-verbose = false
-debug = true
-```
+You can also put the configuration into your `pyproject.toml` file, if you are using it for Python development.
+In that case, simply prepend `tool.somesy` to the names of all sections, i.e.
+`[project]` becomes `[tool.somesy.project]`, `[config.cli]` becomes
+`[tool.somesy.config.cli]`, etc.
 
 ### Person Identification
 
