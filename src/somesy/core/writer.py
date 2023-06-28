@@ -194,11 +194,10 @@ class ProjectMetadataWriter(ABC):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
-        self.authors = self._sync_person_list(self.authors, metadata.authors)
-        if metadata.maintainers:
-            self.maintainers = self._sync_person_list(
-                self.maintainers, metadata.maintainers
-            )
+        self.authors = self._sync_person_list(self.authors, metadata.authors())
+        self.maintainers = self._sync_person_list(
+            self.maintainers, metadata.maintainers()
+        )
 
         self.license = metadata.license.value
         self.homepage = str(metadata.homepage)

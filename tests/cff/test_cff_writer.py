@@ -228,7 +228,7 @@ def test_person_merge(tmp_path, person):
         name="My awesome project",
         description="Project description",
         license=LicenseEnum.MIT,
-        authors=[person.copy()],
+        people=[person.copy(update=dict(author=True))],
     )
     cff.sync(pm)
     cff.save()
@@ -239,26 +239,27 @@ def test_person_merge(tmp_path, person):
     assert list(dct["authors"][0].keys()) == to_cff_keys(person._key_order)
 
     # jane becomes john -> modified person
-    person1b = person.copy(update={"given_names": "John"})
+    person1b = person.copy(update={"given_names": "John", "author": True})
 
     # different Jane Doe with different orcid -> new person
     person2 = person.copy(
         update={
             "orcid": "https://orcid.org/4321-0987-3231",
             "email": "i.am.jane@doe.com",
+            "author": True,
         }
     )
     # use different order, just for some difference
     person2.set_key_order(["given_names", "orcid", "family_names", "email"])
 
     # listed in "arbitrary" order in somesy metadata (new person comes first)
-    pm.authors = [person2, person1b]  # need to assign like that to keep _key_order
+    pm.people = [person2, person1b]  # need to assign like that to keep _key_order
     cff.sync(pm)
     cff.save()
 
     # existing author order preserved
-    assert cff.authors[0] == person1b.dict(by_alias=True)
-    assert cff.authors[1] == person2.dict(by_alias=True)
+    assert cff.authors[0] == person1b.dict(by_alias=True, exclude={"author"})
+    assert cff.authors[1] == person2.dict(by_alias=True, exclude={"author"})
     # existing author field order preserved
     dct = cff._yaml.load(open(cff_path, "r"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1b._key_order)
@@ -270,17 +271,23 @@ def test_person_merge(tmp_path, person):
             "given_names": "Janice",
             "family_names": "Doethan",
             "email": "jane93@gmail.com",
+            "author": True,
         }
     )
     # john has a new email address
     person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
-    # jane 2 is removed
-    pm.authors = [person3, person1c]
+    # jane 2 is removed from authors, but added to maintainers
+    person2.author = False
+    person2.maintainer = True
+    # reflect in project metadata
+    pm.people = [person3, person2, person1c]
+    # sync to CFF file
     cff.sync(pm)
     cff.save()
 
     assert len(cff.authors) == 2
-    assert cff.authors[0] == person1c.dict(by_alias=True)
-    assert cff.authors[1] == person3.dict(by_alias=True)
+    assert len(cff.maintainers) == 1
+    assert cff.authors[0] == person1c.dict(by_alias=True, exclude={"author"})
+    assert cff.authors[1] == person3.dict(by_alias=True, exclude={"author"})
     dct = cff._yaml.load(open(cff_path, "r"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1c._key_order)

@@ -73,6 +73,8 @@ class CFF(ProjectMetadataWriter):
                 "contribution_type",
                 "contribution_begin",
                 "contribution_end",
+                "author",
+                "maintainer",
             },
             by_alias=True,  # e.g. family_names -> family-names, etc.
         )
