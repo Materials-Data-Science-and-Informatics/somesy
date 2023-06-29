@@ -916,13 +916,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.core.models.SomesyBaseModel.empty_str_to_none" class="md-nav__link">
-    empty_str_to_none()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#somesy.core.models.SomesyBaseModel.make_partial" class="md-nav__link">
     make_partial()
   </a>
@@ -1027,6 +1020,27 @@
           <li class="md-nav__item">
   <a href="#somesy.core.models.ProjectMetadata.ensure_distinct_people" class="md-nav__link">
     ensure_distinct_people()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.at_least_one_author" class="md-nav__link">
+    at_least_one_author()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.authors" class="md-nav__link">
+    authors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.maintainers" class="md-nav__link">
+    maintainers()
   </a>
   
 </li>
@@ -1320,13 +1334,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.core.models.SomesyBaseModel.empty_str_to_none" class="md-nav__link">
-    empty_str_to_none()
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#somesy.core.models.SomesyBaseModel.make_partial" class="md-nav__link">
     make_partial()
   </a>
@@ -1431,6 +1438,27 @@
           <li class="md-nav__item">
   <a href="#somesy.core.models.ProjectMetadata.ensure_distinct_people" class="md-nav__link">
     ensure_distinct_people()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.at_least_one_author" class="md-nav__link">
+    at_least_one_author()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.authors" class="md-nav__link">
+    authors()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.maintainers" class="md-nav__link">
+    maintainers()
   </a>
   
 </li>
@@ -1618,12 +1646,7 @@ custom order will not work correctly across nesting layers.</p>
 <span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SomesyBaseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SomesyBaseModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Customized pydantic BaseModel for somesy.</span>
 
 <span class="sd">    Apart from some general tweaks for better defaults,</span>
@@ -1643,13 +1666,8 @@ custom order will not work correctly across nesting layers.</p>
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
         <span class="n">allow_population_by_field_name</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">underscore_attrs_are_private</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">empty_str_to_none</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Turn all empty strings into None to treat them as missing.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">v</span>
+        <span class="n">anystr_strip_whitespace</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">min_anystr_length</span> <span class="o">=</span> <span class="mi">1</span>
 
     <span class="c1"># ----</span>
     <span class="c1"># Key order magic</span>
@@ -1765,12 +1783,16 @@ custom order will not work correctly across nesting layers.</p>
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pydantic config.&quot;&quot;&quot;</span>
 
     <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">forbid</span>
     <span class="n">allow_population_by_field_name</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">underscore_attrs_are_private</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">anystr_strip_whitespace</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">min_anystr_length</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -1799,41 +1821,6 @@ custom order will not work correctly across nesting layers.</p>
 
 
 
-<h3 id="somesy.core.models.SomesyBaseModel.empty_str_to_none" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">empty_str_to_none</span>
-
-
-<a href="#somesy.core.models.SomesyBaseModel.empty_str_to_none" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">empty_str_to_none</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-</code></pre></div>
-
-  <div class="doc doc-contents ">
-  
-      <p>Turn all empty strings into None to treat them as missing.</p>
-
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">empty_str_to_none</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Turn all empty strings into None to treat them as missing.&quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">v</span>
-</code></pre></div></td></tr></table></div>
-      </details>
-  </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-
 <h3 id="somesy.core.models.SomesyBaseModel.make_partial" class="doc doc-heading">
         <span class="doc doc-object-name doc-function-name">make_partial</span>
 
@@ -1853,14 +1840,14 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">69</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">make_partial</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dct</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct unvalidated partial model from dict.</span>
 
@@ -1892,11 +1879,11 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_key_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_key_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Setter for custom key order used in serialization.&quot;&quot;&quot;</span>
     <span class="n">un_alias</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aliases</span><span class="p">()</span>
     <span class="c1"># make sure we use the _actual_ field names</span>
@@ -1925,11 +1912,11 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Patched copy method (to preserve custom key order).&quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">ret</span><span class="o">.</span><span class="n">set_key_order</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_key_order</span><span class="p">))</span>
@@ -1958,17 +1945,17 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Patched dict method (to preserve custom key order).&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_patch_kwargs_defaults</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">by_alias</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;by_alias&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -2003,18 +1990,18 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">121</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Patched json method (to preserve custom key order).&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_patch_kwargs_defaults</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">by_alias</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;by_alias&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -2062,7 +2049,12 @@ custom order will not work correctly across nesting layers.</p>
 
         <details class="quote">
           <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">135</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
 <span class="normal">136</span>
 <span class="normal">137</span>
 <span class="normal">138</span>
@@ -2092,12 +2084,7 @@ custom order will not work correctly across nesting layers.</p>
 <span class="normal">162</span>
 <span class="normal">163</span>
 <span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SomesyConfig</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
+<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SomesyConfig</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pydantic model for somesy configuration.</span>
 
 <span class="sd">    All fields that are not explicitly passed are initialized with default values.</span>
@@ -2166,14 +2153,14 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">141</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
 <span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@root_validator</span>
+<span class="normal">143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@root_validator</span>
 <span class="k">def</span> <span class="nf">at_least_one_target</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that at least one output file is enabled.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;no_sync_</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span> <span class="n">SOMESY_TARGETS</span><span class="p">)):</span>
@@ -2211,12 +2198,18 @@ custom order will not work correctly across nesting layers.</p>
         Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.models.SomesyBaseModel" href="#somesy.core.models.SomesyBaseModel">SomesyBaseModel</a></code></p>
 
   
-      <p>A person that is used in project metadata. Required fields are given-names, family-names, and  email.</p>
+      <p>Metadata abount a person in the context of a software project.</p>
+<p>Schema is based on CITATION.cff, modified and extended for the needs of somesy.</p>
 
 
         <details class="quote">
           <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">177</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
 <span class="normal">178</span>
 <span class="normal">179</span>
 <span class="normal">180</span>
@@ -2339,121 +2332,92 @@ custom order will not work correctly across nesting layers.</p>
 <span class="normal">297</span>
 <span class="normal">298</span>
 <span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A person that is used in project metadata. Required fields are given-names, family-names, and  email.&quot;&quot;&quot;</span>
+<span class="normal">300</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Person</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metadata abount a person in the context of a software project.</span>
 
-    <span class="n">address</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s address.&quot;</span><span class="p">)]</span>
-    <span class="p">]</span>
-    <span class="n">affiliation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s affiliation.&quot;</span><span class="p">)]</span>
-    <span class="p">]</span>
-    <span class="n">alias</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s alias.&quot;</span><span class="p">)]</span>
-    <span class="p">]</span>
-    <span class="n">city</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s city.&quot;</span><span class="p">)]</span>
-    <span class="p">]</span>
-    <span class="n">country</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Country</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s country.&quot;</span><span class="p">)</span>
+<span class="sd">    Schema is based on CITATION.cff, modified and extended for the needs of somesy.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.</span>
+
+    <span class="n">orcid</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s ORCID url.&quot;</span><span class="p">)]</span>
+
     <span class="n">email</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
         <span class="nb">str</span><span class="p">,</span>
         <span class="n">Field</span><span class="p">(</span>
-            <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^[\S]+@[\S]+\.[\S]{2,}$&quot;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s email address.&quot;</span><span class="p">,</span>
+            <span class="n">regex</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;^[\S]+@[\S]+\.[\S]{2,}$&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s email address.&quot;</span>
         <span class="p">),</span>
     <span class="p">]</span>
+
     <span class="n">family_names</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">str</span><span class="p">,</span>
-        <span class="n">Field</span><span class="p">(</span>
-            <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;family-names&quot;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s family names.&quot;</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">]</span>
-    <span class="n">fax</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s fax number.&quot;</span><span class="p">)]</span>
+        <span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;family-names&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s family names.&quot;</span><span class="p">)</span>
     <span class="p">]</span>
     <span class="n">given_names</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="nb">str</span><span class="p">,</span>
+        <span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;given-names&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s given names.&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">name_particle</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">Field</span><span class="p">(</span>
-            <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;given-names&quot;</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s given names.&quot;</span><span class="p">,</span>
+            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;name-particle&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s name particle, e.g., a nobiliary particle or a preposition meaning &#39;of&#39; or &#39;from&#39; (for example &#39;von&#39; in &#39;Alexander von Humboldt&#39;).&quot;</span><span class="p">,</span>
+            <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;von&quot;</span><span class="p">],</span>
         <span class="p">),</span>
     <span class="p">]</span>
-    <span class="n">name_particle</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">Field</span><span class="p">(</span>
-                <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;name-particle&quot;</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s name particle, e.g., a nobiliary particle or a preposition meaning &#39;of&#39; or &#39;from&#39; (for example &#39;von&#39; in &#39;Alexander von Humboldt&#39;).&quot;</span><span class="p">,</span>
-                <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;von&quot;</span><span class="p">],</span>
-            <span class="p">),</span>
-        <span class="p">]</span>
+    <span class="n">name_suffix</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">Field</span><span class="p">(</span>
+            <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;name-suffix&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s name-suffix, e.g. &#39;Jr.&#39; for Sammy Davis Jr. or &#39;III&#39; for Frank Edwin Wright III.&quot;</span><span class="p">,</span>
+            <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Jr.&quot;</span><span class="p">,</span> <span class="s2">&quot;III&quot;</span><span class="p">],</span>
+        <span class="p">),</span>
     <span class="p">]</span>
-    <span class="n">name_suffix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">Field</span><span class="p">(</span>
-                <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;name-suffix&quot;</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s name-suffix, e.g. &#39;Jr.&#39; for Sammy Davis Jr. or &#39;III&#39; for Frank Edwin Wright III.&quot;</span><span class="p">,</span>
-                <span class="n">examples</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Jr.&quot;</span><span class="p">,</span> <span class="s2">&quot;III&quot;</span><span class="p">],</span>
-            <span class="p">),</span>
-        <span class="p">]</span>
+    <span class="n">alias</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s alias.&quot;</span><span class="p">)]</span>
+
+    <span class="n">affiliation</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s affiliation.&quot;</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="n">orcid</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s ORCID url.&quot;</span><span class="p">)</span>
-    <span class="n">post_code</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">Field</span><span class="p">(</span>
-                <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;post-code&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s post-code.&quot;</span>
-            <span class="p">),</span>
-        <span class="p">]</span>
+
+    <span class="n">address</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s address.&quot;</span><span class="p">)]</span>
+    <span class="n">city</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s city.&quot;</span><span class="p">)]</span>
+    <span class="n">country</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">Country</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s country.&quot;</span><span class="p">)]</span>
+    <span class="n">fax</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s fax number.&quot;</span><span class="p">)]</span>
+    <span class="n">post_code</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">&quot;post-code&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s post-code.&quot;</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="n">region</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s region.&quot;</span><span class="p">)]</span>
+    <span class="n">region</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s region.&quot;</span><span class="p">)]</span>
+    <span class="n">tel</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s phone number.&quot;</span><span class="p">)]</span>
+
+    <span class="c1"># ----</span>
+    <span class="c1"># somesy-specific extensions</span>
+    <span class="n">author</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Indicates whether the person is an author of the project.&quot;</span><span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">maintainer</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="nb">bool</span><span class="p">,</span>
+        <span class="n">Field</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Indicates whether the person is a maintainer of the project.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.</span>
+    <span class="n">contribution</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Summary of how the person contributed to the project.&quot;</span><span class="p">),</span>
     <span class="p">]</span>
-    <span class="n">tel</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s phone number.&quot;</span><span class="p">)]</span>
+    <span class="n">contribution_type</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">]]],</span>
+        <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Contribution type of contributor.&quot;</span><span class="p">),</span>
     <span class="p">]</span>
-    <span class="n">website</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The person&#39;s website.&quot;</span><span class="p">)</span>
-    <span class="n">contribution</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Annotated</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span>
-            <span class="n">Field</span><span class="p">(</span>
-                <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Summary of how the person contributed to the project.&quot;</span><span class="p">,</span>
-            <span class="p">),</span>
-        <span class="p">]</span>
+    <span class="n">contribution_begin</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">date</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Beginning date of the contribution.&quot;</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="n">contribution_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
-        <span class="n">Union</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ContributionTypeEnum</span><span class="p">]]</span>
-    <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Contribution type of contributor.&quot;</span><span class="p">)</span>
-    <span class="n">contribution_begin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Beginning date of the contribution.&quot;</span>
-    <span class="p">)</span>
-    <span class="n">contribution_end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ending date of the contribution.&quot;</span>
-    <span class="p">)</span>
+    <span class="n">contribution_end</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">Optional</span><span class="p">[</span><span class="n">date</span><span class="p">],</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Ending date of the contribution.&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="c1"># helper methods</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -2554,27 +2518,27 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">297</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
 <span class="normal">298</span>
 <span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">same_person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">300</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">same_person</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether two Person metadata records are about the same real person.</span>
 
 <span class="sd">    Uses heuristic match based on orcid, email and name (whichever are provided).</span>
@@ -2630,7 +2594,24 @@ custom order will not work correctly across nesting layers.</p>
 
         <details class="quote">
           <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">320</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
 <span class="normal">321</span>
 <span class="normal">322</span>
 <span class="normal">323</span>
@@ -2662,11 +2643,7 @@ custom order will not work correctly across nesting layers.</p>
 <span class="normal">349</span>
 <span class="normal">350</span>
 <span class="normal">351</span>
-<span class="normal">352</span>
-<span class="normal">353</span>
-<span class="normal">354</span>
-<span class="normal">355</span>
-<span class="normal">356</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ProjectMetadata</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
+<span class="normal">352</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ProjectMetadata</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pydantic model for Project Metadata Input.&quot;&quot;&quot;</span>
 
     <span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
@@ -2674,35 +2651,48 @@ custom order will not work correctly across nesting layers.</p>
 
         <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">ignore</span>
 
-    <span class="nd">@root_validator</span>
-    <span class="k">def</span> <span class="nf">ensure_distinct_people</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;people&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ensure_distinct_people</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">people</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Make sure that no person is listed twice in the same person list.&quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;authors&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainers&quot;</span><span class="p">,</span> <span class="s2">&quot;contributors&quot;</span><span class="p">]:</span>
-            <span class="n">ps</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ps</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)):</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)):</span>
-                    <span class="k">if</span> <span class="n">ps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
-                        <span class="n">p1</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
-                        <span class="n">p2</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
-                        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;Same person is listed twice in &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; list:</span><span class="se">\n</span><span class="si">{</span><span class="n">p1</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">p2</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="p">)</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">values</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                    <span class="n">p1</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+                    <span class="n">p2</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Same person is listed twice:</span><span class="se">\n</span><span class="si">{</span><span class="n">p1</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">p2</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">people</span>
 
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package name.&quot;</span><span class="p">)</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package description.&quot;</span><span class="p">)</span>
-    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package version.&quot;</span><span class="p">)</span>
+    <span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;people&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">at_least_one_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">people</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make sure there is at least one author.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">author</span><span class="p">,</span> <span class="n">people</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one person must be an author of this project.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">people</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Project name.&quot;</span><span class="p">)</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Project description.&quot;</span><span class="p">)</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Project version.&quot;</span><span class="p">)</span>
     <span class="n">license</span><span class="p">:</span> <span class="n">LicenseEnum</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;SPDX License string.&quot;</span><span class="p">)</span>
-    <span class="n">repository</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the repository.&quot;</span><span class="p">)</span>
-    <span class="n">homepage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the package homepage.&quot;</span><span class="p">)</span>
 
-    <span class="n">keywords</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">([],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Keywords that describe the package.&quot;</span><span class="p">)</span>
-    <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package authors.&quot;</span><span class="p">)</span>
-    <span class="n">maintainers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">([],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package maintainers.&quot;</span><span class="p">)</span>
-    <span class="n">contributors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">([],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Package contributors.&quot;</span><span class="p">)</span>
+    <span class="n">repository</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the project source code repository.&quot;</span>
+    <span class="p">)</span>
+    <span class="n">homepage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnyUrl</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the project homepage.&quot;</span><span class="p">)</span>
+
+    <span class="n">keywords</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">([],</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Keywords that describe the project.&quot;</span><span class="p">)</span>
+
+    <span class="n">people</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">min_items</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Project authors, maintainers and contributors.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return people marked as authors.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">author</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return people marked as maintainers.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">maintainer</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
         </details>
 
@@ -2736,10 +2726,10 @@ custom order will not work correctly across nesting layers.</p>
 
         <details class="quote">
           <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
+          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Config</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pydantic config.&quot;&quot;&quot;</span>
 
     <span class="n">extra</span> <span class="o">=</span> <span class="n">Extra</span><span class="o">.</span><span class="n">ignore</span>
@@ -2776,7 +2766,7 @@ custom order will not work correctly across nesting layers.</p>
 
 
 <a href="#somesy.core.models.ProjectMetadata.ensure_distinct_people" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">ensure_distinct_people</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">ensure_distinct_people</span><span class="p">(</span><span class="n">people</span><span class="p">)</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
@@ -2785,39 +2775,120 @@ custom order will not work correctly across nesting layers.</p>
 
       <details class="quote">
         <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span>
-<span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@root_validator</span>
-<span class="k">def</span> <span class="nf">ensure_distinct_people</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;people&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ensure_distinct_people</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">people</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Make sure that no person is listed twice in the same person list.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;authors&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainers&quot;</span><span class="p">,</span> <span class="s2">&quot;contributors&quot;</span><span class="p">]:</span>
-        <span class="n">ps</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ps</span><span class="p">:</span>
-            <span class="k">continue</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ps</span><span class="p">)):</span>
-                <span class="k">if</span> <span class="n">ps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
-                    <span class="n">p1</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
-                    <span class="n">p2</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">ps</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
-                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
-                        <span class="sa">f</span><span class="s2">&quot;Same person is listed twice in &#39;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&#39; list:</span><span class="se">\n</span><span class="si">{</span><span class="n">p1</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">p2</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">values</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">people</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                <span class="n">p1</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+                <span class="n">p2</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">people</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">json</span><span class="p">()))</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Same person is listed twice:</span><span class="se">\n</span><span class="si">{</span><span class="n">p1</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">p2</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">people</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="somesy.core.models.ProjectMetadata.at_least_one_author" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">at_least_one_author</span>
+
+
+<a href="#somesy.core.models.ProjectMetadata.at_least_one_author" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">at_least_one_author</span><span class="p">(</span><span class="n">people</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Make sure there is at least one author.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/core/models.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
+<span class="normal">326</span>
+<span class="normal">327</span>
+<span class="normal">328</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@validator</span><span class="p">(</span><span class="s2">&quot;people&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">at_least_one_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">people</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make sure there is at least one author.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">author</span><span class="p">,</span> <span class="n">people</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one person must be an author of this project.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">people</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="somesy.core.models.ProjectMetadata.authors" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">authors</span>
+
+
+<a href="#somesy.core.models.ProjectMetadata.authors" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">authors</span><span class="p">()</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Return people marked as authors.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/core/models.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">346</span>
+<span class="normal">347</span>
+<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return people marked as authors.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">author</span><span class="p">]</span>
+</code></pre></div></td></tr></table></div>
+      </details>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="somesy.core.models.ProjectMetadata.maintainers" class="doc doc-heading">
+        <span class="doc doc-object-name doc-function-name">maintainers</span>
+
+
+<a href="#somesy.core.models.ProjectMetadata.maintainers" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">maintainers</span><span class="p">()</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Return people marked as maintainers.</p>
+
+      <details class="quote">
+        <summary>Source code in <code>src/somesy/core/models.py</code></summary>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return people marked as maintainers.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">maintainer</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
       </details>
   </div>
