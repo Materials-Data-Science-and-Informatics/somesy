@@ -46,13 +46,8 @@ class SomesyBaseModel(BaseModel):
         extra = Extra.forbid
         allow_population_by_field_name = True
         underscore_attrs_are_private = True
-
-    @validator("*", pre=True)
-    def empty_str_to_none(cls, v):
-        """Turn all empty strings into None to treat them as missing."""
-        if v == "":
-            return None
-        return v
+        anystr_strip_whitespace = True
+        min_anystr_length = 1
 
     # ----
     # Key order magic
@@ -175,103 +170,91 @@ class SomesyConfig(SomesyBaseModel):
 
 
 class Person(SomesyBaseModel):
-    """A person that is used in project metadata. Required fields are given-names, family-names, and  email."""
+    """Metadata abount a person in the context of a software project.
 
-    address: Optional[
-        Annotated[str, Field(min_length=1, description="The person's address.")]
-    ]
-    affiliation: Optional[
-        Annotated[str, Field(min_length=1, description="The person's affiliation.")]
-    ]
-    alias: Optional[
-        Annotated[str, Field(min_length=1, description="The person's alias.")]
-    ]
-    city: Optional[
-        Annotated[str, Field(min_length=1, description="The person's city.")]
-    ]
-    country: Optional[Country] = Field(None, description="The person's country.")
+    Schema is based on CITATION.cff, modified and extended for the needs of somesy.
+    """
+
+    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
+
+    orcid: Annotated[Optional[AnyUrl], Field(description="The person's ORCID url.")]
+
     email: Annotated[
         str,
         Field(
-            regex=r"^[\S]+@[\S]+\.[\S]{2,}$",
-            description="The person's email address.",
+            regex=r"^[\S]+@[\S]+\.[\S]{2,}$", description="The person's email address."
         ),
     ]
+
     family_names: Annotated[
-        str,
-        Field(
-            min_length=1,
-            alias="family-names",
-            description="The person's family names.",
-        ),
-    ]
-    fax: Optional[
-        Annotated[str, Field(min_length=1, description="The person's fax number.")]
+        str, Field(alias="family-names", description="The person's family names.")
     ]
     given_names: Annotated[
-        str,
+        str, Field(alias="given-names", description="The person's given names.")
+    ]
+
+    name_particle: Annotated[
+        Optional[str],
         Field(
-            min_length=1,
-            alias="given-names",
-            description="The person's given names.",
+            alias="name-particle",
+            description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example 'von' in 'Alexander von Humboldt').",
+            examples=["von"],
         ),
     ]
-    name_particle: Optional[
-        Annotated[
-            str,
-            Field(
-                min_length=1,
-                alias="name-particle",
-                description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example 'von' in 'Alexander von Humboldt').",
-                examples=["von"],
-            ),
-        ]
+    name_suffix: Annotated[
+        Optional[str],
+        Field(
+            alias="name-suffix",
+            description="The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.",
+            examples=["Jr.", "III"],
+        ),
     ]
-    name_suffix: Optional[
-        Annotated[
-            str,
-            Field(
-                min_length=1,
-                alias="name-suffix",
-                description="The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.",
-                examples=["Jr.", "III"],
-            ),
-        ]
+    alias: Annotated[Optional[str], Field(description="The person's alias.")]
+
+    affiliation: Annotated[
+        Optional[str], Field(description="The person's affiliation.")
     ]
-    orcid: Optional[AnyUrl] = Field(None, description="The person's ORCID url.")
-    post_code: Optional[
-        Annotated[
-            str,
-            Field(
-                min_length=1, alias="post-code", description="The person's post-code."
-            ),
-        ]
+
+    address: Annotated[Optional[str], Field(description="The person's address.")]
+    city: Annotated[Optional[str], Field(description="The person's city.")]
+    country: Annotated[Optional[Country], Field(description="The person's country.")]
+    fax: Annotated[Optional[str], Field(description="The person's fax number.")]
+    post_code: Annotated[
+        Optional[str], Field(alias="post-code", description="The person's post-code.")
     ]
-    region: Optional[
-        Annotated[str, Field(min_length=1, description="The person's region.")]
+    region: Annotated[Optional[str], Field(description="The person's region.")]
+    tel: Annotated[Optional[str], Field(description="The person's phone number.")]
+
+    # ----
+    # somesy-specific extensions
+    author: Annotated[
+        bool,
+        Field(description="Indicates whether the person is an author of the project."),
+    ] = False
+    maintainer: Annotated[
+        bool,
+        Field(
+            description="Indicates whether the person is a maintainer of the project."
+        ),
+    ] = False
+
+    # NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.
+    contribution: Annotated[
+        Optional[str],
+        Field(description="Summary of how the person contributed to the project."),
     ]
-    tel: Optional[
-        Annotated[str, Field(min_length=1, description="The person's phone number.")]
+    contribution_type: Annotated[
+        Optional[Union[ContributionTypeEnum, List[ContributionTypeEnum]]],
+        Field(description="Contribution type of contributor."),
     ]
-    website: Optional[AnyUrl] = Field(None, description="The person's website.")
-    contribution: Optional[
-        Annotated[
-            str,
-            Field(
-                min_length=1,
-                description="Summary of how the person contributed to the project.",
-            ),
-        ]
+    contribution_begin: Annotated[
+        Optional[date], Field(description="Beginning date of the contribution.")
     ]
-    contribution_type: Optional[
-        Union[ContributionTypeEnum, List[ContributionTypeEnum]]
-    ] = Field(None, description="Contribution type of contributor.")
-    contribution_begin: Optional[date] = Field(
-        None, description="Beginning date of the contribution."
-    )
-    contribution_end: Optional[date] = Field(
-        None, description="Ending date of the contribution."
-    )
+    contribution_end: Annotated[
+        Optional[date], Field(description="Ending date of the contribution.")
+    ]
+
+    # helper methods
 
     @property
     def full_name(self) -> str:
@@ -325,32 +308,45 @@ class ProjectMetadata(SomesyBaseModel):
 
         extra = Extra.ignore
 
-    @root_validator
-    def ensure_distinct_people(cls, values):
+    @validator("people")
+    def ensure_distinct_people(cls, people):
         """Make sure that no person is listed twice in the same person list."""
-        for key in ["authors", "maintainers", "contributors"]:
-            ps = values.get(key)
-            if not ps:
-                continue
-            for i in range(len(ps)):
-                for j in range(i + 1, len(ps)):
-                    if ps[i].same_person(ps[j]):
-                        p1 = pretty_repr(json.loads(ps[i].json()))
-                        p2 = pretty_repr(json.loads(ps[j].json()))
-                        msg = (
-                            f"Same person is listed twice in '{key}' list:\n{p1}\n{p2}"
-                        )
-                        raise ValueError(msg)
-        return values
+        for i in range(len(people)):
+            for j in range(i + 1, len(people)):
+                if people[i].same_person(people[j]):
+                    p1 = pretty_repr(json.loads(people[i].json()))
+                    p2 = pretty_repr(json.loads(people[j].json()))
+                    msg = f"Same person is listed twice:\n{p1}\n{p2}"
+                    raise ValueError(msg)
+        return people
 
-    name: str = Field(description="Package name.")
-    description: str = Field(description="Package description.")
-    version: Optional[str] = Field(description="Package version.")
+    @validator("people")
+    def at_least_one_author(cls, people):
+        """Make sure there is at least one author."""
+        if not any(map(lambda p: p.author, people)):
+            raise ValueError("At least one person must be an author of this project.")
+        return people
+
+    name: str = Field(description="Project name.")
+    description: str = Field(description="Project description.")
+    version: Optional[str] = Field(description="Project version.")
     license: LicenseEnum = Field(description="SPDX License string.")
-    repository: Optional[AnyUrl] = Field(None, description="URL of the repository.")
-    homepage: Optional[AnyUrl] = Field(None, description="URL of the package homepage.")
 
-    keywords: List[str] = Field([], description="Keywords that describe the package.")
-    authors: List[Person] = Field(min_items=1, description="Package authors.")
-    maintainers: List[Person] = Field([], description="Package maintainers.")
-    contributors: List[Person] = Field([], description="Package contributors.")
+    repository: Optional[AnyUrl] = Field(
+        None, description="URL of the project source code repository."
+    )
+    homepage: Optional[AnyUrl] = Field(None, description="URL of the project homepage.")
+
+    keywords: List[str] = Field([], description="Keywords that describe the project.")
+
+    people: List[Person] = Field(
+        min_items=1, description="Project authors, maintainers and contributors."
+    )
+
+    def authors(self):
+        """Return people marked as authors."""
+        return [p for p in self.people if p.author]
+
+    def maintainers(self):
+        """Return people marked as maintainers."""
+        return [p for p in self.people if p.maintainer]

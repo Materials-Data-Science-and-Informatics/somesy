@@ -2,22 +2,45 @@
 name = "somesy"
 version = "0.1.0"
 description = "A cli tool for synchronizing CITATION.CFF with project files."
-authors = [
-    {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-    {family-names = "Pirogov", given-names= "Anton", email = "a.pirogov@fz-juelich.de", orcid = "https://orcid.org/0000-0002-5077-7497", contribution = "Initial somesy concept, code reviews, documentation, codemeta support implementation, refactoring and enhancement.", contribution_begin = "2023-03-01", contribution_type = "code"},
-]
-maintainers = [
-    {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-]
-contributors = [
-    {family-names = "Soylu", given-names= "Mustafa", email = "m.soylu@fz-juelich.de", orcid = "https://orcid.org/0000-0003-2637-0432", contribution = "The main author, maintainer and tester.", contribution_begin = "2023-03-01", contribution_type = "code"},
-    {family-names = "Pirogov", given-names= "Anton", email = "a.pirogov@fz-juelich.de", orcid = "https://orcid.org/0000-0002-5077-7497", contribution = "Initial somesy concept, code reviews, documentation, codemeta support implementation.", contribution_begin = "2023-03-01", contribution_type = "code"},
-    {family-names = "Bröder", given-names= "Jens", email = "j.broeder@fz-juelich.de", orcid = "https://orcid.org/0000-0001-7939-226X", contribution = "Valuable input concerning metadata standards and usability.", contribution_begin = "2023-03-01", contribution_type = "ideas"}
-]
 keywords = ["metadata", "FAIR"]
 license = "MIT"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
+
+[[project.people]]
+family-names = "Soylu"
+given-names = "Mustafa"
+email = "m.soylu@fz-juelich.de"
+orcid = "https://orcid.org/0000-0003-2637-0432"
+
+contribution = "The main developer, maintainer and tester."
+contribution_begin = "2023-03-01"
+contribution_type = ["maintenance", "code", "test", "review", "doc"]
+
+author = true
+maintainer = true
+
+[[project.people]]
+family-names = "Pirogov"
+given-names = "Anton"
+email = "a.pirogov@fz-juelich.de"
+orcid = "https://orcid.org/0000-0002-5077-7497"
+
+contribution = "Initial concepts, tool development and enhancement, documentation."
+contribution_begin = "2023-03-01"
+contribution_type = ["ideas", "code", "test", "review", "doc"]
+
+author = true
+
+[[project.people]]
+family-names = "Bröder"
+given-names = "Jens"
+email = "j.broeder@fz-juelich.de"
+orcid = "https://orcid.org/0000-0001-7939-226X"
+
+contribution = "Valuable input concerning metadata standards and usability."
+contribution_begin = "2023-03-01"
+contribution_type = "ideas"
 
 [config.cli]
 no_sync_cff = false

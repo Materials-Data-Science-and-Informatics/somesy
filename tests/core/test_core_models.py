@@ -42,38 +42,38 @@ def test_detect_duplicate_person():
     metadata = get_project_metadata(Path("tests/core/data/.somesy.toml"))
 
     meta = metadata.copy()
-    meta.authors.append(p1)
+    meta.people.append(p1)
     ProjectMetadata(**meta.dict())
 
     # P1 ~= P3
-    meta.authors.append(p3)
+    meta.people.append(p3)
     with pytest.raises(ValueError):
         ProjectMetadata(**meta.dict())
 
     # P1 ~= P4
-    meta.authors.pop()
-    meta.authors.append(p4)
+    meta.people.pop()
+    meta.people.append(p4)
     with pytest.raises(ValueError):
         ProjectMetadata(**meta.dict())
 
     # P1 ~= P6
-    meta.authors.pop()
-    meta.authors.append(p6)
+    meta.people.pop()
+    meta.people.append(p6)
     with pytest.raises(ValueError):
         ProjectMetadata(**meta.dict())
 
     # P1 /= P2
-    meta.authors.pop()
-    meta.authors.append(p2)
+    meta.people.pop()
+    meta.people.append(p2)
     ProjectMetadata(**meta.dict())
 
     # P1 /= P5
-    meta.authors.pop()
-    meta.authors.append(p5)
+    meta.people.pop()
+    meta.people.append(p5)
     ProjectMetadata(**meta.dict())
 
     # P2 ~= P5
-    meta.authors.append(p2)
+    meta.people.append(p2)
     with pytest.raises(ValueError):
         ProjectMetadata(**meta.dict())
 
