@@ -3,8 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.core import get_project_metadata
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Person, ProjectMetadata, SomesyInput
 
 p1 = {
     "given-names": "Jane",
@@ -39,7 +38,7 @@ def test_same_person():
 
 
 def test_detect_duplicate_person():
-    metadata = get_project_metadata(Path("tests/core/data/.somesy.toml"))
+    metadata = SomesyInput.from_input_file(Path("tests/core/data/.somesy.toml")).project
 
     meta = metadata.copy()
     meta.people.append(p1)

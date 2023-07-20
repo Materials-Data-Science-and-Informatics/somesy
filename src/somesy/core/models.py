@@ -1,9 +1,11 @@
 """Core models for the somesy package."""
+from __future__ import annotations
+
 import functools
 import json
 from datetime import date
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import (
     AnyUrl,
@@ -17,6 +19,8 @@ from pydantic import (
 from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
+from .core import get_input_content
+from .log import SomesyLogLevel
 from .types import ContributionTypeEnum, Country, LicenseEnum
 
 # --------
@@ -142,27 +146,56 @@ class SomesyConfig(SomesyBaseModel):
 
         return values
 
+    # cli flags
+    show_info: bool = Field(
+        False, description="Show basic information messages on run."
+    )
+    verbose: bool = Field(False, description="Show verbose messages on run.")
+    debug: bool = Field(False, description="Show debug messages on run.")
+
+    # input config
     input_file: Path = Field(
         Path(".somesy.toml"), description="Project metadata input file path."
     )
 
+    # output config
     no_sync_cff: bool = Field(False, description="Do not sync with CFF.")
     cff_file: Path = Field(Path("CITATION.cff"), description="CFF file path.")
+
     no_sync_pyproject: bool = Field(
         False, description="Do not sync with pyproject.toml."
     )
     pyproject_file: Path = Field(
         Path("pyproject.toml"), description="pyproject.toml file path."
     )
+
     no_sync_codemeta: bool = Field(False, description="Do not sync with codemeta.json.")
     codemeta_file: Path = Field(
         Path("codemeta.json"), description="codemeta.json file path."
     )
-    show_info: bool = Field(
-        False, description="Show basic information messages on run."
-    )
-    verbose: bool = Field(False, description="Show verbose messages on run.")
-    debug: bool = Field(False, description="Show debug messages on run.")
+
+    def log_level(self) -> SomesyLogLevel:
+        """Return log level derived from this configuration."""
+        return SomesyLogLevel.from_flags(
+            info=self.show_info, verbose=self.verbose, debug=self.debug
+        )
+
+    def update_log_level(self, log_level: SomesyLogLevel):
+        """Update config flags according to passed log level."""
+        self.show_info = log_level == SomesyLogLevel.INFO
+        self.verbose = log_level == SomesyLogLevel.VERBOSE
+        self.debug = log_level == SomesyLogLevel.DEBUG
+
+    def get_input(self) -> SomesyInput:
+        """Based on the somesy config, load the complete somesy input."""
+        # get metadata+config from specified input file
+        somesy_input = SomesyInput.from_input_file(self.input_file)
+        # update input with merged config settings (cli overrides config file)
+        dct: Dict[str, Any] = {}
+        dct.update(somesy_input.config or {})
+        dct.update(self.dict())
+        somesy_input.config = SomesyConfig(**dct)
+        return somesy_input
 
 
 # --------
@@ -273,9 +306,7 @@ class Person(SomesyBaseModel):
         if self.name_suffix:
             names.append(self.name_suffix)
 
-        if not names:
-            return ""
-        return " ".join(names)
+        return " ".join(names) if names else ""
 
     def same_person(self, other) -> bool:
         """Return whether two Person metadata records are about the same real person.
@@ -287,6 +318,7 @@ class Person(SomesyBaseModel):
             return self.orcid == other.orcid
 
         # otherwise, try to match according to mail/name
+        # sourcery skip: merge-nested-ifs
         if self.email is not None and other.email is not None:
             if self.email == other.email:
                 # an email address belongs to exactly one person
@@ -350,3 +382,35 @@ class ProjectMetadata(SomesyBaseModel):
     def maintainers(self):
         """Return people marked as maintainers."""
         return [p for p in self.people if p.maintainer]
+
+
+class SomesyInput(SomesyBaseModel):
+    """The complete somesy input file / section schema."""
+
+    _origin: Optional[Path]
+
+    project: ProjectMetadata
+    config: Optional[SomesyConfig]
+
+    def is_somesy_file(self) -> bool:
+        """Return whether this somesy input is from a somesy config file.
+
+        That means, returns False if it is from pyproject.toml or package.json.
+        """
+        return self.is_somesy_file_path(self._origin or Path("."))
+
+    @classmethod
+    def is_somesy_file_path(cls, path: Path) -> bool:
+        """Return whether the path looks like a somesy config file.
+
+        That means, returns False if it is e.g. pyproject.toml or package.json.
+        """
+        return str(path).endswith("somesy.toml")
+
+    @classmethod
+    def from_input_file(cls, path: Path) -> SomesyInput:
+        """Load somesy input from given file."""
+        content = get_input_content(path)
+        ret = SomesyInput(**content)
+        ret._origin = path
+        return ret

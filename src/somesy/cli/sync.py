@@ -1,6 +1,5 @@
 """Sync command for somesy."""
 import logging
-import traceback
 from pathlib import Path
 from typing import Optional
 
@@ -8,10 +7,11 @@ import typer
 from rich.pretty import pretty_repr
 
 from somesy.commands import sync as sync_command
-from somesy.core.core import get_somesy_cli_config
-from somesy.core.discover import discover_input
+from somesy.core.core import discover_input
 from somesy.core.log import SomesyLogLevel, get_log_level, set_log_level
-from somesy.core.models import SomesyConfig
+from somesy.core.models import SomesyConfig, SomesyInput
+
+from .util import wrap_exceptions
 
 logger = logging.getLogger("somesy")
 
@@ -19,6 +19,7 @@ app = typer.Typer()
 
 
 @app.callback(invoke_without_command=True)
+@wrap_exceptions
 def sync(
     input_file: Path = typer.Option(
         None,
@@ -88,68 +89,46 @@ def sync(
     ),
 ):
     """Sync project metadata input with metadata files."""
-    try:
-        # ---------------
-        # config assembly
+    # ---------------
+    # config from CLI (merged with possibly set CLI flags for logging)
+    passed_cli_args = {
+        k: v
+        for k, v in dict(
+            input_file=discover_input(input_file),
+            no_sync_cff=no_sync_cff,
+            cff_file=cff_file,
+            no_sync_pyproject=no_sync_pyproject,
+            pyproject_file=pyproject_file,
+            no_sync_codemeta=no_sync_codemeta,
+            codemeta_file=codemeta_file,
+        ).items()
+        if v is not None
+    }
+    somesy_conf = SomesyConfig(**passed_cli_args)
 
-        # cli_log_level is None if the user did not pass a log level (-> "default")
-        cli_log_level: Optional[SomesyLogLevel] = get_log_level()
+    # cli_log_level is None if the user did not pass a log level (-> "default")
+    cli_log_level: Optional[SomesyLogLevel] = get_log_level()
 
-        # config from CLI (merged with possibly set CLI flags for logging)
-        curr_log_level: SomesyLogLevel = cli_log_level or SomesyLogLevel.SILENT
-        passed_cli_args = {
-            k: v
-            for k, v in dict(
-                no_sync_cff=no_sync_cff,
-                cff_file=cff_file,
-                no_sync_pyproject=no_sync_pyproject,
-                pyproject_file=pyproject_file,
-                no_sync_codemeta=no_sync_codemeta,
-                codemeta_file=codemeta_file,
-                show_info=curr_log_level == SomesyLogLevel.INFO,
-                verbose=curr_log_level == SomesyLogLevel.VERBOSE,
-                debug=curr_log_level == SomesyLogLevel.DEBUG,
-            ).items()
-            if v is not None
-        }
-        cli_conf = SomesyConfig(**passed_cli_args)
-        cli_conf = cli_conf.dict()
-        logger.debug(f"CLI config (excluding defaults):\n{pretty_repr(cli_conf)}")
+    if cli_log_level is not None:
+        # update log level flags if cli log level was set
+        somesy_conf.update_log_level(cli_log_level)
 
-        # ----
-        # now try to get config from a config file
-        # check if input file exists, if not, try to find it from default list
-        somesy_conf_file: Path = discover_input(input_file)
-        file_conf = get_somesy_cli_config(somesy_conf_file)
+    somesy_input: SomesyInput = somesy_conf.get_input()
 
-        # convert logging flags into somesy log level (for comparison)
-        config_log_level = SomesyLogLevel.from_flags(
-            info=file_conf.show_info, verbose=file_conf.verbose, debug=file_conf.debug
-        )
-        # convert into dict
-        file_conf = file_conf.dict()
-        logger.debug(f"File config (excluding defaults):\n{pretty_repr(file_conf)}")
+    if cli_log_level is None:
+        # no cli log level -> set it according to the loaded configuration
+        set_log_level(somesy_input.config.log_level())
 
-        # prioritized combination of config settings (cli overrides config file)
-        conf = SomesyConfig(**{**file_conf, **cli_conf})
-
-        # if the log level was not initialized using a common CLI flag yet,
-        # set it according to the loaded configuration
-        if cli_log_level is None:
-            set_log_level(config_log_level)
-
-        logger.debug(f"Combined config (Defaults + File + CLI):\n{pretty_repr(conf)}")
-        # --------
-        run_sync(conf)
-
-    except Exception as e:
-        logger.error(f"[bold red]Error: {e}[/bold red]")
-        logger.debug(f"[red]{traceback.format_exc()}[/red]")
-        raise typer.Exit(code=1)
+    logger.debug(
+        f"Combined config (Defaults + File + CLI):\n{pretty_repr(somesy_input.config)}"
+    )
+    # --------
+    run_sync(somesy_input)
 
 
-def run_sync(conf: SomesyConfig):
+def run_sync(somesy_input: SomesyInput):
     """Write log messages and run synchronization based on passed config."""
+    conf = somesy_input.config
     logger.info("[bold green]Synchronizing project metadata...[/bold green]")
     logger.info("Files to sync:")
     if not conf.no_sync_pyproject:
@@ -163,6 +142,6 @@ def run_sync(conf: SomesyConfig):
             f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
         )
     # ----
-    sync_command(conf)
+    sync_command(somesy_input)
     # ----
     logger.info("[bold green]Metadata synchronization completed.[/bold green]")

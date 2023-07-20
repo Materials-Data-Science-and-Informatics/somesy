@@ -2,8 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.core import get_project_metadata
-from somesy.core.models import Person
+from somesy.core.models import Person, SomesyInput
 from somesy.pyproject.writer import Poetry, Pyproject, SetupTools
 
 
@@ -29,7 +28,7 @@ def pyproject_setuptools(setuptools_path):
 
 @pytest.fixture
 def project_metadata(poetry_path):
-    return get_project_metadata(poetry_path)
+    return SomesyInput.from_input_file(poetry_path).project
 
 
 def test_pyproject_init_path(pyproject_poetry, poetry_path):

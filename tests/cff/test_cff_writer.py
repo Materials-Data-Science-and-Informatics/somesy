@@ -3,8 +3,7 @@ from pathlib import Path
 import pytest
 
 from somesy.cff.writer import CFF
-from somesy.core.core import get_project_metadata
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import LicenseEnum, Person, ProjectMetadata, SomesyInput
 
 
 def test_load(tmp_path):
@@ -50,7 +49,9 @@ def new_person():
 
 @pytest.fixture
 def project_metadata():
-    return get_project_metadata(Path("tests/cff/data/pyproject.base.toml"))
+    return SomesyInput.from_input_file(
+        Path("tests/cff/data/pyproject.base.toml")
+    ).project
 
 
 def test_name(cff):
