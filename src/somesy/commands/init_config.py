@@ -18,11 +18,14 @@ def init_config(input_path: Path, options: dict) -> None:
         options (dict): CLI options.
     """
     logger.info(f"Updating input file ({input_path}) with CLI configurations...")
-    content = get_input_content(input_path)
+
+    content = get_input_content(input_path, no_unwrap=True)
+
     is_somesy = SomesyInput.is_somesy_file_path(input_path)
-    logger.verbose(
-        f"Found input file with {'somesy' if is_somesy else 'pyproject'} format."
-    )
+    input_file_type = "somesy" if is_somesy else "pyproject"
+    msg = f"Found input file with {input_file_type} format."
+    logger.verbose(msg)
+
     logger.debug(f"Input file content: {options}")
 
     if "input_file" in options:

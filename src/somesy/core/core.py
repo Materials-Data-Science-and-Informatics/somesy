@@ -41,7 +41,7 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
     raise FileNotFoundError("No somesy input file found.")
 
 
-def get_input_content(path: Path) -> Dict[str, Any]:
+def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
     """Read contents of a supported somesy input file.
 
     Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.
@@ -60,7 +60,8 @@ def get_input_content(path: Path) -> Dict[str, Any]:
     # somesy.toml / .somesy.toml
     if path.suffix == ".toml" and "somesy" in path.name:
         with open(path, "r") as f:
-            return tomlkit.load(f).unwrap()
+            ret = tomlkit.load(f)
+            return ret if no_unwrap else ret.unwrap()
 
     # pyproject.toml
     if path.suffix == ".toml" and "pyproject" in path.name:

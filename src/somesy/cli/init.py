@@ -26,14 +26,16 @@ def config():
     input_file = Path(input_file)
     options = {
         "input_file": input_file,
-        "no_sync_cff": not typer.confirm("Do you want to sync CFF file?", default=True),
+        "no_sync_cff": not typer.confirm(
+            "Do you want to sync to a CFF file?", default=True
+        ),
     }
     cff_file = typer.prompt("CFF file path", default="CITATION.cff")
     if cff_file is not None or cff_file != "":
         options["cff_file"] = cff_file
 
     options["no_sync_pyproject"] = not typer.confirm(
-        "Do you want to sync pyproject.toml file?", default=True
+        "Do you want to sync to a pyproject.toml file?", default=True
     )
 
     pyproject_file = typer.prompt("pyproject.toml file path", default="pyproject.toml")
@@ -41,7 +43,7 @@ def config():
         options["pyproject_file"] = pyproject_file
 
     options["no_sync_codemeta"] = not typer.confirm(
-        "Do you want to sync codemeta.json file?", default=True
+        "Do you want to sync to a codemeta.json file?", default=True
     )
     codemeta_file = typer.prompt("codemeta.json file path", default="codemeta.json")
     if codemeta_file is not None or codemeta_file != "":
