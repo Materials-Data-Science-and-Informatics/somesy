@@ -78,3 +78,13 @@ repos:
       rev: 'v1.1.2'
       hooks:
         - id: reuse
+
+    - repo: local
+      hooks:
+        # NOTE: copy from .pre-commit-hooks.yaml, for technical reasons
+        - id: somesy
+          name: somesy
+          entry: somesy sync
+          language: python
+          files: '^\.somesy\.toml|pyproject\.toml$'
+          pass_filenames: false

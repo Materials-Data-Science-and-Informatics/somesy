@@ -38,7 +38,6 @@ class SomesyLogLevel(Enum):
     @staticmethod
     def to_logging(lv):
         """Convert a somesy log level into a logging log level."""
-        print(SomesyLogLevel.SILENT)
         if lv == SomesyLogLevel.SILENT:
             return logging.WARNING
         if lv == SomesyLogLevel.INFO:
