@@ -6,16 +6,16 @@ from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
 from somesy.codemeta import update_codemeta
-from somesy.core.core import ProjectMetadata, get_project_metadata
-from somesy.core.models import SomesyConfig
+from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
 from somesy.pyproject.writer import Pyproject
 
 logger = logging.getLogger("somesy")
 
 
-def sync(conf: SomesyConfig):
+def sync(somesy_input: SomesyInput):
     """Sync selected metadata files with given input file."""
-    metadata = get_project_metadata(conf.input_file)
+    conf, metadata = somesy_input.config, somesy_input.project
+
     logger.debug(
         f"Project metadata: {pretty_repr(metadata.dict(exclude_defaults=True))}"
     )

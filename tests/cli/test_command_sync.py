@@ -2,7 +2,7 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from somesy.core import discover
+from somesy.core import core
 from somesy.main import app
 
 runner = CliRunner()
@@ -56,7 +56,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
     assert codemeta_file.is_file()
 
     # create an error in the input file
-    mocker.patch.object(discover, "INPUT_FILES_ORDERED", [])
+    mocker.patch.object(core, "INPUT_FILES_ORDERED", [])
     input_file_reject = Path("tests/core/data/.somesy2.toml")
     result = runner.invoke(
         app,

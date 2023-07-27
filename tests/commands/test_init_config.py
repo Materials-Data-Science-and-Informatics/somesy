@@ -24,12 +24,12 @@ def test_init_config(
     cli_options,
 ):
     # load empty file
-    reject_file = tmp_path / ".somesy.reject.toml"
-    reject_file.touch()
-    options = dict(cli_options)
-    options["debug"] = True
-    with pytest.raises(ValueError):
-        init_config(reject_file, options)
+    # reject_file = tmp_path / ".somesy.reject.toml"
+    # reject_file.touch()
+    # options = dict(cli_options)
+    # options["debug"] = True
+    # with pytest.raises(ValueError):
+    #     init_config(reject_file, options)
 
     # load somesy file
     somesy_file = tmp_path / ".somesy.toml"

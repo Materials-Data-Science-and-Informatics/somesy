@@ -2,9 +2,10 @@
 import logging
 from pathlib import Path
 
-from tomlkit import dump
+import tomlkit
 
-from somesy.core.core import load_pyproject_content, load_somesy_content
+from somesy.core.core import get_input_content
+from somesy.core.models import SomesyInput
 
 logger = logging.getLogger("somesy")
 
@@ -13,49 +14,33 @@ def init_config(input_path: Path, options: dict) -> None:
     """Initialize somesy configuration file.
 
     Args:
-        input_path (Path): Path to somesy file.
+        input_path (Path): Path to somesy file (will be created/overwritten).
         options (dict): CLI options.
     """
     logger.info(f"Updating input file ({input_path}) with CLI configurations...")
-    content, is_somesy = _load(input_path)
-    logger.verbose(
-        f"Found input file with {'somesy' if is_somesy else 'pyproject'} format."
-    )
+
+    content = get_input_content(input_path, no_unwrap=True)
+
+    is_somesy = SomesyInput.is_somesy_file_path(input_path)
+    input_file_type = "somesy" if is_somesy else "pyproject"
+    msg = f"Found input file with {input_file_type} format."
+    logger.verbose(msg)
+
     logger.debug(f"Input file content: {options}")
 
     if "input_file" in options:
         del options["input_file"]
     if is_somesy:
-        content["config"] = {"cli": options}
+        content["config"] = options
     else:
-        content["tool"]["somesy"]["config"] = {"cli": options}
+        if "tool" not in content:
+            content["tool"] = {}
+        if "somesy" not in content["tool"]:
+            content["tool"]["somesy"] = {}
+        content["tool"]["somesy"]["config"] = options
 
     with open(input_path, "w") as f:
-        dump(content, f)
+        tomlkit.dump(content, f)
 
     logger.info(f"Input file ({input_path}) updated.")
     logger.debug(f"Input file content: {content}")
-
-
-def _load(input_path: Path) -> list:
-    """Load somesy file content if a valid file.
-
-    Args:
-        input_path (Path): Path to somesy file.
-
-    Raises:
-        Exception: If the file is not a valid somesy file.
-
-    Returns: A list with:
-        TOMLDocument: content of the file.
-        bool: True if the file is a somesy file, False if it is a pyproject file.
-    """
-    content = load_somesy_content(input_path)
-    if content is not None:
-        return [content, True]
-
-    content = load_pyproject_content(input_path)
-    if content is not None:
-        return [content, False]
-    else:
-        raise ValueError("Input file is invalid.")

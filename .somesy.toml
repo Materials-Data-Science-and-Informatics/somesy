@@ -42,7 +42,7 @@ contribution = "Valuable input concerning metadata standards and usability."
 contribution_begin = "2023-03-01"
 contribution_type = "ideas"
 
-[config.cli]
+[config]
 no_sync_cff = false
 cff_file = "CITATION.cff"
 no_sync_pyproject = false

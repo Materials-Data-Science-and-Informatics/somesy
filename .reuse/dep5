@@ -3,7 +3,7 @@ Upstream-Name: somesy
 Upstream-Contact: Mustafa Soylu <m.soylu@fz-juelich.de>
 Source: https://github.com/Materials-Data-Science-and-Informatics/somesy
 
-Files: .gitignore pyproject.toml poetry.lock .pre-commit-config.yaml .pre-commit-hooks.yaml .somesy.toml codemeta.json CITATION.cff README.md RELEASE_NOTES.md CHANGELOG.md CODE_OF_CONDUCT.md AUTHORS.md CONTRIBUTING.md .gitlab-ci.yml .gitlab/* .github/* mkdocs.yml docs/*
+Files: .gitignore pyproject.toml poetry.lock .pre-commit-config.yaml .pre-commit-hooks.yaml .sourcery.yaml .somesy.toml codemeta.json CITATION.cff README.md RELEASE_NOTES.md CHANGELOG.md CODE_OF_CONDUCT.md AUTHORS.md CONTRIBUTING.md .gitlab-ci.yml .gitlab/* .github/* mkdocs.yml docs/*
 Copyright: 2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)
 License: CC0-1.0
 
