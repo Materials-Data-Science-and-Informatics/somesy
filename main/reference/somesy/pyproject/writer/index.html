@@ -19,7 +19,7 @@
         <link rel="next" href="../../../../contributing/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -638,6 +638,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/util/" class="md-nav__link">
+        util
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -822,20 +836,6 @@
     <li class="md-nav__item">
       <a href="../../core/core/" class="md-nav__link">
         core
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../core/discover/" class="md-nav__link">
-        discover
       </a>
     </li>
   
@@ -1399,23 +1399,22 @@
 
 
 <h2 id="somesy.pyproject.writer.PyprojectCommon" class="doc doc-heading">
-        <span class="doc doc-object-name doc-class-name">PyprojectCommon</span>
+          <span class="doc doc-object-name doc-class-name">PyprojectCommon</span>
 
 
 <a href="#somesy.pyproject.writer.PyprojectCommon" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.writer.ProjectMetadataWriter" href="../../core/writer/#somesy.core.writer.ProjectMetadataWriter">ProjectMetadataWriter</a></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.writer.ProjectMetadataWriter" href="../../core/writer/#somesy.core.writer.ProjectMetadataWriter">ProjectMetadataWriter</a></code></p>
 
   
       <p>Poetry config file handler parsed from pyproject.toml.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
+            <details class="quote">
+              <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
 <span class="normal">23</span>
@@ -1529,11 +1528,12 @@
             <span class="n">curr</span> <span class="o">=</span> <span class="n">curr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">curr</span><span class="p">[</span><span class="n">key_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -1548,7 +1548,7 @@
 
 
 <h3 id="somesy.pyproject.writer.PyprojectCommon.__init__" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">__init__</span>
+          <span class="doc doc-object-name doc-function-name">__init__</span>
 
 
 <a href="#somesy.pyproject.writer.PyprojectCommon.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -1566,9 +1566,9 @@
       <p>Poetry config file handler parsed from pyproject.toml.</p>
 <p>See <a class="autorefs autorefs-internal" href="../../core/writer/#somesy.core.writer.ProjectMetadataWriter.__init__">somesy.core.writer.ProjectMetadataWriter.<strong>init</strong></a>.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
@@ -1592,17 +1592,18 @@
         <span class="n">path</span><span class="p">,</span> <span class="n">create_if_not_exists</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">direct_mappings</span><span class="o">=</span><span class="n">direct_mappings</span> <span class="ow">or</span> <span class="p">{}</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
+
 
 <div class="doc doc-object doc-function">
 
 
 
 <h3 id="somesy.pyproject.writer.PyprojectCommon.save" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">save</span>
+          <span class="doc doc-object-name doc-function-name">save</span>
 
 
 <a href="#somesy.pyproject.writer.PyprojectCommon.save" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -1613,9 +1614,9 @@
   
       <p>Save the pyproject file.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
 <span class="normal">54</span>
 <span class="normal">55</span>
 <span class="normal">56</span>
@@ -1625,7 +1626,7 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">tomlkit</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1643,23 +1644,22 @@
 
 
 <h2 id="somesy.pyproject.writer.Poetry" class="doc doc-heading">
-        <span class="doc doc-object-name doc-class-name">Poetry</span>
+          <span class="doc doc-object-name doc-class-name">Poetry</span>
 
 
 <a href="#somesy.pyproject.writer.Poetry" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="somesy.pyproject.writer.PyprojectCommon" href="#somesy.pyproject.writer.PyprojectCommon">PyprojectCommon</a></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="somesy.pyproject.writer.PyprojectCommon" href="#somesy.pyproject.writer.PyprojectCommon">PyprojectCommon</a></code></p>
 
   
       <p>Poetry config file handler parsed from pyproject.toml.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 79</span>
+            <details class="quote">
+              <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 79</span>
 <span class="normal"> 80</span>
 <span class="normal"> 81</span>
 <span class="normal"> 82</span>
@@ -1723,11 +1723,12 @@
             <span class="p">}</span>
         <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -1742,7 +1743,7 @@
 
 
 <h3 id="somesy.pyproject.writer.Poetry.__init__" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">__init__</span>
+          <span class="doc doc-object-name doc-function-name">__init__</span>
 
 
 <a href="#somesy.pyproject.writer.Poetry.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -1754,9 +1755,9 @@
       <p>Poetry config file handler parsed from pyproject.toml.</p>
 <p>See <a class="autorefs autorefs-internal" href="../../core/writer/#somesy.core.writer.ProjectMetadataWriter.__init__">somesy.core.writer.ProjectMetadataWriter.<strong>init</strong></a>.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">82</span>
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">82</span>
 <span class="normal">83</span>
 <span class="normal">84</span>
 <span class="normal">85</span>
@@ -1768,7 +1769,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">],</span> <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1786,23 +1787,22 @@
 
 
 <h2 id="somesy.pyproject.writer.SetupTools" class="doc doc-heading">
-        <span class="doc doc-object-name doc-class-name">SetupTools</span>
+          <span class="doc doc-object-name doc-class-name">SetupTools</span>
 
 
 <a href="#somesy.pyproject.writer.SetupTools" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
-      <p class="doc doc-class-bases">
-        Bases: <code><a class="autorefs autorefs-internal" title="somesy.pyproject.writer.PyprojectCommon" href="#somesy.pyproject.writer.PyprojectCommon">PyprojectCommon</a></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="somesy.pyproject.writer.PyprojectCommon" href="#somesy.pyproject.writer.PyprojectCommon">PyprojectCommon</a></code></p>
 
   
       <p>Setuptools config file handler parsed from setup.cfg.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+            <details class="quote">
+              <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
@@ -1872,11 +1872,12 @@
             <span class="p">}</span>
         <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -1891,7 +1892,7 @@
 
 
 <h3 id="somesy.pyproject.writer.SetupTools.__init__" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">__init__</span>
+          <span class="doc doc-object-name doc-function-name">__init__</span>
 
 
 <a href="#somesy.pyproject.writer.SetupTools.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -1903,9 +1904,9 @@
       <p>Setuptools config file handler parsed from pyproject.toml.</p>
 <p>See <a class="autorefs autorefs-internal" href="../../core/writer/#somesy.core.writer.ProjectMetadataWriter.__init__">somesy.core.writer.ProjectMetadataWriter.<strong>init</strong></a>.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
@@ -1931,7 +1932,7 @@
         <span class="n">path</span><span class="p">,</span> <span class="n">section</span><span class="o">=</span><span class="n">section</span><span class="p">,</span> <span class="n">direct_mappings</span><span class="o">=</span><span class="n">mappings</span><span class="p">,</span> <span class="n">model_cls</span><span class="o">=</span><span class="n">SetuptoolsConfig</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1949,23 +1950,22 @@
 
 
 <h2 id="somesy.pyproject.writer.Pyproject" class="doc doc-heading">
-        <span class="doc doc-object-name doc-class-name">Pyproject</span>
+          <span class="doc doc-object-name doc-class-name">Pyproject</span>
 
 
 <a href="#somesy.pyproject.writer.Pyproject" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
-      <p class="doc doc-class-bases">
-        Bases: <code>wrapt.<span title="wrapt.ObjectProxy">ObjectProxy</span></code></p>
+          <p class="doc doc-class-bases">
+            Bases: <code>wrapt.<span title="wrapt.ObjectProxy">ObjectProxy</span></code></p>
 
   
       <p>Class for syncing pyproject file with other metadata files.</p>
 
-
-        <details class="quote">
-          <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-          <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
+            <details class="quote">
+              <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
 <span class="normal">154</span>
 <span class="normal">155</span>
 <span class="normal">156</span>
@@ -2033,11 +2033,12 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-        </details>
+            </details>
 
   
 
   <div class="doc doc-children">
+
 
 
 
@@ -2052,7 +2053,7 @@
 
 
 <h3 id="somesy.pyproject.writer.Pyproject.__init__" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">__init__</span>
+          <span class="doc doc-object-name doc-function-name">__init__</span>
 
 
 <a href="#somesy.pyproject.writer.Pyproject.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -2062,6 +2063,8 @@
   <div class="doc doc-contents ">
   
       <p>Pyproject wrapper class. Wraps either setuptools or poetry.</p>
+
+
 
   <p><strong>Parameters:</strong></p>
   <table>
@@ -2079,13 +2082,19 @@
           <td>
                 <code><span title="pathlib.Path">Path</span></code>
           </td>
-          <td><p>Path to pyproject.toml file.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Path to pyproject.toml file.</p>
+            </div>
+          </td>
           <td>
               <em>required</em>
           </td>
         </tr>
     </tbody>
   </table>
+
+
 
   <p><strong>Raises:</strong></p>
   <table>
@@ -2100,20 +2109,28 @@
           <td>
                 <code>FileNotFoundError</code>
           </td>
-          <td><p>Raised when pyproject.toml file is not found.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Raised when pyproject.toml file is not found.</p>
+            </div>
+          </td>
         </tr>
         <tr>
           <td>
                 <code>ValueError</code>
           </td>
-          <td><p>Neither project nor tool.poetry object is found in pyproject.toml file.</p></td>
+          <td>
+            <div class="doc-md-description">
+              <p>Neither project nor tool.poetry object is found in pyproject.toml file.</p>
+            </div>
+          </td>
         </tr>
     </tbody>
   </table>
 
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">158</span>
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
 <span class="normal">161</span>
@@ -2171,7 +2188,7 @@
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -2311,10 +2328,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "header.autohide", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.tracking", "navigation.top", "search.highlight", "search.suggest"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "header.autohide", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.tracking", "navigation.top", "search.highlight", "search.suggest"], "search": "../../../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>

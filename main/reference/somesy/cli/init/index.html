@@ -19,7 +19,7 @@
         <link rel="next" href="../sync/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.12">
+      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
     
     
       
@@ -27,10 +27,10 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.85bb2934.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.eebd395e.min.css">
       
         
-        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.a6bdf11c.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ecc896b0.min.css">
       
       
 
@@ -684,6 +684,20 @@
 
             
           
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../util/" class="md-nav__link">
+        util
+      </a>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -868,20 +882,6 @@
     <li class="md-nav__item">
       <a href="../../core/core/" class="md-nav__link">
         core
-      </a>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../core/discover/" class="md-nav__link">
-        discover
       </a>
     </li>
   
@@ -1235,12 +1235,13 @@
 
 
 
+
 <div class="doc doc-object doc-function">
 
 
 
 <h2 id="somesy.cli.init.config" class="doc doc-heading">
-        <span class="doc doc-object-name doc-function-name">config</span>
+          <span class="doc doc-object-name doc-function-name">config</span>
 
 
 <a href="#somesy.cli.init.config" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -1251,10 +1252,9 @@
   
       <p>Set CLI configs for somesy.</p>
 
-      <details class="quote">
-        <summary>Source code in <code>src/somesy/cli/init.py</code></summary>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">16</span>
-<span class="normal">17</span>
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/cli/init.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
 <span class="normal">20</span>
@@ -1308,78 +1308,63 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@wrap_exceptions</span>
 <span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set CLI configs for somesy.&quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># check if input file exists, if not, try to find it from default list</span>
-        <span class="n">input_file_default</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">()</span>
+    <span class="c1"># check if input file exists, if not, try to find it from default list</span>
+    <span class="n">input_file_default</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">()</span>
 
-        <span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># prompt for inputs</span>
+    <span class="n">input_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;Input file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">input_file_default</span><span class="p">)</span>
+    <span class="n">input_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;input_file&quot;</span><span class="p">:</span> <span class="n">input_file</span><span class="p">,</span>
+        <span class="s2">&quot;no_sync_cff&quot;</span><span class="p">:</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+            <span class="s2">&quot;Do you want to sync to a CFF file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">cff_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;CFF file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cff_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;cff_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cff_file</span>
 
-        <span class="c1"># prompt for inputs</span>
-        <span class="n">input_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;Input file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">input_file_default</span><span class="p">)</span>
-        <span class="n">input_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;input_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">input_file</span>
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_cff&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-            <span class="s2">&quot;Do you want to sync CFF file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_pyproject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+        <span class="s2">&quot;Do you want to sync to a pyproject.toml file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">pyproject_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;pyproject.toml file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pyproject_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;pyproject_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyproject_file</span>
+
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_codemeta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+        <span class="s2">&quot;Do you want to sync to a codemeta.json file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">codemeta_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;codemeta.json file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;codemeta.json&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">codemeta_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">codemeta_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;codemeta_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">codemeta_file</span>
+
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+        <span class="s2">&quot;Do you want to show info about the sync process?&quot;</span>
+    <span class="p">)</span>
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span><span class="s2">&quot;Do you want to show verbose logs?&quot;</span><span class="p">)</span>
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span><span class="s2">&quot;Do you want to show debug logs?&quot;</span><span class="p">)</span>
+
+    <span class="n">set_log_level</span><span class="p">(</span>
+        <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">from_flags</span><span class="p">(</span>
+            <span class="n">debug</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">],</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">],</span>
+            <span class="n">info</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">],</span>
         <span class="p">)</span>
+    <span class="p">)</span>
 
-        <span class="n">cff_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;CFF file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">cff_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">options</span><span class="p">[</span><span class="s2">&quot;cff_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cff_file</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLI options entered: </span><span class="si">{</span><span class="n">options</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_pyproject&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-            <span class="s2">&quot;Do you want to sync pyproject.toml file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-
-        <span class="n">pyproject_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span>
-            <span class="s2">&quot;pyproject.toml file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;pyproject.toml&quot;</span>
-        <span class="p">)</span>
-        <span class="k">if</span> <span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pyproject_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">options</span><span class="p">[</span><span class="s2">&quot;pyproject_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyproject_file</span>
-
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_codemeta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-            <span class="s2">&quot;Do you want to sync codemeta.json file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
-        <span class="p">)</span>
-        <span class="n">codemeta_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;codemeta.json file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;codemeta.json&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">codemeta_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">codemeta_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">options</span><span class="p">[</span><span class="s2">&quot;codemeta_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">codemeta_file</span>
-
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
-            <span class="s2">&quot;Do you want to show info about the sync process?&quot;</span>
-        <span class="p">)</span>
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span><span class="s2">&quot;Do you want to show verbose logs?&quot;</span><span class="p">)</span>
-        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span><span class="s2">&quot;Do you want to show debug logs?&quot;</span><span class="p">)</span>
-
-        <span class="n">set_log_level</span><span class="p">(</span>
-            <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">from_flags</span><span class="p">(</span>
-                <span class="n">debug</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;debug&quot;</span><span class="p">],</span>
-                <span class="n">verbose</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;verbose&quot;</span><span class="p">],</span>
-                <span class="n">info</span><span class="o">=</span><span class="n">options</span><span class="p">[</span><span class="s2">&quot;show_info&quot;</span><span class="p">],</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;CLI options entered: </span><span class="si">{</span><span class="n">options</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-        <span class="n">init_config</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;[bold green]Input file is updated/created at </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">[/bold green]&quot;</span>
-        <span class="p">)</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red]Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">[/bold red]&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[red]</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">[/red]&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">init_config</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;[bold green]Input file is updated/created at </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">[/bold green]&quot;</span>
+    <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
-      </details>
+          </details>
   </div>
 
 </div>
@@ -1510,10 +1495,10 @@
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "header.autohide", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.tracking", "navigation.top", "search.highlight", "search.suggest"], "search": "../../../../assets/javascripts/workers/search.208ed371.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.action.edit", "content.action.view", "content.code.annotate", "header.autohide", "navigation.footer", "navigation.instant", "navigation.tabs", "navigation.tabs.sticky", "navigation.tracking", "navigation.top", "search.highlight", "search.suggest"], "search": "../../../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.c2be25ad.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.220ee61c.min.js"></script>
       
     
   </body>
