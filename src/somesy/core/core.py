@@ -7,7 +7,7 @@ import tomlkit
 
 logger = logging.getLogger("somesy")
 
-INPUT_FILES_ORDERED = [".somesy.toml", "pyproject.toml"]
+INPUT_FILES_ORDERED = [".somesy.toml", "somesy.toml", "pyproject.toml"]
 """Input files ordered by priority for discovery."""
 
 
@@ -34,6 +34,11 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
     for filename in INPUT_FILES_ORDERED:
         input_file = Path(filename)
         if input_file.is_file():
+            try:
+                get_input_content(input_file)
+            except RuntimeError:
+                continue
+
             msg = f"Using '{input_file}' as somesy input file."
             logger.verbose(msg)
             return input_file
@@ -46,7 +51,6 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
 
     Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.
     The function checks if the file is a valid somesy input file by checking its name and content.
-    If the file is not a valid somesy input file, the function raises a ValueError.
 
     Args:
         path (Path): path to the input file
@@ -56,7 +60,9 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
 
     Raises:
         ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.
+        RuntimeError: if the input file does not contain a somesy input section at expected key
     """
+    logger.debug(f"Path {path}")
     # somesy.toml / .somesy.toml
     if path.suffix == ".toml" and "somesy" in path.name:
         with open(path, "r") as f:
@@ -69,8 +75,12 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
             input_content = tomlkit.load(f)
             if "tool" in input_content and "somesy" in input_content["tool"]:
                 return input_content["tool"]["somesy"].unwrap()
+            else:
+                raise RuntimeError(
+                    "No tool.somesy section found in pyproject.toml file!"
+                )
 
-    # TODO: add package.json
+    # NOTE: if we support somesy config in package.json, it would go here.
 
     # no match:
     raise ValueError("Unsupported input file.")

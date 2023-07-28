@@ -51,4 +51,4 @@ no_sync_codemeta = false
 codemeta_file = "codemeta.json"
 show_info = false
 verbose = false
-debug = true
+debug = false
