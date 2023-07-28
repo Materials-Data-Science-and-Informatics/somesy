@@ -41,7 +41,9 @@ jobs:
           key: ${{ hashFiles('.pre-commit-config.yaml') }}-pre-commit
 
       - name: Check that all static analysis tools run without errors
-        run: poetry run poe lint --all-files
+        run: |
+          poetry install  # so somesy can check itself
+          poetry run poe lint --all-files
 
       - name: Scan dependencies for known vulnerabilities
         run: safety check -r pyproject.toml
