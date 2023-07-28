@@ -19,7 +19,7 @@
         <link rel="next" href="../models/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.1.20">
     
     
       
@@ -1407,8 +1407,7 @@
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SomesyLogLevel</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SomesyLogLevel</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Somesy-specific log levels.&quot;&quot;&quot;</span>
 
     <span class="n">SILENT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -1435,7 +1434,6 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">to_logging</span><span class="p">(</span><span class="n">lv</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a somesy log level into a logging log level.&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">SILENT</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lv</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">SILENT</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
         <span class="k">if</span> <span class="n">lv</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
@@ -1555,11 +1553,9 @@
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span> <span class="nf">to_logging</span><span class="p">(</span><span class="n">lv</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a somesy log level into a logging log level.&quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">SILENT</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">lv</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">SILENT</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span>
     <span class="k">if</span> <span class="n">lv</span> <span class="o">==</span> <span class="n">SomesyLogLevel</span><span class="o">.</span><span class="n">INFO</span><span class="p">:</span>
@@ -1602,9 +1598,9 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/core/log.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_log_level</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomesyLogLevel</span><span class="p">]:</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_log_level</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomesyLogLevel</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return current user-defined log level.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_log_level</span>
 </code></pre></div></td></tr></table></div>
@@ -1632,15 +1628,15 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/core/log.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">60</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
 <span class="normal">61</span>
 <span class="normal">62</span>
 <span class="normal">63</span>
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_log_level</span><span class="p">(</span><span class="n">log_level</span><span class="p">:</span> <span class="n">SomesyLogLevel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">set_log_level</span><span class="p">(</span><span class="n">log_level</span><span class="p">:</span> <span class="n">SomesyLogLevel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the current log level.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_log_level</span>
     <span class="c1"># update current somesy log level</span>
@@ -1674,10 +1670,10 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/core/log.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">71</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">70</span>
+<span class="normal">71</span>
 <span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init_log</span><span class="p">():</span>
+<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">init_log</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize logging (add VERBOSE log level and Rich formatter).&quot;&quot;&quot;</span>
     <span class="n">_add_verbose_level</span><span class="p">()</span>
     <span class="n">_init_rich_handler</span><span class="p">(</span><span class="n">get_log_level</span><span class="p">())</span>

@@ -19,7 +19,7 @@
         <link rel="next" href="../log/">
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.4.3, mkdocs-material-9.1.19">
+      <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.1.20">
     
     
       
@@ -1274,7 +1274,11 @@
   </span>
 
 <a href="#somesy.core.core.INPUT_FILES_ORDERED" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="n">INPUT_FILES_ORDERED</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.somesy.toml&#39;</span><span class="p">,</span> <span class="s1">&#39;pyproject.toml&#39;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="n">INPUT_FILES_ORDERED</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;.somesy.toml&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;somesy.toml&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pyproject.toml&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
@@ -1410,7 +1414,12 @@
 <span class="normal">38</span>
 <span class="normal">39</span>
 <span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">discover_input</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check given input file path. If not given, find somesy configuration file path from default list.</span>
 
 <span class="sd">    Args:</span>
@@ -1433,6 +1442,11 @@
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">INPUT_FILES_ORDERED</span><span class="p">:</span>
         <span class="n">input_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">input_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">get_input_content</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
             <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Using &#39;</span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">&#39; as somesy input file.&quot;</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">input_file</span>
@@ -1463,8 +1477,7 @@
   
       <p>Read contents of a supported somesy input file.</p>
 <p>Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.
-The function checks if the file is a valid somesy input file by checking its name and content.
-If the file is not a valid somesy input file, the function raises a ValueError.</p>
+The function checks if the file is a valid somesy input file by checking its name and content.</p>
 
 
 
@@ -1541,17 +1554,22 @@ If the file is not a valid somesy input file, the function raises a ValueError.<
             </div>
           </td>
         </tr>
+        <tr>
+          <td>
+                <code>RuntimeError</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>if the input file does not contain a somesy input section at expected key</p>
+            </div>
+          </td>
+        </tr>
     </tbody>
   </table>
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/core/core.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
@@ -1578,12 +1596,21 @@ If the file is not a valid somesy input file, the function raises a ValueError.<
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
-<span class="normal">76</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">no_unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">no_unwrap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read contents of a supported somesy input file.</span>
 
 <span class="sd">    Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.</span>
 <span class="sd">    The function checks if the file is a valid somesy input file by checking its name and content.</span>
-<span class="sd">    If the file is not a valid somesy input file, the function raises a ValueError.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        path (Path): path to the input file</span>
@@ -1593,7 +1620,9 @@ If the file is not a valid somesy input file, the function raises a ValueError.<
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.</span>
+<span class="sd">        RuntimeError: if the input file does not contain a somesy input section at expected key</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="c1"># somesy.toml / .somesy.toml</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.toml&quot;</span> <span class="ow">and</span> <span class="s2">&quot;somesy&quot;</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -1606,8 +1635,12 @@ If the file is not a valid somesy input file, the function raises a ValueError.<
             <span class="n">input_content</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
             <span class="k">if</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">input_content</span> <span class="ow">and</span> <span class="s2">&quot;somesy&quot;</span> <span class="ow">in</span> <span class="n">input_content</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">input_content</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">][</span><span class="s2">&quot;somesy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s2">&quot;No tool.somesy section found in pyproject.toml file!&quot;</span>
+                <span class="p">)</span>
 
-    <span class="c1"># TODO: add package.json</span>
+    <span class="c1"># NOTE: if we support somesy config in package.json, it would go here.</span>
 
     <span class="c1"># no match:</span>
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported input file.&quot;</span><span class="p">)</span>
