@@ -1,0 +1,91 @@
+"""package.json parser and saver."""
+import json
+import logging
+from collections import OrderedDict
+from pathlib import Path
+from typing import List, Optional, Union
+
+from rich.pretty import pretty_repr
+
+from somesy.core.models import Person
+from somesy.core.writer import ProjectMetadataWriter
+from somesy.package_json.models import PackageJsonConfig
+
+logger = logging.getLogger("somesy")
+
+
+class PackageJSON(ProjectMetadataWriter):
+    """package.json parser and saver."""
+
+    def __init__(
+        self,
+        path: Path,
+    ):
+        """package.json parser.
+
+        See [somesy.core.writer.ProjectMetadataWriter.__init__][].
+        """
+        mappings = {
+            "authors": ["author"],
+        }
+        super().__init__(path, create_if_not_exists=False, direct_mappings=mappings)
+
+    @property
+    def authors(self):
+        return [self._get_property(self._get_key("authors"))]
+
+    @authors.setter
+    def authors(self, authors: List[Person]) -> None:
+        """Set the authors of the project."""
+        authors = self._from_person(authors[0])
+        self._set_property(self._get_key("authors"), authors)
+
+    def _load(self) -> None:
+        """Load package.json file."""
+        with self.path.open() as f:
+            self._data = json.load(f, object_pairs_hook=OrderedDict)
+
+    def _validate(self) -> None:
+        """Validate package.json content using pydantic class."""
+        config = dict(self._get_property([]))
+        logger.debug(
+            f"Validating config using {PackageJsonConfig.__name__}: {pretty_repr(config)}"
+        )
+        PackageJsonConfig(**config)
+
+    def save(self, path: Optional[Path] = None) -> None:
+        """Save the package.json file."""
+        path = path or self.path
+        logger.debug(f"Saving package.json to {path}")
+
+        with path.open("w") as f:
+            # package.json indentation is 2 spaces
+            json.dump(self._data, f, indent=2)
+
+    @staticmethod
+    def _from_person(person: Person):
+        """Convert project metadata person object to package.json dict for person format."""
+        person_dict = {"name": person.full_name}
+        if person.email:
+            person_dict["email"] = person.email
+        if person.orcid:
+            person_dict["url"] = person.orcid
+        return person_dict
+
+    @staticmethod
+    def _to_person(person: Union[str, dict]) -> Person:
+        """Convert package.json dict for person format to project metadata person object."""
+        if isinstance(person, str):
+            # parse from package.json format
+            person = PackageJsonConfig.convert_author(person).dict(exclude_none=True)
+
+        names = list(map(lambda s: s.strip(), person["name"].split()))
+        person_obj = {
+            "given-names": " ".join(names[:-1]),
+            "family-names": names[-1],
+        }
+        if "email" in person:
+            person_obj["email"] = person["email"].strip()
+        if "url" in person:
+            person_obj["orcid"] = person["url"].strip()
+        return Person(**person_obj)
