@@ -169,6 +169,13 @@ class SomesyConfig(SomesyBaseModel):
         Path("pyproject.toml"), description="pyproject.toml file path."
     )
 
+    no_sync_package_json: bool = Field(
+        True, description="Do not sync with package.json."
+    )
+    package_json_file: Path = Field(
+        Path("package.json"), description="package.json file path."
+    )
+
     no_sync_codemeta: bool = Field(False, description="Do not sync with codemeta.json.")
     codemeta_file: Path = Field(
         Path("codemeta.json"), description="codemeta.json file path."
