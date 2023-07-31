@@ -1,0 +1,54 @@
+[project]
+name = "testproject"
+version = "1.0.0"
+description = "This is a test project for demonstration purposes."
+keywords = ["test", "demo", "example"]
+license = "MIT"
+repository = "https://github.com/example/testproject"
+homepage = "https://example.com/testproject"
+
+[[project.people]]
+family-names = "Doe"
+given-names = "John"
+email = "john.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0000"
+
+contribution = "The main developer, maintainer, and tester."
+contribution_begin = "2023-01-15"
+contribution_type = ["maintenance", "code", "test", "review", "doc"]
+
+author = true
+maintainer = true
+
+[[project.people]]
+family-names = "Doe"
+given-names = "Jane"
+email = "jane.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0001"
+
+contribution = "Initial concepts, tool development and enhancement, documentation."
+contribution_begin = "2023-02-20"
+contribution_type = ["ideas", "code", "test", "review", "doc"]
+
+author = true
+
+[[project.people]]
+family-names = "Doe"
+given-names = "Michael"
+email = "michael.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0002"
+
+contribution = "Valuable input concerning metadata standards and usability."
+contribution_begin = "2023-03-10"
+contribution_type = "ideas"
+
+[config]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = false
+pyproject_file = "pyproject.toml"
+no_sync_codemeta = false
+codemeta_file = "codemeta.json"
+show_info = false
+verbose = false
+debug = false

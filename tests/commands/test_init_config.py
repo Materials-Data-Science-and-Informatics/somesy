@@ -19,7 +19,7 @@ def cli_options() -> dict:
 def test_init_config(
     tmp_path,
     create_somesy_metadata,
-    create_somesy_metadata_config,
+    create_somesy,
     create_poetry_file,
     cli_options,
 ):
@@ -41,7 +41,7 @@ def test_init_config(
 
     # load somesy file with config
     somesy_file = tmp_path / ".somesy.with_config.toml"
-    create_somesy_metadata_config(somesy_file)
+    create_somesy(somesy_file)
     options = dict(cli_options)
     options["show_info"] = True
     init_config(somesy_file, options)
