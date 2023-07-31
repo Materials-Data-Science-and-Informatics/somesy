@@ -7,7 +7,7 @@ from typing import List, Optional, Union
 
 from rich.pretty import pretty_repr
 
-from somesy.core.models import Person
+from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
 from somesy.package_json.models import PackageJsonConfig
 
@@ -39,6 +39,16 @@ class PackageJSON(ProjectMetadataWriter):
         """Set the authors of the project."""
         authors = self._from_person(authors[0])
         self._set_property(self._get_key("authors"), authors)
+
+    @property
+    def contributors(self):
+        return self._get_property(self._get_key("contributors"))
+
+    @contributors.setter
+    def contributors(self, contributors: List[Person]) -> None:
+        """Set the contributors of the project."""
+        contributors = [self._from_person(c) for c in contributors]
+        self._set_property(self._get_key("contributors"), contributors)
 
     def _load(self) -> None:
         """Load package.json file."""
@@ -89,3 +99,12 @@ class PackageJSON(ProjectMetadataWriter):
         if "url" in person:
             person_obj["orcid"] = person["url"].strip()
         return Person(**person_obj)
+
+    def sync(self, metadata: ProjectMetadata) -> None:
+        """Sync package.json with project metadata.
+
+        Use existing sync function from ProjectMetadataWriter but update repository and contributers.
+        """
+        super().sync(metadata)
+        self.contributors = self._sync_person_list(self.contributors, metadata.people)
+        self.repository = {"type": "git", "url": metadata.repository}

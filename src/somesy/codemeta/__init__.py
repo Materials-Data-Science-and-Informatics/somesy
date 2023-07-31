@@ -24,6 +24,12 @@ def collect_cm_sources(conf: SomesyConfig):
         cm_sources.append(conf.pyproject_file)
     # NOTE: we don't add CFF directly, because it must be handled separately
     # NOTE: add other suitable somesy targets / codemeta sources (except CFF and codemeta) here
+    if (
+        not conf.no_sync_package_json
+        and conf.package_json_file is not None
+        and conf.package_json_file.is_file()
+    ):
+        cm_sources.append(conf.package_json_file)
     return cm_sources
 
 
