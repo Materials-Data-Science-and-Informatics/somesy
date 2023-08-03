@@ -90,5 +90,5 @@ def somesy() -> dict:
 
 
 @pytest.fixture
-def package_json() -> dict:
+def package_json() -> PackageJSON:
     return PackageJSON(Path("tests/data/package.json"))
