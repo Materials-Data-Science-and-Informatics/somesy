@@ -70,7 +70,7 @@ class CFF(ProjectMetadataWriter):
         json_str = person.json(
             exclude={
                 "contribution",
-                "contribution_type",
+                "contribution_types",
                 "contribution_begin",
                 "contribution_end",
                 "author",

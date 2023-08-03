@@ -33,7 +33,7 @@
         }
     ],
     "codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/somesy",
-    "description": "A cli tool for synchronizing CITATION.CFF with project files.",
+    "description": "A CLI tool for synchronizing software project metadata.",
     "identifier": "somesy",
     "keywords": [
         "FAIR",

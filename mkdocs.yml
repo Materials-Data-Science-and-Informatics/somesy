@@ -15,6 +15,7 @@ nav:
     - License: license.md
   - Usage:
     - Quickstart: quickstart.md
+    - User Manual: manual.md
     - API: reference/              # auto-generated (from Python docstrings)
   - Development:
     - How To Contribute: contributing.md
