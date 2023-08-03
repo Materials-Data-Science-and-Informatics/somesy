@@ -200,8 +200,10 @@ class ProjectMetadataWriter(ABC):
         )
 
         self.license = metadata.license.value
-        self.homepage = str(metadata.homepage)
-        self.repository = str(metadata.repository)
+        if metadata.homepage:
+            self.homepage = str(metadata.homepage)
+        if metadata.repository:
+            self.repository = str(metadata.repository)
 
     @staticmethod
     @abstractmethod
