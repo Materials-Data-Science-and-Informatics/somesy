@@ -4,7 +4,7 @@ message: If you use this software, please cite it using this metadata.
 
 title: somesy
 version: 0.1.0
-abstract: A cli tool for synchronizing CITATION.CFF with project files.
+abstract: A CLI tool for synchronizing software project metadata.
 repository-code: https://github.com/Materials-Data-Science-and-Informatics/somesy
 license: MIT
 keywords:

@@ -5,7 +5,7 @@ import functools
 import json
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from pydantic import (
     AnyUrl,
@@ -132,9 +132,10 @@ class SomesyBaseModel(BaseModel):
 
 
 class SomesyConfig(SomesyBaseModel):
-    """Pydantic model for somesy configuration.
+    """Pydantic model for somesy tool configuration.
 
-    All fields that are not explicitly passed are initialized with default values.
+    Note that all fields match CLI options, and CLI options will override the
+    values declared in a somesy input file (such as `somesy.toml`).
     """
 
     @root_validator
@@ -148,14 +149,14 @@ class SomesyConfig(SomesyBaseModel):
 
     # cli flags
     show_info: bool = Field(
-        False, description="Show basic information messages on run."
+        False, description="Show basic information messages on run (-v flag)."
     )
-    verbose: bool = Field(False, description="Show verbose messages on run.")
-    debug: bool = Field(False, description="Show debug messages on run.")
+    verbose: bool = Field(False, description="Show verbose messages on run (-vv flag).")
+    debug: bool = Field(False, description="Show debug messages on run (-vvv flag).")
 
     # input config
     input_file: Path = Field(
-        Path(".somesy.toml"), description="Project metadata input file path."
+        Path("somesy.toml"), description="Project metadata input file path."
     )
 
     # output config
@@ -205,12 +206,17 @@ class SomesyConfig(SomesyBaseModel):
 class Person(SomesyBaseModel):
     """Metadata abount a person in the context of a software project.
 
-    Schema is based on CITATION.cff, modified and extended for the needs of somesy.
+    This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
     """
 
     # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
 
-    orcid: Annotated[Optional[AnyUrl], Field(description="The person's ORCID url.")]
+    orcid: Annotated[
+        Optional[AnyUrl],
+        Field(
+            description="The person's ORCID url **(not required, but highly suggested)**."
+        ),
+    ]
 
     email: Annotated[
         str,
@@ -262,12 +268,14 @@ class Person(SomesyBaseModel):
     # somesy-specific extensions
     author: Annotated[
         bool,
-        Field(description="Indicates whether the person is an author of the project."),
+        Field(
+            description="Indicates whether the person is an author of the project (i.e. for citations)."
+        ),
     ] = False
     maintainer: Annotated[
         bool,
         Field(
-            description="Indicates whether the person is a maintainer of the project."
+            description="Indicates whether the person is a maintainer of the project (i.e. for contact)."
         ),
     ] = False
 
@@ -276,9 +284,12 @@ class Person(SomesyBaseModel):
         Optional[str],
         Field(description="Summary of how the person contributed to the project."),
     ]
-    contribution_type: Annotated[
-        Optional[Union[ContributionTypeEnum, List[ContributionTypeEnum]]],
-        Field(description="Contribution type of contributor."),
+    contribution_types: Annotated[
+        Optional[List[ContributionTypeEnum]],
+        Field(
+            description="Relevant types of contributions (see https://allcontributors.org/docs/de/emoji-key).",
+            min_items=1,
+        ),
     ]
     contribution_begin: Annotated[
         Optional[date], Field(description="Beginning date of the contribution.")
@@ -369,7 +380,9 @@ class ProjectMetadata(SomesyBaseModel):
     )
     homepage: Optional[AnyUrl] = Field(None, description="URL of the project homepage.")
 
-    keywords: List[str] = Field([], description="Keywords that describe the project.")
+    keywords: Optional[List[str]] = Field(
+        None, min_items=1, description="Keywords that describe the project."
+    )
 
     people: List[Person] = Field(
         min_items=1, description="Project authors, maintainers and contributors."
@@ -385,12 +398,16 @@ class ProjectMetadata(SomesyBaseModel):
 
 
 class SomesyInput(SomesyBaseModel):
-    """The complete somesy input file / section schema."""
+    """The complete somesy input file (`somesy.toml`) or section (`pyproject.toml`)."""
 
     _origin: Optional[Path]
 
-    project: ProjectMetadata
-    config: Optional[SomesyConfig]
+    project: ProjectMetadata = Field(
+        description="Project metadata to be used and synchronized."
+    )
+    config: Optional[SomesyConfig] = Field(
+        description="somesy tool configuration (matches CLI flags)."
+    )
 
     def is_somesy_file(self) -> bool:
         """Return whether this somesy input is from a somesy config file.

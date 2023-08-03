@@ -3,5 +3,5 @@
   description: Sync your metadata files with somesy
   entry: somesy sync
   language: python
-  files: '^\.somesy\.toml|pyproject\.toml$'
+  files: '^somesy\.toml|\.somesy\.toml|pyproject\.toml|package\.json$'
   pass_filenames: false
