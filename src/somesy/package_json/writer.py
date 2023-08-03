@@ -3,7 +3,7 @@ import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional
 
 from rich.pretty import pretty_repr
 
@@ -32,6 +32,7 @@ class PackageJSON(ProjectMetadataWriter):
 
     @property
     def authors(self):
+        """Return the only author of the package.json file as list."""
         return [self._get_property(self._get_key("authors"))]
 
     @authors.setter
@@ -42,6 +43,7 @@ class PackageJSON(ProjectMetadataWriter):
 
     @property
     def contributors(self):
+        """Return the contributors of the package.json file."""
         return self._get_property(self._get_key("contributors"))
 
     @contributors.setter
@@ -83,8 +85,8 @@ class PackageJSON(ProjectMetadataWriter):
         return person_dict
 
     @staticmethod
-    def _to_person(person: Union[str, dict]) -> Person:
-        """Convert package.json dict for person format to project metadata person object."""
+    def _to_person(person) -> Person:
+        """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
             # parse from package.json format
             person = PackageJsonConfig.convert_author(person).dict(exclude_none=True)
@@ -103,7 +105,7 @@ class PackageJSON(ProjectMetadataWriter):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync package.json with project metadata.
 
-        Use existing sync function from ProjectMetadataWriter but update repository and contributers.
+        Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
         self.contributors = self._sync_person_list(self.contributors, metadata.people)
