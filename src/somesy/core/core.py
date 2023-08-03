@@ -4,10 +4,11 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import tomlkit
+import json
 
 logger = logging.getLogger("somesy")
 
-INPUT_FILES_ORDERED = [".somesy.toml", "somesy.toml", "pyproject.toml"]
+INPUT_FILES_ORDERED = [".somesy.toml", "somesy.toml", "pyproject.toml", "package.json"]
 """Input files ordered by priority for discovery."""
 
 
@@ -80,7 +81,13 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
                     "No tool.somesy section found in pyproject.toml file!"
                 )
 
-    # NOTE: if we support somesy config in package.json, it would go here.
+    if path.suffix == ".json" and "package" in path.name:
+        with open(path, "r") as f:
+            input_content = json.load(f)
+            if "somesy" in input_content:
+                return input_content["somesy"]
+            else:
+                raise RuntimeError("No somesy section found in package.json file!")
 
     # no match:
     raise ValueError("Unsupported input file.")
