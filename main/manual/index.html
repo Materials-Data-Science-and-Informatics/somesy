@@ -10,20 +10,20 @@
       
       
       
-        <link rel="canonical" href="https://materials-data-science-and-informatics.github.io/somesy/main/dev_guide/">
+        <link rel="canonical" href="https://materials-data-science-and-informatics.github.io/somesy/main/manual/">
       
       
-        <link rel="prev" href="../contributing/">
+        <link rel="prev" href="../quickstart/">
       
       
-        <link rel="next" href="../code_of_conduct/">
+        <link rel="next" href="../reference/somesy/">
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.5.0, mkdocs-material-9.1.20">
     
     
       
-        <title>Developer Guide - somesy</title>
+        <title>User Manual - somesy</title>
       
     
     
@@ -81,7 +81,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#developer-guide" class="md-skip">
+        <a href="#user-manual" class="md-skip">
           Skip to content
         </a>
       
@@ -132,7 +132,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Developer Guide
+              User Manual
             
           </span>
         </div>
@@ -242,13 +242,15 @@
         
   
   
+    
+  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../quickstart/" class="md-tabs__link">
+      <a href="../quickstart/" class="md-tabs__link md-tabs__link--active">
         Usage
       </a>
     </li>
@@ -258,15 +260,13 @@
         
   
   
-    
-  
 
 
   
   
   
     <li class="md-tabs__item">
-      <a href="../contributing/" class="md-tabs__link md-tabs__link--active">
+      <a href="../contributing/" class="md-tabs__link">
         Development
       </a>
     </li>
@@ -420,14 +420,16 @@
 
   
   
+    
+  
   
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
       
       
       
@@ -436,7 +438,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
           Usage
@@ -461,11 +463,160 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../manual/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          User Manual
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         User Manual
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#somesy-metadata-schemas" class="md-nav__link">
+    Somesy Metadata Schemas
+  </a>
+  
+    <nav class="md-nav" aria-label="Somesy Metadata Schemas">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#schemas-overview" class="md-nav__link">
+    Schemas Overview
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata-mapping" class="md-nav__link">
+    Metadata Mapping
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-somesy-cli-tool" class="md-nav__link">
+    The somesy CLI tool
+  </a>
+  
+    <nav class="md-nav" aria-label="The somesy CLI tool">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synchronization" class="md-nav__link">
+    Synchronization
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy-input-file" class="md-nav__link">
+    Somesy input file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#metadata-update-logic" class="md-nav__link">
+    Metadata Update Logic
+  </a>
+  
+    <nav class="md-nav" aria-label="Metadata Update Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#somesy-inputs-override-target-values" class="md-nav__link">
+    Somesy Inputs Override Target Values
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-somesy-results" class="md-nav__link">
+    Checking Somesy Results
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#person-identification-heuristics" class="md-nav__link">
+    Person Identification Heuristics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#codemeta" class="md-nav__link">
+    Codemeta
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    FAQ
+  </a>
+  
+    <nav class="md-nav" aria-label="FAQ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#somesy-introduces-its-own-metadata-format-isnt-this-counter-productive" class="md-nav__link">
+    Somesy introduces it's own metadata format... isn't this counter-productive?
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1021,16 +1172,14 @@
 
   
   
-    
-  
   
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
       
       
-      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
       
       
       
@@ -1039,7 +1188,7 @@
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_3">
           <span class="md-nav__icon md-icon"></span>
           Development
@@ -1064,207 +1213,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          Developer Guide
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../dev_guide/" class="md-nav__link">
         Developer Guide
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
-  </a>
-  
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#repository-structure" class="md-nav__link">
-    Repository Structure
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#used-tools" class="md-nav__link">
-    Used Tools
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#basics" class="md-nav__link">
-    Basics
-  </a>
-  
-    <nav class="md-nav" aria-label="Basics">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    Configuration
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#task-runner" class="md-nav__link">
-    Task Runner
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ci-workflows" class="md-nav__link">
-    CI Workflows
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quality-control" class="md-nav__link">
-    Quality Control
-  </a>
-  
-    <nav class="md-nav" aria-label="Quality Control">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#static-analysis" class="md-nav__link">
-    Static Analysis
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    Testing
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    Documentation
-  </a>
-  
-    <nav class="md-nav" aria-label="Documentation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#online-documentation" class="md-nav__link">
-    Online Documentation
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#offline-documentation" class="md-nav__link">
-    Offline Documentation
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#releases" class="md-nav__link">
-    Releases
-  </a>
-  
-    <nav class="md-nav" aria-label="Releases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creating-a-new-release" class="md-nav__link">
-    Creating a New Release
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#release-targets" class="md-nav__link">
-    Release Targets
-  </a>
-  
-    <nav class="md-nav" aria-label="Release Targets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#github-release" class="md-nav__link">
-    Github Release
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pypi-and-compatible-package-indices" class="md-nav__link">
-    PyPI (and compatible package indices)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1331,23 +1284,23 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
+  <a href="#somesy-metadata-schemas" class="md-nav__link">
+    Somesy Metadata Schemas
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
+    <nav class="md-nav" aria-label="Somesy Metadata Schemas">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#repository-structure" class="md-nav__link">
-    Repository Structure
+  <a href="#schemas-overview" class="md-nav__link">
+    Schemas Overview
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#used-tools" class="md-nav__link">
-    Used Tools
+  <a href="#metadata-mapping" class="md-nav__link">
+    Metadata Mapping
   </a>
   
 </li>
@@ -1358,30 +1311,23 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basics" class="md-nav__link">
-    Basics
+  <a href="#the-somesy-cli-tool" class="md-nav__link">
+    The somesy CLI tool
   </a>
   
-    <nav class="md-nav" aria-label="Basics">
+    <nav class="md-nav" aria-label="The somesy CLI tool">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#configuration" class="md-nav__link">
-    Configuration
+  <a href="#synchronization" class="md-nav__link">
+    Synchronization
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#task-runner" class="md-nav__link">
-    Task Runner
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ci-workflows" class="md-nav__link">
-    CI Workflows
+  <a href="#somesy-input-file" class="md-nav__link">
+    Somesy input file
   </a>
   
 </li>
@@ -1392,23 +1338,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quality-control" class="md-nav__link">
-    Quality Control
+  <a href="#metadata-update-logic" class="md-nav__link">
+    Metadata Update Logic
   </a>
   
-    <nav class="md-nav" aria-label="Quality Control">
+    <nav class="md-nav" aria-label="Metadata Update Logic">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#static-analysis" class="md-nav__link">
-    Static Analysis
+  <a href="#somesy-inputs-override-target-values" class="md-nav__link">
+    Somesy Inputs Override Target Values
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
-    Testing
+  <a href="#checking-somesy-results" class="md-nav__link">
+    Checking Somesy Results
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#person-identification-heuristics" class="md-nav__link">
+    Person Identification Heuristics
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#codemeta" class="md-nav__link">
+    Codemeta
   </a>
   
 </li>
@@ -1419,71 +1379,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#documentation" class="md-nav__link">
-    Documentation
+  <a href="#faq" class="md-nav__link">
+    FAQ
   </a>
   
-    <nav class="md-nav" aria-label="Documentation">
+    <nav class="md-nav" aria-label="FAQ">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#online-documentation" class="md-nav__link">
-    Online Documentation
+  <a href="#somesy-introduces-its-own-metadata-format-isnt-this-counter-productive" class="md-nav__link">
+    Somesy introduces it's own metadata format... isn't this counter-productive?
   </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#offline-documentation" class="md-nav__link">
-    Offline Documentation
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#releases" class="md-nav__link">
-    Releases
-  </a>
-  
-    <nav class="md-nav" aria-label="Releases">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#creating-a-new-release" class="md-nav__link">
-    Creating a New Release
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#release-targets" class="md-nav__link">
-    Release Targets
-  </a>
-  
-    <nav class="md-nav" aria-label="Release Targets">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#github-release" class="md-nav__link">
-    Github Release
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pypi-and-compatible-package-indices" class="md-nav__link">
-    PyPI (and compatible package indices)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1507,7 +1413,7 @@
                   
 
   
-    <a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/blob/main/docs/dev_guide.md" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/blob/main/docs/manual.md" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -1516,261 +1422,744 @@
     
       
     
-    <a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/raw/main/docs/dev_guide.md" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/raw/main/docs/manual.md" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
   
 
 
-<h1 id="developer-guide">Developer Guide<a class="headerlink" href="#developer-guide" title="Permanent link">&para;</a></h1>
-<p>This guide is targeting mainly developers, maintainers and other technical contributors
-and provides more information on how to work with this repository.</p>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<h3 id="repository-structure">Repository Structure<a class="headerlink" href="#repository-structure" title="Permanent link">&para;</a></h3>
-<p>Here is a <em>non-exhaustive</em> list of the most important files and directories in the repository.</p>
-<p><em>General:</em></p>
-<ul>
-<li><code>AUTHORS.md</code>: acknowledges and lists all contributors</li>
-<li><code>CHANGELOG.md</code>: summarizes the changes for each version of the software for users</li>
-<li><code>CODE_OF_CONDUCT.md</code>: defines the social standards that must be followed by contributors</li>
-<li><code>CONTRIBUTING.md</code>: explains  how others can contribute to the project</li>
-<li><code>README.md</code>: provides an overview and points to other resources</li>
-</ul>
-<p><em>Metadata:</em></p>
-<ul>
-<li><code>CITATION.cff</code>: metadata stating how to cite the project</li>
-<li><code>codemeta.json</code>: metadata for harvesting by other tools and services</li>
-<li><code>LICENSE</code>: the (main) license of the project</li>
-<li><code>LICENSES</code>: copies of all licenses that apply to files in the project</li>
-<li><code>.reuse/dep5</code>: granular license and copyright information for all files and directories</li>
-</ul>
-<p><em>Development:</em></p>
-<ul>
-<li><code>pyproject.toml</code>: project metadata, dependencies, development tool configurations</li>
-<li><code>poetry.lock</code>: needed for reproducible installation of the project</li>
-<li><code>src</code>: actual code provided by the project</li>
-<li><code>tests</code>: all tests for the code in the project</li>
-<li><code>mkdocs.yml</code>: configuration of the project website</li>
-<li><code>docs</code>: most contents used for the project website</li>
-</ul>
-<p><em>Automation and Quality Control:</em></p>
-<ul>
-<li><code>.pre-commit-config.yaml</code>: quality assurance tools used in the project</li>
-<li><code>.github/workflows</code>: CI scripts for GitHub (QA, documentation and package deployment)</li>
-<li><code>.github/ISSUE_TEMPLATE</code>: templates for the GitHub issue tracker</li>
-<li><code>.gitlab-ci.yml</code>: mostly equivalent CI scripts, but for GitLab</li>
-<li><code>.gitlab/issue_templates</code>: The same issues templates, but for GitLab</li>
-</ul>
-<h3 id="used-tools">Used Tools<a class="headerlink" href="#used-tools" title="Permanent link">&para;</a></h3>
-<p>Here is a <em>non-exhaustive</em> list of the most important tools used in the project.</p>
-<p>Best practices for modern Python development are implemented by using:</p>
-<ul>
-<li><code>poetry</code> for dependency management and packaging</li>
-<li><code>pytest</code> for unit testing</li>
-<li><code>hypothesis</code> for property-based testing</li>
-<li><code>pre-commit</code> for orchestrating linters, formatters and other utilities</li>
-<li><code>black</code> for source-code formatting</li>
-<li><code>autoflake</code> for automatically removing unused imports</li>
-<li><code>flake8</code> for general linting (using various linter plugins)</li>
-<li><code>pydocstyle</code> for checking docstring conventions</li>
-<li><code>interrogate</code> for computing docstring coverage</li>
-<li><code>mypy</code> for editor-independent type-checking</li>
-<li><code>mkdocs</code> for generating the project documentation website</li>
-<li><code>bandit</code> for checking security issues in the code</li>
-<li><code>safety</code> for checking security issues in the current dependencies</li>
-</ul>
-<p>Metadata best practices for FAIR software are implemented using:</p>
-<ul>
-<li><code>cffconvert</code> to check the <code>CITATION.cff</code> (citation metadata)</li>
-<li><code>codemetapy</code> to generate a <code>codemeta.json</code> (general software metadata)</li>
-<li><code>reuse</code> to check <a href="https://reuse.software/spec/">REUSE-compliance</a> (granular copyright and license metadata)</li>
-<li><code>licensecheck</code> to scan for possible license incompatibilities in the dependencies</li>
-</ul>
-<h2 id="basics">Basics<a class="headerlink" href="#basics" title="Permanent link">&para;</a></h2>
-<p>The project</p>
-<ul>
-<li>heavily uses <code>pyproject.toml</code>, which is a <a href="https://peps.python.org/pep-0621/">recommended standard</a></li>
-<li>adopts the <a href="https://browniebroke.com/blog/convert-existing-poetry-to-src-layout/"><code>src</code> layout</a>, to avoid <a href="https://packaging.python.org/en/latest/discussions/src-layout-vs-flat-layout/">common problems</a></li>
-<li>keeps the actual code (<code>src</code>) and test code (<code>tests</code>) separated</li>
-</ul>
-<p>The <code>pyproject.toml</code> is the <strong>main configuration file</strong> for the project. It contains both
-general information about the software as well as configuration for various tools.</p>
-<p>In older software, most of this information is often scattered over many little
-tool-specific configuration files and a <code>setup.py</code>, <code>setup.cfg</code> and/or <code>requirements.txt</code>
-file.</p>
-<p>In this project, <code>pyproject.toml</code> is the first place that should be checked
-when looking for the configuration of some development tool.</p>
-<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
-<p>The main tool needed to manage and configure the project is <a href="https://python-poetry.org">Poetry</a>.</p>
-<p><strong>Please follow its setup documentation to install it correctly.</strong> Poetry should <strong>not</strong>
-be installed with <code>pip</code> like other Python tools.</p>
-<p>Poetry performs many important tasks:</p>
-<ul>
-<li>it manages the <strong>virtual environment(s)</strong> used for the project</li>
-<li>it manages all the <strong>dependencies</strong> needed for the code to work</li>
-<li>it takes care of <strong>packaging</strong> the code into a <code>pip</code>-installable package</li>
-</ul>
-<p>You can find a cheatsheet with the most important commands
-<a href="https://vikasz.hashnode.dev/python-poetry-cheatsheet">here</a>
-and consult its official documentation for detailed information.</p>
-<p>Note that <code>poetry</code> is only needed for development of the repository.
-The <em>end-users</em> who just want to <em>install and use</em> this project
-do <strong>not need</strong> to set up or know anything about poetry.</p>
-<p>Note that if you use <code>poetry shell</code> and the project is installed with <code>poetry install</code>,
-in the following you do not have to prepend <code>poetry run</code> to commands you will see below.</p>
-<h3 id="task-runner">Task Runner<a class="headerlink" href="#task-runner" title="Permanent link">&para;</a></h3>
-<p>It is a good practice to have a common way for launching different project-related tasks.
-It removes the need of remembering flags for various tools, and avoids duplication
-of the same commands in the CI pipelines. If something in a workflow needs to change,
-it can be changed in just one place, thus reducing the risk of making a mistake.</p>
-<p>Often projects use a shell script or <code>Makefile</code> for this purpose. This project uses
-<a href="https://github.com/nat-n/poethepoet">poethepoet</a>, as it integrates nicely with <code>poetry</code>.
-The tasks are defined in <code>pyproject.toml</code> and can be launched using:</p>
-<div class="highlight"><pre><span></span><code>poetry run poe TASK_NAME
+<h1 id="user-manual">User Manual<a class="headerlink" href="#user-manual" title="Permanent link">&para;</a></h1>
+<p>This is the reference manual for <code>somesy</code> providing details about its
+configuration and behavior.</p>
+<p>Before you proceed, make sure you have read the <a href="../">introduction</a>
+and the <a href="../quickstart/">quick-start guide</a>.</p>
+<h2 id="somesy-metadata-schemas">Somesy Metadata Schemas<a class="headerlink" href="#somesy-metadata-schemas" title="Permanent link">&para;</a></h2>
+<p>Because the same information is represented in different ways and more or less
+detail in different files, somesy requires to put all project information in a
+<strong>somesy-specific input section</strong> is located in a supported <strong>input file</strong>.
+Somesy will use this as the single source of truth for the supported project
+metadata fields and can synchronize this information into different <strong>target
+files</strong>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The somesy schemas are designed to allow expressing metadata in the most
+useful and rich form, i.e. the best form that some of the target formats
+supports.</p>
+</div>
+<p>Somesy project metadata consists of two main schemas - one schema for describing
+people (authors, maintainers, contributors), and a schema describing the
+project.</p>
+<p>The somesy metadata fields (especially for people) are mostly based on
+<a href="https://github.com/citation-file-format/citation-file-format/blob/main/schema-guide.md">Citation File Format 1.2</a>, with some custom extensions.
+Somesy will try staying aligned with future revisions of <code>CITATION.cff</code>, unless
+for technical or practical reasons a deviation or extension is justified.</p>
+<p>One useful distinction somesy does in contrast to many target formats is to
+allow stating all people in one place. If a person is both an author and a
+maintainer, that person does not need to be listed with all information twice.</p>
+<p>This is done by adding the <code>author</code> and <code>maintainer</code> flags that can be set for
+every listed person. Somesy will take care of duplicating the entries where this
+is needed.</p>
+<p>Furthermore <code>somesy</code> allows to provide more fine-grained information about the
+contribution of a person and acknowledge contributors that are neither full
+authors or maintainers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently, provided information about contributors that are neither authors
+nor maintainers, and all the detailed information on the contributions is
+not used.</p>
+<p>Nevertheless, <strong>we encourage</strong> tracking granular contributor and contribution information
+in order to motivate and acknowledge also minor or invisible contributions to a projects.</p>
+<p>Once CITATION.cff introduces corresponding mechanisms,
+<code>somesy</code> will be aligned with the corresponding capabilities.
+Furthermore, <code>somesy</code> might support the
+<a href="https://allcontributors.org/">allcontributors</a> tool as a target in the future.</p>
+</div>
+<h3 id="schemas-overview">Schemas Overview<a class="headerlink" href="#schemas-overview" title="Permanent link">&para;</a></h3>
+<p>Here is an overview of the schemas used in somesy.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="exec-1--__tabbed_1_1" name="exec-1--__tabbed_1" type="radio" /><input id="exec-1--__tabbed_1_2" name="exec-1--__tabbed_1" type="radio" /><input id="exec-1--__tabbed_1_3" name="exec-1--__tabbed_1" type="radio" /><input id="exec-1--__tabbed_1_4" name="exec-1--__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="exec-1--__tabbed_1_1">SomesyInput</label><label for="exec-1--__tabbed_1_2">ProjectMetadata</label><label for="exec-1--__tabbed_1_3">Person</label><label for="exec-1--__tabbed_1_4">SomesyConfig</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>The complete somesy input file (<code>somesy.toml</code>) or section (<code>pyproject.toml</code>).   </p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>project</td>
+<td>ProjectMetadata</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>Project metadata to be used and synchronized.</td>
+</tr>
+<tr>
+<td>config</td>
+<td>SomesyConfig</td>
+<td>no</td>
+<td></td>
+<td>somesy tool configuration (matches CLI flags).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<p>Pydantic model for Project Metadata Input.  </p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>str</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>Project name.</td>
+</tr>
+<tr>
+<td>description</td>
+<td>str</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>Project description.</td>
+</tr>
+<tr>
+<td>version</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>Project version.</td>
+</tr>
+<tr>
+<td>license</td>
+<td>LicenseEnum</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>SPDX License string.</td>
+</tr>
+<tr>
+<td>repository</td>
+<td>URL</td>
+<td>no</td>
+<td></td>
+<td>URL of the project source code repository.</td>
+</tr>
+<tr>
+<td>homepage</td>
+<td>URL</td>
+<td>no</td>
+<td></td>
+<td>URL of the project homepage.</td>
+</tr>
+<tr>
+<td>keywords</td>
+<td>list[str]</td>
+<td>no</td>
+<td></td>
+<td>Keywords that describe the project.</td>
+</tr>
+<tr>
+<td>people</td>
+<td>list[Person]</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>Project authors, maintainers and contributors.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<p>Metadata abount a person in the context of a software project.</p>
+<p>This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orcid</td>
+<td>URL</td>
+<td>no</td>
+<td></td>
+<td>The person's ORCID url <strong>(not required, but highly suggested)</strong>.</td>
+</tr>
+<tr>
+<td>email</td>
+<td>str</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>The person's email address.</td>
+</tr>
+<tr>
+<td>family_names</td>
+<td>str</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>The person's family names.</td>
+</tr>
+<tr>
+<td>given_names</td>
+<td>str</td>
+<td><strong>yes</strong></td>
+<td></td>
+<td>The person's given names.</td>
+</tr>
+<tr>
+<td>name_particle</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example 'von' in 'Alexander von Humboldt').</td>
+</tr>
+<tr>
+<td>name_suffix</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.</td>
+</tr>
+<tr>
+<td>alias</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's alias.</td>
+</tr>
+<tr>
+<td>affiliation</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's affiliation.</td>
+</tr>
+<tr>
+<td>address</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's address.</td>
+</tr>
+<tr>
+<td>city</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's city.</td>
+</tr>
+<tr>
+<td>country</td>
+<td>Country</td>
+<td>no</td>
+<td></td>
+<td>The person's country.</td>
+</tr>
+<tr>
+<td>fax</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's fax number.</td>
+</tr>
+<tr>
+<td>post_code</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's post-code.</td>
+</tr>
+<tr>
+<td>region</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's region.</td>
+</tr>
+<tr>
+<td>tel</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>The person's phone number.</td>
+</tr>
+<tr>
+<td>author</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Indicates whether the person is an author of the project (i.e. for citations).</td>
+</tr>
+<tr>
+<td>maintainer</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Indicates whether the person is a maintainer of the project (i.e. for contact).</td>
+</tr>
+<tr>
+<td>contribution</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>Summary of how the person contributed to the project.</td>
+</tr>
+<tr>
+<td>contribution_types</td>
+<td>list[ContributionTypeEnum]</td>
+<td>no</td>
+<td></td>
+<td>Relevant types of contributions (see <a href="https://allcontributors.org/docs/de/emoji-key">https://allcontributors.org/docs/de/emoji-key</a>).</td>
+</tr>
+<tr>
+<td>contribution_begin</td>
+<td>date</td>
+<td>no</td>
+<td></td>
+<td>Beginning date of the contribution.</td>
+</tr>
+<tr>
+<td>contribution_end</td>
+<td>date</td>
+<td>no</td>
+<td></td>
+<td>Ending date of the contribution.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<p>Pydantic model for somesy tool configuration.</p>
+<p>Note that all fields match CLI options, and CLI options will override the
+values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Required?</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>show_info</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Show basic information messages on run (-v flag).</td>
+</tr>
+<tr>
+<td>verbose</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Show verbose messages on run (-vv flag).</td>
+</tr>
+<tr>
+<td>debug</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Show debug messages on run (-vvv flag).</td>
+</tr>
+<tr>
+<td>input_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"somesy.toml"</td>
+<td>Project metadata input file path.</td>
+</tr>
+<tr>
+<td>no_sync_cff</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with CFF.</td>
+</tr>
+<tr>
+<td>cff_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"CITATION.cff"</td>
+<td>CFF file path.</td>
+</tr>
+<tr>
+<td>no_sync_pyproject</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with pyproject.toml.</td>
+</tr>
+<tr>
+<td>pyproject_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"pyproject.toml"</td>
+<td>pyproject.toml file path.</td>
+</tr>
+<tr>
+<td>no_sync_codemeta</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with codemeta.json.</td>
+</tr>
+<tr>
+<td>codemeta_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"codemeta.json"</td>
+<td>codemeta.json file path.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<h3 id="metadata-mapping">Metadata Mapping<a class="headerlink" href="#metadata-mapping" title="Permanent link">&para;</a></h3>
+<p>From its own schema <code>somesy</code> must convert the information into the target formats.
+The following tables sketch how fields are mapped to corresponding other fields in
+some of the currently supported formats.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Person Metadata</label><label for="__tabbed_1_2">Project Metadata</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Poetry Config</th>
+<th>SetupTools Config</th>
+<th>CITATION.cff</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>given-names</td>
+<td>name+email</td>
+<td>name</td>
+<td>given-names</td>
+<td>required</td>
+</tr>
+<tr>
+<td>family-names</td>
+<td>name+email</td>
+<td>name</td>
+<td>family-names</td>
+<td>required</td>
+</tr>
+<tr>
+<td>email</td>
+<td>name+email</td>
+<td>email</td>
+<td>email</td>
+<td>required</td>
+</tr>
+<tr>
+<td>orcid</td>
+<td>-</td>
+<td>-</td>
+<td>orcid</td>
+<td>optional</td>
+</tr>
+<tr>
+<td><em>(many others)</em></td>
+<td>-</td>
+<td>-</td>
+<td><em>(same)</em></td>
+<td>optional</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="tabbed-block">
+<table>
+<thead>
+<tr>
+<th>Field Name</th>
+<th>Poetry Config</th>
+<th>SetupTools Config</th>
+<th>CITATION.cff</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td>name</td>
+<td>name</td>
+<td>title</td>
+<td>required</td>
+</tr>
+<tr>
+<td>description</td>
+<td>description</td>
+<td>description</td>
+<td>abstract</td>
+<td>required</td>
+</tr>
+<tr>
+<td>license</td>
+<td>license</td>
+<td>license</td>
+<td>license</td>
+<td>required</td>
+</tr>
+<tr>
+<td>version</td>
+<td>version</td>
+<td>version</td>
+<td>version</td>
+<td>optional</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><em>author=true</em></td>
+<td>authors</td>
+<td>authors</td>
+<td>authors</td>
+<td>required</td>
+</tr>
+<tr>
+<td><em>maintainer=true</em></td>
+<td>maintainers</td>
+<td>maintainers</td>
+<td>contact</td>
+<td>optional</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>keywords</td>
+<td>keywords</td>
+<td>keywords</td>
+<td>keywords</td>
+<td>optional</td>
+</tr>
+<tr>
+<td>repository</td>
+<td>repository</td>
+<td>urls.repository</td>
+<td>repository_code</td>
+<td>optional</td>
+</tr>
+<tr>
+<td>homepage</td>
+<td>homepage</td>
+<td>urls.homepage</td>
+<td>url</td>
+<td>optional</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
+specification of author contact information and complex names. In contrast,
+poetry only supports a simple string with a name and email (like in git commits)
+to list authors and maintainers. <strong>Therefore somesy sometimes must do much more
+than just move or rename fields</strong>. This means that giving a clean and complete
+mapping overview is not feasible. In case of doubt or confusion, please open an
+issue or consult the <code>somesy</code> code.</p>
+<h2 id="the-somesy-cli-tool">The somesy CLI tool<a class="headerlink" href="#the-somesy-cli-tool" title="Permanent link">&para;</a></h2>
+<p>You can see all supported somesy CLI command options using <code>somesy --help</code>:</p>
+<div class="highlight"><pre><span></span><code>somesy<span class="w"> </span>sync<span class="w"> </span>--help
 </code></pre></div>
-<h3 id="ci-workflows">CI Workflows<a class="headerlink" href="#ci-workflows" title="Permanent link">&para;</a></h3>
-<p>The project contains CI workflows for both GitHub and GitLab.</p>
-<p>The main CI pipeline runs on each new pushed commit and will</p>
+<div class="highlight"><pre><span></span><code><span class=" -Color -Color-Bold">                                                                                </span>
+<span class=" -Color -Color-Bold"> </span><span class=" -Color -Color-Bold -Color-Bold-Yellow">Usage: </span><span class=" -Color -Color-Bold">somesy sync [OPTIONS] COMMAND [ARGS]...                                 </span>
+<span class=" -Color -Color-Bold">                                                                                </span>
+ Sync project metadata input with metadata files.                               
+
+<span class=" -Color -Color-Faint">╭─ Options ────────────────────────────────────────────────────────────────────╮</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--input-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-i</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Somesy input file path (default:          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    .somesy.toml)                             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file (default:   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    CITATION.cff)                             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pyproject</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync pyproject.toml file (default: <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing pyproject.toml file path         <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    (default: pyproject.toml)                 <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>   <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync codemeta.json file            <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom codemeta.json file path            <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]               </span>            <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Show this message and exit.               <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">╰──────────────────────────────────────────────────────────────────────────────╯</span>
+</code></pre></div>
+<p>Everything that can be configured as a CLI flag can also be set in a <code>somesy.toml</code> file
+in the <code>[config]</code> section. CLI arguments set in an input file override the
+defaults, while options passed as CLI arguments override the configuration.</p>
+<p>Without an input file specifically provided, somesy will check if it can find a valid</p>
+<ul>
+<li><code>.somesy.toml</code></li>
+<li><code>somesy.toml</code></li>
+<li><code>pyproject.toml</code> (in <code>tool.somesy</code> section)</li>
+</ul>
+<p>which is located in the current working directory. If you want to provide
+the somesy input file from a different location, you can pass it with the <code>-i</code> option.</p>
+<h3 id="synchronization">Synchronization<a class="headerlink" href="#synchronization" title="Permanent link">&para;</a></h3>
+<p>Unless configured otherwise, <code>somesy</code> will create <code>CITATION.cff</code>
+and <code>codemeta.json</code> files if they do not exist.
+Other supported files (such as <code>pyproject.toml</code>) are updated if they already
+exist in your repository.</p>
+<p>If you do not want that somesy creates/synchronizes these files,
+you can disable them by CLI options or in your somesy configuration.</p>
+<h3 id="somesy-input-file">Somesy input file<a class="headerlink" href="#somesy-input-file" title="Permanent link">&para;</a></h3>
+<p>In the <a href="../quickstart/">quickstart</a> you can find an example somesy input file.</p>
+<p>All possible metadata fields and configuration options are explained further <a href="#schemas-overview">above</a>.</p>
+<h2 id="metadata-update-logic">Metadata Update Logic<a class="headerlink" href="#metadata-update-logic" title="Permanent link">&para;</a></h2>
+<p>In this section we explain a few details about how <code>somesy</code> updates metadata.</p>
+<h3 id="somesy-inputs-override-target-values">Somesy Inputs Override Target Values<a class="headerlink" href="#somesy-inputs-override-target-values" title="Permanent link">&para;</a></h3>
+<p>In general, <code>somesy</code> updates fields in target files and formats
+based on the information stated in the <code>somesy.toml</code>.</p>
+<p>It will convert the metadata into the form needed for a target,
+while trying to preserve as much information as possible. Then it <strong>carefully
+updates</strong> the file, while keeping all other fields in the target file unchanged.</p>
+<p>In most cases, <code>somesy</code> will try not to interfere with other values, metadata
+and configuration you might have in a target file.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>For typically manually-edited files, it will even make sure that the
+comments stay in place! (currently works for TOML)</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Only edit target files manually to add or update fields
+that <code>somesy</code> does <strong>not</strong> understand or care about!</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>All changes in target files you do to fields <code>somesy</code> <em>does</em> understand will be
+overwritten the next time you run somesy.</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<ul>
+<li>update all project metadata supported by <code>somesy</code> in the <code>somesy.toml</code></li>
+<li>update other metadata directly in the target files</li>
+</ul>
+</div>
+<h3 id="checking-somesy-results">Checking Somesy Results<a class="headerlink" href="#checking-somesy-results" title="Permanent link">&para;</a></h3>
+<p>Note that <code>somesy</code> in general will try doing a good job and hopefully will in
+most cases, but in certain tricky situations it might not be able to figure out
+the and needed changes correctly.</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Always check the files that somesy synchronized look right
+before committing/pushing the changes!</p>
+</div>
+<p>Doing what <code>somesy</code> does both convenient and right is (maybe surprisingly to
+you) quite difficult, so while somesy should save you quite some tedious work,
+you should not use it blindly. You have been warned!</p>
+<h3 id="person-identification-heuristics">Person Identification Heuristics<a class="headerlink" href="#person-identification-heuristics" title="Permanent link">&para;</a></h3>
+<p>One frequent source of high-level project metadata changes is fluctuation of
+authors, maintainers and contributors and eventual changes of the respective
+contact and identification information.</p>
+<p>Somesy will try its best to keep track of persons involved in your software
+project, but to avoid possible problems and unexpected behavior, it might be
+helpful to <strong>understand how somesy determines whether two metadata records
+describe the same real person</strong>.</p>
+<p>When somesy compares two metadata records about a person, it will proceed as follows:</p>
 <ol>
-<li>Run all configured code analysis tools,</li>
-<li>Run code tests with multiple versions of Python,</li>
-<li>build and deploy the online project documentation website, and</li>
-<li><em>if a new version tag was pushed,</em> launch the release workflow</li>
+<li>If both records contain an ORCID, then the person is the same if the attached ORCIDs are equal, and different if it is not.</li>
+<li>Otherwise, if both records have an attached email address, and it is the same email, then they are the same person.</li>
+<li>Otherwise, the records are considered to be about the same person if they agree on the full name (i.e. given, middle and family name sequence).</li>
 </ol>
-<h2 id="quality-control">Quality Control<a class="headerlink" href="#quality-control" title="Permanent link">&para;</a></h2>
-<h3 id="static-analysis">Static Analysis<a class="headerlink" href="#static-analysis" title="Permanent link">&para;</a></h3>
-<p>Except for code testing, most tools for quality control are added to the project as
-<a href="https://pre-commit.com/"><code>pre-commit</code></a> <em>hooks</em>. The <code>pre-commit</code> tool takes care of
-installing, updating and running the tools according to the configuration in the
-<code>.pre-commit-config.yaml</code> file.</p>
-<p>For every new copy of the repository (e.g. after <code>git clone</code>), <code>pre-commit</code> first must
-be activated. This is usually done using <code>pre-commit install</code>, which also requires that
-<code>pre-commit</code> is already available. For more convenience, we simplified the procedure.</p>
-<p>In this project, you can run:</p>
-<div class="highlight"><pre><span></span><code>poetry run poe init-dev
-</code></pre></div>
-<p>This will make sure that <code>pre-commit</code> is enabled in your repository copy.</p>
-<p>Once enabled,
-<strong>every time</strong> you try to <code>git commit</code> some <strong>changed files</strong>
-various tools will run on those (and only those) files.</p>
-<p>This means that (with some exceptions) <code>pre-commit</code> by default will run only
-on the changed files that were added to the next commit
-(i.e., files in the git <em>staging area</em>).
-These files are usually colored in <em>green</em> when running <code>git status</code>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>State ORCIDs for persons whenever possible (i.e. the person has an ORCID)!</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>If a person does not have an ORCID, suggest that they should create one!</p>
+</div>
+<p>Somesy will usually correctly understand cases such as:</p>
+<ol>
+<li>An ORCID being added to a person (i.e. if it was not present before)</li>
+<li>A changed email address (if the name stays the same)</li>
+<li>A changed name (if the email address stays the same)</li>
+<li>Any other relevant metadata attached to the person</li>
+</ol>
+<p>Nevertheless, you should <strong>check the changes somesy does</strong> before committing them to your repository,
+especially <strong>after you significantly modified your project metadata</strong>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that changing the ORCID will not be recognized,
+because ORCIDs are assumed to be unique per person.</p>
+</div>
+<p>If you initially have stated an incorrect ORCID for a person and then change it, <strong>somesy will think that this is a new person</strong>.
+Therefore, <strong>in such a case you will need to fix the ORCID in all configured somesy targets</strong> either
+before running somesy (so somesy will not create new person entries), or
+after running somesy (to remove the duplicate entries with the incorrect ORCID).</p>
+<h3 id="codemeta">Codemeta<a class="headerlink" href="#codemeta" title="Permanent link">&para;</a></h3>
+<p>While <code>somesy</code> is modifying existing files for most supported formats,
+<a href="https://codemeta.github.io/">CodeMeta</a> is implemented differently.</p>
+<p>In order to avoid redundant work, <code>somesy</code> relies on existing tools to generate
+<code>codemeta.json</code> files. So when you synchronize the metadata and the codemeta
+target is enabled, <code>somesy</code> will generate your <code>codemeta.json</code> by:</p>
 <ul>
-<li>Some tools only <em>report</em> the problems they detected</li>
-<li>Some tools actively <em>modify</em> files (e.g., fix formatting)</li>
+<li>synchronizing metadata to a <code>pyproject.toml</code> or <code>package.json</code> (if enabled)</li>
+<li>synchronizing metadata to a <code>CITATION.cff</code> (if enabled)</li>
+<li>running <code>cffconvert</code> and <code>codemetapy</code> to combine both sources into a final <code>codemeta.json</code></li>
 </ul>
-<p>In any case, the <code>git commit</code> will <strong>fail</strong> if a file was modified by a tool, or some
-problems were reported. In order to complete the commit, you need to</p>
-<ul>
-<li>resolve all problems (by fixing them or marking them as false alarm), and</li>
-<li><code>git add</code> all changed files <strong>again</strong> (to update the files in the <em>staging area</em>).</li>
-</ul>
-<p>After doing that, you can retry to <code>git commit</code> your changes.</p>
-<p>To avoid having to deal with many issues at once, it is a good habit to run
-<code>pre-commit</code> by hand from time to time. In this project, this can be done with:</p>
-<div class="highlight"><pre><span></span><code>poetry run poe lint --all-files
-</code></pre></div>
-<h3 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h3>
-<p><a href="https://docs.pytest.org/en/7.3.x/">pytest</a> is used as the main framework for testing.</p>
-<p>The project uses the <a href="https://pytest-cov.readthedocs.io/en/latest/"><code>pytest-cov</code></a> plugin
-to integrate <code>pytest</code> with
-<a href="https://coverage.readthedocs.io/en/latest/"><code>coverage</code></a>, which
-collects and reports test coverage information.</p>
-<p>In addition to writing regular unit tests with <code>pytest</code>, consider using
-<a href="https://hypothesis.readthedocs.io/en/latest/index.html">hypothesis</a>,
-which integrates nicely with <code>pytest</code> and implements <em>property-based testing</em> - which
-involves automatic generation of randomized inputs for test cases. This can help to find
-bugs often found for various edge cases that are easy to overlook in ad-hoc manual tests.
-Such randomized tests can be a good addition to hand-crafted tests and inputs.</p>
-<p>To run all tests, either invoke <code>pytest</code> directly, or use the provided task:</p>
-<div class="highlight"><pre><span></span><code>poetry run poe test
-</code></pre></div>
-<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
-<p>The project uses <a href="https://www.mkdocs.org/"><code>mkdocs</code></a> with the popular and excellent
-<a href="https://squidfunk.github.io/mkdocs-material/"><code>mkdocs-material</code></a>
-theme to generate the project documentation website, which provides both <strong>user and
-developer documentation</strong>.</p>
-<p><code>mkdocs</code> is configured in the <code>mkdocs.yml</code> file, which we prepared in a way that there is</p>
-<ul>
-<li><strong>no need to duplicate sections</strong> from files in other places (such as <code>README.md</code>)</li>
-<li>fully <strong>automatic API documentation</strong> pages based on Python docstrings in the code</li>
-<li>a detailed <strong>test coverage report</strong> is included in the website</li>
-</ul>
-<p>The first point is important, because avoiding duplication means avoiding errors
-whenever text or examples are updated.
-The second point is convenient, as modules and functions do not need to
-be added by hand, which is easy to forget.
-The third point removes the need to use an external service such as
-<a href="https://about.codecov.io/">CodeCov</a> to store and present code coverage information.</p>
-<p>As software changes over time and users cannot always keep up with the latest developments,
-each new version of the software should provide version-specific documentation.
-To make this both possible as well as convenient, this project uses
-<a href="https://github.com/jimporter/mike"><code>mike</code></a> to generate and manage the <code>mkdocs</code>
-<strong>documentation for different versions</strong> of the software.</p>
-<h3 id="online-documentation">Online Documentation<a class="headerlink" href="#online-documentation" title="Permanent link">&para;</a></h3>
-<p>To avoid dependence on additional services such as <a href="https://readthedocs.org/">readthedocs</a>,
-the project website is deployed using <a href="https://pages.github.com/">GitHub Pages</a>.</p>
-<p>The provided CI pipeline automatically generates the documentation for the latest
-development version (i.e., current state of the <code>main</code> branch) as well as every released
-version (i.e., marked by a version tag <code>vX.Y.Z</code>).</p>
-<h3 id="offline-documentation">Offline Documentation<a class="headerlink" href="#offline-documentation" title="Permanent link">&para;</a></h3>
-<p>You can manually generate a local and fully offline copy of the documentation, which
-can be useful for e.g. previewing the results during active work on the documentation:</p>
-<div class="highlight"><pre><span></span><code>poetry install --with docs
-poetry run poe docs
-</code></pre></div>
-<p>Once the documentation site is built, run <code>mkdocs serve</code> and
-open <code>https://localhost:8000</code> in your browser to see the local copy of the website.</p>
-<h2 id="releases">Releases<a class="headerlink" href="#releases" title="Permanent link">&para;</a></h2>
-<p>From time to time the project is ready for a new <strong>release</strong> for users.</p>
-<h3 id="creating-a-new-release">Creating a New Release<a class="headerlink" href="#creating-a-new-release" title="Permanent link">&para;</a></h3>
-<p>Before releasing a new version, push the commit the new release should be based on
-to the upstream repository, and make sure that:</p>
-<ul>
-<li>the CI pipeline completes successfully</li>
-<li>the version number in <code>pyproject.toml</code> is updated, in particular:</li>
-<li>it must be larger than the previous released version</li>
-<li>it should adequately reflect the <a href="https://semver.org">severity of changes</a></li>
-<li>the provided user and developer documentation is up-to-date, including:</li>
-<li>a new section in the <code>CHANGELOG.md</code> file summarizing changes in the new version</li>
-<li>possibly revised information about contributors and/or maintainers</li>
-</ul>
-<p>If this is the case, proceed with the release by:</p>
-<ul>
-<li>creating a new tag that matches the version in the <code>pyproject.toml</code>: <code>git tag vX.Y.Z</code></li>
-<li>pushing the new tag to the upstream repository: <code>git push origin vX.Y.Z</code></li>
-</ul>
-<p>The pushed version tag will trigger a pipeline that will:</p>
-<ul>
-<li>build and deploy the documentation website for the specific version</li>
-<li>publish the package to enabled targets (see below)</li>
-</ul>
-<h3 id="release-targets">Release Targets<a class="headerlink" href="#release-targets" title="Permanent link">&para;</a></h3>
-<p>Targets for releases can be enabled or disabled in <code>.github/workflows/ci.yml</code> and
-configured by adapting the corresponding actions in <code>.github/workflows/releases.yml</code>.</p>
-<h4 id="github-release">Github Release<a class="headerlink" href="#github-release" title="Permanent link">&para;</a></h4>
-<p>By default, the release workflow will create a basic Github Release that provides
-a snapshot of the repository as a download. This requires no additional configuration.</p>
-<p>See <a href="https://github.com/softprops/action-gh-release">here</a>
-for information on how the Github release can be customized.</p>
-<p>Note that this release target is mostly for demonstration purposes.
-For most Python projects, using PyPI is the recommended primary distribution method.</p>
-<h4 id="pypi-and-compatible-package-indices">PyPI (and compatible package indices)<a class="headerlink" href="#pypi-and-compatible-package-indices" title="Permanent link">&para;</a></h4>
-<p>For releases to PyPI and Test PyPI the project uses the new
-<a href="https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/">Trusted Publishers</a>
-workflow that is both more secure and convenient to use than other authorization methods.</p>
-<p>Before the project can be released to PyPI or Test PyPI the first time,
-first a <a href="https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/">pending publisher</a>
-must be added in the PyPI account of the main project maintainer, using
-<code>release.yml</code> as the requested <em>workflow name</em>.</p>
-<p>Once this is done, set the corresponding option (<code>to_pypi</code> / <code>to_test_pypi</code>) to <code>true</code>
-in the <code>publish</code> job in <code>ci.yml</code> to enable the corresponding publication target.</p>
-<p>If the old and less secure token-based authentication method is needed or
-the package should be published to a different PyPI-compatible package index, please
-adapt <code>release.yml</code> <a href="https://github.com/pypa/gh-action-pypi-publish">accordingly</a>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The <code>codemeta.json</code> is overwritten and regenerated from scratch every time you <code>sync</code>,
+so <strong>do not edit it</strong> if you have the codemeta target enabled in <code>somesy</code>!</p>
+</div>
+<p>As <code>codemeta.json</code> is considered a technical "backend-format" derived from other
+inputs, in most cases you probably do not need or should edit it by hand anyway.</p>
+<h2 id="faq">FAQ<a class="headerlink" href="#faq" title="Permanent link">&para;</a></h2>
+<h3 id="somesy-introduces-its-own-metadata-format-isnt-this-counter-productive">Somesy introduces it's own metadata format... isn't this counter-productive?<a class="headerlink" href="#somesy-introduces-its-own-metadata-format-isnt-this-counter-productive" title="Permanent link">&para;</a></h3>
+<p>We don't propose to use <code>somesy</code> as a new "standard". On the contrary, the whole
+point of <code>somesy</code> is to help maintaining standard-compliant metadata alongside
+other representations. To do its job, <code>somesy</code> needs to introduce a canonical
+format to express the metadata it tries to manage for you, because otherwise
+building such a tool is practically impossible.
+Should you after some time decide you do not want to use it anymore, nothing is
+lost - you keep all your <code>CITATION.cff</code> and <code>codemeta.json</code> and <code>pyproject.toml</code>
+files and can continue to maintain them however you see fit.</p>
+<p>The <code>somesy</code>-specific format is just the nice and convenient interface to make
+everybody's life easier. Furthermore, nobody needs to care whether, under the
+hood, you use <code>somesy</code> (or anything like it) or not - they can use the
+corresponding files they already know to get the information they need.
+So there is no "risk" involved in adopting <code>somesy</code>, because it does not try to
+abolish any other formats or standards or becoming such.</p>
 
 
 
@@ -1797,7 +2186,7 @@ adapt <code>release.yml</code> <a href="https://github.com/pypa/gh-action-pypi-p
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../contributing/" class="md-footer__link md-footer__link--prev" aria-label="Previous: How To Contribute" rel="prev">
+          <a href="../quickstart/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Quickstart" rel="prev">
             <div class="md-footer__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
             </div>
@@ -1806,20 +2195,20 @@ adapt <code>release.yml</code> <a href="https://github.com/pypa/gh-action-pypi-p
                 Previous
               </span>
               <div class="md-ellipsis">
-                How To Contribute
+                Quickstart
               </div>
             </div>
           </a>
         
         
           
-          <a href="../code_of_conduct/" class="md-footer__link md-footer__link--next" aria-label="Next: Code of Conduct" rel="next">
+          <a href="../reference/somesy/" class="md-footer__link md-footer__link--next" aria-label="Next: somesy" rel="next">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Code of Conduct
+                somesy
               </div>
             </div>
             <div class="md-footer__button md-icon">
