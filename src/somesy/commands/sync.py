@@ -7,8 +7,8 @@ from rich.pretty import pretty_repr
 from somesy.cff.writer import CFF
 from somesy.codemeta import update_codemeta
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
-from somesy.pyproject.writer import Pyproject
 from somesy.package_json.writer import PackageJSON
+from somesy.pyproject.writer import Pyproject
 
 logger = logging.getLogger("somesy")
 

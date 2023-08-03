@@ -1,9 +1,10 @@
 from typing import OrderedDict
-from somesy.commands.sync import sync
-from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput, Person
-from somesy.pyproject.writer import Pyproject
-from somesy.package_json.writer import PackageJSON
+
 from somesy.cff.writer import CFF
+from somesy.commands.sync import sync
+from somesy.core.models import Person, ProjectMetadata, SomesyConfig, SomesyInput
+from somesy.package_json.writer import PackageJSON
+from somesy.pyproject.writer import Pyproject
 
 
 def test_sync(tmp_path, create_poetry_file, create_package_json, create_cff_file):
