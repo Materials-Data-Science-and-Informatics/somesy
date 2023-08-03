@@ -25,7 +25,7 @@ def collect_cm_sources(conf: SomesyConfig):
     # NOTE: we don't add CFF directly, because it must be handled separately
     # NOTE: add other suitable somesy targets / codemeta sources (except CFF and codemeta) here
     if (
-        not conf.sync_package_json
+        conf.sync_package_json
         and conf.package_json_file is not None
         and conf.package_json_file.is_file()
     ):

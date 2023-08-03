@@ -155,7 +155,7 @@ def run_sync(somesy_input: SomesyInput):
         logger.info(
             f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
         )
-    if not conf.sync_package_json:
+    if conf.sync_package_json:
         logger.info(
             f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]"
         )

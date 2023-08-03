@@ -10,7 +10,7 @@ def cli_options() -> dict:
         "cff_file": "CITATION.cff",
         "no_sync_pyproject": False,
         "pyproject_file": "pyproject.toml",
-        "sync_package_json": False,
+        "sync_package_json": True,
         "package_json_file": "package.json",
         "show_info": False,
         "verbose": False,
