@@ -61,6 +61,30 @@ def create_somesy():
 
 
 @pytest.fixture
+def create_package_json():
+    def _create_package_json(package_json_file: Path):
+        # create somesy file beforehand
+        with open("tests/data/package.json", "r") as f:
+            content = f.read()
+            with open(package_json_file, "w+") as f2:
+                f2.write(content)
+
+    yield _create_package_json
+
+
+@pytest.fixture
+def create_cff_file():
+    def _create_cff_file(cff_file: Path):
+        # create somesy file beforehand
+        with open("tests/cff/data/CITATION.cff", "r") as f:
+            content = f.read()
+            with open(cff_file, "w+") as f2:
+                f2.write(content)
+
+    yield _create_cff_file
+
+
+@pytest.fixture
 def somesy() -> dict:
     return SomesyInput.from_input_file(Path("tests/data/somesy.toml"))
 
