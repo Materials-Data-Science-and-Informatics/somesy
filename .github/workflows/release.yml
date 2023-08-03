@@ -2,7 +2,7 @@ name: Release
 # Release a new version to different targets in suitable ways
 
 on:
-  workflow_call:  # called from ci.yml
+  workflow_call: # called from ci.yml
     inputs:
       to_github:
         description: "Create a Github Release (repository snapshot)"
@@ -12,22 +12,20 @@ on:
       to_test_pypi:
         description: "Publish to Test PyPI."
         type: boolean
-        default: false
+        default: true
 
       to_pypi:
         description: "Publish to PyPI."
         type: boolean
         default: false
 
-
 jobs:
-
   github:
     if: inputs.to_github
     name: Create a Github Release (repository snapshot)
     runs-on: ubuntu-latest
     permissions:
-        contents: write  # needed for creating a GH Release
+      contents: write # needed for creating a GH Release
     steps:
       - uses: actions/checkout@v3
       - uses: softprops/action-gh-release@v1
@@ -37,7 +35,7 @@ jobs:
     name: Publish to PyPI (and/or compatible repositories)
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # needed for "trusted publishing" protocol
+      id-token: write # needed for "trusted publishing" protocol
     steps:
       - uses: actions/checkout@v3
 
