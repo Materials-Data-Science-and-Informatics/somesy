@@ -69,11 +69,11 @@ def sync(
         resolve_path=True,
         help="Existing pyproject.toml file path (default: pyproject.toml)",
     ),
-    no_sync_package_json: bool = typer.Option(
+    sync_package_json: bool = typer.Option(
         None,
-        "--no-sync-package-json",
+        "--sync-package-json",
         "-J",
-        help="Do not sync package.json file (default: True)",
+        help="Do not sync package.json file (default: False)",
     ),
     package_json_file: Path = typer.Option(
         None,
@@ -117,7 +117,7 @@ def sync(
             cff_file=cff_file,
             no_sync_pyproject=no_sync_pyproject,
             pyproject_file=pyproject_file,
-            no_sync_package_json=no_sync_package_json,
+            sync_package_json=sync_package_json,
             package_json_file=package_json_file,
             no_sync_codemeta=no_sync_codemeta,
             codemeta_file=codemeta_file,
@@ -155,7 +155,7 @@ def run_sync(somesy_input: SomesyInput):
         logger.info(
             f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
         )
-    if not conf.no_sync_package_json:
+    if not conf.sync_package_json:
         logger.info(
             f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]"
         )
