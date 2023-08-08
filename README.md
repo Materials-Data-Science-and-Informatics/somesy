@@ -143,9 +143,9 @@ Here is an overview of all the currently supported files and formats.
 
 | Input Formats  | Status | | Target Formats                | Status |
 | -------------- | ------ |-| ----------------------------- | ------ |
-| (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_     | ✓      |
-| pyproject.toml | ✓(1.)  | | pyproject.toml _(setuptools)_ | ✓(2.)  |
-| package.json   | TBD    | | package.json                  | TBD    |
+| (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_       | ✓      |
+| pyproject.toml | ✓(1.)  | | pyproject.toml _(setuptools)_   | ✓(2.)  |
+| package.json   | ✓      | | package.json                  | ✓      |
 |                |        | | mkdocs.yml                    | TBD    |
 |                |        | | CITATION.cff                  | ✓      |
 |                |        | | codemeta.json                 | ✓(3.)  |

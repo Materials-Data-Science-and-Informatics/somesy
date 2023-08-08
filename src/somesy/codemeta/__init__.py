@@ -3,11 +3,36 @@ import contextlib
 import logging
 from pathlib import Path
 
+from importlib_metadata import version
+
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
 from .utils import cff_codemeta_tempfile, update_codemeta_file
 
 log = logging.getLogger("somesy")
+
+
+def patch_codemetapy():
+    """Monkey-patch codemetapy (2.5.0 -> 2.5.1)."""
+    # TODO: remove once codemeta update is published)
+    if version("codemetapy") != "2.5.0":
+        return
+    from codemeta.parsers import python as cmpy
+
+    # https://github.com/proycon/codemetapy/blob/88098dc638e4cdfed9de6ad98002e16dfeede952/codemeta/parsers/python.py
+    def fixed_metadata_from_pyproject(pyproject):
+        """Parse metadata from pyproject.toml."""
+        if pyproject.project and "name" in pyproject.project:
+            return pyproject.project
+        elif "poetry" in pyproject.tool:
+            return pyproject.tool["poetry"]
+        elif pyproject.tool and "name" in list(pyproject.tool.values())[0]:
+            # fallback: no poetry but another tool that defines at least a name
+            return list(pyproject.tool.values())[0]
+        return None
+
+    cmpy.metadata_from_pyproject = fixed_metadata_from_pyproject
+    log.debug("monkeypatch codemetapy 2.5.0 -> 2.5.1")
 
 
 def collect_cm_sources(conf: SomesyConfig):
@@ -38,6 +63,7 @@ def update_codemeta(conf: SomesyConfig) -> bool:
 
     Returns True if file has been written, False if it was up to date.
     """
+    patch_codemetapy()
     cm_sources = collect_cm_sources(conf)
 
     # if cff file is given, convert it to codemeta tempfile and pass as extra input
