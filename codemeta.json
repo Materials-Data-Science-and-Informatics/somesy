@@ -49,14 +49,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.9.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^1.9.2'}"
         },
         {
             "@type": "SoftwareApplication",
@@ -70,7 +70,7 @@
             "identifier": "codemetapy",
             "name": "codemetapy",
             "runtimePlatform": "Python 3",
-            "version": "{'git': 'https://github.com/proycon/codemetapy.git'}"
+            "version": "^2.5.0"
         },
         {
             "@type": "SoftwareApplication",

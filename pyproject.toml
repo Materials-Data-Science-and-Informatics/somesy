@@ -44,8 +44,7 @@ cffconvert = "^2.0.0"
 wrapt = "^1.15.0"
 packaging = "^23.1"
 rdflib = "^6.3.2"
-codemetapy = { git = "https://github.com/proycon/codemetapy.git" }
-# codemetapy = "^2.5.1" # TODO: use once released
+codemetapy = "^2.5.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.18.1"
