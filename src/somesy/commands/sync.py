@@ -24,11 +24,11 @@ def sync(somesy_input: SomesyInput):
     if not conf.no_sync_pyproject:
         _sync_python(metadata, conf.pyproject_file)
 
-    if not conf.no_sync_cff:
-        _sync_cff(metadata, conf.cff_file)
-
     if conf.sync_package_json:
         _sync_package_json(metadata, conf.package_json_file)
+
+    if not conf.no_sync_cff:
+        _sync_cff(metadata, conf.cff_file)
 
     # NOTE: codemeta should always be last, it uses (some of) the other targets
     if not conf.no_sync_codemeta:
