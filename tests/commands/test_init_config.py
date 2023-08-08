@@ -10,6 +10,8 @@ def cli_options() -> dict:
         "cff_file": "CITATION.cff",
         "no_sync_pyproject": False,
         "pyproject_file": "pyproject.toml",
+        "sync_package_json": True,
+        "package_json_file": "package.json",
         "show_info": False,
         "verbose": False,
         "debug": False,
@@ -19,18 +21,10 @@ def cli_options() -> dict:
 def test_init_config(
     tmp_path,
     create_somesy_metadata,
-    create_somesy_metadata_config,
+    create_somesy,
     create_poetry_file,
     cli_options,
 ):
-    # load empty file
-    # reject_file = tmp_path / ".somesy.reject.toml"
-    # reject_file.touch()
-    # options = dict(cli_options)
-    # options["debug"] = True
-    # with pytest.raises(ValueError):
-    #     init_config(reject_file, options)
-
     # load somesy file
     somesy_file = tmp_path / ".somesy.toml"
     create_somesy_metadata(somesy_file)
@@ -41,7 +35,7 @@ def test_init_config(
 
     # load somesy file with config
     somesy_file = tmp_path / ".somesy.with_config.toml"
-    create_somesy_metadata_config(somesy_file)
+    create_somesy(somesy_file)
     options = dict(cli_options)
     options["show_info"] = True
     init_config(somesy_file, options)

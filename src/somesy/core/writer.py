@@ -200,8 +200,10 @@ class ProjectMetadataWriter(ABC):
         )
 
         self.license = metadata.license.value
-        self.homepage = str(metadata.homepage)
-        self.repository = str(metadata.repository)
+        if metadata.homepage:
+            self.homepage = str(metadata.homepage)
+        if metadata.repository:
+            self.repository = str(metadata.repository)
 
     @staticmethod
     @abstractmethod
@@ -307,11 +309,11 @@ class ProjectMetadataWriter(ABC):
         self._set_property(self._get_key("homepage"), homepage)
 
     @property
-    def repository(self) -> Optional[str]:
+    def repository(self) -> Optional[Union[str, dict]]:
         """Return the repository url of the project."""
         return self._get_property(self._get_key("repository"))
 
     @repository.setter
-    def repository(self, repository: Optional[str]) -> None:
+    def repository(self, repository: Optional[Union[str, dict]]) -> None:
         """Set the repository url of the project."""
         self._set_property(self._get_key("repository"), repository)

@@ -7,13 +7,16 @@ from somesy.main import app
 runner = CliRunner()
 
 
-def test_cli_config_init(tmp_path, create_poetry_file):
+def test_cli_config_init(tmp_path, create_poetry_file, create_package_json):
     input_file = tmp_path / ".somesy.toml"
     input_file.write_text(Path("tests/core/data/.somesy.with_config.toml").read_text())
     cff_file = tmp_path / "CITATION.cff"
     pyproject_file = tmp_path / "pyproject.toml"
     codemeta_file = tmp_path / "codemeta.json"
+    package_json_file = tmp_path / "package.json"
+
     create_poetry_file(pyproject_file)
+    create_package_json(package_json_file)
 
     command_inputs = []
 
@@ -31,6 +34,12 @@ def test_cli_config_init(tmp_path, create_poetry_file):
 
     # pyproject.toml file path
     command_inputs.append(f"{pyproject_file}\n")
+
+    # sync_package_json
+    command_inputs.append("y\n")
+
+    # package.json file path
+    command_inputs.append(f"{package_json_file}\n")
 
     # no_sync_codemeta
     command_inputs.append("y\n")

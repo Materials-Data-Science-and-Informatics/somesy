@@ -1,46 +1,79 @@
-from pathlib import Path
+from typing import OrderedDict
 
+from somesy.cff.writer import CFF
 from somesy.commands.sync import sync
-from somesy.core.models import SomesyConfig
+from somesy.core.models import Person, ProjectMetadata, SomesyConfig, SomesyInput
+from somesy.package_json.writer import PackageJSON
+from somesy.pyproject.writer import Pyproject
 
 
-def test_sync(tmp_path, create_poetry_file):
-    input_file = Path("tests/commands/data/.somesy.toml")
-    cff_file = tmp_path / "CITATION.cff"
+def test_sync(tmp_path, create_poetry_file, create_package_json, create_cff_file):
+    # Create a temporary pyproject.toml file
     pyproject_file = tmp_path / "pyproject.toml"
-
-    # create pyproject file beforehand
     create_poetry_file(pyproject_file)
+    pyproject = Pyproject(pyproject_file)
 
-    # TEST 1: sync only pyproject.toml
+    # Create a temporary CITATION.cff file
+    cff_file = tmp_path / "CITATION.cff"
+    create_cff_file(cff_file)
+    cff = CFF(cff_file)
+
+    # Create a temporary package.json file
+    package_json_file = tmp_path / "package.json"
+    create_package_json(package_json_file)
+    package_json = PackageJSON(package_json_file)
+
+    # Create a SomesyInput object with some metadata
+    metadata = ProjectMetadata(
+        name="test-project",
+        version="0.1.0",
+        description="A test project",
+        people=[
+            Person(
+                given_names="Alice", family_names="Joe", email="a@a.aa", author=True
+            ),
+            Person(given_names="Bob", family_names="Joe", email="b@b.bb"),
+        ],
+        license="MIT",
+    )
     conf = SomesyConfig(
-        input_file=input_file, pyproject_file=pyproject_file, no_sync_cff=True
-    ).get_input()
-    sync(conf)
-    assert pyproject_file.is_file()
-    assert cff_file.is_file() is False
+        pyproject_file=pyproject_file,
+        cff_file=cff_file,
+        sync_package_json=True,
+        package_json_file=package_json_file,
+        no_sync_codemeta=True,
+    )
+    somesy_input = SomesyInput(config=conf, project=metadata)
 
-    # delete pyproject.toml
-    pyproject_file.unlink()
+    # Call the sync function
+    sync(
+        somesy_input,
+    )
 
-    # TEST 2: sync only CITATION.cff
-    conf = SomesyConfig(
-        input_file=input_file, no_sync_pyproject=True, cff_file=cff_file
-    ).get_input()
-    sync(conf)
-    assert pyproject_file.is_file() is False
-    assert cff_file.is_file()
+    # Check that the pyproject.toml file was synced
+    pyproject = Pyproject(pyproject_file)
+    assert pyproject.name == "test-project"
+    assert pyproject.version == "0.1.0"
+    assert pyproject.description == "A test project"
+    assert pyproject.authors == ["Alice Joe <a@a.aa>"]
+    assert pyproject.license == "MIT"
 
-    # delete files
-    cff_file.unlink()
+    # Check that the CITATION.cff file was synced
+    cff = CFF(cff_file)
+    assert cff.name == "test-project"
+    assert cff.version == "0.1.0"
+    assert cff.description == "A test project"
+    assert cff.authors == [
+        {"given-names": "Alice", "email": "a@a.aa", "family-names": "Joe"}
+    ]
+    assert cff.license == "MIT"
 
-    # create pyproject file beforehand
-    create_poetry_file(pyproject_file)
-
-    # TEST 3: sync both pyproject.toml and CITATION.cff
-    conf = SomesyConfig(
-        input_file=input_file, pyproject_file=pyproject_file, cff_file=cff_file
-    ).get_input()
-    sync(conf)
-    assert pyproject_file.is_file()
-    assert cff_file.is_file()
+    # Check that the package.json file was synced
+    package_json = PackageJSON(package_json_file)
+    assert package_json.name == "test-project"
+    assert package_json.version == "0.1.0"
+    assert package_json.description == "A test project"
+    assert package_json.authors == [
+        OrderedDict([("name", "Alice Joe"), ("email", "a@a.aa")])
+    ]
+    assert package_json.license == "MIT"

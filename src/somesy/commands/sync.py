@@ -7,6 +7,7 @@ from rich.pretty import pretty_repr
 from somesy.cff.writer import CFF
 from somesy.codemeta import update_codemeta
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
+from somesy.package_json.writer import PackageJSON
 from somesy.pyproject.writer import Pyproject
 
 logger = logging.getLogger("somesy")
@@ -22,6 +23,9 @@ def sync(somesy_input: SomesyInput):
 
     if not conf.no_sync_pyproject:
         _sync_python(metadata, conf.pyproject_file)
+
+    if conf.sync_package_json:
+        _sync_package_json(metadata, conf.package_json_file)
 
     if not conf.no_sync_cff:
         _sync_cff(metadata, conf.cff_file)
@@ -65,6 +69,24 @@ def _sync_cff(
     cff.sync(metadata)
     cff.save()
     logger.verbose("Saved synced CITATION.cff file.\n")
+
+
+def _sync_package_json(
+    metadata: ProjectMetadata,
+    package_json_file: Path,
+):
+    """Sync package.json file using project metadata.
+
+    Args:
+        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
+        package_json_file (Path, optional): package.json file path if wanted to be synced. Defaults to None.
+    """
+    logger.verbose("Loading package.json file.")
+    package_json = PackageJSON(package_json_file)
+    logger.verbose("Syncing package.json file.")
+    package_json.sync(metadata)
+    package_json.save()
+    logger.verbose("Saved synced package.json file.\n")
 
 
 def _sync_codemeta(conf: SomesyConfig):
