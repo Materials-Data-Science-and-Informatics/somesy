@@ -1087,7 +1087,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../pyproject/">pyproject</a>
+          <a href="../../package_json/">package_json</a>
           
             <label for="__nav_2_3_1_7">
               <span class="md-nav__icon md-icon"></span>
@@ -1097,6 +1097,74 @@
       
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_3_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          package_json
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../package_json/models/" class="md-nav__link">
+        models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../package_json/writer/" class="md-nav__link">
+        writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../pyproject/">pyproject</a>
+          
+            <label for="__nav_2_3_1_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_3_1_8">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1754,7 +1822,9 @@
 <span class="normal">314</span>
 <span class="normal">315</span>
 <span class="normal">316</span>
-<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Project Metadata Output Wrapper.</span>
 
 <span class="sd">    All supported output formats are implemented as subclasses.</span>
@@ -1945,8 +2015,10 @@
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="o">.</span><span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="nd">@abstractmethod</span>
@@ -2052,12 +2124,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;homepage&quot;</span><span class="p">),</span> <span class="n">homepage</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">repository</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">repository</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the repository url of the project.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;repository&quot;</span><span class="p">))</span>
 
     <span class="nd">@repository</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repository</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">repository</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repository</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the repository url of the project.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;repository&quot;</span><span class="p">),</span> <span class="n">repository</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -2279,7 +2351,7 @@
   </span>
 
 <a href="#somesy.core.writer.ProjectMetadataWriter.repository" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">repository</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="n">repository</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
@@ -2530,7 +2602,9 @@ without destroying its other contents or structure.</p>
 <span class="normal">201</span>
 <span class="normal">202</span>
 <span class="normal">203</span>
-<span class="normal">204</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync output file with other metadata files.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">name</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">description</span>
@@ -2547,8 +2621,10 @@ without destroying its other contents or structure.</p>
     <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="o">.</span><span class="n">value</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>

@@ -1096,7 +1096,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../reference/somesy/pyproject/">pyproject</a>
+          <a href="../reference/somesy/package_json/">package_json</a>
           
             <label for="__nav_2_3_1_7">
               <span class="md-nav__icon md-icon"></span>
@@ -1106,6 +1106,74 @@
       
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_3_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          package_json
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/package_json/models/" class="md-nav__link">
+        models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/package_json/writer/" class="md-nav__link">
+        writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../reference/somesy/pyproject/">pyproject</a>
+          
+            <label for="__nav_2_3_1_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_3_1_8">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1817,6 +1885,20 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>pyproject.toml file path.</td>
 </tr>
 <tr>
+<td>sync_package_json</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Sync with package.json.</td>
+</tr>
+<tr>
+<td>package_json_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"package.json"</td>
+<td>package.json file path.</td>
+</tr>
+<tr>
 <td>no_sync_codemeta</td>
 <td>bool</td>
 <td>no</td>
@@ -2014,6 +2096,11 @@ issue or consult the <code>somesy</code> code.</p>
 <span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing pyproject.toml file path         <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    (default: pyproject.toml)                 <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--sync-package-json</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-J</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync package.json file (default:   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-file</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing package.json file path (default: <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    package.json)                             <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>   <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync codemeta.json file            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom codemeta.json file path            <span class=" -Color -Color-Faint">│</span>

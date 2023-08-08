@@ -997,7 +997,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../pyproject/">pyproject</a>
+          <a href="../../package_json/">package_json</a>
           
             <label for="__nav_2_3_1_7">
               <span class="md-nav__icon md-icon"></span>
@@ -1007,6 +1007,74 @@
       
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_3_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          package_json
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../package_json/models/" class="md-nav__link">
+        models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../package_json/writer/" class="md-nav__link">
+        writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../pyproject/">pyproject</a>
+          
+            <label for="__nav_2_3_1_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_3_1_8">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1322,7 +1390,14 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set CLI configs for somesy.&quot;&quot;&quot;</span>
@@ -1349,6 +1424,13 @@
     <span class="n">pyproject_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;pyproject.toml file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">pyproject_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
         <span class="n">options</span><span class="p">[</span><span class="s2">&quot;pyproject_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pyproject_file</span>
+
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;sync_package_json&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+        <span class="s2">&quot;Do you want to sync to a package.json file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    <span class="n">package_json_file</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;package.json file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;package.json&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">package_json_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">package_json_file</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;package_json_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">package_json_file</span>
 
     <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_codemeta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
         <span class="s2">&quot;Do you want to sync to a codemeta.json file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>

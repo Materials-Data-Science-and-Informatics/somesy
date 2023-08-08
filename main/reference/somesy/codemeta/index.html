@@ -953,7 +953,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../pyproject/">pyproject</a>
+          <a href="../package_json/">package_json</a>
           
             <label for="__nav_2_3_1_7">
               <span class="md-nav__icon md-icon"></span>
@@ -963,6 +963,74 @@
       
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_3_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          package_json
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../package_json/models/" class="md-nav__link">
+        models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../package_json/writer/" class="md-nav__link">
+        writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../pyproject/">pyproject</a>
+          
+            <label for="__nav_2_3_1_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_3_1_8">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1246,7 +1314,13 @@
 <span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble list of inputs for codemetapy based on somesy config.</span>
 
 <span class="sd">    Returns files that are supported by both somesy and codemetapy and are enabled for somesy.</span>
@@ -1260,6 +1334,12 @@
         <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="p">)</span>
     <span class="c1"># NOTE: we don&#39;t add CFF directly, because it must be handled separately</span>
     <span class="c1"># NOTE: add other suitable somesy targets / codemeta sources (except CFF and codemeta) here</span>
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">conf</span><span class="o">.</span><span class="n">sync_package_json</span>
+        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+    <span class="p">):</span>
+        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cm_sources</span>
 </code></pre></div></td></tr></table></div>
           </details>
@@ -1287,13 +1367,7 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/codemeta/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
 <span class="normal">39</span>
@@ -1305,7 +1379,13 @@
 <span class="normal">45</span>
 <span class="normal">46</span>
 <span class="normal">47</span>
-<span class="normal">48</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate or update codemeta file based on sources that somesy supports.</span>
 
 <span class="sd">    Returns True if file has been written, False if it was up to date.</span>

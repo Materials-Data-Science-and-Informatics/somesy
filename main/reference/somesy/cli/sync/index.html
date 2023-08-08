@@ -1004,7 +1004,7 @@
         
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../../pyproject/">pyproject</a>
+          <a href="../../package_json/">package_json</a>
           
             <label for="__nav_2_3_1_7">
               <span class="md-nav__icon md-icon"></span>
@@ -1014,6 +1014,74 @@
       
       <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_7_label" aria-expanded="false">
         <label class="md-nav__title" for="__nav_2_3_1_7">
+          <span class="md-nav__icon md-icon"></span>
+          package_json
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../package_json/models/" class="md-nav__link">
+        models
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../package_json/writer/" class="md-nav__link">
+        writer
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
+      
+      
+      
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../pyproject/">pyproject</a>
+          
+            <label for="__nav_2_3_1_8">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_3_1_8">
           <span class="md-nav__icon md-icon"></span>
           pyproject
         </label>
@@ -1322,6 +1390,24 @@
         <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path (default: pyproject.toml)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">sync_package_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--sync-package-json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-J&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync package.json file (default: False)&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--package-json-file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-j&quot;</span><span class="p">,</span>
+        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing package.json file path (default: package.json)&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
     <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-codemeta&quot;</span><span class="p">,</span>
@@ -1454,7 +1540,27 @@
 <span class="normal">123</span>
 <span class="normal">124</span>
 <span class="normal">125</span>
-<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
     <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -1505,6 +1611,24 @@
         <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path (default: pyproject.toml)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">sync_package_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--sync-package-json&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-J&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync package.json file (default: False)&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--package-json-file&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-j&quot;</span><span class="p">,</span>
+        <span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">file_okay</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">writable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">readable</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">resolve_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing package.json file path (default: package.json)&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
     <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-codemeta&quot;</span><span class="p">,</span>
@@ -1535,6 +1659,8 @@
             <span class="n">cff_file</span><span class="o">=</span><span class="n">cff_file</span><span class="p">,</span>
             <span class="n">no_sync_pyproject</span><span class="o">=</span><span class="n">no_sync_pyproject</span><span class="p">,</span>
             <span class="n">pyproject_file</span><span class="o">=</span><span class="n">pyproject_file</span><span class="p">,</span>
+            <span class="n">sync_package_json</span><span class="o">=</span><span class="n">sync_package_json</span><span class="p">,</span>
+            <span class="n">package_json_file</span><span class="o">=</span><span class="n">package_json_file</span><span class="p">,</span>
             <span class="n">no_sync_codemeta</span><span class="o">=</span><span class="n">no_sync_codemeta</span><span class="p">,</span>
             <span class="n">codemeta_file</span><span class="o">=</span><span class="n">codemeta_file</span><span class="p">,</span>
         <span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
@@ -1585,25 +1711,29 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write log messages and run synchronization based on passed config.&quot;&quot;&quot;</span>
     <span class="n">conf</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Synchronizing project metadata...[/bold green]&quot;</span><span class="p">)</span>
@@ -1611,6 +1741,10 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;  - [italic]pyproject.toml[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">sync_package_json</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;  - [italic]package.json[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - [italic]CITATION.cff[/italic]:</span><span class="se">\t</span><span class="s2">[grey]</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="si">}</span><span class="s2">[/grey]&quot;</span><span class="p">)</span>
