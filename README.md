@@ -58,37 +58,115 @@ Yes, somesy is *another* tool with its own configuration. However, for your
 project metadata it is hopefully the last file you need, and the only one you
 have to think about, `somesy` will take care of the others for you!
 
-To get started, create a file named `somesy.toml` (or `.somesy.toml`):
+To get started, create a file named `somesy.toml` (or `.somesy.toml`) or add somesy config to your existing `pyproject.toml` or `package.json` file:
 
-```toml
-[project]
-name = "my-amazing-project"
-version = "0.1.0"
-description = "Brief description of my amazing software."
 
-keywords = ["some", "descriptive", "keywords"]
-license = "MIT"
-repository = "https://github.com/username/my-amazing-project"
+=== "somesy.toml"
+    ```toml
+    [project]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    description = "Brief description of my amazing software."
 
-# This is you, the proud author of your project
-[[project.people]]
-given-names = "Jane"
-family-names = "Doe"
-email = "j.doe@example.com"
-orcid = "https://orcid.org/0000-0000-0000-0001"
-author = true      # is a full author of the project (i.e. appears in citations)
-maintainer = true  # currently maintains the project (i.e. is a contact person)
+    keywords = ["some", "descriptive", "keywords"]
+    license = "MIT"
+    repository = "https://github.com/username/my-amazing-project"
 
-# this person is a acknowledged contributor, but not author or maintainer:
-[[project.people]]
-given-names = "Another"
-family-names = "Contributor"
-email = "a.contributor@example.com"
-orcid = "https://orcid.org/0000-0000-0000-0002"
+    # This is you, the proud author of your project
+    [[project.people]]
+    given-names = "Jane"
+    family-names = "Doe"
+    email = "j.doe@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0001"
+    author = true      # is a full author of the project (i.e. appears in citations)
+    maintainer = true  # currently maintains the project (i.e. is a contact person)
 
-[config]
-verbose = true     # show detailed information about what somesy is doing
-```
+    # this person is a acknowledged contributor, but not author or maintainer:
+    [[project.people]]
+    given-names = "Another"
+    family-names = "Contributor"
+    email = "a.contributor@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0002"
+
+    [config]
+    verbose = true     # show detailed information about what somesy is doing
+    ```
+
+=== "pyproject.toml"
+    ```toml
+    [tool.poetry]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    ...
+
+    [tool.somesy.project]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    description = "Brief description of my amazing software."
+
+    keywords = ["some", "descriptive", "keywords"]
+    license = "MIT"
+    repository = "https://github.com/username/my-amazing-project"
+
+    # This is you, the proud author of your project
+    [[tool.somesy.project.people]]
+    given-names = "Jane"
+    family-names = "Doe"
+    email = "j.doe@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0001"
+    author = true      # is a full author of the project (i.e. appears in citations)
+    maintainer = true  # currently maintains the project (i.e. is a contact person)
+
+    # this person is a acknowledged contributor, but not author or maintainer:
+    [[tool.somesy.project.people]]
+    given-names = "Another"
+    family-names = "Contributor"
+    email = "a.contributor@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0002"
+
+    [tool.somesy.config]
+    verbose = true     # show detailed information about what somesy is doing
+    ```
+
+=== "package.json"
+    ```json
+    {
+      "name": "my-amazing-project",
+      "version": "0.1.0",
+      ...
+
+      "somesy": {
+        "project": {
+          "name": "my-amazing-project",
+          "version": "0.1.0",
+          "description": "Brief description of my amazing software.",
+          "keywords": ["some", "descriptive", "keywords"],
+          "license": "MIT",
+          "repository": "https://github.com/username/my-amazing-project",
+          "people": [
+            {
+              "given-names": "Jane",
+              "family-names": "Doe",
+              "email": "j.doe@example.com",
+              "orcid": "https://orcid.org/0000-0000-0000-0001",
+              "author": true,
+              "maintainer": true
+            },
+            {
+              "given-names": "Another",
+              "family-names": "Contributor",
+              "email": "a.contributor@example.com",
+              "orcid": "https://orcid.org/0000-0000-0000-0002"
+            }
+          ]
+        },
+        "config": {
+          "verbose": true
+        }
+      }
+    }
+    ```
+
 
 If you happen to work on a Python project and use a `pyproject.toml`, you can also put this information there and avoid having another separate file.  In that case, simply prepend `tool.somesy` to the names of all sections (i.e.  `[project]` becomes `[tool.somesy.project]`).
 
@@ -145,16 +223,17 @@ Here is an overview of all the currently supported files and formats.
 | -------------- | ------ |-| ----------------------------- | ------ |
 | (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_       | ✓      |
 | pyproject.toml | ✓(1.)  | | pyproject.toml _(setuptools)_   | ✓(2.)  |
-| package.json   | ✓      | | package.json                  | ✓      |
+| package.json   | ✓      | | package.json                  | ✓(3.)      |
 |                |        | | mkdocs.yml                    | TBD    |
 |                |        | | CITATION.cff                  | ✓      |
-|                |        | | codemeta.json                 | ✓(3.)  |
+|                |        | | codemeta.json                 | ✓(4.)  |
 
 **Notes:**
 
 1. information must be placed inside a `tool.somesy` section (as explained above)
 2. note that `somesy` does not support setuptools *dynamic fields*
-3. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. you should not edit it by hand!)
+3. `package.json` author field allows only one author information. Therefore, somesy sets the first person with author field, in the people definition, as the author.
+4. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. you should not edit it by hand!)
 
 <!-- --8<-- [end:quickstart] -->
 
