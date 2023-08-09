@@ -110,28 +110,29 @@ The following tables sketch how fields are mapped to corresponding other fields 
 some of the currently supported formats.
 
 === "Person Metadata"
-    | Field Name       | Poetry Config | SetupTools Config | CITATION.cff    | Requirement |
-    | ---------------- | ------------- | ----------------- | --------------- | ----------- |
-    | given-names      | name+email    | name              | given-names     | required    |
-    | family-names     | name+email    | name              | family-names    | required    |
-    | email            | name+email    | email             | email           | required    |
-    | orcid            | -             | -                 | orcid           | optional    |
-    | *(many others)*  | -             | -                 | *(same)*        | optional    |
+    | Field Name       | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
+    | ---------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
+    | given-names      | name+email    | name              | given-names     | name         | required    |
+    | family-names     | name+email    | name              | family-names    | name         | required    |
+    | email            | name+email    | email             | email           | email        | required    |
+    | orcid            | -             | -                 | orcid           | url          | optional    |
+    | *(many others)*  | -             | -                 | *(same)*        | -            | optional    |
 
 === "Project Metadata"
-    | Field Name        | Poetry Config | SetupTools Config | CITATION.cff    | Requirement |
-    | ----------------- | ------------- | ----------------- | --------------- | ----------- |
-    | name              | name          | name              | title           | required    |
-    | description       | description   | description       | abstract        | required    |
-    | license           | license       | license           | license         | required    |
-    | version           | version       | version           | version         | optional    |
-    |                   |               |                   |                 |             |
-    | *author=true*     | authors       | authors           | authors         | required    |
-    | *maintainer=true* | maintainers   | maintainers       | contact         | optional    |
-    |                   |               |                   |                 |             |
-    | keywords          | keywords      | keywords          | keywords        | optional    |
-    | repository        | repository    | urls.repository   | repository_code | optional    |
-    | homepage          | homepage      | urls.homepage     | url             | optional    |
+    | Field Name        | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
+    | ----------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
+    | name              | name          | name              | title           | name         | required    |
+    | description       | description   | description       | abstract        | description  | required    |
+    | license           | license       | license           | license         | license      | required    |
+    | version           | version       | version           | version         | version      | optional    |
+    |                   |               |                   |                 |              |             |
+    | *author=true*     | authors       | authors           | authors         | author       | required    |
+    | *maintainer=true* | maintainers   | maintainers       | contact         | maintainers  | optional    |
+    | *people*          | -             | -                 | -               | contributors | optional    |
+    |                   |               |                   |                 |              |             |
+    | keywords          | keywords      | keywords          | keywords        | keywords     | optional    |
+    | repository        | repository    | urls.repository   | repository_code | repository   | optional    |
+    | homepage          | homepage      | urls.homepage     | url             | homepage     | optional    |
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
@@ -158,6 +159,7 @@ Without an input file specifically provided, somesy will check if it can find a 
 * `.somesy.toml`
 * `somesy.toml`
 * `pyproject.toml` (in `tool.somesy` section)
+* `package.json` (in `somesy` section)
 
 which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the `-i` option.
