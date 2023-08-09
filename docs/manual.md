@@ -16,6 +16,7 @@ metadata fields and can synchronize this information into different **target
 files**.
 
 !!! info
+
     The somesy schemas are designed to allow expressing metadata in the most
     useful and rich form, i.e. the best form that some of the target formats
     supports.
@@ -42,6 +43,7 @@ contribution of a person and acknowledge contributors that are neither full
 authors or maintainers.
 
 !!! note
+
     Currently, provided information about contributors that are neither authors
     nor maintainers, and all the detailed information on the contributions is
     not used.
@@ -110,6 +112,7 @@ The following tables sketch how fields are mapped to corresponding other fields 
 some of the currently supported formats.
 
 === "Person Metadata"
+
     | Field Name       | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
     | ---------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
     | given-names      | name+email    | name              | given-names     | name         | required    |
@@ -119,6 +122,7 @@ some of the currently supported formats.
     | *(many others)*  | -             | -                 | *(same)*        | -            | optional    |
 
 === "Project Metadata"
+
     | Field Name        | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
     | ----------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
     | name              | name          | name              | title           | name         | required    |
@@ -164,21 +168,107 @@ Without an input file specifically provided, somesy will check if it can find a 
 which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the `-i` option.
 
+### Somesy Input File
+
+Here is an example how project metadata and `somesy` can be configured using
+one of the supported input formats:
+
+=== "somesy.toml"
+
+    --8<-- "README.md:somesytoml"
+
+=== "pyproject.toml"
+
+    ```toml
+    [tool.poetry]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    ...
+
+    [tool.somesy.project]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    description = "Brief description of my amazing software."
+
+    keywords = ["some", "descriptive", "keywords"]
+    license = "MIT"
+    repository = "https://github.com/username/my-amazing-project"
+
+    # This is you, the proud author of your project
+    [[tool.somesy.project.people]]
+    given-names = "Jane"
+    family-names = "Doe"
+    email = "j.doe@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0001"
+    author = true      # is a full author of the project (i.e. appears in citations)
+    maintainer = true  # currently maintains the project (i.e. is a contact person)
+
+    # this person is a acknowledged contributor, but not author or maintainer:
+    [[tool.somesy.project.people]]
+    given-names = "Another"
+    family-names = "Contributor"
+    email = "a.contributor@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0002"
+
+    [tool.somesy.config]
+    verbose = true     # show detailed information about what somesy is doing
+    ```
+
+=== "package.json"
+
+    ```json
+    {
+      "name": "my-amazing-project",
+      "version": "0.1.0",
+      ...
+
+      "somesy": {
+        "project": {
+          "name": "my-amazing-project",
+          "version": "0.1.0",
+          "description": "Brief description of my amazing software.",
+          "keywords": ["some", "descriptive", "keywords"],
+          "license": "MIT",
+          "repository": "https://github.com/username/my-amazing-project",
+          "people": [
+            {
+              "given-names": "Jane",
+              "family-names": "Doe",
+              "email": "j.doe@example.com",
+              "orcid": "https://orcid.org/0000-0000-0000-0001",
+              "author": true,
+              "maintainer": true
+            },
+            {
+              "given-names": "Another",
+              "family-names": "Contributor",
+              "email": "a.contributor@example.com",
+              "orcid": "https://orcid.org/0000-0000-0000-0002"
+            }
+          ]
+        },
+        "config": {
+          "verbose": true
+        }
+      }
+    }
+    ```
+
+All possible metadata fields and configuration options are explained further [above](#schemas-overview).
+
+### pre-commit hook
+
+--8<-- "README.md:precommit"
+
 ### Synchronization
 
 Unless configured otherwise, `somesy` will create `CITATION.cff`
 and `codemeta.json` files if they do not exist.
-Other supported files (such as `pyproject.toml`) are updated if they already
-exist in your repository.
+Other supported files (such as `pyproject.toml` or `package.json`)
+are updated if they already exist in your repository.
 
 If you do not want that somesy creates/synchronizes these files,
 you can disable them by CLI options or in your somesy configuration.
-
-### Somesy input file
-
-In the [quickstart](./quickstart.md) you can find an example somesy input file.
-
-All possible metadata fields and configuration options are explained further [above](#schemas-overview).
 
 ## Metadata Update Logic
 
@@ -197,14 +287,17 @@ In most cases, `somesy` will try not to interfere with other values, metadata
 and configuration you might have in a target file.
 
 !!! info
+
     For typically manually-edited files, it will even make sure that the
     comments stay in place! (currently works for TOML)
 
 !!! tip
+
     Only edit target files manually to add or update fields
     that `somesy` does **not** understand or care about!
 
 !!! warning
+
     All changes in target files you do to fields `somesy` *does* understand will be
     overwritten the next time you run somesy.
 
@@ -220,6 +313,7 @@ most cases, but in certain tricky situations it might not be able to figure out
 the and needed changes correctly.
 
 !!! danger
+
     Always check the files that somesy synchronized look right
     before committing/pushing the changes!
 
@@ -245,9 +339,11 @@ When somesy compares two metadata records about a person, it will proceed as fol
 3. Otherwise, the records are considered to be about the same person if they agree on the full name (i.e. given, middle and family name sequence).
 
 !!! tip
+
     State ORCIDs for persons whenever possible (i.e. the person has an ORCID)!
 
 !!! tip
+
     If a person does not have an ORCID, suggest that they should create one!
 
 Somesy will usually correctly understand cases such as:
@@ -261,6 +357,7 @@ Nevertheless, you should **check the changes somesy does** before committing the
 especially **after you significantly modified your project metadata**.
 
 !!! warning
+
     Note that changing the ORCID will not be recognized,
     because ORCIDs are assumed to be unique per person.
 
@@ -283,6 +380,7 @@ target is enabled, `somesy` will generate your `codemeta.json` by:
 * running `cffconvert` and `codemetapy` to combine both sources into a final `codemeta.json`
 
 !!! warning
+
     The `codemeta.json` is overwritten and regenerated from scratch every time you `sync`,
     so **do not edit it** if you have the codemeta target enabled in `somesy`!
 

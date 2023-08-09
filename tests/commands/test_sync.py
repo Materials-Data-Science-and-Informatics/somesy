@@ -39,7 +39,7 @@ def test_sync(tmp_path, create_poetry_file, create_package_json, create_cff_file
     conf = SomesyConfig(
         pyproject_file=pyproject_file,
         cff_file=cff_file,
-        sync_package_json=True,
+        no_sync_package_json=False,
         package_json_file=package_json_file,
         no_sync_codemeta=True,
     )

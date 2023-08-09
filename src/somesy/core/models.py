@@ -154,14 +154,9 @@ class SomesyConfig(SomesyBaseModel):
     verbose: bool = Field(False, description="Show verbose messages on run (-vv flag).")
     debug: bool = Field(False, description="Show debug messages on run (-vvv flag).")
 
-    # input config
     input_file: Path = Field(
         Path("somesy.toml"), description="Project metadata input file path."
     )
-
-    # output config
-    no_sync_cff: bool = Field(False, description="Do not sync with CFF.")
-    cff_file: Path = Field(Path("CITATION.cff"), description="CFF file path.")
 
     no_sync_pyproject: bool = Field(
         False, description="Do not sync with pyproject.toml."
@@ -170,10 +165,15 @@ class SomesyConfig(SomesyBaseModel):
         Path("pyproject.toml"), description="pyproject.toml file path."
     )
 
-    sync_package_json: bool = Field(False, description="Sync with package.json.")
+    no_sync_package_json: bool = Field(
+        False, description="Do not sync with package.json."
+    )
     package_json_file: Path = Field(
         Path("package.json"), description="package.json file path."
     )
+
+    no_sync_cff: bool = Field(False, description="Do not sync with CFF.")
+    cff_file: Path = Field(Path("CITATION.cff"), description="CFF file path.")
 
     no_sync_codemeta: bool = Field(False, description="Do not sync with codemeta.json.")
     codemeta_file: Path = Field(
