@@ -6,6 +6,7 @@ from pathlib import Path
 import anybadge
 import pytest
 from coverage import Coverage
+from coverage.exceptions import NoSource
 from interrogate import badge_gen
 from interrogate.coverage import InterrogateCoverage
 
@@ -30,10 +31,14 @@ def on_pre_build(config):
     else:
         log.info("Using existing coverage data.")
 
-    cov = Coverage()
-    cov.load()
-    cov_percent = int(cov.report(file=StringIO()))
-    log.info(f"Test Coverage: {cov_percent}%, generating badge.")
+    cov_percent = 0
+    try:
+        cov_percent = get_coverage_percentage()
+    except NoSource:
+        # Source file is either deleted or moved, so we can't generate a badge, rerun the tests
+        log.info("Change in the source files, running pytest to collect.")
+        pytest.main(["--cov", "--cov-report=html"])
+        cov_percent = get_coverage_percentage()
 
     badge = anybadge.Badge(
         "coverage",
@@ -52,3 +57,13 @@ def on_pre_build(config):
     doc_cov = InterrogateCoverage(paths=["src"]).get_coverage()
     log.info(f"Docs Coverage: {doc_cov.perc_covered}%, generating badge.")
     badge_gen.create("docs", doc_cov)
+
+
+def get_coverage_percentage():
+    """Return the coverage percentage from the .coverage file."""
+    cov = Coverage()
+    cov.load()
+    cov_percent = cov.report(file=StringIO())
+    log.info(f"Test Coverage: {cov_percent}%, generating badge.")
+
+    return cov_percent
