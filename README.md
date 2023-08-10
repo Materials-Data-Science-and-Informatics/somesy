@@ -58,8 +58,9 @@ Yes, somesy is *another* tool with its own configuration. However, for your
 project metadata it is hopefully the last file you need, and the only one you
 have to think about, `somesy` will take care of the others for you!
 
-To get started, create a file named `somesy.toml` (or `.somesy.toml`):
+To get started, create a file named `somesy.toml`:
 
+<!-- --8<-- [start:somesytoml] -->
 ```toml
 [project]
 name = "my-amazing-project"
@@ -89,8 +90,10 @@ orcid = "https://orcid.org/0000-0000-0000-0002"
 [config]
 verbose = true     # show detailed information about what somesy is doing
 ```
+<!-- --8<-- [end:somesytoml] -->
 
-If you happen to work on a Python project and use a `pyproject.toml`, you can also put this information there and avoid having another separate file.  In that case, simply prepend `tool.somesy` to the names of all sections (i.e.  `[project]` becomes `[tool.somesy.project]`).
+Alternatively, you can also add the somesy configuration to an existing
+`pyproject.toml` or `package.json` file. The somesy [manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file) contains examples showing how to do that.
 
 ### Using somesy
 
@@ -111,7 +114,9 @@ By default, `somesy` will create (if they did not exist) or update `CITATION.cff
 You can see call available options with `somesy --help`,
 all of these can also be conveniently set in your `somesy.toml` file.
 
-### Setting up somesy as a pre-commit hook
+### Somesy as a pre-commit hook
+
+<!-- --8<-- [start:precommit] -->
 
 We highly recommend to use `somesy` as a [pre-commit hook](https://pre-commit.com/).
 A pre-commit hook runs on every commit to automatically point out issues or fix them on the spot,
@@ -137,24 +142,26 @@ so when using `somesy` with pre-commit, keep in mind that
 * if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
 * if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
 
+<!-- --8<-- [end:precommit] -->
+
 ## Supported File Formats
 
 Here is an overview of all the currently supported files and formats.
 
 | Input Formats  | Status | | Target Formats                | Status |
 | -------------- | ------ |-| ----------------------------- | ------ |
-| (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_       | ✓      |
-| pyproject.toml | ✓(1.)  | | pyproject.toml _(setuptools)_   | ✓(2.)  |
-| package.json   | ✓      | | package.json                  | ✓      |
-|                |        | | mkdocs.yml                    | TBD    |
+| (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_     | ✓      |
+| pyproject.toml | ✓(1.)  | | pyproject.toml _(setuptools)_ | ✓(2.)  |
+| package.json   | ✓      | | package.json                  | ✓(3.)  |
 |                |        | | CITATION.cff                  | ✓      |
-|                |        | | codemeta.json                 | ✓(3.)  |
+|                |        | | codemeta.json                 | ✓(4.)  |
 
 **Notes:**
 
 1. information must be placed inside a `tool.somesy` section (as explained above)
 2. note that `somesy` does not support setuptools *dynamic fields*
-3. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. you should not edit it by hand!)
+3. `package.json` only supports one author, so `somesy` will pick the *first* listed author
+4. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
 
 <!-- --8<-- [end:quickstart] -->
 

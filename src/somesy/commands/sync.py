@@ -21,11 +21,15 @@ def sync(somesy_input: SomesyInput):
         f"Project metadata: {pretty_repr(metadata.dict(exclude_defaults=True))}"
     )
 
-    if not conf.no_sync_pyproject:
+    # update these only if they exist:
+
+    if conf.pyproject_file.is_file() and not conf.no_sync_pyproject:
         _sync_python(metadata, conf.pyproject_file)
 
-    if conf.sync_package_json:
+    if conf.package_json_file.is_file() and not conf.no_sync_package_json:
         _sync_package_json(metadata, conf.package_json_file)
+
+    # create these by default if they are missing:
 
     if not conf.no_sync_cff:
         _sync_cff(metadata, conf.cff_file)
