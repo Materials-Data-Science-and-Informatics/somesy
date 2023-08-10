@@ -2337,14 +2337,9 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show verbose messages on run (-vv flag).&quot;</span><span class="p">)</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show debug messages on run (-vvv flag).&quot;</span><span class="p">)</span>
 
-    <span class="c1"># input config</span>
     <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;somesy.toml&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Project metadata input file path.&quot;</span>
     <span class="p">)</span>
-
-    <span class="c1"># output config</span>
-    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Do not sync with CFF.&quot;</span><span class="p">)</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;CFF file path.&quot;</span><span class="p">)</span>
 
     <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Do not sync with pyproject.toml.&quot;</span>
@@ -2353,10 +2348,15 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
         <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;pyproject.toml&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;pyproject.toml file path.&quot;</span>
     <span class="p">)</span>
 
-    <span class="n">sync_package_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sync with package.json.&quot;</span><span class="p">)</span>
+    <span class="n">no_sync_package_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Do not sync with package.json.&quot;</span>
+    <span class="p">)</span>
     <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;package.json&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;package.json file path.&quot;</span>
     <span class="p">)</span>
+
+    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Do not sync with CFF.&quot;</span><span class="p">)</span>
+    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">),</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;CFF file path.&quot;</span><span class="p">)</span>
 
     <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Do not sync with codemeta.json.&quot;</span><span class="p">)</span>
     <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

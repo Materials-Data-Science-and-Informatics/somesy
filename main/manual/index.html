@@ -534,15 +534,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#synchronization" class="md-nav__link">
-    Synchronization
+  <a href="#somesy-input-file" class="md-nav__link">
+    Somesy Input File
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy-input-file" class="md-nav__link">
-    Somesy input file
+  <a href="#pre-commit-hook" class="md-nav__link">
+    pre-commit hook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronization" class="md-nav__link">
+    Synchronization
   </a>
   
 </li>
@@ -1387,15 +1394,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#synchronization" class="md-nav__link">
-    Synchronization
+  <a href="#somesy-input-file" class="md-nav__link">
+    Somesy Input File
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy-input-file" class="md-nav__link">
-    Somesy input file
+  <a href="#pre-commit-hook" class="md-nav__link">
+    pre-commit hook
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronization" class="md-nav__link">
+    Synchronization
   </a>
   
 </li>
@@ -1857,20 +1871,6 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>Project metadata input file path.</td>
 </tr>
 <tr>
-<td>no_sync_cff</td>
-<td>bool</td>
-<td>no</td>
-<td>false</td>
-<td>Do not sync with CFF.</td>
-</tr>
-<tr>
-<td>cff_file</td>
-<td>Path</td>
-<td>no</td>
-<td>"CITATION.cff"</td>
-<td>CFF file path.</td>
-</tr>
-<tr>
 <td>no_sync_pyproject</td>
 <td>bool</td>
 <td>no</td>
@@ -1885,11 +1885,11 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>pyproject.toml file path.</td>
 </tr>
 <tr>
-<td>sync_package_json</td>
+<td>no_sync_package_json</td>
 <td>bool</td>
 <td>no</td>
 <td>false</td>
-<td>Sync with package.json.</td>
+<td>Do not sync with package.json.</td>
 </tr>
 <tr>
 <td>package_json_file</td>
@@ -1897,6 +1897,20 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>no</td>
 <td>"package.json"</td>
 <td>package.json file path.</td>
+</tr>
+<tr>
+<td>no_sync_cff</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with CFF.</td>
+</tr>
+<tr>
+<td>cff_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"CITATION.cff"</td>
+<td>CFF file path.</td>
 </tr>
 <tr>
 <td>no_sync_codemeta</td>
@@ -1931,6 +1945,7 @@ some of the currently supported formats.</p>
 <th>Poetry Config</th>
 <th>SetupTools Config</th>
 <th>CITATION.cff</th>
+<th>package.json</th>
 <th>Requirement</th>
 </tr>
 </thead>
@@ -1940,6 +1955,7 @@ some of the currently supported formats.</p>
 <td>name+email</td>
 <td>name</td>
 <td>given-names</td>
+<td>name</td>
 <td>required</td>
 </tr>
 <tr>
@@ -1947,6 +1963,7 @@ some of the currently supported formats.</p>
 <td>name+email</td>
 <td>name</td>
 <td>family-names</td>
+<td>name</td>
 <td>required</td>
 </tr>
 <tr>
@@ -1954,6 +1971,7 @@ some of the currently supported formats.</p>
 <td>name+email</td>
 <td>email</td>
 <td>email</td>
+<td>email</td>
 <td>required</td>
 </tr>
 <tr>
@@ -1961,6 +1979,7 @@ some of the currently supported formats.</p>
 <td>-</td>
 <td>-</td>
 <td>orcid</td>
+<td>url</td>
 <td>optional</td>
 </tr>
 <tr>
@@ -1968,6 +1987,7 @@ some of the currently supported formats.</p>
 <td>-</td>
 <td>-</td>
 <td><em>(same)</em></td>
+<td>-</td>
 <td>optional</td>
 </tr>
 </tbody>
@@ -1981,6 +2001,7 @@ some of the currently supported formats.</p>
 <th>Poetry Config</th>
 <th>SetupTools Config</th>
 <th>CITATION.cff</th>
+<th>package.json</th>
 <th>Requirement</th>
 </tr>
 </thead>
@@ -1990,6 +2011,7 @@ some of the currently supported formats.</p>
 <td>name</td>
 <td>name</td>
 <td>title</td>
+<td>name</td>
 <td>required</td>
 </tr>
 <tr>
@@ -1997,6 +2019,7 @@ some of the currently supported formats.</p>
 <td>description</td>
 <td>description</td>
 <td>abstract</td>
+<td>description</td>
 <td>required</td>
 </tr>
 <tr>
@@ -2004,9 +2027,11 @@ some of the currently supported formats.</p>
 <td>license</td>
 <td>license</td>
 <td>license</td>
+<td>license</td>
 <td>required</td>
 </tr>
 <tr>
+<td>version</td>
 <td>version</td>
 <td>version</td>
 <td>version</td>
@@ -2014,6 +2039,7 @@ some of the currently supported formats.</p>
 <td>optional</td>
 </tr>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2025,6 +2051,7 @@ some of the currently supported formats.</p>
 <td>authors</td>
 <td>authors</td>
 <td>authors</td>
+<td>author</td>
 <td>required</td>
 </tr>
 <tr>
@@ -2032,6 +2059,15 @@ some of the currently supported formats.</p>
 <td>maintainers</td>
 <td>maintainers</td>
 <td>contact</td>
+<td>maintainers</td>
+<td>optional</td>
+</tr>
+<tr>
+<td><em>people</em></td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>contributors</td>
 <td>optional</td>
 </tr>
 <tr>
@@ -2040,8 +2076,10 @@ some of the currently supported formats.</p>
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
+<td>keywords</td>
 <td>keywords</td>
 <td>keywords</td>
 <td>keywords</td>
@@ -2053,6 +2091,7 @@ some of the currently supported formats.</p>
 <td>repository</td>
 <td>urls.repository</td>
 <td>repository_code</td>
+<td>repository</td>
 <td>optional</td>
 </tr>
 <tr>
@@ -2060,6 +2099,7 @@ some of the currently supported formats.</p>
 <td>homepage</td>
 <td>urls.homepage</td>
 <td>url</td>
+<td>homepage</td>
 <td>optional</td>
 </tr>
 </tbody>
@@ -2087,11 +2127,6 @@ issue or consult the <code>somesy</code> code.</p>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--input-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-i</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Somesy input file path (default:          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    .somesy.toml)                             <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file (default:   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    CITATION.cff)                             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pyproject</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync pyproject.toml file (default: <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing pyproject.toml file path         <span class=" -Color -Color-Faint">│</span>
@@ -2101,6 +2136,11 @@ issue or consult the <code>somesy</code> code.</p>
 <span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-file</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing package.json file path (default: <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    package.json)                             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file (default:   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                    CITATION.cff)                             <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>   <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync codemeta.json file            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom codemeta.json file path            <span class=" -Color -Color-Faint">│</span>
@@ -2116,19 +2156,149 @@ defaults, while options passed as CLI arguments override the configuration.</p>
 <li><code>.somesy.toml</code></li>
 <li><code>somesy.toml</code></li>
 <li><code>pyproject.toml</code> (in <code>tool.somesy</code> section)</li>
+<li><code>package.json</code> (in <code>somesy</code> section)</li>
 </ul>
 <p>which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the <code>-i</code> option.</p>
+<h3 id="somesy-input-file">Somesy Input File<a class="headerlink" href="#somesy-input-file" title="Permanent link">&para;</a></h3>
+<p>Here is an example how project metadata and <code>somesy</code> can be configured using
+one of the supported input formats:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">somesy.toml</label><label for="__tabbed_2_2">pyproject.toml</label><label for="__tabbed_2_3">package.json</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my-amazing-project&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.1.0&quot;</span>
+<span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Brief description of my amazing software.&quot;</span>
+
+<span class="n">keywords</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;some&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;descriptive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;keywords&quot;</span><span class="p">]</span>
+<span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MIT&quot;</span>
+<span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/username/my-amazing-project&quot;</span>
+
+<span class="c1"># This is you, the proud author of your project</span>
+<span class="k">[[project.people]]</span>
+<span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Jane&quot;</span>
+<span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span>
+<span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;j.doe@example.com&quot;</span>
+<span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0000-0000-0001&quot;</span>
+<span class="n">author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">      </span><span class="c1"># is a full author of the project (i.e. appears in citations)</span>
+<span class="n">maintainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">  </span><span class="c1"># currently maintains the project (i.e. is a contact person)</span>
+
+<span class="c1"># this person is a acknowledged contributor, but not author or maintainer:</span>
+<span class="k">[[project.people]]</span>
+<span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Another&quot;</span>
+<span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Contributor&quot;</span>
+<span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;a.contributor@example.com&quot;</span>
+<span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0000-0000-0002&quot;</span>
+
+<span class="k">[config]</span>
+<span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="k">[tool.poetry]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my-amazing-project&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.1.0&quot;</span>
+<span class="p">...</span>
+
+<span class="k">[tool.somesy.project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my-amazing-project&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.1.0&quot;</span>
+<span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Brief description of my amazing software.&quot;</span>
+
+<span class="n">keywords</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;some&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;descriptive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;keywords&quot;</span><span class="p">]</span>
+<span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MIT&quot;</span>
+<span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/username/my-amazing-project&quot;</span>
+
+<span class="c1"># This is you, the proud author of your project</span>
+<span class="k">[[tool.somesy.project.people]]</span>
+<span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Jane&quot;</span>
+<span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span>
+<span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;j.doe@example.com&quot;</span>
+<span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0000-0000-0001&quot;</span>
+<span class="n">author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">      </span><span class="c1"># is a full author of the project (i.e. appears in citations)</span>
+<span class="n">maintainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">  </span><span class="c1"># currently maintains the project (i.e. is a contact person)</span>
+
+<span class="c1"># this person is a acknowledged contributor, but not author or maintainer:</span>
+<span class="k">[[tool.somesy.project.people]]</span>
+<span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Another&quot;</span>
+<span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Contributor&quot;</span>
+<span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;a.contributor@example.com&quot;</span>
+<span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0000-0000-0002&quot;</span>
+
+<span class="k">[tool.somesy.config]</span>
+<span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-amazing-project&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="err">...</span>
+
+<span class="w">  </span><span class="nt">&quot;somesy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;project&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my-amazing-project&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.1.0&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Brief description of my amazing software.&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;keywords&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;some&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;descriptive&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;keywords&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;license&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;repository&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://github.com/username/my-amazing-project&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;people&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;given-names&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Jane&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;family-names&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Doe&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;j.doe@example.com&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;orcid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://orcid.org/0000-0000-0000-0001&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;author&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;maintainer&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;given-names&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Another&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;family-names&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Contributor&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a.contributor@example.com&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;orcid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://orcid.org/0000-0000-0000-0002&quot;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;verbose&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>All possible metadata fields and configuration options are explained further <a href="#schemas-overview">above</a>.</p>
+<h3 id="pre-commit-hook">pre-commit hook<a class="headerlink" href="#pre-commit-hook" title="Permanent link">&para;</a></h3>
+<p>We highly recommend to use <code>somesy</code> as a <a href="https://pre-commit.com/">pre-commit hook</a>.
+A pre-commit hook runs on every commit to automatically point out issues or fix them on the spot,
+so if you do not use pre-commit in your project yet, you should start today!
+When used this way, <code>somesy</code> can fix most typical issues with your project
+metadata even before your changes can leave your computer.</p>
+<p>To add <code>somesy</code> as a pre-commit hook, add it to your <code>.pre-commit-config.yaml</code>
+file in the root folder of your repository:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># ... (your other hooks) ...</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;0.1.0&quot;</span>
+<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
+</code></pre></div>
+<p>Note that <code>pre-commit</code> gives <code>somesy</code> the <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">staged</a> version of files,
+so when using <code>somesy</code> with pre-commit, keep in mind that</p>
+<ul>
+<li>if <code>somesy</code> changed some files, you need to <code>git add</code> them again (and rerun pre-commit)</li>
+<li>if you explicitly run <code>pre-commit</code>, make sure to <code>git add</code> all changed files (just like before a commit)</li>
+</ul>
 <h3 id="synchronization">Synchronization<a class="headerlink" href="#synchronization" title="Permanent link">&para;</a></h3>
 <p>Unless configured otherwise, <code>somesy</code> will create <code>CITATION.cff</code>
 and <code>codemeta.json</code> files if they do not exist.
-Other supported files (such as <code>pyproject.toml</code>) are updated if they already
-exist in your repository.</p>
+Other supported files (such as <code>pyproject.toml</code> or <code>package.json</code>)
+are updated if they already exist in your repository.</p>
 <p>If you do not want that somesy creates/synchronizes these files,
 you can disable them by CLI options or in your somesy configuration.</p>
-<h3 id="somesy-input-file">Somesy input file<a class="headerlink" href="#somesy-input-file" title="Permanent link">&para;</a></h3>
-<p>In the <a href="../quickstart/">quickstart</a> you can find an example somesy input file.</p>
-<p>All possible metadata fields and configuration options are explained further <a href="#schemas-overview">above</a>.</p>
 <h2 id="metadata-update-logic">Metadata Update Logic<a class="headerlink" href="#metadata-update-logic" title="Permanent link">&para;</a></h2>
 <p>In this section we explain a few details about how <code>somesy</code> updates metadata.</p>
 <h3 id="somesy-inputs-override-target-values">Somesy Inputs Override Target Values<a class="headerlink" href="#somesy-inputs-override-target-values" title="Permanent link">&para;</a></h3>

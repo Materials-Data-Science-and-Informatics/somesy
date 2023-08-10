@@ -510,8 +510,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setting-up-somesy-as-a-pre-commit-hook" class="md-nav__link">
-    Setting up somesy as a pre-commit hook
+  <a href="#somesy-as-a-pre-commit-hook" class="md-nav__link">
+    Somesy as a pre-commit hook
   </a>
   
 </li>
@@ -1308,8 +1308,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setting-up-somesy-as-a-pre-commit-hook" class="md-nav__link">
-    Setting up somesy as a pre-commit hook
+  <a href="#somesy-as-a-pre-commit-hook" class="md-nav__link">
+    Somesy as a pre-commit hook
   </a>
   
 </li>
@@ -1369,7 +1369,7 @@ latest stable version of somesy from PyPI using <code>pip</code>:</p>
 <p>Yes, somesy is <em>another</em> tool with its own configuration. However, for your
 project metadata it is hopefully the last file you need, and the only one you
 have to think about, <code>somesy</code> will take care of the others for you!</p>
-<p>To get started, create a file named <code>somesy.toml</code> (or <code>.somesy.toml</code>):</p>
+<p>To get started, create a file named <code>somesy.toml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[project]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my-amazing-project&quot;</span>
 <span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.1.0&quot;</span>
@@ -1398,7 +1398,8 @@ have to think about, <code>somesy</code> will take care of the others for you!</
 <span class="k">[config]</span>
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
 </code></pre></div>
-<p>If you happen to work on a Python project and use a <code>pyproject.toml</code>, you can also put this information there and avoid having another separate file.  In that case, simply prepend <code>tool.somesy</code> to the names of all sections (i.e.  <code>[project]</code> becomes <code>[tool.somesy.project]</code>).</p>
+<p>Alternatively, you can also add the somesy configuration to an existing
+<code>pyproject.toml</code> or <code>package.json</code> file. The somesy <a href="https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file">manual</a> contains examples showing how to do that.</p>
 <h3 id="using-somesy">Using somesy<a class="headerlink" href="#using-somesy" title="Permanent link">&para;</a></h3>
 <p>Once somesy is installed and configured, somesy can take over and manage your project metadata.
 Now you can run <code>somesy</code> simply by using</p>
@@ -1411,7 +1412,7 @@ formats further below.</p>
 <p>By default, <code>somesy</code> will create (if they did not exist) or update <code>CITATION.cff</code> and <code>codemeta.json</code> files in your repository. If you happen to use <code>pyproject.toml</code> (in Python projects) or <code>package.json</code> (in JavaScript projects), somesy would also update the respective information there.</p>
 <p>You can see call available options with <code>somesy --help</code>,
 all of these can also be conveniently set in your <code>somesy.toml</code> file.</p>
-<h3 id="setting-up-somesy-as-a-pre-commit-hook">Setting up somesy as a pre-commit hook<a class="headerlink" href="#setting-up-somesy-as-a-pre-commit-hook" title="Permanent link">&para;</a></h3>
+<h3 id="somesy-as-a-pre-commit-hook">Somesy as a pre-commit hook<a class="headerlink" href="#somesy-as-a-pre-commit-hook" title="Permanent link">&para;</a></h3>
 <p>We highly recommend to use <code>somesy</code> as a <a href="https://pre-commit.com/">pre-commit hook</a>.
 A pre-commit hook runs on every commit to automatically point out issues or fix them on the spot,
 so if you do not use pre-commit in your project yet, you should start today!
@@ -1464,14 +1465,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td>✓</td>
 <td></td>
 <td>package.json</td>
-<td>✓</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td>mkdocs.yml</td>
-<td>TBD</td>
+<td>✓(3.)</td>
 </tr>
 <tr>
 <td></td>
@@ -1485,7 +1479,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td></td>
 <td></td>
 <td>codemeta.json</td>
-<td>✓(3.)</td>
+<td>✓(4.)</td>
 </tr>
 </tbody>
 </table>
@@ -1493,7 +1487,8 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <ol>
 <li>information must be placed inside a <code>tool.somesy</code> section (as explained above)</li>
 <li>note that <code>somesy</code> does not support setuptools <em>dynamic fields</em></li>
-<li>unlike other targets, <code>somesy</code> will <em>re-create</em> the <code>codemeta.json</code> (i.e. you should not edit it by hand!)</li>
+<li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
+<li>unlike other targets, <code>somesy</code> will <em>re-create</em> the <code>codemeta.json</code> (i.e. do not edit it by hand!)</li>
 </ol>
 
 
