@@ -2,44 +2,59 @@
 import re
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, EmailStr, ValidationError, validator
+from pydantic import AnyUrl, BaseModel, EmailStr, Field, ValidationError, validator
+from typing_extensions import Annotated
 
 
 class PackageAuthor(BaseModel):
     """Package author model."""
 
-    name: Optional[str]
-    email: Optional[EmailStr]
-    url: Optional[AnyUrl]
+    name: Annotated[Optional[str], Field(description="Author name")]
+    email: Annotated[Optional[EmailStr], Field(description="Author email")]
+    url: Annotated[Optional[AnyUrl], Field(description="Author website or orcid page")]
 
 
 class PackageRepository(BaseModel):
     """Package repository model."""
 
-    type: str
-    url: Optional[str]
+    type: Annotated[Optional[str], Field(description="Repository type")]
+    url: Annotated[str, Field(description="Repository url")]
 
 
 class PackageLicense(BaseModel):
     """Package license model."""
 
-    type: str
-    url: Optional[str]
+    type: Annotated[Optional[str], Field(description="License type")]
+    url: Annotated[str, Field(description="License url")]
 
 
 class PackageJsonConfig(BaseModel):
     """Package.json config model."""
 
-    name: str
-    version: str
-    description: Optional[str]
-    author: Optional[Union[str, PackageAuthor]]
-    maintainers: Optional[List[Union[str, PackageAuthor]]]
-    contributors: Optional[List[Union[str, PackageAuthor]]]
-    license: Optional[Union[str, PackageLicense]]
-    repository: Optional[PackageRepository]
-    homepage: Optional[AnyUrl]
-    keywords: Optional[List[str]]
+    name: Annotated[str, Field(description="Package name")]
+    version: Annotated[str, Field(description="Package version")]
+    description: Annotated[Optional[str], Field(description="Package description")]
+    author: Annotated[
+        Optional[Union[str, PackageAuthor]], Field(description="Package author")
+    ]
+    maintainers: Annotated[
+        Optional[List[Union[str, PackageAuthor]]],
+        Field(description="Package maintainers"),
+    ]
+    contributors: Annotated[
+        Optional[List[Union[str, PackageAuthor]]],
+        Field(description="Package contributors"),
+    ]
+    license: Annotated[
+        Optional[Union[str, PackageLicense]], Field(description="Package license")
+    ]
+    repository: Annotated[
+        Optional[Union[PackageRepository, str]], Field(description="Package repository")
+    ]
+    homepage: Annotated[Optional[AnyUrl], Field(description="Package homepage")]
+    keywords: Annotated[
+        Optional[List[str]], Field(description="Keywords that describe the package")
+    ]
 
     # convert package author to dict if it is a string
     @classmethod
