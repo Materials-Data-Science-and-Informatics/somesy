@@ -147,5 +147,5 @@ jobs:
     uses: "./.github/workflows/release.yml"
     with:
       to_github: true
-      to_test_pypi: true
-      to_pypi: false
+      to_test_pypi: false
+      to_pypi: true
