@@ -63,7 +63,7 @@ def get_coverage_percentage():
     """Return the coverage percentage from the .coverage file."""
     cov = Coverage()
     cov.load()
-    cov_percent = cov.report(file=StringIO())
+    cov_percent = int(cov.report(file=StringIO()))
     log.info(f"Test Coverage: {cov_percent}%, generating badge.")
 
     return cov_percent
