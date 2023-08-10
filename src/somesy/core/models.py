@@ -187,9 +187,9 @@ class SomesyConfig(SomesyBaseModel):
     no_sync_codemeta: Annotated[
         bool, Field(description="Do not sync with codemeta.json.")
     ] = False
-    codemeta_file: Annotated[Path, Field(description="codemeta.json file path.")] = (
-        Path("codemeta.json"),
-    )
+    codemeta_file: Annotated[
+        Path, Field(description="codemeta.json file path.")
+    ] = Path("codemeta.json")
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
