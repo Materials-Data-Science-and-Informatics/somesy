@@ -21,23 +21,37 @@ from somesy.core.models import LicenseEnum
 class PoetryConfig(BaseModel):
     """Poetry configuration model."""
 
-    name: Annotated[str, Field(regex=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
-    version: Annotated[
-        str, Field(regex=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")
+    name: Annotated[
+        str,
+        Field(regex=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Package name"),
     ]
-    description: str
-    license: Optional[Union[LicenseEnum, List[LicenseEnum]]] = Field(
-        None, description="An SPDX license identifier."
-    )
-    authors: Set[str]
-    maintainers: Optional[Set[str]] = None
-    readme: Optional[Union[Path, List[Path]]] = None
-    homepage: Optional[HttpUrl] = None
-    repository: Optional[HttpUrl] = None
-    documentation: Optional[HttpUrl] = None
-    keywords: Optional[Set[str]] = None
-    classifiers: Optional[List[str]] = None
-    urls: Optional[Dict[str, HttpUrl]] = None
+    version: Annotated[
+        str,
+        Field(
+            regex=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$",
+            description="Package version",
+        ),
+    ]
+    description: Annotated[str, Field(description="Package description")]
+    license: Annotated[
+        Optional[Union[LicenseEnum, List[LicenseEnum]]],
+        Field(description="An SPDX license identifier."),
+    ]
+    authors: Annotated[Set[str], Field(description="Package authors")]
+    maintainers: Annotated[Optional[Set[str]], Field(description="Package maintainers")]
+    readme: Annotated[
+        Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
+    ]
+    homepage: Annotated[Optional[HttpUrl], Field(description="Package homepage")]
+    repository: Annotated[Optional[HttpUrl], Field(description="Package repository")]
+    documentation: Annotated[
+        Optional[HttpUrl], Field(description="Package documentation page")
+    ]
+    keywords: Annotated[
+        Optional[Set[str]], Field(description="Keywords that describe the package")
+    ]
+    classifiers: Annotated[Optional[List[str]], Field(description="pypi classifiers")]
+    urls: Annotated[Optional[Dict[str, HttpUrl]], Field(description="Package URLs")]
 
     @validator("version")
     def validate_version(cls, v):

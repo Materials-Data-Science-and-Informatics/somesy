@@ -148,37 +148,51 @@ class SomesyConfig(SomesyBaseModel):
         return values
 
     # cli flags
-    show_info: bool = Field(
-        False, description="Show basic information messages on run (-v flag)."
-    )
-    verbose: bool = Field(False, description="Show verbose messages on run (-vv flag).")
-    debug: bool = Field(False, description="Show debug messages on run (-vvv flag).")
+    show_info: Annotated[
+        bool,
+        Field(
+            description="Show basic information messages on run (-v flag).",
+        ),
+    ] = False
+    verbose: Annotated[
+        bool, Field(description="Show verbose messages on run (-vv flag).")
+    ] = False
+    debug: Annotated[
+        bool, Field(description="Show debug messages on run (-vvv flag).")
+    ] = False
 
     # input config
-    input_file: Path = Field(
-        Path("somesy.toml"), description="Project metadata input file path."
-    )
+    input_file: Annotated[
+        Path,
+        Field(description="Project metadata input file path."),
+    ] = Path("somesy.toml")
 
     # output config
-    no_sync_cff: bool = Field(False, description="Do not sync with CFF.")
-    cff_file: Path = Field(Path("CITATION.cff"), description="CFF file path.")
-
-    no_sync_pyproject: bool = Field(
-        False, description="Do not sync with pyproject.toml."
-    )
-    pyproject_file: Path = Field(
-        Path("pyproject.toml"), description="pyproject.toml file path."
+    no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
+    cff_file: Annotated[Path, Field(description="CFF file path.")] = (
+        Path("CITATION.cff"),
     )
 
-    sync_package_json: bool = Field(False, description="Sync with package.json.")
-    package_json_file: Path = Field(
-        Path("package.json"), description="package.json file path."
-    )
+    no_sync_pyproject: Annotated[
+        bool, Field(description="Do not sync with pyproject.toml.")
+    ] = False
+    pyproject_file: Annotated[
+        Path, Field(description="pyproject.toml file path.")
+    ] = Path("pyproject.toml")
 
-    no_sync_codemeta: bool = Field(False, description="Do not sync with codemeta.json.")
-    codemeta_file: Path = Field(
-        Path("codemeta.json"), description="codemeta.json file path."
-    )
+    sync_package_json: Annotated[
+        bool, Field(description="Sync with package.json.")
+    ] = False
+    package_json_file: Annotated[
+        Path, Field(description="package.json file path.")
+    ] = Path("package.json")
+
+    no_sync_codemeta: Annotated[
+        bool, Field(description="Do not sync with codemeta.json.")
+    ] = False
+    codemeta_file: Annotated[
+        Path, Field(description="codemeta.json file path.")
+    ] = Path("codemeta.json")
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
@@ -375,23 +389,30 @@ class ProjectMetadata(SomesyBaseModel):
             raise ValueError("At least one person must be an author of this project.")
         return people
 
-    name: str = Field(description="Project name.")
-    description: str = Field(description="Project description.")
-    version: Optional[str] = Field(description="Project version.")
-    license: LicenseEnum = Field(description="SPDX License string.")
+    name: Annotated[str, Field(description="Project name.")]
+    description: Annotated[str, Field(description="Project description.")]
+    version: Annotated[Optional[str], Field(description="Project version.")]
+    license: Annotated[LicenseEnum, Field(description="SPDX License string.")]
 
-    repository: Optional[AnyUrl] = Field(
-        None, description="URL of the project source code repository."
-    )
-    homepage: Optional[AnyUrl] = Field(None, description="URL of the project homepage.")
+    repository: Annotated[
+        Optional[AnyUrl],
+        Field(description="URL of the project source code repository."),
+    ] = None
+    homepage: Annotated[
+        Optional[AnyUrl], Field(description="URL of the project homepage.")
+    ] = None
 
-    keywords: Optional[List[str]] = Field(
-        None, min_items=1, description="Keywords that describe the project."
-    )
+    keywords: Annotated[
+        Optional[List[str]],
+        Field(min_items=1, description="Keywords that describe the project."),
+    ] = None
 
-    people: List[Person] = Field(
-        min_items=1, description="Project authors, maintainers and contributors."
-    )
+    people: Annotated[
+        List[Person],
+        Field(
+            min_items=1, description="Project authors, maintainers and contributors."
+        ),
+    ]
 
     def authors(self):
         """Return people marked as authors."""
@@ -407,12 +428,14 @@ class SomesyInput(SomesyBaseModel):
 
     _origin: Optional[Path]
 
-    project: ProjectMetadata = Field(
-        description="Project metadata to be used and synchronized."
-    )
-    config: Optional[SomesyConfig] = Field(
-        description="somesy tool configuration (matches CLI flags)."
-    )
+    project: Annotated[
+        ProjectMetadata,
+        Field(description="Project metadata to be used and synchronized."),
+    ]
+    config: Annotated[
+        Optional[SomesyConfig],
+        Field(description="somesy tool configuration (matches CLI flags)."),
+    ]
 
     def is_somesy_file(self) -> bool:
         """Return whether this somesy input is from a somesy config file.
