@@ -161,38 +161,31 @@ class SomesyConfig(SomesyBaseModel):
         bool, Field(description="Show debug messages on run (-vvv flag).")
     ] = False
 
-    # input config
-    input_file: Annotated[
-        Path,
-        Field(description="Project metadata input file path."),
-    ] = Path("somesy.toml")
-
-    # output config
-    no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
-    cff_file: Annotated[Path, Field(description="CFF file path.")] = (
-        Path("CITATION.cff"),
+    input_file: Path = Field(
+        Path("somesy.toml"), description="Project metadata input file path."
     )
 
-    no_sync_pyproject: Annotated[
-        bool, Field(description="Do not sync with pyproject.toml.")
-    ] = False
-    pyproject_file: Annotated[
-        Path, Field(description="pyproject.toml file path.")
-    ] = Path("pyproject.toml")
+    no_sync_pyproject: bool = Field(
+        False, description="Do not sync with pyproject.toml."
+    )
+    pyproject_file: Path = Field(
+        Path("pyproject.toml"), description="pyproject.toml file path."
+    )
 
-    sync_package_json: Annotated[
-        bool, Field(description="Sync with package.json.")
-    ] = False
-    package_json_file: Annotated[
-        Path, Field(description="package.json file path.")
-    ] = Path("package.json")
+    no_sync_package_json: bool = Field(
+        False, description="Do not sync with package.json."
+    )
+    package_json_file: Path = Field(
+        Path("package.json"), description="package.json file path."
+    )
 
-    no_sync_codemeta: Annotated[
-        bool, Field(description="Do not sync with codemeta.json.")
-    ] = False
-    codemeta_file: Annotated[
-        Path, Field(description="codemeta.json file path.")
-    ] = Path("codemeta.json")
+    no_sync_cff: bool = Field(False, description="Do not sync with CFF.")
+    cff_file: Path = Field(Path("CITATION.cff"), description="CFF file path.")
+
+    no_sync_codemeta: bool = Field(False, description="Do not sync with codemeta.json.")
+    codemeta_file: Path = Field(
+        Path("codemeta.json"), description="codemeta.json file path."
+    )
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""

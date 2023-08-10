@@ -33,24 +33,6 @@ def sync(
         resolve_path=True,
         help="Somesy input file path (default: .somesy.toml)",
     ),
-    no_sync_cff: bool = typer.Option(
-        None,
-        "--no-sync-cff",
-        "-C",
-        help="Do not sync CITATION.cff file (default: False)",
-    ),
-    cff_file: Path = typer.Option(
-        None,
-        "--cff-file",
-        "-c",
-        exists=False,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
-        help="CITATION.cff file path (default: CITATION.cff)",
-    ),
     no_sync_pyproject: bool = typer.Option(
         None,
         "--no-sync-pyproject",
@@ -69,7 +51,7 @@ def sync(
         resolve_path=True,
         help="Existing pyproject.toml file path (default: pyproject.toml)",
     ),
-    sync_package_json: bool = typer.Option(
+    no_sync_package_json: bool = typer.Option(
         None,
         "--sync-package-json",
         "-J",
@@ -86,6 +68,24 @@ def sync(
         readable=True,
         resolve_path=True,
         help="Existing package.json file path (default: package.json)",
+    ),
+    no_sync_cff: bool = typer.Option(
+        None,
+        "--no-sync-cff",
+        "-C",
+        help="Do not sync CITATION.cff file (default: False)",
+    ),
+    cff_file: Path = typer.Option(
+        None,
+        "--cff-file",
+        "-c",
+        exists=False,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=True,
+        resolve_path=True,
+        help="CITATION.cff file path (default: CITATION.cff)",
     ),
     no_sync_codemeta: bool = typer.Option(
         None,
@@ -117,7 +117,7 @@ def sync(
             cff_file=cff_file,
             no_sync_pyproject=no_sync_pyproject,
             pyproject_file=pyproject_file,
-            sync_package_json=sync_package_json,
+            no_sync_package_json=no_sync_package_json,
             package_json_file=package_json_file,
             no_sync_codemeta=no_sync_codemeta,
             codemeta_file=codemeta_file,
@@ -155,7 +155,7 @@ def run_sync(somesy_input: SomesyInput):
         logger.info(
             f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
         )
-    if conf.sync_package_json:
+    if not conf.no_sync_package_json:
         logger.info(
             f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]"
         )
