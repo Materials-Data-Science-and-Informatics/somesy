@@ -38,9 +38,29 @@ given-names = "Jens"
 email = "j.broeder@fz-juelich.de"
 orcid = "https://orcid.org/0000-0001-7939-226X"
 
-contribution = "Valuable input concerning metadata standards and usability."
+contribution = "Discussions and suggestions concerning metadata standards and usability."
 contribution_begin = "2023-03-01"
+contribution_end = "2023-03-31"
 contribution_types = ["ideas"]
+
+[[project.people]]
+family-names = "Hofmann"
+given-names = "Volker"
+email = "v.hofmann@fz-juelich.de"
+orcid = "https://orcid.org/0000-0002-5149-603X"
+
+contribution = "Discussions and suggestions concerning tool scope and usability."
+contribution_begin = "2023-06-01"
+contribution_end = "2023-06-30"
+contribution_types = ["ideas"]
+
+[[project.people]]
+family-names = "Sandfeld"
+given-names = "Stefan"
+email = "s.sandfeld@fz-juelich.de"
+orcid = "https://orcid.org/0000-0001-9560-4728"
+
+contribution_types = ["fundingFinding"]
 
 [config]
 no_sync_cff = false
