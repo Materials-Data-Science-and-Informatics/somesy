@@ -615,6 +615,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#in-my-project-the-effective-authors-and-the-publication-authors-are-not-the-same-what-to-do" class="md-nav__link">
+    In my project, the effective authors and the publication authors are not the same! What to do?
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -775,6 +782,20 @@
           cli
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/cli/fill/" class="md-nav__link">
+        fill
+      </a>
+    </li>
+  
+
+            
           
             
               
@@ -1475,6 +1496,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#in-my-project-the-effective-authors-and-the-publication-authors-are-not-the-same-what-to-do" class="md-nav__link">
+    In my project, the effective authors and the publication authors are not the same! What to do?
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1787,7 +1815,14 @@ Furthermore, <code>somesy</code> might support the
 <td>bool</td>
 <td>no</td>
 <td>false</td>
-<td>Indicates whether the person is an author of the project (i.e. for citations).</td>
+<td>Indicates whether the person is an author of the project (i.e. significant contributor).</td>
+</tr>
+<tr>
+<td>publication_author</td>
+<td>bool</td>
+<td>no</td>
+<td></td>
+<td>Indicates whether the person is to be listed as an author in academic citations.</td>
 </tr>
 <tr>
 <td>maintainer</td>
@@ -2124,28 +2159,28 @@ issue or consult the <code>somesy</code> code.</p>
  Sync project metadata input with metadata files.                               
 
 <span class=" -Color -Color-Faint">╭─ Options ────────────────────────────────────────────────────────────────────╮</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--input-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-i</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Somesy input file path (default:          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    .somesy.toml)                             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pyproject</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync pyproject.toml file (default: <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing pyproject.toml file path         <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    (default: pyproject.toml)                 <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--sync-package-json</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-J</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync package.json file (default:   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-file</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing package.json file path (default: <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    package.json)                             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file (default:   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    False)                                    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    CITATION.cff)                             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]                          </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>   <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync codemeta.json file            <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom codemeta.json file path            <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                    <span class=" -Color -Color-Faint">[default: None]               </span>            <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Show this message and exit.               <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--input-file</span>            <span class=" -Color -Color-Bold -Color-Bold-Green">-i</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Somesy input file path (default:       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       .somesy.toml)                          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pyproject</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync pyproject.toml file        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing pyproject.toml file path      <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: pyproject.toml)              <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-package-json</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-J</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync package.json file          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing package.json file path        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: package.json)                <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>              <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       CITATION.cff)                          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync codemeta.json file         <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom codemeta.json file path         <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]               </span>         <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                          <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Show this message and exit.            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">╰──────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre></div>
 <p>Everything that can be configured as a CLI flag can also be set in a <code>somesy.toml</code> file
@@ -2175,7 +2210,7 @@ one of the supported input formats:</p>
 <span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MIT&quot;</span>
 <span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/username/my-amazing-project&quot;</span>
 
-<span class="c1"># This is you, the proud author of your project</span>
+<span class="c1"># This is you, the proud author of your project:</span>
 <span class="k">[[project.people]]</span>
 <span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Jane&quot;</span>
 <span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span>
@@ -2184,12 +2219,14 @@ one of the supported input formats:</p>
 <span class="n">author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">      </span><span class="c1"># is a full author of the project (i.e. appears in citations)</span>
 <span class="n">maintainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">  </span><span class="c1"># currently maintains the project (i.e. is a contact person)</span>
 
-<span class="c1"># this person is a acknowledged contributor, but not author or maintainer:</span>
+<span class="c1"># this person is an acknowledged contributor, but not author or maintainer:</span>
 <span class="k">[[project.people]]</span>
 <span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Another&quot;</span>
 <span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Contributor&quot;</span>
 <span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;a.contributor@example.com&quot;</span>
 <span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0000-0000-0002&quot;</span>
+<span class="c1"># ... but for scientific publications, this contributor should be listed as author:</span>
+<span class="n">publication_author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 
 <span class="k">[config]</span>
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
@@ -2417,6 +2454,21 @@ hood, you use <code>somesy</code> (or anything like it) or not - they can use th
 corresponding files they already know to get the information they need.
 So there is no "risk" involved in adopting <code>somesy</code>, because it does not try to
 abolish any other formats or standards or becoming such.</p>
+<h3 id="in-my-project-the-effective-authors-and-the-publication-authors-are-not-the-same-what-to-do">In my project, the effective authors and the publication authors are not the same! What to do?<a class="headerlink" href="#in-my-project-the-effective-authors-and-the-publication-authors-are-not-the-same-what-to-do" title="Permanent link">&para;</a></h3>
+<p>The <code>author</code> flag in <code>somesy</code> is intended to mark people who significantly contributed
+to the project in a hands-on way and are closely familiar with details, i.e. can answer
+specific questions. A reason to stick with this strict understanding of "author"
+is that a user will be usually interested in contacting such a person to help
+them with problems.</p>
+<p>However, we are aware that acknowledgement practices in different scientific
+communities vary and current practices in academic publication do not allow for
+sufficiently granular distinction of contributor roles.
+Even though the proper solution to problem would be improving community practices,
+<code>somesy</code> supports the <code>publication_author</code> flag, that can be set independently of the
+<code>author</code> flag and will make sure that certain contributors <strong>will</strong> appear as authors
+in an academic citation context (i.e. reflected in the <code>CITATION.cff</code> file, which can be
+used for <a href="https://docs.software-metadata.pub/en/latest/tutorials/automated-publication-with-ci.html">Zenodo publications</a>), but <strong>will not</strong> appear as authors in a technical context
+(such as the metadata in a software registry like <a href="https://pypi.org">PyPI</a>).</p>
 
 
 
