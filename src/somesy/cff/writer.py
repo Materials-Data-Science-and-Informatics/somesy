@@ -6,7 +6,7 @@ from typing import Optional
 from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
 
-from somesy.core.models import Person
+from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
 
 
@@ -64,6 +64,12 @@ class CFF(ProjectMetadataWriter):
         path = path or self.path
         self._yaml.dump(self._data, path)
 
+    def _sync_authors(self, metadata: ProjectMetadata) -> None:
+        """Ensure that publication authors are added all into author list."""
+        self.authors = self._sync_person_list(
+            self.authors, metadata.publication_authors()
+        )
+
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to cff dict for person format."""
@@ -74,6 +80,7 @@ class CFF(ProjectMetadataWriter):
                 "contribution_begin",
                 "contribution_end",
                 "author",
+                "publication_author",
                 "maintainer",
             },
             by_alias=True,  # e.g. family_names -> family-names, etc.

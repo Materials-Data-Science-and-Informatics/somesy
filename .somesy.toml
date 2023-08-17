@@ -54,6 +54,8 @@ contribution_begin = "2023-06-01"
 contribution_end = "2023-06-30"
 contribution_types = ["ideas"]
 
+publication_author = true
+
 [[project.people]]
 family-names = "Sandfeld"
 given-names = "Stefan"
@@ -61,6 +63,8 @@ email = "s.sandfeld@fz-juelich.de"
 orcid = "https://orcid.org/0000-0001-9560-4728"
 
 contribution_types = ["fundingFinding"]
+
+publication_author = true
 
 [config]
 no_sync_cff = false

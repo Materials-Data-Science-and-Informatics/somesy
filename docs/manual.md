@@ -406,3 +406,21 @@ hood, you use `somesy` (or anything like it) or not - they can use the
 corresponding files they already know to get the information they need.
 So there is no "risk" involved in adopting `somesy`, because it does not try to
 abolish any other formats or standards or becoming such.
+
+### In my project, the effective authors and the publication authors are not the same! What to do?
+
+The `author` flag in `somesy` is intended to mark people who significantly contributed
+to the project in a hands-on way and are closely familiar with details, i.e. can answer
+specific questions. A reason to stick with this strict understanding of "author"
+is that a user will be usually interested in contacting such a person to help
+them with problems.
+
+However, we are aware that acknowledgement practices in different scientific
+communities vary and current practices in academic publication do not allow for
+sufficiently granular distinction of contributor roles.
+Even though the proper solution to problem would be improving community practices,
+`somesy` supports the `publication_author` flag, that can be set independently of the
+`author` flag and will make sure that certain contributors **will** appear as authors
+in an academic citation context (i.e. reflected in the `CITATION.cff` file, which can be
+used for [Zenodo publications](https://docs.software-metadata.pub/en/latest/tutorials/automated-publication-with-ci.html)), but **will not** appear as authors in a technical context
+(such as the metadata in a software registry like [PyPI](https://pypi.org)).

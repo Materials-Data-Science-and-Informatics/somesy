@@ -274,9 +274,15 @@ class Person(SomesyBaseModel):
     author: Annotated[
         bool,
         Field(
-            description="Indicates whether the person is an author of the project (i.e. for citations)."
+            description="Indicates whether the person is an author of the project (i.e. significant contributor)."
         ),
     ] = False
+    publication_author: Annotated[
+        Optional[bool],
+        Field(
+            description="Indicates whether the person is to be listed as an author in academic citations."
+        ),
+    ]
     maintainer: Annotated[
         bool,
         Field(
@@ -302,6 +308,17 @@ class Person(SomesyBaseModel):
     contribution_end: Annotated[
         Optional[date], Field(description="Ending date of the contribution.")
     ]
+
+    @root_validator
+    def author_implies_publication(cls, values):
+        """Ensure consistency of author and publication_author."""
+        if values["author"]:
+            # NOTE: explicitly check for False (different case from None = missing!)
+            if values["publication_author"] == False:
+                msg = "Combining author=true and publication_author=false is invalid!"
+                raise ValueError(msg)
+            values["publication_author"] = True
+        return values
 
     # helper methods
 
@@ -394,8 +411,15 @@ class ProjectMetadata(SomesyBaseModel):
     )
 
     def authors(self):
-        """Return people marked as authors."""
+        """Return people explicitly marked as authors."""
         return [p for p in self.people if p.author]
+
+    def publication_authors(self):
+        """Return people marked as publication authors.
+
+        This always includes people marked as authors.
+        """
+        return [p for p in self.people if p.publication_author]
 
     def maintainers(self):
         """Return people marked as maintainers."""

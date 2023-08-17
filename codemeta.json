@@ -11,14 +11,26 @@
     "audience": [
         {
             "@type": "Audience",
-            "audienceType": "Science/Research"
+            "audienceType": "Developers"
         },
         {
             "@type": "Audience",
-            "audienceType": "Developers"
+            "audienceType": "Science/Research"
         }
     ],
     "author": [
+        {
+            "@id": "https://orcid.org/0000-0002-5149-603X",
+            "@type": "Person",
+            "familyName": "Hofmann",
+            "givenName": "Volker"
+        },
+        {
+            "@id": "https://orcid.org/0000-0001-9560-4728",
+            "@type": "Person",
+            "familyName": "Sandfeld",
+            "givenName": "Stefan"
+        },
         {
             "@id": "https://orcid.org/0000-0003-2637-0432",
             "@type": "Person",
@@ -49,14 +61,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^1.9.2'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.9.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
