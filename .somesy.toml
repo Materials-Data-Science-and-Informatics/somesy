@@ -13,7 +13,7 @@ given-names = "Mustafa"
 email = "m.soylu@fz-juelich.de"
 orcid = "https://orcid.org/0000-0003-2637-0432"
 
-contribution = "The main developer, maintainer and tester."
+contribution = "Main developer, maintainer and tester."
 contribution_begin = "2023-03-01"
 contribution_types = ["maintenance", "code", "test", "review", "doc"]
 
@@ -26,7 +26,7 @@ given-names = "Anton"
 email = "a.pirogov@fz-juelich.de"
 orcid = "https://orcid.org/0000-0002-5077-7497"
 
-contribution = "Initial concepts, tool development and enhancement, documentation."
+contribution = "Concepts, tool development and enhancement, documentation."
 contribution_begin = "2023-03-01"
 contribution_types = ["ideas", "code", "test", "review", "doc"]
 

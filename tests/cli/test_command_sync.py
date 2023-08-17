@@ -21,6 +21,7 @@ def test_app_sync(tmp_path, create_poetry_file, mocker):
             "sync",
             "-i",
             str(input_file),
+            "--no-sync-package-json",
             "--no-sync-pyproject",
             "--no-sync-cff",
             "--no-sync-codemeta",

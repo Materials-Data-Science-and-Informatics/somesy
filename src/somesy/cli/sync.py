@@ -53,7 +53,7 @@ def sync(
     ),
     no_sync_package_json: bool = typer.Option(
         None,
-        "--sync-package-json",
+        "--no-sync-package-json",
         "-J",
         help="Do not sync package.json file (default: False)",
     ),
