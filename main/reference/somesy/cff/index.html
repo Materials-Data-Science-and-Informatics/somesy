@@ -632,6 +632,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../cli/fill/" class="md-nav__link">
+        fill
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../cli/init/" class="md-nav__link">
         init
       </a>
@@ -1389,7 +1403,14 @@
 <span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
-<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Citation File Format (CFF) parser and saver.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -1443,6 +1464,12 @@
         <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_sync_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure that publication authors are added all into author list.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">authors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">publication_authors</span><span class="p">()</span>
+        <span class="p">)</span>
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Person</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert project metadata person object to cff dict for person format.&quot;&quot;&quot;</span>
@@ -1453,6 +1480,7 @@
                 <span class="s2">&quot;contribution_begin&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;contribution_end&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;author&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;publication_author&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;maintainer&quot;</span><span class="p">,</span>
             <span class="p">},</span>
             <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># e.g. family_names -&gt; family-names, etc.</span>

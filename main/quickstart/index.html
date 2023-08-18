@@ -704,6 +704,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/somesy/cli/fill/" class="md-nav__link">
+        fill
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/somesy/cli/init/" class="md-nav__link">
         init
       </a>
@@ -1379,7 +1393,7 @@ have to think about, <code>somesy</code> will take care of the others for you!</
 <span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;MIT&quot;</span>
 <span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://github.com/username/my-amazing-project&quot;</span>
 
-<span class="c1"># This is you, the proud author of your project</span>
+<span class="c1"># This is you, the proud author of your project:</span>
 <span class="k">[[project.people]]</span>
 <span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Jane&quot;</span>
 <span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Doe&quot;</span>
@@ -1388,12 +1402,14 @@ have to think about, <code>somesy</code> will take care of the others for you!</
 <span class="n">author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">      </span><span class="c1"># is a full author of the project (i.e. appears in citations)</span>
 <span class="n">maintainer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">  </span><span class="c1"># currently maintains the project (i.e. is a contact person)</span>
 
-<span class="c1"># this person is a acknowledged contributor, but not author or maintainer:</span>
+<span class="c1"># this person is an acknowledged contributor, but not author or maintainer:</span>
 <span class="k">[[project.people]]</span>
 <span class="n">given-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Another&quot;</span>
 <span class="n">family-names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Contributor&quot;</span>
 <span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;a.contributor@example.com&quot;</span>
 <span class="n">orcid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://orcid.org/0000-0000-0000-0002&quot;</span>
+<span class="c1"># ... but for scientific publications, this contributor should be listed as author:</span>
+<span class="n">publication_author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 
 <span class="k">[config]</span>
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
@@ -1455,17 +1471,17 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 </tr>
 <tr>
 <td>pyproject.toml</td>
-<td>✓(1.)</td>
+<td>✓</td>
 <td></td>
 <td>pyproject.toml <em>(setuptools)</em></td>
-<td>✓(2.)</td>
+<td>✓(1.)</td>
 </tr>
 <tr>
 <td>package.json</td>
 <td>✓</td>
 <td></td>
 <td>package.json</td>
-<td>✓(3.)</td>
+<td>✓(2.)</td>
 </tr>
 <tr>
 <td></td>
@@ -1479,13 +1495,12 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td></td>
 <td></td>
 <td>codemeta.json</td>
-<td>✓(4.)</td>
+<td>✓(3.)</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Notes:</strong></p>
 <ol>
-<li>information must be placed inside a <code>tool.somesy</code> section (as explained above)</li>
 <li>note that <code>somesy</code> does not support setuptools <em>dynamic fields</em></li>
 <li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
 <li>unlike other targets, <code>somesy</code> will <em>re-create</em> the <code>codemeta.json</code> (i.e. do not edit it by hand!)</li>
