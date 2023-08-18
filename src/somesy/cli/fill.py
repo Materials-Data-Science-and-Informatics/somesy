@@ -4,12 +4,9 @@ from pathlib import Path
 from sys import stdin
 
 import typer
-from jinja2 import Environment, FileSystemLoader, FunctionLoader, select_autoescape
+from jinja2 import Environment, FunctionLoader, select_autoescape
 
-from somesy.core.core import discover_input
-
-from ..core.models import SomesyInput
-from .util import wrap_exceptions
+from .util import resolved_somesy_input, wrap_exceptions
 
 logger = logging.getLogger("somesy")
 app = typer.Typer()
@@ -56,19 +53,29 @@ def fill(
     ),
 ):
     """Fill a Jinja2 template with somesy project metadata (e.g. list authors in project docs)."""
-    somesy_input = SomesyInput.from_input_file(discover_input(input_file))
+    somesy_input = resolved_somesy_input(input_file=input_file)
+
     if template_file:
-        env = Environment(loader=FileSystemLoader("."), autoescape=select_autoescape())
-        template = env.get_template(str(template_file))
+        logger.debug(f"Reading Jinja2 template from '{template_file}'.")
+        with open(template_file, "r") as f:
+            template_str = f.read()
     else:
-        env = Environment(
-            loader=FunctionLoader(lambda _: stdin.read()),
+        logger.debug("Reading Jinja2 template from stdin.")
+        template_str = stdin.read()
+
+    result = (
+        Environment(
+            loader=FunctionLoader(lambda _: template_str),
             autoescape=select_autoescape(),
         )
-        template = env.get_template("")
-    result = template.render(project=somesy_input.project)
-    if not output_file:
-        print(result)
-    else:
+        .get_template("")
+        .render(project=somesy_input.project)
+    )
+
+    if output_file:
+        logger.debug(f"Writing result to '{output_file}'.")
         with open(output_file, "w") as f:
             f.write(result)
+    else:
+        logger.debug("Writing result to stdout.")
+        print(result)
