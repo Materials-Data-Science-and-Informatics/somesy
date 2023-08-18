@@ -717,6 +717,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#somesy.cli.util.resolved_somesy_input" class="md-nav__link">
+    resolved_somesy_input()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1278,6 +1285,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#somesy.cli.util.resolved_somesy_input" class="md-nav__link">
+    resolved_somesy_input()
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1350,16 +1364,16 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/cli/util.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
 <span class="normal">18</span>
 <span class="normal">19</span>
-<span class="normal">20</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@wrapt</span><span class="o">.</span><span class="n">decorator</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@wrapt</span><span class="o">.</span><span class="n">decorator</span>
 <span class="k">def</span> <span class="nf">wrap_exceptions</span><span class="p">(</span><span class="n">wrapped</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Format and log exceptions for cli commands.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
@@ -1369,6 +1383,89 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[bold red]Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">[/bold red]&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[red]</span><span class="si">{</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span><span class="si">}</span><span class="s2">[/red]&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">typer</span><span class="o">.</span><span class="n">Exit</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h2 id="somesy.cli.util.resolved_somesy_input" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">resolved_somesy_input</span>
+
+
+<a href="#somesy.cli.util.resolved_somesy_input" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="n">resolved_somesy_input</span><span class="p">(</span><span class="o">**</span><span class="n">cli_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SomesyInput</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Return a combined <code>SomesyInput</code> based on config file and passed CLI args.</p>
+<p>Will also adjust log levels accordingly.</p>
+
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/cli/util.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">resolved_somesy_input</span><span class="p">(</span><span class="o">**</span><span class="n">cli_args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SomesyInput</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a combined `SomesyInput` based on config file and passed CLI args.</span>
+
+<span class="sd">    Will also adjust log levels accordingly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># figure out what input file to use</span>
+    <span class="n">input_file</span> <span class="o">=</span> <span class="n">discover_input</span><span class="p">(</span><span class="n">cli_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+
+    <span class="c1"># create config based on passed arguments</span>
+    <span class="n">passed_args</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cli_args</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="n">somesy_conf</span> <span class="o">=</span> <span class="n">SomesyConfig</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span> <span class="o">**</span><span class="n">passed_args</span><span class="p">)</span>
+
+    <span class="c1"># cli_log_level is None if the user did not pass a log level (-&gt; &quot;default&quot;)</span>
+    <span class="n">cli_log_level</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SomesyLogLevel</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_log_level</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">cli_log_level</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># update log level flags if cli log level was set</span>
+        <span class="n">somesy_conf</span><span class="o">.</span><span class="n">update_log_level</span><span class="p">(</span><span class="n">cli_log_level</span><span class="p">)</span>
+
+    <span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span> <span class="o">=</span> <span class="n">somesy_conf</span><span class="o">.</span><span class="n">get_input</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">cli_log_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># no cli log level -&gt; set it according to the loaded configuration</span>
+        <span class="n">set_log_level</span><span class="p">(</span><span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log_level</span><span class="p">())</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;Combined config (Defaults + File + CLI):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">somesy_input</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
