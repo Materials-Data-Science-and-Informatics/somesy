@@ -71,7 +71,7 @@ keywords = ["some", "descriptive", "keywords"]
 license = "MIT"
 repository = "https://github.com/username/my-amazing-project"
 
-# This is you, the proud author of your project
+# This is you, the proud author of your project:
 [[project.people]]
 given-names = "Jane"
 family-names = "Doe"
@@ -80,12 +80,14 @@ orcid = "https://orcid.org/0000-0000-0000-0001"
 author = true      # is a full author of the project (i.e. appears in citations)
 maintainer = true  # currently maintains the project (i.e. is a contact person)
 
-# this person is a acknowledged contributor, but not author or maintainer:
+# this person is an acknowledged contributor, but not author or maintainer:
 [[project.people]]
 given-names = "Another"
 family-names = "Contributor"
 email = "a.contributor@example.com"
 orcid = "https://orcid.org/0000-0000-0000-0002"
+# ... but for scientific publications, this contributor should be listed as author:
+publication_author = true
 
 [config]
 verbose = true     # show detailed information about what somesy is doing
@@ -151,17 +153,16 @@ Here is an overview of all the currently supported files and formats.
 | Input Formats  | Status | | Target Formats                | Status |
 | -------------- | ------ |-| ----------------------------- | ------ |
 | (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_     | ✓      |
-| pyproject.toml | ✓(1.)  | | pyproject.toml _(setuptools)_ | ✓(2.)  |
-| package.json   | ✓      | | package.json                  | ✓(3.)  |
+| pyproject.toml | ✓      | | pyproject.toml _(setuptools)_ | ✓(1.)  |
+| package.json   | ✓      | | package.json                  | ✓(2.)  |
 |                |        | | CITATION.cff                  | ✓      |
-|                |        | | codemeta.json                 | ✓(4.)  |
+|                |        | | codemeta.json                 | ✓(3.)  |
 
 **Notes:**
 
-1. information must be placed inside a `tool.somesy` section (as explained above)
-2. note that `somesy` does not support setuptools *dynamic fields*
-3. `package.json` only supports one author, so `somesy` will pick the *first* listed author
-4. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
+1. note that `somesy` does not support setuptools *dynamic fields*
+2. `package.json` only supports one author, so `somesy` will pick the *first* listed author
+3. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
 
 <!-- --8<-- [end:quickstart] -->
 

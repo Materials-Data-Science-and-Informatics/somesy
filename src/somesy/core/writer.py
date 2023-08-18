@@ -183,6 +183,14 @@ class ProjectMetadataWriter(ABC):
         old_people: List[Person] = self._parse_people(old)
         return self._merge_person_metadata(old_people, new)
 
+    def _sync_authors(self, metadata: ProjectMetadata) -> None:
+        """Sync output file authors with authors from metadata.
+
+        This method is existing for the publication_author special case
+        when synchronizing to CITATION.cff.
+        """
+        self.authors = self._sync_person_list(self.authors, metadata.authors())
+
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
         self.name = metadata.name
@@ -194,7 +202,7 @@ class ProjectMetadataWriter(ABC):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
-        self.authors = self._sync_person_list(self.authors, metadata.authors())
+        self._sync_authors(metadata)
         self.maintainers = self._sync_person_list(
             self.maintainers, metadata.maintainers()
         )
