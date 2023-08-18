@@ -387,6 +387,37 @@ target is enabled, `somesy` will generate your `codemeta.json` by:
 As `codemeta.json` is considered a technical "backend-format" derived from other
 inputs, in most cases you probably do not need or should edit it by hand anyway.
 
+## Using somesy to insert metadata into project documentation
+
+While `somesy` can synchronize structured metadata files and formats, there is a common case that cannot be covered by the `sync` command - when project metadata should appear in plain text documents, such as documentation files and web pages.
+
+As for documentation the needs and used tooling in different projects is vastly different, `somesy` provides a very general solution to this problem
+with the `fill` command. It takes a
+[Jinja2](https://jinja.palletsprojects.com/en/3.1.x/)
+template and returns the resulting file where the project metadata is inserted the form dictated by the template.
+
+For example, a template is used to generate the
+[`AUTHORS.md`](https://github.com/Materials-Data-Science-and-Informatics/somesy/blob/main/AUTHORS.md)
+file in the somesy repository, which is also shown as the
+[Credits](./credits.md) page, using the following command:
+
+```shell
+somesy fill docs/_template_authors.md -o AUTHORS.md
+```
+
+??? example "_template_authors.md"
+    ```
+    --8<-- "docs/_template_authors.md"
+    ```
+
+??? example "AUTHORS.md"
+    ```
+    --8<-- "AUTHORS.md"
+    ```
+
+The template gets the complete
+[ProjectMetadata](reference/somesy/core/models.md#somesy.core.models.ProjectMetadata) as its context, so it is possible to access all included project and contributor information.
+
 ## FAQ
 
 ### Somesy introduces it's own metadata format... isn't this counter-productive?
