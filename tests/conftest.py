@@ -7,7 +7,7 @@ from somesy.cff import CFF
 from somesy.core.log import SomesyLogLevel, set_log_level
 from somesy.core.models import SomesyInput
 from somesy.package_json.writer import PackageJSON
-from somesy.pyproject import PyprojectCommon
+from somesy.pyproject import Pyproject
 
 
 class FileTypes(Enum):
@@ -54,7 +54,7 @@ def create_files(tmp_path: Path) -> Path:
                     raise ValueError(f"Invalid file type: {key}")
                 write_file_name = tmp_path / Path(value)
 
-                read_file_name = Path("tests_new/data")
+                read_file_name = Path("tests/data")
                 if key == FileTypes.CITATION:
                     read_file_name = read_file_name / Path("CITATION.cff")
                 elif key == FileTypes.SETUPTOOLS:
@@ -94,16 +94,16 @@ def load_files() -> dict:
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
 
-            read_file_name = Path("tests_new/data")
+            read_file_name = Path("tests/data")
             if file_type == FileTypes.CITATION:
                 read_file_name = read_file_name / Path("CITATION.cff")
                 file_instances[file_type] = CFF(read_file_name)
             elif file_type == FileTypes.SETUPTOOLS:
                 read_file_name = read_file_name / Path("pyproject.setuptools.toml")
-                file_instances[file_type] = PyprojectCommon(read_file_name)
+                file_instances[file_type] = Pyproject(read_file_name)
             elif file_type == FileTypes.POETRY:
                 read_file_name = read_file_name / Path("pyproject.toml")
-                file_instances[file_type] = PyprojectCommon(read_file_name)
+                file_instances[file_type] = Pyproject(read_file_name)
             elif file_type == FileTypes.SOMESY:
                 read_file_name = read_file_name / Path("somesy.toml")
                 file_instances[file_type] = SomesyInput.from_input_file(read_file_name)
