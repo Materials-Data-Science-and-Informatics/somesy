@@ -44,6 +44,7 @@ contribution_types = ["maintenance", "code", "test", "review", "doc"]
 
 author = true
 maintainer = true
+publication_author = true
 
 [[tool.somesy.project.people]]
 family-names = "Doe"
@@ -66,6 +67,7 @@ orcid = "https://orcid.org/0000-0000-0000-0002"
 contribution = "Valuable input concerning metadata standards and usability."
 contribution_begin = "2023-03-10"
 contribution_types = ["ideas"]
+publication_author = true
 
 [tool.somesy.config]
 no_sync_cff = false

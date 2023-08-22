@@ -57,7 +57,8 @@
             "doc"
           ],
           "author": true,
-          "maintainer": true
+          "maintainer": true,
+          "publication_author": true
         },
         {
           "family-names": "Doe",
@@ -84,7 +85,8 @@
           "contribution_begin": "2023-03-10",
           "contribution_types": [
             "ideas"
-          ]
+          ],
+          "publication_author": true
         }
       ]
     },
