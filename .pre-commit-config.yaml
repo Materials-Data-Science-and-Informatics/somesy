@@ -82,9 +82,16 @@ repos:
     - repo: local
       hooks:
         # NOTE: copy from .pre-commit-hooks.yaml, for technical reasons
-        - id: somesy
-          name: somesy
+        - id: somesy-sync
+          name: Run somesy sync
           entry: somesy sync
+          language: python
+          files: '^\.somesy\.toml|pyproject\.toml$'
+          pass_filenames: false
+
+        - id: somesy-fill
+          name: Update AUTHORS.md
+          entry: somesy fill -t docs/_template_authors.md -o AUTHORS.md
           language: python
           files: '^\.somesy\.toml|pyproject\.toml$'
           pass_filenames: false

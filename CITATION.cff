@@ -11,14 +11,22 @@ keywords:
 - metadata
 - FAIR
 authors:
-- email: m.soylu@fz-juelich.de
-  family-names: Soylu
+- orcid: https://orcid.org/0000-0003-2637-0432
+  email: m.soylu@fz-juelich.de
   given-names: Mustafa
-  orcid: https://orcid.org/0000-0003-2637-0432
+  family-names: Soylu
+- email: v.hofmann@fz-juelich.de
+  orcid: https://orcid.org/0000-0002-5149-603X
+  family-names: Hofmann
+  given-names: Volker
+- email: s.sandfeld@fz-juelich.de
+  orcid: https://orcid.org/0000-0001-9560-4728
+  family-names: Sandfeld
+  given-names: Stefan
 - email: a.pirogov@fz-juelich.de
+  orcid: https://orcid.org/0000-0002-5077-7497
   family-names: Pirogov
   given-names: Anton
-  orcid: https://orcid.org/0000-0002-5077-7497
 contact:
 - email: m.soylu@fz-juelich.de
   family-names: Soylu

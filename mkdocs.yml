@@ -143,6 +143,9 @@ plugins:
       enabled: !ENV [OFFLINE, false]
   # to make multi-version docs work right
   - mike
+  - exclude:
+      glob:
+        - "_*.md"  # for internal purposes
 
 hooks:
   - docs/scripts/coverage_status.py

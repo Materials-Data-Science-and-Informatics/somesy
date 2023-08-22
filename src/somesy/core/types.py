@@ -2,7 +2,15 @@
 from enum import Enum
 
 
-class LicenseEnum(Enum):
+class MyEnum(Enum):
+    """Override string serialization of enum to work better with Jinja templates."""
+
+    def __str__(self):
+        """Return string value of the enum object."""
+        return self.value
+
+
+class LicenseEnum(MyEnum):
     """SPDX license identifiers."""
 
     field_0BSD = "0BSD"
@@ -466,7 +474,7 @@ class LicenseEnum(Enum):
     ZPL_2_1 = "ZPL-2.1"
 
 
-class ContributionTypeEnum(Enum):
+class ContributionTypeEnum(MyEnum):
     """Contribution type using emojis from https://allcontributors.org/docs/en/emoji-key ."""
 
     audio = "audio"
@@ -504,7 +512,7 @@ class ContributionTypeEnum(Enum):
     video = "video"
 
 
-class Country(Enum):
+class Country(MyEnum):
     """Country codes from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 . It is used for the country of a person in project metadata."""
 
     AD = "AD"

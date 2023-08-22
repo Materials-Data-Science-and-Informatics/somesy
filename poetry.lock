@@ -1125,6 +1125,19 @@ files = [
 mkdocs = ">=1.2"
 
 [[package]]
+name = "mkdocs-exclude"
+version = "1.0.2"
+description = "A mkdocs plugin that lets you exclude files or trees."
+optional = false
+python-versions = "*"
+files = [
+    {file = "mkdocs-exclude-1.0.2.tar.gz", hash = "sha256:ba6fab3c80ddbe3fd31d3e579861fd3124513708271180a5f81846da8c7e2a51"},
+]
+
+[package.dependencies]
+mkdocs = "*"
+
+[[package]]
 name = "mkdocs-gen-files"
 version = "0.4.0"
 description = "MkDocs plugin to programmatically generate documentation pages during the build"
@@ -2452,4 +2465,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "bbc4dbd79f21b16874b30e53a696d95af91cfd1b3d005bd43ea5f32eed3c7ff2"
+content-hash = "cfb1d8ef44f0ef489867615cdf99c899388275b2443186295f73a466cf91e5ab"
