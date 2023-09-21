@@ -1,11 +1,11 @@
+from datetime import datetime
 from pathlib import Path
 
 import pytest
 
 from somesy.core.core import discover_input
 from somesy.core.models import ProjectMetadata, SomesyConfig
-from somesy.core.types import LicenseEnum, ContributionTypeEnum
-from datetime import datetime
+from somesy.core.types import ContributionTypeEnum, LicenseEnum
 
 
 def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatch):
