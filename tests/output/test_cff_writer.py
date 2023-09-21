@@ -17,9 +17,13 @@ def test_load(create_files, file_types):
     assert file_path.is_file()
 
 
-def test_content_match(load_files, file_types):
+@pytest.fixture
+def cff(load_files, file_types):
     files = load_files([file_types.CITATION])
-    cff = files[file_types.CITATION]
+    return files[file_types.CITATION]
+
+
+def test_content_match(cff):
     assert cff.name == "test-package"
     assert cff.description == "This is a test package for demonstration purposes."
     assert cff.license == "MIT"
