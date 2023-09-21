@@ -1,20 +1,7 @@
-from pathlib import Path
-
 import pytest
 
 from somesy.cff.writer import CFF
 from somesy.core.models import LicenseEnum, Person, ProjectMetadata
-
-
-def test_load(create_files, file_types):
-    tmp_path = create_files([{file_types.CITATION: "CITATION.cff"}])
-    not_exist_path = Path("reject/CITATION.cff")
-    with pytest.raises(FileNotFoundError):
-        CFF(not_exist_path, create_if_not_exists=False)
-
-    file_path = tmp_path / "CITATION.cff"
-    CFF(file_path, create_if_not_exists=False)
-    assert file_path.is_file()
 
 
 @pytest.fixture
@@ -23,14 +10,14 @@ def cff(load_files, file_types):
     return files[file_types.CITATION]
 
 
-def test_content_match(cff):
+def test_content_match(cff: CFF):
     assert cff.name == "test-package"
     assert cff.description == "This is a test package for demonstration purposes."
     assert cff.license == "MIT"
     assert len(cff.authors) == 1
 
 
-def test_sync(cff, somesy_input):
+def test_sync(cff: CFF, somesy_input: dict):
     cff.sync(somesy_input.project)
     assert cff.name == "testproject"
     assert cff.version == "1.0.0"
@@ -46,22 +33,10 @@ def test_save(tmp_path):
     # test save with custom path
     custom_path = tmp_path / "custom.cff"
     cff.save(custom_path)
+    assert custom_path.is_file()
 
 
-@pytest.fixture
-def person():
-    p = {
-        "given-names": "Jane",
-        "email": "j.doe@example.com",
-        "family-names": "Doe",
-        "orcid": "https://orcid.org/0123-4567-8910",
-    }
-    ret = Person(**p)
-    ret.set_key_order(list(p.keys()))  # custom order!
-    return ret
-
-
-def test_from_to_person(person):
+def test_from_to_person(person: Person):
     assert CFF._from_person(person) == person.dict(by_alias=True)
 
     p = CFF._to_person(CFF._from_person(person))
@@ -70,7 +45,7 @@ def test_from_to_person(person):
     assert p.orcid == person.orcid
 
 
-def test_person_merge(tmp_path, person):
+def test_person_merge(tmp_path, person: Person):
     def to_cff_keys(lst):
         return list(map(lambda s: s.replace("_", "-"), lst))
 
