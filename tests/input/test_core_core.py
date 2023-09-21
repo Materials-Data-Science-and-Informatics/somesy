@@ -90,3 +90,6 @@ def test_somesy_input(somesy_input):
         ContributionTypeEnum.review,
         ContributionTypeEnum.doc,
     ]
+
+    # check publication author
+    assert authors[1].publication_author == True
