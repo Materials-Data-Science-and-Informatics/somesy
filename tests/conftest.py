@@ -6,7 +6,7 @@ import pytest
 
 from somesy.cff import CFF
 from somesy.core.log import SomesyLogLevel, set_log_level
-from somesy.core.models import SomesyInput
+from somesy.core.models import SomesyInput, Person
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
 
@@ -115,3 +115,16 @@ def load_files():
         return file_instances
 
     yield _load_files
+
+
+@pytest.fixture
+def person() -> Person:
+    p = {
+        "given-names": "Jane",
+        "email": "j.doe@example.com",
+        "family-names": "Doe",
+        "orcid": "https://orcid.org/0123-4567-8910",
+    }
+    ret = Person(**p)
+    ret.set_key_order(list(p.keys()))  # custom order!
+    return ret
