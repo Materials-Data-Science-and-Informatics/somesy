@@ -1,9 +1,8 @@
 import json
-from pathlib import Path
 
 import pytest
 
-from somesy.core.models import Person, ProjectMetadata, SomesyInput
+from somesy.core.models import Person, ProjectMetadata
 
 p1 = {
     "given-names": "Jane",
