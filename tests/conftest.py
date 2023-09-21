@@ -1,5 +1,6 @@
 from enum import Enum
 from pathlib import Path
+from typing import Any, Type
 
 import pytest
 
@@ -30,13 +31,13 @@ def somesy_input() -> dict:
 
 
 @pytest.fixture
-def file_types() -> FileTypes:
+def file_types() -> Type[FileTypes]:
     """Return a FileTypes instance."""
     return FileTypes
 
 
 @pytest.fixture
-def create_files(tmp_path: Path) -> Path:
+def create_files(tmp_path: Path):
     """Create file types with given file names with a dict input, return the folder location.
 
     Example:
@@ -77,7 +78,7 @@ def create_files(tmp_path: Path) -> Path:
 
 
 @pytest.fixture
-def load_files() -> dict:
+def load_files():
     """Read and load files to defined classes, return a dict with those class instances.
 
     Example:
@@ -89,7 +90,7 @@ def load_files() -> dict:
     """
 
     def _load_files(files: list[FileTypes]):
-        file_instances = {}
+        file_instances: dict[FileTypes, Any] = {}
         for file_type in files:
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
