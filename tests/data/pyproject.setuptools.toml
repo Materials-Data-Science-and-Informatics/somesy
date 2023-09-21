@@ -2,7 +2,7 @@
 name = "test-package"
 version = "0.1.0"
 description = "This is a test package for demonstration purposes"
-authors = ["John Doe <john.doe@example.com>"]
+authors = [{"name"="John Doe", "email"="john.doe@example.com"}]
 license = "MIT"
 keywords = ["test", "demo", "example"]
 classifiers = [
