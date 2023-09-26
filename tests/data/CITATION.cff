@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+type: software
+message: If you use this software, please cite it using these metadata.
+
+title: test-package
+version: 0.1.0
+abstract: This is a test package for demonstration purposes.
+repository-code: "https://github.com/example/test-package"
+url: "https://example.com/test-package"
+license: MIT
+keywords:
+  - test
+  - demo
+  - example
+authors:
+  - family-names: Doe
+    given-names: John
+    email: john.doe@example.com
+    orcid: "https://orcid.org/0000-0001-2345-6789"
+contact:
+  - family-names: Doe
+    given-names: John
+    email: john.doe@example.com
+    orcid: "https://orcid.org/0000-0001-2345-6789"
