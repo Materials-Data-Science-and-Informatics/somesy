@@ -16,6 +16,9 @@
 [
 ![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7701/badge)
 ](https://bestpractices.coreinfrastructure.org/projects/7701)
+[
+![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)
+](https://fair-software.eu)
 
 <!-- --8<-- [start:abstract] -->
 
