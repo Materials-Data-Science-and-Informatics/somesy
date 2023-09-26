@@ -1,6 +1,8 @@
-import pytest
-from somesy.package_json import PackageJSON
 from json import dump
+
+import pytest
+
+from somesy.package_json import PackageJSON
 
 
 def test_package_json_validate_accept(load_files, file_types):

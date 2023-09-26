@@ -1,6 +1,7 @@
 import pytest
-from somesy.cff.writer import CFF
 from ruamel.yaml import YAML
+
+from somesy.cff.writer import CFF
 
 
 def test_cff_validate_accept(load_files, file_types):

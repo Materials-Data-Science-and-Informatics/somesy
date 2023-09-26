@@ -1,8 +1,7 @@
-import json
-from typing import OrderedDict
 import pytest
-from somesy.package_json.writer import PackageJSON
+
 from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.package_json.writer import PackageJSON
 
 
 @pytest.fixture

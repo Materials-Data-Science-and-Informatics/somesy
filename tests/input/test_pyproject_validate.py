@@ -1,6 +1,7 @@
 import pytest
-from somesy.pyproject import Pyproject
 from tomlkit import dump
+
+from somesy.pyproject import Pyproject
 
 
 def test_poetry_validate_accept(load_files, file_types):

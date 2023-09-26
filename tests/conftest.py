@@ -6,7 +6,7 @@ import pytest
 
 from somesy.cff import CFF
 from somesy.core.log import SomesyLogLevel, set_log_level
-from somesy.core.models import SomesyInput, Person
+from somesy.core.models import Person, SomesyInput
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
 
