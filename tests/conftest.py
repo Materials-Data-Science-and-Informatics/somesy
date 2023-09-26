@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Any, Type
+from typing import Any, List, Type
 
 import pytest
 
@@ -48,7 +48,7 @@ def create_files(tmp_path: Path):
     ```
     """
 
-    def _create_files(files: list[dict]):
+    def _create_files(files: List[dict]):
         for file_dict in files:
             for key, value in file_dict.items():
                 if not isinstance(key, FileTypes):
@@ -89,7 +89,7 @@ def load_files():
     ```
     """
 
-    def _load_files(files: list[FileTypes]):
+    def _load_files(files: List[FileTypes]):
         file_instances: dict[FileTypes, Any] = {}
         for file_type in files:
             if not isinstance(file_type, FileTypes):
