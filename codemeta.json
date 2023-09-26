@@ -11,11 +11,11 @@
     "audience": [
         {
             "@type": "Audience",
-            "audienceType": "Science/Research"
+            "audienceType": "Developers"
         },
         {
             "@type": "Audience",
-            "audienceType": "Developers"
+            "audienceType": "Science/Research"
         }
     ],
     "author": [
@@ -52,23 +52,30 @@
         "metadata"
     ],
     "license": "http://spdx.org/licenses/MIT",
+    "maintainer": {
+        "@type": "Person",
+        "email": "m.soylu@fz-juelich.de",
+        "familyName": "Soylu",
+        "givenName": "Mustafa"
+    },
     "name": "somesy",
     "operatingSystem": "POSIX > Linux",
     "runtimePlatform": "Python 3",
+    "softwareHelp": "https://materials-data-science-and-informatics.github.io/somesy",
     "softwareRequirements": [
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.9.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^1.9.2'}"
         },
         {
             "@type": "SoftwareApplication",
