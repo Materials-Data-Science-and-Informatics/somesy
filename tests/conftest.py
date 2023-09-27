@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Any, List, Type
+from typing import Any, Set, Tuple, Type
 
 import pytest
 
@@ -37,7 +37,7 @@ def file_types() -> Type[FileTypes]:
 
 
 @pytest.fixture
-def create_files(tmp_path: Path):
+def create_files(tmp_path):
     """Create file types with given file names with a dict input, return the folder location.
 
     Example:
@@ -48,29 +48,36 @@ def create_files(tmp_path: Path):
     ```
     """
 
-    def _create_files(files: List[dict]):
-        for file_dict in files:
-            for key, value in file_dict.items():
-                if not isinstance(key, FileTypes):
-                    raise ValueError(f"Invalid file type: {key}")
-                write_file_name = tmp_path / Path(value)
+    def _create_files(files: Set[Tuple[FileTypes, str]]):
+        for file_tuple in files:
+            file_type, file_name = file_tuple
+            if not isinstance(file_type, FileTypes):
+                raise ValueError(f"Invalid file type: {file_type}")
+            write_file_name = tmp_path / Path(file_name)
 
-                read_file_name = Path("tests/data")
-                if key == FileTypes.CITATION:
-                    read_file_name = read_file_name / Path("CITATION.cff")
-                elif key == FileTypes.SETUPTOOLS:
-                    read_file_name = read_file_name / Path("pyproject.setuptools.toml")
-                elif key == FileTypes.POETRY:
-                    read_file_name = read_file_name / Path("pyproject.toml")
-                elif key == FileTypes.SOMESY:
-                    read_file_name = read_file_name / Path("somesy.toml")
-                elif key == FileTypes.PACKAGE_JSON:
-                    read_file_name = read_file_name / Path("package.json")
+            read_file_path = Path("tests/data")
+            read_file_name: Path = None
+            # set file name as the input, if not given set to default
+            if file_type == FileTypes.CITATION:
+                file_name = file_name if file_name else "CITATION.cff"
+                read_file_name = read_file_path / Path(file_name)
+            elif file_type == FileTypes.SETUPTOOLS:
+                file_name = file_name if file_name else "pyproject.setuptools.toml"
+                read_file_name = read_file_path / Path(file_name)
+            elif file_type == FileTypes.POETRY:
+                file_name = file_name if file_name else "pyproject.toml"
+                read_file_name = read_file_path / Path(file_name)
+            elif file_type == FileTypes.SOMESY:
+                file_name = file_name if file_name else "somesy.toml"
+                read_file_name = read_file_path / Path(file_name)
+            elif file_type == FileTypes.PACKAGE_JSON:
+                file_name = file_name if file_name else "package.json"
+                read_file_name = read_file_path / Path(file_name)
 
-                with open(read_file_name, "r") as f:
-                    content = f.read()
-                    with open(write_file_name, "w+") as f2:
-                        f2.write(content)
+            with open(read_file_name, "r") as f:
+                content = f.read()
+                with open(write_file_name, "w+") as f2:
+                    f2.write(content)
 
         return tmp_path
 
@@ -89,7 +96,7 @@ def load_files():
     ```
     """
 
-    def _load_files(files: List[FileTypes]):
+    def _load_files(files: Set[FileTypes]):
         file_instances: dict[FileTypes, Any] = {}
         for file_type in files:
             if not isinstance(file_type, FileTypes):

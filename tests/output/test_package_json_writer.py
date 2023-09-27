@@ -12,7 +12,7 @@ def package_json(load_files, file_types):
 
 @pytest.fixture
 def package_json_file(create_files, file_types):
-    return create_files([{file_types.PACKAGE_JSON: "package.json"}]) / "package.json"
+    return create_files([(file_types.PACKAGE_JSON, "package.json")]) / "package.json"
 
 
 def test_content_match(package_json: PackageJSON):

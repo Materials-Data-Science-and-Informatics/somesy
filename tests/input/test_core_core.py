@@ -11,9 +11,9 @@ from somesy.core.types import ContributionTypeEnum, LicenseEnum
 def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatch):
     tmp_path = create_files(
         [
-            {file_types.SOMESY: "somesy.toml"},
-            {file_types.POETRY: "pyproject.toml"},
-            {file_types.PACKAGE_JSON: "package.json"},
+            (file_types.SOMESY, "somesy.toml"),
+            (file_types.POETRY, "pyproject.toml"),
+            (file_types.PACKAGE_JSON, "package.json"),
         ]
     )
 
