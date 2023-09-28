@@ -1,6 +1,6 @@
 from enum import Enum
 from pathlib import Path
-from typing import Any, Set, Tuple, Type
+from typing import Any, Dict, Set, Tuple, Type
 
 import pytest
 
@@ -97,7 +97,7 @@ def load_files():
     """
 
     def _load_files(files: Set[FileTypes]):
-        file_instances: dict[FileTypes, Any] = {}
+        file_instances: Dict[FileTypes, Any] = {}
         for file_type in files:
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
