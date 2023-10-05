@@ -1,38 +1,14 @@
 """Integration with codemetapy (to re-generate codemeta as part of somesy sync)."""
 import contextlib
+import json
 import logging
 from pathlib import Path
 
-from importlib_metadata import version
-
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
-from .utils import cff_codemeta_tempfile, update_codemeta_file
+from .utils import cff_codemeta_tempfile
 
 log = logging.getLogger("somesy")
-
-
-def patch_codemetapy():
-    """Monkey-patch codemetapy (2.5.0 -> 2.5.1)."""
-    # TODO: remove once codemeta update is published)
-    if version("codemetapy") != "2.5.0":
-        return
-    from codemeta.parsers import python as cmpy
-
-    # https://github.com/proycon/codemetapy/blob/88098dc638e4cdfed9de6ad98002e16dfeede952/codemeta/parsers/python.py
-    def fixed_metadata_from_pyproject(pyproject):
-        """Parse metadata from pyproject.toml."""
-        if pyproject.project and "name" in pyproject.project:
-            return pyproject.project
-        elif "poetry" in pyproject.tool:
-            return pyproject.tool["poetry"]
-        elif pyproject.tool and "name" in list(pyproject.tool.values())[0]:
-            # fallback: no poetry but another tool that defines at least a name
-            return list(pyproject.tool.values())[0]
-        return None
-
-    cmpy.metadata_from_pyproject = fixed_metadata_from_pyproject
-    log.debug("monkeypatch codemetapy 2.5.0 -> 2.5.1")
 
 
 def collect_cm_sources(conf: SomesyConfig):
@@ -58,12 +34,11 @@ def collect_cm_sources(conf: SomesyConfig):
     return cm_sources
 
 
-def update_codemeta(conf: SomesyConfig) -> bool:
+def update_codemeta(conf: SomesyConfig):
     """Generate or update codemeta file based on sources that somesy supports.
 
     Returns True if file has been written, False if it was up to date.
     """
-    patch_codemetapy()
     cm_sources = collect_cm_sources(conf)
 
     # if cff file is given, convert it to codemeta tempfile and pass as extra input
@@ -77,7 +52,15 @@ def update_codemeta(conf: SomesyConfig) -> bool:
         cm_harvest = gen_codemeta(cm_sources)
 
     # check output and write file if needed
-    return update_codemeta_file(conf.codemeta_file, cm_harvest)
+    # return update_codemeta_file(conf.codemeta_file, cm_harvest)
+    # NOTE: since codemetapy 2.5.1 we should not need
+    # update_codemeta_file + codemeta context dump + most of utils.py + their tests anymore
+    # we'll first disable the workaround and see for a while if everything works
+    # as expected, and if it does, the cleanup can be completed.
+
+    # save to file with same settings as used by codemetapy
+    with open(conf.codemeta_file, "w") as f:
+        f.write(json.dumps(cm_harvest, indent=4, ensure_ascii=False, sort_keys=True))
 
 
 __all__ = ["update_codemeta"]
