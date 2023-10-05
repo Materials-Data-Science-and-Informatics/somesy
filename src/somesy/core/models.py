@@ -7,21 +7,13 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from pydantic import (
-    AnyUrl,
-    BaseModel,
-    Extra,
-    Field,
-    PrivateAttr,
-    root_validator,
-    validator,
-)
+from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_validator
 from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
 from .core import get_input_content
 from .log import SomesyLogLevel
-from .types import ContributionTypeEnum, Country, LicenseEnum
+from .types import ContributionTypeEnum, Country, HttpUrlStr, LicenseEnum
 
 # --------
 # Somesy configuration model
@@ -41,14 +33,12 @@ class SomesyBaseModel(BaseModel):
     custom order will not work correctly across nesting layers.
     """
 
-    class Config:
-        """Pydantic config."""
-
-        extra = Extra.forbid
-        allow_population_by_field_name = True
-        underscore_attrs_are_private = True
-        anystr_strip_whitespace = True
-        min_anystr_length = 1
+    model_config = dict(
+        extra="forbid",
+        populate_by_name=True,
+        str_strip_whitespace=True,
+        str_min_length=1,
+    )
 
     # ----
     # Key order magic
@@ -60,7 +50,7 @@ class SomesyBaseModel(BaseModel):
     @functools.lru_cache()  # compute once per class
     def _aliases(cls) -> Dict[str, str]:
         """Map back from alias field names to internal field names."""
-        return {v.alias: k for k, v in cls.__fields__.items()}
+        return {v.alias or k: k for k, v in cls.model_fields.items()}
 
     @classmethod
     def make_partial(cls, dct):
@@ -69,7 +59,7 @@ class SomesyBaseModel(BaseModel):
         Handles aliases correctly, unlike `construct`.
         """
         un_alias = cls._aliases()
-        return cls.construct(**{un_alias.get(k) or k: v for k, v in dct.items()})
+        return cls.model_construct(**{un_alias.get(k) or k: v for k, v in dct.items()})
 
     def set_key_order(self, keys: List[str]):
         """Setter for custom key order used in serialization."""
@@ -77,9 +67,9 @@ class SomesyBaseModel(BaseModel):
         # make sure we use the _actual_ field names
         self._key_order = list(map(lambda k: un_alias.get(k) or k, keys))
 
-    def copy(self, *args, **kwargs):
+    def model_copy(self, *args, **kwargs):
         """Patched copy method (to preserve custom key order)."""
-        ret = super().copy(*args, **kwargs)
+        ret = super().model_copy(*args, **kwargs)
         ret.set_key_order(list(self._key_order))
         return ret
 
@@ -94,7 +84,7 @@ class SomesyBaseModel(BaseModel):
 
         Keys in `dct` not listed in `self._key_order` come after all others.
 
-        Used to patch up `dict()` and `json()`.
+        Used to patch up `model_dump()` and `model_dump_json()`.
         """
         key_order = self._key_order or []
         existing = set(key_order).intersection(set(dct.keys()))
@@ -102,29 +92,29 @@ class SomesyBaseModel(BaseModel):
         key_order += list(set(dct.keys()) - set(key_order))
         return {k: dct[k] for k in key_order}
 
-    def dict(self, *args, **kwargs):
+    def model_dump(self, *args, **kwargs):
         """Patched dict method (to preserve custom key order)."""
         self._patch_kwargs_defaults(kwargs)
         by_alias = kwargs.pop("by_alias", False)
 
-        dct = super().dict(*args, **kwargs, by_alias=False)
+        dct = super().model_dump(*args, **kwargs, by_alias=False)
         ret = self._reorder_dict(dct)
 
         if by_alias:
-            ret = {self.__fields__[k].alias: v for k, v in ret.items()}
+            ret = {self.model_fields[k].alias or k: v for k, v in ret.items()}
         return ret
 
-    def json(self, *args, **kwargs):
+    def model_dump_json(self, *args, **kwargs):
         """Patched json method (to preserve custom key order)."""
         self._patch_kwargs_defaults(kwargs)
         by_alias = kwargs.pop("by_alias", False)
 
         # loop back json through dict to apply custom key order
-        dct = json.loads(super().json(*args, **kwargs, by_alias=False))
+        dct = json.loads(super().model_dump_json(*args, **kwargs, by_alias=False))
         ret = self._reorder_dict(dct)
 
         if by_alias:
-            ret = {self.__fields__[k].alias: v for k, v in ret.items()}
+            ret = {self.model_fields[k].alias or k: v for k, v in ret.items()}
         return json.dumps(ret)
 
 
@@ -138,7 +128,8 @@ class SomesyConfig(SomesyBaseModel):
     values declared in a somesy input file (such as `somesy.toml`).
     """
 
-    @root_validator
+    @model_validator(mode="before")
+    @classmethod
     def at_least_one_target(cls, values):
         """Check that at least one output file is enabled."""
         if all(map(lambda x: values.get(f"no_sync_{x}"), _SOMESY_TARGETS)):
@@ -210,7 +201,7 @@ class SomesyConfig(SomesyBaseModel):
         # update input with merged config settings (cli overrides config file)
         dct: Dict[str, Any] = {}
         dct.update(somesy_input.config or {})
-        dct.update(self.dict())
+        dct.update(self.model_dump())
         somesy_input.config = SomesyConfig(**dct)
         return somesy_input
 
@@ -228,16 +219,17 @@ class Person(SomesyBaseModel):
     # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
 
     orcid: Annotated[
-        Optional[AnyUrl],
+        Optional[HttpUrlStr],
         Field(
             description="The person's ORCID url **(not required, but highly suggested)**."
         ),
-    ]
+    ] = None
 
     email: Annotated[
         str,
         Field(
-            regex=r"^[\S]+@[\S]+\.[\S]{2,}$", description="The person's email address."
+            pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
+            description="The person's email address.",
         ),
     ]
 
@@ -255,7 +247,7 @@ class Person(SomesyBaseModel):
             description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example 'von' in 'Alexander von Humboldt').",
             examples=["von"],
         ),
-    ]
+    ] = None
     name_suffix: Annotated[
         Optional[str],
         Field(
@@ -263,22 +255,26 @@ class Person(SomesyBaseModel):
             description="The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.",
             examples=["Jr.", "III"],
         ),
-    ]
-    alias: Annotated[Optional[str], Field(description="The person's alias.")]
+    ] = None
+    alias: Annotated[Optional[str], Field(description="The person's alias.")] = None
 
     affiliation: Annotated[
         Optional[str], Field(description="The person's affiliation.")
-    ]
+    ] = None
 
-    address: Annotated[Optional[str], Field(description="The person's address.")]
-    city: Annotated[Optional[str], Field(description="The person's city.")]
-    country: Annotated[Optional[Country], Field(description="The person's country.")]
-    fax: Annotated[Optional[str], Field(description="The person's fax number.")]
+    address: Annotated[Optional[str], Field(description="The person's address.")] = None
+    city: Annotated[Optional[str], Field(description="The person's city.")] = None
+    country: Annotated[
+        Optional[Country], Field(description="The person's country.")
+    ] = None
+    fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
     post_code: Annotated[
         Optional[str], Field(alias="post-code", description="The person's post-code.")
-    ]
-    region: Annotated[Optional[str], Field(description="The person's region.")]
-    tel: Annotated[Optional[str], Field(description="The person's phone number.")]
+    ] = None
+    region: Annotated[Optional[str], Field(description="The person's region.")] = None
+    tel: Annotated[
+        Optional[str], Field(description="The person's phone number.")
+    ] = None
 
     # ----
     # somesy-specific extensions
@@ -293,7 +289,7 @@ class Person(SomesyBaseModel):
         Field(
             description="Indicates whether the person is to be listed as an author in academic citations."
         ),
-    ]
+    ] = None
     maintainer: Annotated[
         bool,
         Field(
@@ -305,27 +301,28 @@ class Person(SomesyBaseModel):
     contribution: Annotated[
         Optional[str],
         Field(description="Summary of how the person contributed to the project."),
-    ]
+    ] = None
     contribution_types: Annotated[
         Optional[List[ContributionTypeEnum]],
         Field(
             description="Relevant types of contributions (see https://allcontributors.org/docs/de/emoji-key).",
-            min_items=1,
+            min_length=1,
         ),
-    ]
+    ] = None
     contribution_begin: Annotated[
         Optional[date], Field(description="Beginning date of the contribution.")
-    ]
+    ] = None
     contribution_end: Annotated[
         Optional[date], Field(description="Ending date of the contribution.")
-    ]
+    ] = None
 
-    @root_validator
+    @model_validator(mode="before")
+    @classmethod
     def author_implies_publication(cls, values):
         """Ensure consistency of author and publication_author."""
-        if values["author"]:
+        if values.get("author"):
             # NOTE: explicitly check for False (different case from None = missing!)
-            if values["publication_author"] == False:
+            if values.get("publication_author") == False:
                 msg = "Combining author=true and publication_author=false is invalid!"
                 raise ValueError(msg)
             values["publication_author"] = True
@@ -359,7 +356,8 @@ class Person(SomesyBaseModel):
         """
         if self.orcid is not None and other.orcid is not None:
             # having orcids is the best case, a real identifier
-            return self.orcid == other.orcid
+            # NOTE: converting to str from pydantic-internal Url object for == !
+            return str(self.orcid) == str(other.orcid)
 
         # otherwise, try to match according to mail/name
         # sourcery skip: merge-nested-ifs
@@ -379,24 +377,23 @@ class Person(SomesyBaseModel):
 class ProjectMetadata(SomesyBaseModel):
     """Pydantic model for Project Metadata Input."""
 
-    class Config:
-        """Pydantic config."""
+    model_config = dict(extra="ignore")
 
-        extra = Extra.ignore
-
-    @validator("people")
+    @field_validator("people")
+    @classmethod
     def ensure_distinct_people(cls, people):
         """Make sure that no person is listed twice in the same person list."""
         for i in range(len(people)):
             for j in range(i + 1, len(people)):
                 if people[i].same_person(people[j]):
-                    p1 = pretty_repr(json.loads(people[i].json()))
-                    p2 = pretty_repr(json.loads(people[j].json()))
+                    p1 = pretty_repr(json.loads(people[i].model_dump_json()))
+                    p2 = pretty_repr(json.loads(people[j].model_dump_json()))
                     msg = f"Same person is listed twice:\n{p1}\n{p2}"
                     raise ValueError(msg)
         return people
 
-    @validator("people")
+    @field_validator("people")
+    @classmethod
     def at_least_one_author(cls, people):
         """Make sure there is at least one author."""
         if not any(map(lambda p: p.author, people)):
@@ -405,26 +402,26 @@ class ProjectMetadata(SomesyBaseModel):
 
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
-    version: Annotated[Optional[str], Field(description="Project version.")]
+    version: Annotated[str, Field(description="Project version.")]
     license: Annotated[LicenseEnum, Field(description="SPDX License string.")]
 
     repository: Annotated[
-        Optional[AnyUrl],
+        Optional[HttpUrlStr],
         Field(description="URL of the project source code repository."),
     ] = None
     homepage: Annotated[
-        Optional[AnyUrl], Field(description="URL of the project homepage.")
+        Optional[HttpUrlStr], Field(description="URL of the project homepage.")
     ] = None
 
     keywords: Annotated[
         Optional[List[str]],
-        Field(min_items=1, description="Keywords that describe the project."),
+        Field(min_length=1, description="Keywords that describe the project."),
     ] = None
 
     people: Annotated[
         List[Person],
         Field(
-            min_items=1, description="Project authors, maintainers and contributors."
+            min_length=1, description="Project authors, maintainers and contributors."
         ),
     ]
 

@@ -68,14 +68,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^2.4.2'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.9.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",

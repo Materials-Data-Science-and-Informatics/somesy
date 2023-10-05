@@ -132,6 +132,6 @@ def person() -> Person:
         "family-names": "Doe",
         "orcid": "https://orcid.org/0123-4567-8910",
     }
-    ret = Person(**p)
+    ret = Person.model_validate(p)
     ret.set_key_order(list(p.keys()))  # custom order!
     return ret

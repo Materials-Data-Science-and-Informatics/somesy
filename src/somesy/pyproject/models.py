@@ -8,27 +8,31 @@ from pydantic import (
     BaseModel,
     EmailStr,
     Field,
-    HttpUrl,
-    ValidationError,
-    root_validator,
-    validator,
+    TypeAdapter,
+    field_validator,
+    model_validator,
 )
 from typing_extensions import Annotated
 
 from somesy.core.models import LicenseEnum
+from somesy.core.types import HttpUrlStr
+
+EMailAddress = TypeAdapter(EmailStr)
 
 
 class PoetryConfig(BaseModel):
     """Poetry configuration model."""
 
+    model_config = dict(use_enum_values=True)
+
     name: Annotated[
         str,
-        Field(regex=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Package name"),
+        Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Package name"),
     ]
     version: Annotated[
         str,
         Field(
-            regex=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$",
+            pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$",
             description="Package version",
         ),
     ]
@@ -38,56 +42,64 @@ class PoetryConfig(BaseModel):
         Field(description="An SPDX license identifier."),
     ]
     authors: Annotated[Set[str], Field(description="Package authors")]
-    maintainers: Annotated[Optional[Set[str]], Field(description="Package maintainers")]
+    maintainers: Annotated[
+        Optional[Set[str]], Field(description="Package maintainers")
+    ] = None
     readme: Annotated[
         Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
-    ]
-    homepage: Annotated[Optional[HttpUrl], Field(description="Package homepage")]
-    repository: Annotated[Optional[HttpUrl], Field(description="Package repository")]
+    ] = None
+    homepage: Annotated[
+        Optional[HttpUrlStr], Field(description="Package homepage")
+    ] = None
+    repository: Annotated[
+        Optional[HttpUrlStr], Field(description="Package repository")
+    ] = None
     documentation: Annotated[
-        Optional[HttpUrl], Field(description="Package documentation page")
-    ]
+        Optional[HttpUrlStr], Field(description="Package documentation page")
+    ] = None
     keywords: Annotated[
         Optional[Set[str]], Field(description="Keywords that describe the package")
-    ]
-    classifiers: Annotated[Optional[List[str]], Field(description="pypi classifiers")]
-    urls: Annotated[Optional[Dict[str, HttpUrl]], Field(description="Package URLs")]
+    ] = None
+    classifiers: Annotated[
+        Optional[List[str]], Field(description="pypi classifiers")
+    ] = None
+    urls: Annotated[
+        Optional[Dict[str, HttpUrlStr]], Field(description="Package URLs")
+    ] = None
 
-    @validator("version")
+    @field_validator("version")
+    @classmethod
     def validate_version(cls, v):
         """Validate version using PEP 440."""
         try:
             _ = parse_version(v)
         except ValueError:
-            raise ValidationError("Invalid version")
+            raise ValueError("Invalid version")
         return v
 
-    @validator("authors", "maintainers")
+    @field_validator("authors", "maintainers")
+    @classmethod
     def validate_email_format(cls, v):
         """Validate email format."""
         for author in v:
             if (
                 not isinstance(author, str)
                 or " " not in author
-                or not EmailStr.validate(author.split(" ")[-1][1:-1])
+                or not EMailAddress.validate_python(author.split(" ")[-1][1:-1])
             ):
-                raise ValidationError("Invalid email format")
+                raise ValueError("Invalid email format")
         return v
 
-    @validator("readme")
+    @field_validator("readme")
+    @classmethod
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
         if type(v) is list:
             if any(not e.is_file() for e in v):
-                raise ValidationError("Some file(s) do not exist")
+                raise ValueError("Some file(s) do not exist")
         else:
             if not v.is_file():
-                raise ValidationError("File does not exist")
-
-    class Config:
-        """Pydantic configuration."""
-
-        use_enum_values = True
+                raise ValueError("File does not exist")
 
 
 class ContentTypeEnum(Enum):
@@ -108,15 +120,13 @@ class File(BaseModel):
 class License(BaseModel):
     """License model for setuptools."""
 
+    model_config = dict(validate_assignment=True)
+
     file: Optional[Path]
     text: Optional[LicenseEnum]
 
-    class Config:
-        """Pydantic configuration."""
-
-        validate_assignment = True
-
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def validate_xor(cls, values):
         """Validate that only one of file or text is set."""
         if sum([bool(v) for v in values.values()]) != 1:
@@ -134,62 +144,62 @@ class STPerson(BaseModel):
 class URLs(BaseModel):
     """URLs model for setuptools."""
 
-    homepage: Optional[HttpUrl] = None
-    repository: Optional[HttpUrl] = None
-    documentation: Optional[HttpUrl] = None
-    changelog: Optional[HttpUrl] = None
+    homepage: Optional[HttpUrlStr] = None
+    repository: Optional[HttpUrlStr] = None
+    documentation: Optional[HttpUrlStr] = None
+    changelog: Optional[HttpUrlStr] = None
 
 
 class SetuptoolsConfig(BaseModel):
     """Setuptools input model. Required fields are name, version, description, and requires_python."""
 
-    name: Annotated[str, Field(regex=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
+    model_config = dict(use_enum_values=True)
+
+    name: Annotated[str, Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
     version: Annotated[
-        str, Field(regex=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")
+        str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")
     ]
     description: str
     readme: Optional[Union[Path, List[Path], File]] = None
     license: Optional[Union[LicenseEnum, List[LicenseEnum]]] = Field(
         None, description="An SPDX license identifier."
     )
-    authors: Optional[List[STPerson]]
-    maintainers: Optional[List[STPerson]]
-    keywords: Optional[Set[str]]
-    classifiers: Optional[List[str]]
-    urls: Optional[URLs]
+    authors: Optional[List[STPerson]] = None
+    maintainers: Optional[List[STPerson]] = None
+    keywords: Optional[Set[str]] = None
+    classifiers: Optional[List[str]] = None
+    urls: Optional[URLs] = None
 
-    @validator("version")
+    @field_validator("version")
+    @classmethod
     def validate_version(cls, v):
         """Validate version using PEP 440."""
         try:
             _ = parse_version(v)
         except ValueError:
-            raise ValidationError("Invalid version")
+            raise ValueError("Invalid version")
         return v
 
-    @validator("readme")
+    @field_validator("readme")
+    @classmethod
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
         if type(v) is list:
             if any(not e.is_file() for e in v):
-                raise ValidationError("Some file(s) do not exist")
+                raise ValueError("Some file(s) do not exist")
         elif type(v) is File:
             if not Path(v.file).is_file():
-                raise ValidationError("File does not exist")
+                raise ValueError("File does not exist")
         else:
             if not v.is_file():
-                raise ValidationError("File does not exist")
+                raise ValueError("File does not exist")
 
-    @validator("authors", "maintainers")
+    @field_validator("authors", "maintainers")
+    @classmethod
     def validate_email_format(cls, v):
         """Validate email format."""
         for person in v:
             if person.email:
-                if not EmailStr.validate(person.email):
-                    raise ValidationError("Invalid email format")
+                if not EMailAddress.validate_python(person.email):
+                    raise ValueError("Invalid email format")
         return v
-
-    class Config:
-        """Pydantic configuration."""
-
-        use_enum_values = True

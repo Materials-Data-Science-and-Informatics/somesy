@@ -4,6 +4,7 @@ import pytest
 
 from somesy.core.models import Person, ProjectMetadata
 
+# dicts with testinputs for people
 p1 = {
     "given-names": "Jane",
     "family-names": "Doe",
@@ -39,41 +40,41 @@ def test_same_person():
 def test_detect_duplicate_person(somesy_input):
     metadata = somesy_input.project
 
-    meta = metadata.copy()
-    meta.people.append(p1)
-    ProjectMetadata(**meta.dict())
+    meta = metadata.model_copy()
+    meta.people.append(Person(**p1))
+    ProjectMetadata(**meta.model_dump())
 
     # P1 ~= P3
-    meta.people.append(p3)
+    meta.people.append(Person(**p3))
     with pytest.raises(ValueError):
-        ProjectMetadata(**meta.dict())
+        ProjectMetadata(**meta.model_dump())
 
     # P1 ~= P4
     meta.people.pop()
-    meta.people.append(p4)
+    meta.people.append(Person(**p4))
     with pytest.raises(ValueError):
-        ProjectMetadata(**meta.dict())
+        ProjectMetadata(**meta.model_dump())
 
     # P1 ~= P6
     meta.people.pop()
-    meta.people.append(p6)
+    meta.people.append(Person(**p6))
     with pytest.raises(ValueError):
-        ProjectMetadata(**meta.dict())
+        ProjectMetadata(**meta.model_dump())
 
     # P1 /= P2
     meta.people.pop()
-    meta.people.append(p2)
-    ProjectMetadata(**meta.dict())
+    meta.people.append(Person(**p2))
+    ProjectMetadata(**meta.model_dump())
 
     # P1 /= P5
     meta.people.pop()
-    meta.people.append(p5)
-    ProjectMetadata(**meta.dict())
+    meta.people.append(Person(**p5))
+    ProjectMetadata(**meta.model_dump())
 
     # P2 ~= P5
-    meta.people.append(p2)
+    meta.people.append(Person(**p2))
     with pytest.raises(ValueError):
-        ProjectMetadata(**meta.dict())
+        ProjectMetadata(**meta.model_dump())
 
 
 def test_custom_key_order():
@@ -89,19 +90,23 @@ def test_custom_key_order():
 
     # correct subsequence of order
     expected_order = ["given_names", "family_names", "email"]
-    assert list(p.dict(exclude_none=True).keys()) == expected_order
-    assert list(json.loads(p.json(exclude_none=True)).keys()) == expected_order
+    assert list(p.model_dump(exclude_none=True).keys()) == expected_order
+    assert (
+        list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == expected_order
+    )
 
     # added field appears in right spot
     p.orcid = "https://orcid.org/1234-5678-9101"
-    assert list(p.dict(exclude_none=True).keys()) == p._key_order
-    assert list(json.loads(p.json(exclude_none=True)).keys()) == p._key_order
+    assert list(p.model_dump(exclude_none=True).keys()) == p._key_order
+    assert list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == p._key_order
 
     # fields not in key order come after all the listed ones
     p.affiliation = "Some institution"
     expected_order = p._key_order + ["affiliation"]
-    assert list(p.dict(exclude_none=True).keys()) == expected_order
-    assert list(json.loads(p.json(exclude_none=True)).keys()) == expected_order
+    assert list(p.model_dump(exclude_none=True).keys()) == expected_order
+    assert (
+        list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == expected_order
+    )
 
     # key order also preserved by copy
-    assert p.copy()._key_order == p._key_order
+    assert p.model_copy()._key_order == p._key_order

@@ -134,10 +134,12 @@ class ProjectMetadataWriter(ABC):
         # flag, meaning "person was not removed"
         still_exists = [False for i in range(len(old))]
         # copies of old person data, to be modified
-        modified_people = [p.copy() for p in old]
+        modified_people = [p.model_copy() for p in old]
 
+        # try to match new people to existing old ones
+        # (inefficient, but author list are not that long usually)
         for person_meta in new:
-            person_update = person_meta.dict()
+            person_update = person_meta.model_dump()
             person_existed = False
             for i in range(len(modified_people)):
                 person = modified_people[i]
@@ -150,9 +152,11 @@ class ProjectMetadataWriter(ABC):
                 still_exists[i] = True
 
                 # if there were changes -> update person
-                overlapping_fields = person.dict(include=set(person_update.keys()))
+                overlapping_fields = person.model_dump(
+                    include=set(person_update.keys())
+                )
                 if person_update != overlapping_fields:
-                    modified_people[i] = person.copy(update=person_update)
+                    modified_people[i] = person.model_copy(update=person_update)
 
                     # show effective update in debug log
                     old_fmt = self._from_person(person)
@@ -166,11 +170,9 @@ class ProjectMetadataWriter(ABC):
         # show added and removed people in debug log
         removed_people = [old[i] for i in range(len(old)) if not still_exists[i]]
         for person in removed_people:
-            pers_fmt = self._from_person(person)
-            log.debug(f"Removing person\n{pers_fmt}")
+            log.debug(f"Removing person\n{self._from_person(person)}")
         for person in new_people:
-            pers_fmt = self._from_person(person)
-            log.debug(f"Adding person\n{pers_fmt}")
+            log.debug(f"Adding person\n{self._from_person(person)}")
 
         # return updated list of (still existing) people,
         # and all new people coming after them.
@@ -225,7 +227,7 @@ class ProjectMetadataWriter(ABC):
 
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
-        """Return a list of Persons parsed from list format-specific people representations."""
+        """Return a list of Persons parsed from list of format-specific people representations."""
         return list(map(cls._to_person, people or []))
 
     # ----

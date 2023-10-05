@@ -37,12 +37,12 @@ def test_save(tmp_path):
 
 
 def test_from_to_person(person: Person):
-    assert CFF._from_person(person) == person.dict(by_alias=True)
+    assert CFF._from_person(person) == person.model_dump(by_alias=True)
 
     p = CFF._to_person(CFF._from_person(person))
     assert p.full_name == person.full_name
     assert p.email == person.email
-    assert p.orcid == person.orcid
+    assert p.orcid == str(person.orcid)
 
 
 def test_person_merge(tmp_path, person: Person):
@@ -56,7 +56,8 @@ def test_person_merge(tmp_path, person: Person):
         name="My awesome project",
         description="Project description",
         license=LicenseEnum.MIT,
-        people=[person.copy(update=dict(author=True, publication_author=True))],
+        version="0.1.0",
+        people=[person.model_copy(update=dict(author=True, publication_author=True))],
     )
     cff.sync(pm)
     cff.save()
@@ -67,12 +68,12 @@ def test_person_merge(tmp_path, person: Person):
     assert list(dct["authors"][0].keys()) == to_cff_keys(person._key_order)
 
     # jane becomes john -> modified person
-    person1b = person.copy(
+    person1b = person.model_copy(
         update={"given_names": "John", "author": True, "publication_author": True}
     )
 
     # different Jane Doe with different orcid -> new person
-    person2 = person.copy(
+    person2 = person.model_copy(
         update={
             "orcid": "https://orcid.org/4321-0987-3231",
             "email": "i.am.jane@doe.com",
@@ -85,14 +86,15 @@ def test_person_merge(tmp_path, person: Person):
 
     # listed in "arbitrary" order in somesy metadata (new person comes first)
     pm.people = [person2, person1b]  # need to assign like that to keep _key_order
+    print("people:", pm.people, sep="\n")
     cff.sync(pm)
     cff.save()
 
     # existing author order preserved
-    assert cff.authors[0] == person1b.dict(
+    assert cff.authors[0] == person1b.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
-    assert cff.authors[1] == person2.dict(
+    assert cff.authors[1] == person2.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
     # existing author field order preserved
@@ -111,7 +113,7 @@ def test_person_merge(tmp_path, person: Person):
         }
     )
     # john has a new email address
-    person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
+    person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})
     # jane 2 is removed from authors, but added to maintainers
     person2.author = False
     person2.publication_author = False
@@ -124,10 +126,10 @@ def test_person_merge(tmp_path, person: Person):
 
     assert len(cff.authors) == 2
     assert len(cff.maintainers) == 1
-    assert cff.authors[0] == person1c.dict(
+    assert cff.authors[0] == person1c.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
-    assert cff.authors[1] == person3.dict(
+    assert cff.authors[1] == person3.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
     dct = cff._yaml.load(open(cff_path, "r"))

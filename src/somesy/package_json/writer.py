@@ -81,7 +81,7 @@ class PackageJSON(ProjectMetadataWriter):
         if person.email:
             person_dict["email"] = person.email
         if person.orcid:
-            person_dict["url"] = person.orcid
+            person_dict["url"] = str(person.orcid)
         return person_dict
 
     @staticmethod
@@ -89,7 +89,9 @@ class PackageJSON(ProjectMetadataWriter):
         """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
             # parse from package.json format
-            person = PackageJsonConfig.convert_author(person).dict(exclude_none=True)
+            person = PackageJsonConfig.convert_author(person).model_dump(
+                exclude_none=True
+            )
 
         names = list(map(lambda s: s.strip(), person["name"].split()))
         person_obj = {

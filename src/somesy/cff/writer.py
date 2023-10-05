@@ -73,7 +73,7 @@ class CFF(ProjectMetadataWriter):
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to cff dict for person format."""
-        json_str = person.json(
+        json_str = person.model_dump_json(
             exclude={
                 "contribution",
                 "contribution_types",

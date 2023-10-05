@@ -2,8 +2,10 @@
 import re
 from typing import List, Optional, Union
 
-from pydantic import AnyUrl, BaseModel, EmailStr, Field, ValidationError, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing_extensions import Annotated
+
+from somesy.core.types import HttpUrlStr
 
 
 class PackageAuthor(BaseModel):
@@ -11,7 +13,9 @@ class PackageAuthor(BaseModel):
 
     name: Annotated[Optional[str], Field(description="Author name")]
     email: Annotated[Optional[EmailStr], Field(description="Author email")]
-    url: Annotated[Optional[AnyUrl], Field(description="Author website or orcid page")]
+    url: Annotated[
+        Optional[HttpUrlStr], Field(description="Author website or orcid page")
+    ]
 
 
 class PackageRepository(BaseModel):
@@ -28,8 +32,15 @@ class PackageLicense(BaseModel):
     url: Annotated[str, Field(description="License url")]
 
 
+NPM_PKG_AUTHOR = r"^(.*?)\s*(?:<([^>]+)>)?\s*(?:\(([^)]+)\))?$"
+NPM_PKG_NAME = r"^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$"
+NPM_PKG_VERSION = r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+
+
 class PackageJsonConfig(BaseModel):
     """Package.json config model."""
+
+    model_config = dict(populate_by_name=True)
 
     name: Annotated[str, Field(description="Package name")]
     version: Annotated[str, Field(description="Package version")]
@@ -40,61 +51,63 @@ class PackageJsonConfig(BaseModel):
     maintainers: Annotated[
         Optional[List[Union[str, PackageAuthor]]],
         Field(description="Package maintainers"),
-    ]
+    ] = None
     contributors: Annotated[
         Optional[List[Union[str, PackageAuthor]]],
         Field(description="Package contributors"),
-    ]
+    ] = None
     license: Annotated[
         Optional[Union[str, PackageLicense]], Field(description="Package license")
     ]
     repository: Annotated[
         Optional[Union[PackageRepository, str]], Field(description="Package repository")
     ]
-    homepage: Annotated[Optional[AnyUrl], Field(description="Package homepage")]
+    homepage: Annotated[
+        Optional[HttpUrlStr], Field(description="Package homepage")
+    ] = None
     keywords: Annotated[
         Optional[List[str]], Field(description="Keywords that describe the package")
-    ]
+    ] = None
 
     # convert package author to dict if it is a string
     @classmethod
     def convert_author(cls, author: str) -> PackageAuthor:
         """Convert author string to PackageAuthor model."""
         # parse author string to "name <email> (url)" format with regex
-        author_regex = r"^(.*?)\s*(?:<([^>]+)>)?\s*(?:\(([^)]+)\))?$"
-        author_match = re.match(author_regex, author)
+        author_match = re.match(NPM_PKG_AUTHOR, author)
         if not author_match:
-            raise ValidationError(f"Invalid author format: {author}")
+            raise ValueError(f"Invalid author format: {author}")
         author_name = author_match[1]
         author_email = author_match[2]
         author_url = author_match[3]
 
         return PackageAuthor(name=author_name, email=author_email, url=author_url)
 
-    @validator("name")
+    @field_validator("name")
+    @classmethod
     def validate_name(cls, v):
         """Validate package name."""
-        pattern = r"^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$"
-        if re.match(pattern, v) is None:
-            raise ValidationError("Invalid name")
+        if re.match(NPM_PKG_NAME, v) is None:
+            raise ValueError("Invalid name")
 
         return v
 
-    @validator("version")
+    @field_validator("version")
+    @classmethod
     def validate_version(cls, v):
         """Validate package version."""
-        # pattern for npm version
-        pattern = r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
-        if re.match(pattern, v) is None:
-            raise ValidationError("Invalid version")
+        if re.match(NPM_PKG_VERSION, v) is None:
+            raise ValueError("Invalid version")
         return v
 
-    @validator("author")
+    @field_validator("author")
+    @classmethod
     def validate_author(cls, v):
         """Validate package author."""
         return cls.convert_author(v) if isinstance(v, str) else v
 
-    @validator("maintainers", "contributors")
+    @field_validator("maintainers", "contributors")
+    @classmethod
     def validate_people(cls, v):
         """Validate package maintainers and contributors."""
         people = []
@@ -104,8 +117,3 @@ class PackageJsonConfig(BaseModel):
             else:
                 people.append(p)
         return people
-
-    class Config:
-        """Pydantic config."""
-
-        allow_population_by_field_name = True

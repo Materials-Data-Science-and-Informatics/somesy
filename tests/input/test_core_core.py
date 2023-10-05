@@ -70,14 +70,16 @@ def test_somesy_input(somesy_input):
     )
     assert somesy_input.project.keywords == ["test", "demo", "example"]
     assert somesy_input.project.license == LicenseEnum.MIT
-    assert somesy_input.project.repository == "https://github.com/example/testproject"
-    assert somesy_input.project.homepage == "https://example.com/testproject"
+    assert (
+        str(somesy_input.project.repository) == "https://github.com/example/testproject"
+    )
+    assert str(somesy_input.project.homepage) == "https://example.com/testproject"
     assert len(somesy_input.project.people) == 3
     authors = somesy_input.project.authors()
     assert authors[0].family_names == "Doe"
     assert authors[0].given_names == "John"
     assert authors[0].email == "john.doe@example.com"
-    assert authors[0].orcid == "https://orcid.org/0000-0000-0000-0000"
+    assert str(authors[0].orcid) == "https://orcid.org/0000-0000-0000-0000"
     assert authors[0].contribution == "The main developer, maintainer, and tester."
     assert (
         authors[0].contribution_begin
