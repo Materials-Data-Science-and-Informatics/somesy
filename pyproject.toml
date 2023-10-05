@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "somesy"
-version = "0.1.0"
+version = "0.1.1"
 description = "A CLI tool for synchronizing software project metadata."
 authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>", "Anton Pirogov <a.pirogov@fz-juelich.de>"]
 maintainers = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
@@ -27,10 +27,10 @@ packages = [{include = "somesy", from = "src"}]
 # include files related to test and documentation only in sdist:
 include = [
   "*.md", "LICENSE", "LICENSES", ".reuse/dep5", "CITATION.cff", "codemeta.json",
-  "mkdocs.yml", "docs", "tests", # NOTE: temporary workaround (codemetapy bug)
-  # { path = "mkdocs.yml", format = "sdist" },
-  # { path = "docs", format = "sdist" },
-  # { path = "tests", format = "sdist" },
+  "mkdocs.yml", "docs", "tests",
+  { path = "mkdocs.yml", format = "sdist" },
+  { path = "docs", format = "sdist" },
+  { path = "tests", format = "sdist" },
 ]
 
 [tool.poetry.dependencies]
