@@ -89,7 +89,7 @@
             "identifier": "codemetapy",
             "name": "codemetapy",
             "runtimePlatform": "Python 3",
-            "version": "^2.5.0"
+            "version": "^2.5.1"
         },
         {
             "@type": "SoftwareApplication",
