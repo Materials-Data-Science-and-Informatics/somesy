@@ -18,7 +18,7 @@ def sync(somesy_input: SomesyInput):
     conf, metadata = somesy_input.config, somesy_input.project
 
     logger.debug(
-        f"Project metadata: {pretty_repr(metadata.dict(exclude_defaults=True))}"
+        f"Project metadata: {pretty_repr(metadata.model_dump(exclude_defaults=True))}"
     )
 
     # update these only if they exist:
