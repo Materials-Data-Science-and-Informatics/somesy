@@ -80,4 +80,5 @@ def test_from_to_person(person):
 
 
 def test_person_merge_poetry(pyproject_poetry_file, person: Person):
-    #TODO: package.json is a good example
+    # TODO: package.json is a good example
+    pass
