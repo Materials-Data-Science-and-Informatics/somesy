@@ -15,6 +15,10 @@ authors:
   email: m.soylu@fz-juelich.de
   given-names: Mustafa
   family-names: Soylu
+- email: a.pirogov@fz-juelich.de
+  orcid: https://orcid.org/0000-0002-5077-7497
+  family-names: Pirogov
+  given-names: Anton
 - email: v.hofmann@fz-juelich.de
   orcid: https://orcid.org/0000-0002-5149-603X
   family-names: Hofmann
@@ -23,10 +27,6 @@ authors:
   orcid: https://orcid.org/0000-0001-9560-4728
   family-names: Sandfeld
   given-names: Stefan
-- email: a.pirogov@fz-juelich.de
-  orcid: https://orcid.org/0000-0002-5077-7497
-  family-names: Pirogov
-  given-names: Anton
 contact:
 - email: m.soylu@fz-juelich.de
   family-names: Soylu

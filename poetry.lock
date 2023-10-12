@@ -276,12 +276,12 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "codemetapy"
-version = "2.5.0"
+version = "2.5.1"
 description = "Generate and manage CodeMeta software metadata"
 optional = false
 python-versions = "*"
 files = [
-    {file = "CodeMetaPy-2.5.0.tar.gz", hash = "sha256:a096bd23c29315e48ac030f24e0a906aa019f7b9ee565667107f21e91d7590f3"},
+    {file = "CodeMetaPy-2.5.1.tar.gz", hash = "sha256:17022b27fd7e76de228f8a243ebd4ef75e90943270b55d4180fb91681156e772"},
 ]
 
 [package.dependencies]

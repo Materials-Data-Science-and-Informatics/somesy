@@ -1,9 +1,8 @@
 import json
-from pathlib import Path
 
 import pytest
 
-from somesy.core.models import Person, ProjectMetadata, SomesyInput
+from somesy.core.models import Person, ProjectMetadata
 
 p1 = {
     "given-names": "Jane",
@@ -37,8 +36,8 @@ def test_same_person():
     assert Person(**p1).same_person(Person(**p6))
 
 
-def test_detect_duplicate_person():
-    metadata = SomesyInput.from_input_file(Path("tests/core/data/.somesy.toml")).project
+def test_detect_duplicate_person(somesy_input):
+    metadata = somesy_input.project
 
     meta = metadata.copy()
     meta.people.append(p1)
