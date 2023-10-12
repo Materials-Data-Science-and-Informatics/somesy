@@ -80,5 +80,67 @@ def test_from_to_person(person):
 
 
 def test_person_merge_poetry(pyproject_poetry_file, person: Person):
-    # TODO: package.json is a good example
-    pass
+    pj = Poetry(pyproject_poetry_file)
+
+    pm = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        people=[person.copy(update=dict(author=True, publication_author=True))],
+    )
+    pj.sync(pm)
+    pj.save()
+
+    # jane becomes john -> modified person
+    person1b = person.copy(
+        update={"given_names": "John", "author": True, "publication_author": True}
+    )
+
+    # different Jane Doe with different orcid -> new person
+    person2 = person.copy(
+        update={
+            "orcid": "https://orcid.org/4321-0987-3231",
+            "email": "i.am.jane@doe.com",
+            "author": True,
+            "publication_author": True,
+        }
+    )
+    # use different order, just for some difference
+    person2.set_key_order(["given_names", "orcid", "family_names", "email"])
+
+    # listed in "arbitrary" order in somesy metadata (new person comes first)
+    pm.people = [person2, person1b]  # need to assign like that to keep _key_order
+    pj.sync(pm)
+    pj.save()
+
+    # existing author order preserved
+    # ERROR: not preserved
+    assert pj.authors[0] == f"{person1b.full_name} <{person1b.email}>"
+
+    assert pj.authors[1] == f"{person2.full_name} <{person2.email}>"
+
+    # new person
+    person3 = Person(
+        **{
+            "given_names": "Janice",
+            "family_names": "Doethan",
+            "email": "jane93@gmail.com",
+            "author": True,
+            "publication_author": True,
+        }
+    )
+    # john has a new email address
+    person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
+    # jane 2 is removed from authors, but added to maintainers
+    person2.author = False
+    person2.publication_author = False
+    person2.maintainer = True
+    # reflect in project metadata
+    pm.people = [person3, person2, person1c]
+    # sync to CFF file
+    pj.sync(pm)
+    pj.save()
+
+    assert len(pj.maintainers) == 1
+    assert pj.authors[0] == f"{person1c.full_name} <{person1c.email}>"
+    assert pj.authors[1] == f"{person3.full_name} <{person3.email}>"
