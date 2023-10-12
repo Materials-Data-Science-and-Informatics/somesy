@@ -1,12 +1,11 @@
 """Integration with codemetapy (to re-generate codemeta as part of somesy sync)."""
 import contextlib
-import json
 import logging
 from pathlib import Path
 
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
-from .utils import cff_codemeta_tempfile
+from .utils import cff_codemeta_tempfile, update_codemeta_file
 
 log = logging.getLogger("somesy")
 
@@ -51,16 +50,17 @@ def update_codemeta(conf: SomesyConfig):
     with temp_cff_cm:
         cm_harvest = gen_codemeta(cm_sources)
 
-    # check output and write file if needed
-    # return update_codemeta_file(conf.codemeta_file, cm_harvest)
-    # NOTE: since codemetapy 2.5.1 we should not need
+    # NOTE: once codemetapy is fixed (still broken with 2.5.1), we should not need
     # update_codemeta_file + codemeta context dump + most of utils.py + their tests anymore
     # we'll first disable the workaround and see for a while if everything works
     # as expected, and if it does, the cleanup can be completed.
-
+    #
     # save to file with same settings as used by codemetapy
-    with open(conf.codemeta_file, "w") as f:
-        f.write(json.dumps(cm_harvest, indent=4, ensure_ascii=False, sort_keys=True))
+    # with open(conf.codemeta_file, "w") as f:
+    #     f.write(json.dumps(cm_harvest, indent=4, ensure_ascii=False, sort_keys=True))
+
+    # check output and write file if needed (with workaround checking graph equivalence)
+    return update_codemeta_file(conf.codemeta_file, cm_harvest)
 
 
 __all__ = ["update_codemeta"]
