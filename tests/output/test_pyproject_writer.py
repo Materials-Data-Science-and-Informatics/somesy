@@ -1,4 +1,5 @@
 from pathlib import Path
+
 import pytest
 
 from somesy.core.models import LicenseEnum, Person, ProjectMetadata
