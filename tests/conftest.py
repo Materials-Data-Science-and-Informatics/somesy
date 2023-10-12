@@ -59,20 +59,15 @@ def create_files(tmp_path):
             read_file_name: Path = None
             # set file name as the input, if not given set to default
             if file_type == FileTypes.CITATION:
-                file_name = file_name if file_name else "CITATION.cff"
-                read_file_name = read_file_path / Path(file_name)
+                read_file_name = read_file_path / Path("CITATION.cff")
             elif file_type == FileTypes.SETUPTOOLS:
-                file_name = file_name if file_name else "pyproject.setuptools.toml"
-                read_file_name = read_file_path / Path(file_name)
+                read_file_name = read_file_path / Path("pyproject.setuptools.toml")
             elif file_type == FileTypes.POETRY:
-                file_name = file_name if file_name else "pyproject.toml"
-                read_file_name = read_file_path / Path(file_name)
+                read_file_name = read_file_path / Path("pyproject.toml")
             elif file_type == FileTypes.SOMESY:
-                file_name = file_name if file_name else "somesy.toml"
-                read_file_name = read_file_path / Path(file_name)
+                read_file_name = read_file_path / Path("somesy.toml")
             elif file_type == FileTypes.PACKAGE_JSON:
-                file_name = file_name if file_name else "package.json"
-                read_file_name = read_file_path / Path(file_name)
+                read_file_name = read_file_path / Path("package.json")
 
             with open(read_file_name, "r") as f:
                 content = f.read()
