@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "test-package"
 version = "0.1.0"
-description = "This is a test package for demonstration purposes"
+description = "This is a test package for demonstration purposes."
 authors = ["John Doe <john.doe@example.com>"]
 license = "MIT"
 repository = "https://github.com/example/test-package"

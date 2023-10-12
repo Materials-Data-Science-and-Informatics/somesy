@@ -26,6 +26,12 @@
             "givenName": "Mustafa"
         },
         {
+            "@id": "https://orcid.org/0000-0002-5077-7497",
+            "@type": "Person",
+            "familyName": "Pirogov",
+            "givenName": "Anton"
+        },
+        {
             "@id": "https://orcid.org/0000-0002-5149-603X",
             "@type": "Person",
             "familyName": "Hofmann",
@@ -36,12 +42,6 @@
             "@type": "Person",
             "familyName": "Sandfeld",
             "givenName": "Stefan"
-        },
-        {
-            "@id": "https://orcid.org/0000-0002-5077-7497",
-            "@type": "Person",
-            "familyName": "Pirogov",
-            "givenName": "Anton"
         }
     ],
     "codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/somesy",
@@ -68,14 +68,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^2.4.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^2.4.2'}"
         },
         {
             "@type": "SoftwareApplication",
