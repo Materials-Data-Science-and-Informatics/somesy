@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -17,7 +18,7 @@ def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatc
         ]
     )
 
-    # Test 1: input is is given and exists
+    # Test 1: input is given and exists
 
     # 1.a somesy input file
     somesy_file = tmp_path / Path("somesy.toml")
@@ -34,13 +35,16 @@ def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatc
     result = discover_input(package_json_file)
     assert result == package_json_file
 
-    # Test 2: input is is given but does not exist, instead default exists and selected
+    # Test 2: input is given but does not exist, instead default exists and selected
     input_file = tmp_path / Path("somesy2.toml")
     result = discover_input(input_file)
     assert result == Path(".somesy.toml")
 
     # Test 3: should raise an error when given file or defaults dont exist
-    monkeypatch.chdir(Path("/tmp"))
+    if sys.platform == "win32":
+        monkeypatch.chdir(Path("C:\\"))
+    else:
+        monkeypatch.chdir(Path("/tmp"))
     input_file = Path("/tmp/somesy.toml")
     with pytest.raises(FileNotFoundError):
         discover_input(input_file)
