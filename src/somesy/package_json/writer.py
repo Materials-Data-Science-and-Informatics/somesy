@@ -112,4 +112,4 @@ class PackageJSON(ProjectMetadataWriter):
         super().sync(metadata)
         self.contributors = self._sync_person_list(self.contributors, metadata.people)
         if metadata.repository:
-            self.repository = {"type": "git", "url": metadata.repository}
+            self.repository = {"type": "git", "url": str(metadata.repository)}
