@@ -41,7 +41,7 @@ def test_from_to_person(person: Person):
     p_person = PackageJSON._from_person(person)
     assert p_person["name"] == person.full_name
     assert p_person["email"] == person.email
-    assert p_person["url"] == person.orcid
+    assert p_person["url"] == str(person.orcid)
 
     p = PackageJSON._to_person(PackageJSON._from_person(person))
     assert p.full_name == person.full_name
@@ -56,18 +56,19 @@ def test_person_merge(package_json_file, person: Person):
         name="My awesome project",
         description="Project description",
         license=LicenseEnum.MIT,
-        people=[person.copy(update=dict(author=True, publication_author=True))],
+        version="0.1.0",
+        people=[person.model_copy(update=dict(author=True, publication_author=True))],
     )
     pj.sync(pm)
     pj.save()
 
     # jane becomes john -> modified person
-    person1b = person.copy(
+    person1b = person.model_copy(
         update={"given_names": "John", "author": True, "publication_author": True}
     )
 
     # different Jane Doe with different orcid -> new person
-    person2 = person.copy(
+    person2 = person.model_copy(
         update={
             "orcid": "https://orcid.org/4321-0987-3231",
             "email": "i.am.jane@doe.com",
@@ -101,7 +102,7 @@ def test_person_merge(package_json_file, person: Person):
         }
     )
     # john has a new email address
-    person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
+    person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})
     # jane 2 is removed from authors, but added to maintainers
     person2.author = False
     person2.publication_author = False

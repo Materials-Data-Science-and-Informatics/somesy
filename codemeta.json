@@ -68,14 +68,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^1.9.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^2.4.2'}"
         },
         {
             "@type": "SoftwareApplication",
@@ -89,7 +89,7 @@
             "identifier": "codemetapy",
             "name": "codemetapy",
             "runtimePlatform": "Python 3",
-            "version": "^2.5.0"
+            "version": "^2.5.1"
         },
         {
             "@type": "SoftwareApplication",
@@ -170,5 +170,5 @@
         "runtimePlatform": "Python 3"
     },
     "url": "https://materials-data-science-and-informatics.github.io/somesy",
-    "version": "0.1.0"
+    "version": "0.1.1"
 }

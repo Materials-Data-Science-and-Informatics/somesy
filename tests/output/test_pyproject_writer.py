@@ -86,25 +86,33 @@ def test_from_to_person(person):
     assert p.email == person.email
 
 
-def test_person_merge_poetry(pyproject_poetry_file, person):
-    pj = Poetry(pyproject_poetry_file)
-
+@pytest.mark.parametrize(
+    "writer_class, writer_file_fixture",
+    [(Poetry, "pyproject_poetry_file"), (SetupTools, "pyproject_setuptools_file")],
+)
+def test_person_merge_pyproject(request, writer_class, writer_file_fixture, person):
+    # get suitable project file
+    writer_file = request.getfixturevalue(writer_file_fixture)
+    pj = writer_class(writer_file)
+    # update project file with known data
     pm = ProjectMetadata(
         name="My awesome project",
         description="Project description",
         license=LicenseEnum.MIT,
-        people=[person.copy(update=dict(author=True, publication_author=True))],
+        version="0.1.0",
+        people=[person.model_copy(update=dict(author=True, publication_author=True))],
     )
     pj.sync(pm)
     pj.save()
+    # ----
 
     # jane becomes john -> modified person
-    person1b = person.copy(
+    person1b = person.model_copy(
         update={"given_names": "John", "author": True, "publication_author": True}
     )
 
     # different Jane Doe with different orcid -> new person
-    person2 = person.copy(
+    person2 = person.model_copy(
         update={
             "orcid": "https://orcid.org/4321-0987-3231",
             "email": "i.am.jane@doe.com",
@@ -121,79 +129,10 @@ def test_person_merge_poetry(pyproject_poetry_file, person):
     pj.save()
 
     # existing author info preserved, order not preserved because no orcid
-    person1b_str = f"{person1b.full_name} <{person1b.email}>"
-    assert (pj.authors[0] == person1b_str) or (pj.authors[1] == person1b_str)
-
-    person2_str = f"{person2.full_name} <{person2.email}>"
-    assert (pj.authors[0] == person2_str) or (pj.authors[1] == person2_str)
-
-    # new person
-    person3 = Person(
-        **{
-            "given_names": "Janice",
-            "family_names": "Doethan",
-            "email": "jane93@gmail.com",
-            "author": True,
-            "publication_author": True,
-        }
-    )
-    # john has a new email address
-    person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
-    # jane 2 is removed from authors, but added to maintainers
-    person2.author = False
-    person2.publication_author = False
-    person2.maintainer = True
-    # reflect in project metadata
-    pm.people = [person3, person2, person1c]
-    # sync to CFF file
-    pj.sync(pm)
-    pj.save()
-
-    assert len(pj.maintainers) == 1
-    assert pj.authors[0] == f"{person1c.full_name} <{person1c.email}>"
-    assert pj.authors[1] == f"{person3.full_name} <{person3.email}>"
-
-
-def test_person_merge_setuptools(pyproject_setuptools_file, person):
-    pj = SetupTools(pyproject_setuptools_file)
-
-    pm = ProjectMetadata(
-        name="My awesome project",
-        description="Project description",
-        license=LicenseEnum.MIT,
-        people=[person.copy(update=dict(author=True, publication_author=True))],
-    )
-    pj.sync(pm)
-    pj.save()
-
-    # jane becomes john -> modified person
-    person1b = person.copy(
-        update={"given_names": "John", "author": True, "publication_author": True}
-    )
-
-    # different Jane Doe with different orcid -> new person
-    person2 = person.copy(
-        update={
-            "orcid": "https://orcid.org/4321-0987-3231",
-            "email": "i.am.jane@doe.com",
-            "author": True,
-            "publication_author": True,
-        }
-    )
-    # use different order, just for some difference
-    person2.set_key_order(["given_names", "orcid", "family_names", "email"])
-
-    # listed in "arbitrary" order in somesy metadata (new person comes first)
-    pm.people = [person2, person1b]  # need to assign like that to keep _key_order
-    pj.sync(pm)
-    pj.save()
-
-    # existing author info preserved, order not preserved because no orcid
-    person1b_dump = {"name": person1b.full_name, "email": person1b.email}
-    assert (pj.authors[0] == person1b_dump) or (pj.authors[1] == person1b_dump)
-
-    person2_dump = {"name": person2.full_name, "email": person2.email}
-    assert (pj.authors[0] == person2_dump) or (pj.authors[1] == person2_dump)
+    person1b_rep = writer_class._from_person(person1b)
+    person2_rep = writer_class._from_person(person2)
+    assert (pj.authors[0] == person1b_rep) or (pj.authors[1] == person1b_rep)
+    assert (pj.authors[0] == person2_rep) or (pj.authors[1] == person2_rep)
 
     # new person
     person3 = Person(
@@ -205,8 +144,12 @@ def test_person_merge_setuptools(pyproject_setuptools_file, person):
             "publication_author": True,
         }
     )
+    person3_rep = writer_class._from_person(person3)
+
     # john has a new email address
-    person1c = person1b.copy(update={"email": "john.of.us@qualityland.com"})
+    person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})
+    person1c_rep = writer_class._from_person(person1c)
+
     # jane 2 is removed from authors, but added to maintainers
     person2.author = False
     person2.publication_author = False
@@ -218,5 +161,5 @@ def test_person_merge_setuptools(pyproject_setuptools_file, person):
     pj.save()
 
     assert len(pj.maintainers) == 1
-    assert pj.authors[0] == {"name": person1c.full_name, "email": person1c.email}
-    assert pj.authors[1] == {"name": person3.full_name, "email": person3.email}
+    assert pj.authors[0] == person1c_rep
+    assert pj.authors[1] == person3_rep

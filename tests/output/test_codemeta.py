@@ -104,12 +104,18 @@ def test_update_codemeta(tmp_path):
 
     # first time, no file -> codemeta.json is created
     conf = SomesyConfig(codemeta_file=file_path, cff_file=cff_path)
-    assert update_codemeta(conf)
+    update_codemeta(conf)
+    assert conf.codemeta_file.is_file()
+    dat = open(conf.codemeta_file, "rb").read()
 
-    # second time, no changes -> codemeta.json is not overwritten
-    assert not update_codemeta(conf)
+    # second time, no changes -> codemeta.json is the same
+    update_codemeta(conf)
+    dat_2 = open(conf.codemeta_file, "rb").read()
+    assert dat_2 == dat
 
     cff.description = "Changed description"
     cff.save()
     # second time, changes -> codemeta.json is overwritten
-    assert update_codemeta(conf)
+    update_codemeta(conf)
+    dat_3 = open(conf.codemeta_file, "rb").read()
+    assert dat_3 != dat

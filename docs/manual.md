@@ -66,11 +66,20 @@ Here is an overview of the schemas used in somesy.
 import json
 from io import StringIO
 from somesy.core.models import SomesyInput, ProjectMetadata, Person, SomesyConfig
+from pydantic_core import PydanticUndefined
+from typing_extensions import get_args
+
+def pp_type(th):
+    # NOTE: this does not work correctly with non-trivial unions!
+    while args := get_args(th):
+        th = args[0]
+    return th.__name__
 
 def fmt_desc(desc, pref=""):
     if not desc:
         return ""
     return "\n".join(map(lambda x: pref + x.strip(), desc.split("\n")))
+
 
 def model2md(m, out = None):
     out = out or StringIO()
@@ -80,20 +89,15 @@ def model2md(m, out = None):
     out.write("\t\n\n")
     out.write("\t| Field | Type | Required? | Default | Description |\n")
     out.write("\t| ----- | ---- | --------- | ------- | ----------- |\n")
-    for fld in m.__fields__.values():
-        n = fld.name
-
-        t = fld.type_.__name__
-        if t == "ConstrainedStrValue":
-            t = "str"
-        if t == "AnyUrl":
-            t = "URL"
-        if fld.field_info.min_items:
-            t = f"list[{t}]"
-
-        r = "**yes**" if fld.required else "no"
-        v = json.dumps(fld.default, default=str) if fld.default is not None else ""
-        d = fmt_desc(fld.field_info.description)
+    for n, fld in m.model_fields.items():
+        t = pp_type(fld.annotation)
+        r = "**yes**" if fld.is_required() else "no"
+        dv = fld.default
+        if dv is not None and dv != PydanticUndefined:
+            v = json.dumps(fld.default, default=str)
+        else:
+            v = ""
+        d = fmt_desc(fld.description)
         out.write(f"\t| {n} | {t} | {r} | {v} | {d} |\n")
     out.write("\n")
 
