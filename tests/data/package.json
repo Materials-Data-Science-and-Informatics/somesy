@@ -36,10 +36,7 @@
         "example"
       ],
       "license": "MIT",
-      "repository": {
-        "type": "git",
-        "url": "https://github.com/example/testproject"
-      },
+      "repository": "https://github.com/example/testproject",
       "homepage": "https://example.com/testproject",
       "people": [
         {
