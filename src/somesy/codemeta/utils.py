@@ -3,12 +3,15 @@
 import importlib.resources
 import json
 import logging
+import platform
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Dict
 
 import rdflib
 import rdflib.compare
+
+from somesy import __tmp_dir__
 
 from .exec import cff_to_codemeta
 
@@ -40,7 +43,12 @@ def _localize_codemetapy_context(json):
     The context is required to parse the JSON-LD correctly, fields with no
     context are ignored (not considered LD).
     """
-    ctx = set(json.get("@context") or [])
+    context = json.get("@context") or []
+
+    # remove dicts from context
+    # (they are not supported by rdflib, and we don't need them anyway)
+    context = [c for c in context if not isinstance(c, dict)]
+    ctx = set(context)
     if not ctx:
         # probably empty or not codemeta, nothing to do
         return json
@@ -101,7 +109,14 @@ def update_codemeta_file(cm_file: Path, cm_dict: Dict) -> bool:
 def cff_codemeta_tempfile(cff_file: Path):
     """Returns named temporary file with codemeta export of citation file."""
     cm_cff = cff_to_codemeta(cff_file)
-    temp_cff_cm = NamedTemporaryFile(prefix="cff_cm_", suffix=".json")
+    temp_cff_cm = NamedTemporaryFile(prefix="cff_cm_", suffix=".json", delete=False)
+
+    # if the OS is windows we need to set the TMPDIR environment variable
+    if platform.system() == "Windows":
+        temp_cff_cm = NamedTemporaryFile(
+            prefix="cff_cm_", suffix=".json", delete=False, dir=__tmp_dir__
+        )
+
     temp_cff_cm.write(json.dumps(cm_cff).encode("utf-8"))
     temp_cff_cm.flush()  # needed, or it won't be readable yet
     return temp_cff_cm
