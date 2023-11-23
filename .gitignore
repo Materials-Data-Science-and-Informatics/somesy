@@ -166,3 +166,6 @@ Thumbs.db
 .sonarqube
 .scannerwork
 .idea
+
+# windows temporary files
+Temp
