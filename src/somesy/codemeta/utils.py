@@ -5,13 +5,14 @@ import json
 import logging
 import platform
 from pathlib import Path
+from shutil import rmtree
 from tempfile import NamedTemporaryFile
 from typing import Dict
 
 import rdflib
 import rdflib.compare
 
-from somesy import __tmp_dir__
+from somesy import __tmp_codemeta_dir__, __tmp_dir__
 
 from .exec import cff_to_codemeta
 
@@ -112,11 +113,26 @@ def cff_codemeta_tempfile(cff_file: Path):
     temp_cff_cm = NamedTemporaryFile(prefix="cff_cm_", suffix=".json", delete=False)
 
     # if the OS is windows we need to set the TMPDIR environment variable
-    if platform.system() == "Windows":
+    if platform.system() == "Windows" and __tmp_codemeta_dir__ is not None:
+        # create temp folder for codemeta, just in case
+        Path(__tmp_codemeta_dir__).mkdir(exist_ok=True, parents=True)
         temp_cff_cm = NamedTemporaryFile(
-            prefix="cff_cm_", suffix=".json", delete=False, dir=__tmp_dir__
+            prefix="cff_cm_", suffix=".json", delete=False, dir=__tmp_codemeta_dir__
         )
 
     temp_cff_cm.write(json.dumps(cm_cff).encode("utf-8"))
     temp_cff_cm.flush()  # needed, or it won't be readable yet
     return temp_cff_cm
+
+
+def cleanup_codemeta_tempfiles():
+    """Find and remove temporary files with prefix="cff_cm_", suffix=".json"."""
+    if __tmp_codemeta_dir__ is not None and Path(__tmp_codemeta_dir__).is_dir():
+        rmtree(__tmp_codemeta_dir__)
+
+    # find all temp files with prefix="cff_cm_", suffix=".json" in __tmp_dir__ and remove them
+    if __tmp_dir__ is not None and Path(__tmp_dir__).is_dir():
+        temporary_files = list(Path(__tmp_dir__).glob("cff_cm_*.json"))
+        temporary_files.extend(list(Path(__tmp_dir__).glob("*.jsonld")))
+        for f in set(temporary_files):
+            f.unlink()

@@ -5,7 +5,11 @@ from pathlib import Path
 
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
-from .utils import cff_codemeta_tempfile, update_codemeta_file
+from .utils import (
+    cff_codemeta_tempfile,
+    cleanup_codemeta_tempfiles,
+    update_codemeta_file,
+)
 
 log = logging.getLogger("somesy")
 
@@ -44,7 +48,7 @@ def update_codemeta(conf: SomesyConfig):
     temp_cff_cm = contextlib.nullcontext(None)
     if not conf.no_sync_cff and conf.cff_file is not None:
         temp_cff_cm = cff_codemeta_tempfile(conf.cff_file)
-        cm_sources.append("/" + str(Path(temp_cff_cm.name).resolve()))
+        cm_sources.append(str(Path(temp_cff_cm.name).resolve()))
 
     # run codemetapy
     with temp_cff_cm:
@@ -60,7 +64,11 @@ def update_codemeta(conf: SomesyConfig):
     #     f.write(json.dumps(cm_harvest, indent=4, ensure_ascii=False, sort_keys=True))
 
     # check output and write file if needed (with workaround checking graph equivalence)
-    return update_codemeta_file(conf.codemeta_file, cm_harvest)
+    result = update_codemeta_file(conf.codemeta_file, cm_harvest)
+
+    # cleanup
+    cleanup_codemeta_tempfiles()
+    return result
 
 
 __all__ = ["update_codemeta"]
