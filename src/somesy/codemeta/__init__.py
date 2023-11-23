@@ -48,7 +48,7 @@ def update_codemeta(conf: SomesyConfig):
     temp_cff_cm = contextlib.nullcontext(None)
     if not conf.no_sync_cff and conf.cff_file is not None:
         temp_cff_cm = cff_codemeta_tempfile(conf.cff_file)
-        cm_sources.append(str(Path(temp_cff_cm.name).resolve()))
+        cm_sources.append(Path(temp_cff_cm.name).resolve())
 
     # run codemetapy
     with temp_cff_cm:
