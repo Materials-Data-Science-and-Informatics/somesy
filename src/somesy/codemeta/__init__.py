@@ -1,7 +1,7 @@
 """Integration with codemetapy (to re-generate codemeta as part of somesy sync)."""
 import contextlib
 import logging
-from pathlib import Path, WindowsPath, PureWindowsPath
+from pathlib import Path
 
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
@@ -44,14 +44,7 @@ def update_codemeta(conf: SomesyConfig):
     temp_cff_cm = contextlib.nullcontext(None)
     if not conf.no_sync_cff and conf.cff_file is not None:
         temp_cff_cm = cff_codemeta_tempfile(conf.cff_file)
-        p = Path(temp_cff_cm.name)
-        if isinstance(p, WindowsPath):
-            # codemetapy does not support WindowsPath, so we convert it to PureWindowsPath
-            # (which is a subclass of PurePath, which is what codemetapy expects)
-            # NOTE: this is a workaround for codemetapy 2.5.1, which does not support WindowsPath
-            #       (it's fixed in 2.5.2, but that version is not yet available on PyPI)
-            p = PureWindowsPath(p)
-        cm_sources.append(p)
+        cm_sources.append(str(Path(temp_cff_cm.name).resolve()))
 
     # run codemetapy
     with temp_cff_cm:
