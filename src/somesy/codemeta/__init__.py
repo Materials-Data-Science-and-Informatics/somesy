@@ -14,8 +14,12 @@ from .utils import (
 log = logging.getLogger("somesy")
 
 
+_patched = False
+
+
 def patch_codemetapy():
     """Monkey-patch for codemetapy (< 2.5.2)."""
+    global _patched
     # TODO: remove once windows path issue is fixed
     if version("codemetapy") >= "2.5.2":
         return
@@ -28,11 +32,39 @@ def patch_codemetapy():
             return path.replace("file://", "file:///")
         return path
 
-    cmc.SCHEMA_LOCAL_SOURCE = fix(cmc.SCHEMA_LOCAL_SOURCE)
-    cmc.CODEMETA_LOCAL_SOURCE = fix(cmc.CODEMETA_LOCAL_SOURCE)
-    cmc.STYPE_LOCAL_SOURCE = fix(cmc.STYPE_LOCAL_SOURCE)
-    cmc.IODATA_LOCAL_SOURCE = fix(cmc.IODATA_LOCAL_SOURCE)
-    cmc.REPOSTATUS_LOCAL_SOURCE = fix(cmc.REPOSTATUS_LOCAL_SOURCE)
+    def unfix(path: str) -> str:
+        if path.startswith("file:///") and path[9] == ":":  # windows partition name
+            return path.replace("file:///", "file://")
+        return path
+
+    def fix_local_sources():
+        cmc.SCHEMA_LOCAL_SOURCE = fix(cmc.SCHEMA_LOCAL_SOURCE)
+        cmc.CODEMETA_LOCAL_SOURCE = fix(cmc.CODEMETA_LOCAL_SOURCE)
+        cmc.STYPE_LOCAL_SOURCE = fix(cmc.STYPE_LOCAL_SOURCE)
+        cmc.IODATA_LOCAL_SOURCE = fix(cmc.IODATA_LOCAL_SOURCE)
+        cmc.REPOSTATUS_LOCAL_SOURCE = fix(cmc.REPOSTATUS_LOCAL_SOURCE)
+
+    def unfix_local_sources():
+        cmc.SCHEMA_LOCAL_SOURCE = unfix(cmc.SCHEMA_LOCAL_SOURCE)
+        cmc.CODEMETA_LOCAL_SOURCE = unfix(cmc.CODEMETA_LOCAL_SOURCE)
+        cmc.STYPE_LOCAL_SOURCE = unfix(cmc.STYPE_LOCAL_SOURCE)
+        cmc.IODATA_LOCAL_SOURCE = unfix(cmc.IODATA_LOCAL_SOURCE)
+        cmc.REPOSTATUS_LOCAL_SOURCE = unfix(cmc.REPOSTATUS_LOCAL_SOURCE)
+
+    fix_local_sources()
+
+    if not _patched:
+        _patched = True
+
+        init_context = cmc.init_context
+
+        def patched_init_context(*args, **kwargs):
+            unfix_local_sources()
+            ret = [(fix(a), b) for a, b in init_context(*args, **kwargs)]
+            fix_local_sources()
+            return ret
+
+        cmc.init_context = patched_init_context
 
 
 def collect_cm_sources(conf: SomesyConfig):
