@@ -68,14 +68,14 @@
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
+            "version": "'^2.4.2'}"
         },
         {
             "@type": "SoftwareApplication",
             "identifier": "'version':",
             "name": "'version':",
             "runtimePlatform": "Python 3",
-            "version": "'^2.4.2'}"
+            "version": "'^0.7.0'}"
         },
         {
             "@type": "SoftwareApplication",
@@ -111,6 +111,13 @@
             "name": "packaging",
             "runtimePlatform": "Python 3",
             "version": "^23.1"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "platformdirs",
+            "name": "platformdirs",
+            "runtimePlatform": "Python 3",
+            "version": "^4.0.0"
         },
         {
             "@type": "SoftwareApplication",

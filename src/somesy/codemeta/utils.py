@@ -3,16 +3,14 @@
 import importlib.resources
 import json
 import logging
-import platform
 from pathlib import Path
 from shutil import rmtree
-from tempfile import NamedTemporaryFile
 from typing import Dict
+from uuid import uuid1
 
 import rdflib
 import rdflib.compare
-
-from somesy import __tmp_codemeta_dir__, __tmp_dir__
+from platformdirs import user_runtime_path
 
 from .exec import cff_to_codemeta
 
@@ -107,32 +105,22 @@ def update_codemeta_file(cm_file: Path, cm_dict: Dict) -> bool:
     return False
 
 
-def cff_codemeta_tempfile(cff_file: Path):
+def cff_codemeta_tempfile(cff_file: Path) -> Path:
     """Returns named temporary file with codemeta export of citation file."""
     cm_cff = cff_to_codemeta(cff_file)
-    temp_cff_cm = NamedTemporaryFile(prefix="cff_cm_", suffix=".json", delete=False)
 
-    # if the OS is windows we need to set the TMPDIR environment variable
-    if platform.system() == "Windows" and __tmp_codemeta_dir__ is not None:
-        # create temp folder for codemeta, just in case
-        Path(__tmp_codemeta_dir__).mkdir(exist_ok=True, parents=True)
-        temp_cff_cm = NamedTemporaryFile(
-            prefix="cff_cm_", suffix=".json", delete=False, dir=__tmp_codemeta_dir__
-        )
+    temp_dir = user_runtime_path(ensure_exists=True) / "somesy"
+    temp_dir.mkdir(exist_ok=True)
 
-    temp_cff_cm.write(json.dumps(cm_cff).encode("utf-8"))
-    temp_cff_cm.flush()  # needed, or it won't be readable yet
-    return temp_cff_cm
+    temp_cff_cm_file = temp_dir / f"cff_cm_{uuid1()}.json"
+    with open(temp_cff_cm_file, "w") as temp_cff_cm:
+        temp_cff_cm.write(json.dumps(cm_cff))
+
+    return temp_cff_cm_file
 
 
 def cleanup_codemeta_tempfiles():
     """Find and remove temporary files with prefix="cff_cm_", suffix=".json"."""
-    if __tmp_codemeta_dir__ is not None and Path(__tmp_codemeta_dir__).is_dir():
-        rmtree(__tmp_codemeta_dir__)
-
-    # find all temp files with prefix="cff_cm_", suffix=".json" in __tmp_dir__ and remove them
-    if __tmp_dir__ is not None and Path(__tmp_dir__).is_dir():
-        temporary_files = list(Path(__tmp_dir__).glob("cff_cm_*.json"))
-        temporary_files.extend(list(Path(__tmp_dir__).glob("*.jsonld")))
-        for f in set(temporary_files):
-            f.unlink()
+    temp_dir = user_runtime_path() / "somesy"
+    if temp_dir.is_dir():
+        rmtree(temp_dir)

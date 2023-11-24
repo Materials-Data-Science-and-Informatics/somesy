@@ -1,7 +1,5 @@
 """Integration with codemetapy (to re-generate codemeta as part of somesy sync)."""
-import contextlib
 import logging
-from pathlib import Path
 
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
@@ -45,14 +43,12 @@ def update_codemeta(conf: SomesyConfig):
     cm_sources = collect_cm_sources(conf)
 
     # if cff file is given, convert it to codemeta tempfile and pass as extra input
-    temp_cff_cm = contextlib.nullcontext(None)
     if not conf.no_sync_cff and conf.cff_file is not None:
         temp_cff_cm = cff_codemeta_tempfile(conf.cff_file)
-        cm_sources.append(Path(temp_cff_cm.name).resolve())
+        cm_sources.append(temp_cff_cm.resolve())
 
     # run codemetapy
-    with temp_cff_cm:
-        cm_harvest = gen_codemeta(cm_sources)
+    cm_harvest = gen_codemeta(cm_sources)
 
     # NOTE: once codemetapy is fixed (still broken with 2.5.1), we should not need
     # update_codemeta_file + codemeta context dump + most of utils.py + their tests anymore
