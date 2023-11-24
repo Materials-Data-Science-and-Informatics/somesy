@@ -60,7 +60,9 @@ def patch_codemetapy():
 
         def patched_init_context(*args, **kwargs):
             unfix_local_sources()
-            ret = [(fix(a), b) for a, b in init_context(*args, **kwargs)]
+            # NOTE: do not fix sources here, init_graph chokes on it
+            # ret = [(fix(a), b) for a, b in init_context(*args, **kwargs)]
+            ret = init_context(*args, **kwargs)
             fix_local_sources()
             return ret
 
