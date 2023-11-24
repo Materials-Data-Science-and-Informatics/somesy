@@ -23,6 +23,8 @@ def patch_codemetapy():
     if version("codemetapy") >= "2.5.2":
         return
 
+    log.info("patching codemeta")
+
     import codemeta.common as cmc
 
     def fix(path: str) -> str:
