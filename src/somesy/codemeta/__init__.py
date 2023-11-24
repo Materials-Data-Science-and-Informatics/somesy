@@ -1,6 +1,8 @@
 """Integration with codemetapy (to re-generate codemeta as part of somesy sync)."""
 import logging
 
+from importlib_metadata import version
+
 from ..core.models import SomesyConfig
 from .exec import gen_codemeta
 from .utils import (
@@ -10,6 +12,27 @@ from .utils import (
 )
 
 log = logging.getLogger("somesy")
+
+
+def patch_codemetapy():
+    """Monkey-patch for codemetapy (< 2.5.2)."""
+    # TODO: remove once windows path issue is fixed
+    if version("codemetapy") >= "2.5.2":
+        return
+
+    import codemeta.common as cmc
+
+    def fix(path: str) -> str:
+        """Ensure the windows file URI is valid (starts with file:///)."""
+        if path.startswith("file://") and not path.startswith("file:///"):
+            return path.replace("file://", "file:///")
+        return path
+
+    cmc.SCHEMA_LOCAL_SOURCE = fix(cmc.SCHEMA_LOCAL_SOURCE)
+    cmc.CODEMETA_LOCAL_SOURCE = fix(cmc.CODEMETA_LOCAL_SOURCE)
+    cmc.STYPE_LOCAL_SOURCE = fix(cmc.STYPE_LOCAL_SOURCE)
+    cmc.IODATA_LOCAL_SOURCE = fix(cmc.IODATA_LOCAL_SOURCE)
+    cmc.REPOSTATUS_LOCAL_SOURCE = fix(cmc.REPOSTATUS_LOCAL_SOURCE)
 
 
 def collect_cm_sources(conf: SomesyConfig):
@@ -48,6 +71,7 @@ def update_codemeta(conf: SomesyConfig):
         cm_sources.append(temp_cff_cm.resolve())
 
     # run codemetapy
+    patch_codemetapy()
     cm_harvest = gen_codemeta(cm_sources)
 
     # NOTE: once codemetapy is fixed (still broken with 2.5.1), we should not need
