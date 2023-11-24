@@ -14,6 +14,8 @@ log = logging.getLogger("somesy")
 # TODO: remove this section once windows path issue is fixed
 _patched = False
 
+import codemeta.common as cmc  # noqa
+
 
 def patch_codemetapy():
     """Monkey-patch for codemetapy (< 2.5.2)."""
@@ -24,8 +26,6 @@ def patch_codemetapy():
         return
 
     log.info("patching codemeta")
-
-    import codemeta.common as cmc
 
     def fix(path: str) -> str:
         """Ensure the windows file URI is valid (starts with file:///)."""
