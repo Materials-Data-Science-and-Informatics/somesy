@@ -8,6 +8,8 @@ from typing import Dict, List
 
 from cffconvert.cli.create_citation import create_citation
 
+log = logging.getLogger("somesy")
+
 # ----
 # TODO: remove this section once windows path issue is fixed
 _patched = False
@@ -56,6 +58,7 @@ def patch_codemetapy():
         init_context = cmc.init_context
 
         def patched_init_context(*args, **kwargs):
+            log.info("called patched init")
             unfix_local_sources()
             # NOTE: do not fix sources here, init_graph chokes on it
             # ret = [(fix(a), b) for a, b in init_context(*args, **kwargs)]
@@ -71,12 +74,6 @@ if not _patched:
 # ----
 
 
-from codemeta.codemeta import build  # noqa
-from codemeta.serializers.jsonld import serialize_to_jsonld  # noqa
-
-log = logging.getLogger("somesy")
-
-
 def cff_to_codemeta(cff_file: Path) -> Dict:
     """Get codemeta LD dict from CITATION.cff via cffconvert."""
     return json.loads(create_citation(cff_file, None).as_codemeta())
@@ -85,6 +82,10 @@ def cff_to_codemeta(cff_file: Path) -> Dict:
 def gen_codemeta(sources: List[str], *, with_entrypoints: bool = True) -> Dict:
     """Harvest codemeta LD dict via codemetapy."""
     log.debug(f"Running codemetapy with sources {sources}")
+
+    from codemeta.codemeta import build  # noqa
+    from codemeta.serializers.jsonld import serialize_to_jsonld  # noqa
+
     with redirect_stderr(StringIO()) as cm_log:
         g, res, args, _ = build(
             inputsources=list(map(str, sources)),

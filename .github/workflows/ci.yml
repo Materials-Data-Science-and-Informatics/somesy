@@ -89,7 +89,7 @@ jobs:
       - name: Check that tests complete without errors
         run: |
           poetry install
-          poetry run poe test
+          poetry run poe test -s
 
   docs:
     # build + deploy documentation (only on push event for certain branches+tags)
