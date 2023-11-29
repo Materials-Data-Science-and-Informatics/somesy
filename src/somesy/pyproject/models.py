@@ -94,7 +94,7 @@ class PoetryConfig(BaseModel):
     @classmethod
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
-        if type(v) is list:
+        if isinstance(v, list):
             if any(not e.is_file() for e in v):
                 raise ValueError("Some file(s) do not exist")
         else:
@@ -184,7 +184,7 @@ class SetuptoolsConfig(BaseModel):
     @classmethod
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
-        if type(v) is list:
+        if isinstance(v, list):
             if any(not e.is_file() for e in v):
                 raise ValueError("Some file(s) do not exist")
         elif type(v) is File:
