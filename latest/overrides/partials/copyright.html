@@ -1,16 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Redirecting</title>
-  <noscript>
-    <meta http-equiv="refresh" content="1; url=../../../v0.0.1/overrides/partials/copyright.html" />
-  </noscript>
-  <script>
-    window.location.replace("../../../v0.0.1/overrides/partials/copyright.html" + window.location.hash);
-  </script>
-</head>
-<body>
-  Redirecting to <a href="../../../v0.0.1/overrides/partials/copyright.html">../../../v0.0.1/overrides/partials/copyright.html</a>...
-</body>
-</html>
+<!-- Copyright and theme information -->
+<div class="md-copyright">
+  {% if config.copyright %}
+    <div class="md-copyright__highlight">
+      {{ config.copyright }}
+    </div>
+  {% endif %}
+  {% if not config.extra.generator == false %}
+    Made with
+    <a
+      href="https://squidfunk.github.io/mkdocs-material/"
+      target="_blank" rel="noopener"
+    >
+      Material for MkDocs
+    </a>
+    <!-- added link to project template -->
+    and
+    <a
+      href="https://github.com/Materials-Data-Science-and-Informatics/fair-python-cookiecutter"
+      target="_blank" rel="noopener"
+    >
+      fair-python-cookiecutter
+    </a>
+    <!-- ------------------------------ -->
+  {% endif %}
+</div>
