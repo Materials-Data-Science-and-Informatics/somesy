@@ -12,12 +12,12 @@ on:
       to_test_pypi:
         description: "Publish to Test PyPI."
         type: boolean
-        default: true
+        default: false
 
       to_pypi:
         description: "Publish to PyPI."
         type: boolean
-        default: false
+        default: true
 
 jobs:
   github:
