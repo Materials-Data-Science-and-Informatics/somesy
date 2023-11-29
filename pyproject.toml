@@ -128,14 +128,17 @@ exclude_lines = [
 [tool.semantic_release]
 version_variable = "src/somesy/__init__.py:__version__"
 
-[tool.flake8]
-ignore = ["B008", "E501", "W503", "E712", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "F722"]
+[tool.ruff]
+line-length = 120
 
-[tool.pydocstyle]
-convention = "google"
+[tool.ruff.lint]
+ignore = ["B008", "E501", "E712", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "F722"]
 
-[tool.interrogate]
-fail-under = 90
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
 
 [tool.bandit]
 exclude_dirs = ["tests", "scripts"]
