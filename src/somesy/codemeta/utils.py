@@ -34,8 +34,7 @@ _codemeta_context = set(
 
 
 def _localize_codemetapy_context(json):
-    """
-    Prevent rdflib external context resolution by embedding it from a file.
+    """Prevent rdflib external context resolution by embedding it from a file.
 
     The context is required to parse the JSON-LD correctly, fields with no
     context are ignored (not considered LD).
@@ -70,8 +69,7 @@ def _graph_from_cm_dict(graph_dict):
 
 
 def _graph_from_cm_file(file: Path) -> rdflib.Graph:
-    """
-    Return loaded codemeta with localized context.
+    """Return loaded codemeta with localized context.
 
     If file does not exist, returns `None` (to distinguish from existing but empty).
     """
@@ -85,8 +83,7 @@ def _graph_from_cm_file(file: Path) -> rdflib.Graph:
 
 
 def update_codemeta_file(cm_file: Path, cm_dict: Dict) -> bool:
-    """
-    Update codemeta file with graph in dict if it changed.
+    """Update codemeta file with graph in dict if it changed.
 
     Returns True if the file update happened.
     """

@@ -42,14 +42,30 @@ class PoetryConfig(BaseModel):
         Field(description="An SPDX license identifier."),
     ]
     authors: Annotated[Set[str], Field(description="Package authors")]
-    maintainers: Annotated[Optional[Set[str]], Field(description="Package maintainers")] = None
-    readme: Annotated[Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")] = None
-    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = None
-    repository: Annotated[Optional[HttpUrlStr], Field(description="Package repository")] = None
-    documentation: Annotated[Optional[HttpUrlStr], Field(description="Package documentation page")] = None
-    keywords: Annotated[Optional[Set[str]], Field(description="Keywords that describe the package")] = None
-    classifiers: Annotated[Optional[List[str]], Field(description="pypi classifiers")] = None
-    urls: Annotated[Optional[Dict[str, HttpUrlStr]], Field(description="Package URLs")] = None
+    maintainers: Annotated[
+        Optional[Set[str]], Field(description="Package maintainers")
+    ] = None
+    readme: Annotated[
+        Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
+    ] = None
+    homepage: Annotated[
+        Optional[HttpUrlStr], Field(description="Package homepage")
+    ] = None
+    repository: Annotated[
+        Optional[HttpUrlStr], Field(description="Package repository")
+    ] = None
+    documentation: Annotated[
+        Optional[HttpUrlStr], Field(description="Package documentation page")
+    ] = None
+    keywords: Annotated[
+        Optional[Set[str]], Field(description="Keywords that describe the package")
+    ] = None
+    classifiers: Annotated[
+        Optional[List[str]], Field(description="pypi classifiers")
+    ] = None
+    urls: Annotated[
+        Optional[Dict[str, HttpUrlStr]], Field(description="Package URLs")
+    ] = None
 
     @field_validator("version")
     @classmethod
@@ -140,10 +156,14 @@ class SetuptoolsConfig(BaseModel):
     model_config = dict(use_enum_values=True)
 
     name: Annotated[str, Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
-    version: Annotated[str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")]
+    version: Annotated[
+        str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")
+    ]
     description: str
     readme: Optional[Union[Path, List[Path], File]] = None
-    license: Optional[Union[LicenseEnum, List[LicenseEnum]]] = Field(None, description="An SPDX license identifier.")
+    license: Optional[Union[LicenseEnum, List[LicenseEnum]]] = Field(
+        None, description="An SPDX license identifier."
+    )
     authors: Optional[List[STPerson]] = None
     maintainers: Optional[List[STPerson]] = None
     keywords: Optional[Set[str]] = None

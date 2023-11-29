@@ -20,8 +20,7 @@ from .types import ContributionTypeEnum, Country, HttpUrlStr, LicenseEnum
 
 
 class SomesyBaseModel(BaseModel):
-    """
-    Customized pydantic BaseModel for somesy.
+    """Customized pydantic BaseModel for somesy.
 
     Apart from some general tweaks for better defaults,
     adds a private `_key_order` field, which is used to track the
@@ -55,8 +54,7 @@ class SomesyBaseModel(BaseModel):
 
     @classmethod
     def make_partial(cls, dct):
-        """
-        Construct unvalidated partial model from dict.
+        """Construct unvalidated partial model from dict.
 
         Handles aliases correctly, unlike `construct`.
         """
@@ -82,8 +80,7 @@ class SomesyBaseModel(BaseModel):
                 kwargs[key] = True
 
     def _reorder_dict(self, dct):
-        """
-        Return dict with patched key order (according to `self._key_order`).
+        """Return dict with patched key order (according to `self._key_order`).
 
         Keys in `dct` not listed in `self._key_order` come after all others.
 
@@ -125,8 +122,7 @@ _SOMESY_TARGETS = ["cff", "pyproject", "package_json", "codemeta"]
 
 
 class SomesyConfig(SomesyBaseModel):
-    """
-    Pydantic model for somesy tool configuration.
+    """Pydantic model for somesy tool configuration.
 
     Note that all fields match CLI options, and CLI options will override the
     values declared in a somesy input file (such as `somesy.toml`).
@@ -149,26 +145,48 @@ class SomesyConfig(SomesyBaseModel):
             description="Show basic information messages on run (-v flag).",
         ),
     ] = False
-    verbose: Annotated[bool, Field(description="Show verbose messages on run (-vv flag).")] = False
-    debug: Annotated[bool, Field(description="Show debug messages on run (-vvv flag).")] = False
+    verbose: Annotated[
+        bool, Field(description="Show verbose messages on run (-vv flag).")
+    ] = False
+    debug: Annotated[
+        bool, Field(description="Show debug messages on run (-vvv flag).")
+    ] = False
 
-    input_file: Annotated[Path, Field(description="Project metadata input file path.")] = Path("somesy.toml")
+    input_file: Annotated[
+        Path, Field(description="Project metadata input file path.")
+    ] = Path("somesy.toml")
 
-    no_sync_pyproject: Annotated[bool, Field(description="Do not sync with pyproject.toml.")] = False
-    pyproject_file: Annotated[Path, Field(description="pyproject.toml file path.")] = Path("pyproject.toml")
+    no_sync_pyproject: Annotated[
+        bool, Field(description="Do not sync with pyproject.toml.")
+    ] = False
+    pyproject_file: Annotated[
+        Path, Field(description="pyproject.toml file path.")
+    ] = Path("pyproject.toml")
 
-    no_sync_package_json: Annotated[bool, Field(description="Do not sync with package.json.")] = False
-    package_json_file: Annotated[Path, Field(description="package.json file path.")] = Path("package.json")
+    no_sync_package_json: Annotated[
+        bool, Field(description="Do not sync with package.json.")
+    ] = False
+    package_json_file: Annotated[
+        Path, Field(description="package.json file path.")
+    ] = Path("package.json")
 
     no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
-    cff_file: Annotated[Path, Field(description="CFF file path.")] = Path("CITATION.cff")
+    cff_file: Annotated[Path, Field(description="CFF file path.")] = Path(
+        "CITATION.cff"
+    )
 
-    no_sync_codemeta: Annotated[bool, Field(description="Do not sync with codemeta.json.")] = False
-    codemeta_file: Annotated[Path, Field(description="codemeta.json file path.")] = Path("codemeta.json")
+    no_sync_codemeta: Annotated[
+        bool, Field(description="Do not sync with codemeta.json.")
+    ] = False
+    codemeta_file: Annotated[
+        Path, Field(description="codemeta.json file path.")
+    ] = Path("codemeta.json")
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
-        return SomesyLogLevel.from_flags(info=self.show_info, verbose=self.verbose, debug=self.debug)
+        return SomesyLogLevel.from_flags(
+            info=self.show_info, verbose=self.verbose, debug=self.debug
+        )
 
     def update_log_level(self, log_level: SomesyLogLevel):
         """Update config flags according to passed log level."""
@@ -193,8 +211,7 @@ class SomesyConfig(SomesyBaseModel):
 
 
 class Person(SomesyBaseModel):
-    """
-    Metadata abount a person in the context of a software project.
+    """Metadata abount a person in the context of a software project.
 
     This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
     """
@@ -203,7 +220,9 @@ class Person(SomesyBaseModel):
 
     orcid: Annotated[
         Optional[HttpUrlStr],
-        Field(description="The person's ORCID url **(not required, but highly suggested)**."),
+        Field(
+            description="The person's ORCID url **(not required, but highly suggested)**."
+        ),
     ] = None
 
     email: Annotated[
@@ -214,8 +233,12 @@ class Person(SomesyBaseModel):
         ),
     ]
 
-    family_names: Annotated[str, Field(alias="family-names", description="The person's family names.")]
-    given_names: Annotated[str, Field(alias="given-names", description="The person's given names.")]
+    family_names: Annotated[
+        str, Field(alias="family-names", description="The person's family names.")
+    ]
+    given_names: Annotated[
+        str, Field(alias="given-names", description="The person's given names.")
+    ]
 
     name_particle: Annotated[
         Optional[str],
@@ -236,29 +259,43 @@ class Person(SomesyBaseModel):
     ] = None
     alias: Annotated[Optional[str], Field(description="The person's alias.")] = None
 
-    affiliation: Annotated[Optional[str], Field(description="The person's affiliation.")] = None
+    affiliation: Annotated[
+        Optional[str], Field(description="The person's affiliation.")
+    ] = None
 
     address: Annotated[Optional[str], Field(description="The person's address.")] = None
     city: Annotated[Optional[str], Field(description="The person's city.")] = None
-    country: Annotated[Optional[Country], Field(description="The person's country.")] = None
+    country: Annotated[
+        Optional[Country], Field(description="The person's country.")
+    ] = None
     fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
-    post_code: Annotated[Optional[str], Field(alias="post-code", description="The person's post-code.")] = None
+    post_code: Annotated[
+        Optional[str], Field(alias="post-code", description="The person's post-code.")
+    ] = None
     region: Annotated[Optional[str], Field(description="The person's region.")] = None
-    tel: Annotated[Optional[str], Field(description="The person's phone number.")] = None
+    tel: Annotated[
+        Optional[str], Field(description="The person's phone number.")
+    ] = None
 
     # ----
     # somesy-specific extensions
     author: Annotated[
         bool,
-        Field(description="Indicates whether the person is an author of the project (i.e. significant contributor)."),
+        Field(
+            description="Indicates whether the person is an author of the project (i.e. significant contributor)."
+        ),
     ] = False
     publication_author: Annotated[
         Optional[bool],
-        Field(description="Indicates whether the person is to be listed as an author in academic citations."),
+        Field(
+            description="Indicates whether the person is to be listed as an author in academic citations."
+        ),
     ] = None
     maintainer: Annotated[
         bool,
-        Field(description="Indicates whether the person is a maintainer of the project (i.e. for contact)."),
+        Field(
+            description="Indicates whether the person is a maintainer of the project (i.e. for contact)."
+        ),
     ] = False
 
     # NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.
@@ -273,8 +310,12 @@ class Person(SomesyBaseModel):
             min_length=1,
         ),
     ] = None
-    contribution_begin: Annotated[Optional[date], Field(description="Beginning date of the contribution.")] = None
-    contribution_end: Annotated[Optional[date], Field(description="Ending date of the contribution.")] = None
+    contribution_begin: Annotated[
+        Optional[date], Field(description="Beginning date of the contribution.")
+    ] = None
+    contribution_end: Annotated[
+        Optional[date], Field(description="Ending date of the contribution.")
+    ] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -310,8 +351,7 @@ class Person(SomesyBaseModel):
         return " ".join(names) if names else ""
 
     def same_person(self, other) -> bool:
-        """
-        Return whether two Person metadata records are about the same real person.
+        """Return whether two Person metadata records are about the same real person.
 
         Uses heuristic match based on orcid, email and name (whichever are provided).
         """
@@ -370,7 +410,9 @@ class ProjectMetadata(SomesyBaseModel):
         Optional[HttpUrlStr],
         Field(description="URL of the project source code repository."),
     ] = None
-    homepage: Annotated[Optional[HttpUrlStr], Field(description="URL of the project homepage.")] = None
+    homepage: Annotated[
+        Optional[HttpUrlStr], Field(description="URL of the project homepage.")
+    ] = None
 
     keywords: Annotated[
         Optional[List[str]],
@@ -379,7 +421,9 @@ class ProjectMetadata(SomesyBaseModel):
 
     people: Annotated[
         List[Person],
-        Field(min_length=1, description="Project authors, maintainers and contributors."),
+        Field(
+            min_length=1, description="Project authors, maintainers and contributors."
+        ),
     ]
 
     def authors(self):
@@ -387,8 +431,7 @@ class ProjectMetadata(SomesyBaseModel):
         return [p for p in self.people if p.author]
 
     def publication_authors(self):
-        """
-        Return people marked as publication authors.
+        """Return people marked as publication authors.
 
         This always includes people marked as authors.
         """
@@ -418,8 +461,7 @@ class SomesyInput(SomesyBaseModel):
     ]
 
     def is_somesy_file(self) -> bool:
-        """
-        Return whether this somesy input is from a somesy config file.
+        """Return whether this somesy input is from a somesy config file.
 
         That means, returns False if it is from pyproject.toml or package.json.
         """
@@ -427,8 +469,7 @@ class SomesyInput(SomesyBaseModel):
 
     @classmethod
     def is_somesy_file_path(cls, path: Path) -> bool:
-        """
-        Return whether the path looks like a somesy config file.
+        """Return whether the path looks like a somesy config file.
 
         That means, returns False if it is e.g. pyproject.toml or package.json.
         """

@@ -10,8 +10,7 @@ log = logging.getLogger("somesy")
 
 
 class ProjectMetadataWriter(ABC):
-    """
-    Base class for Project Metadata Output Wrapper.
+    """Base class for Project Metadata Output Wrapper.
 
     All supported output formats are implemented as subclasses.
     """
@@ -23,8 +22,7 @@ class ProjectMetadataWriter(ABC):
         create_if_not_exists: Optional[bool] = False,
         direct_mappings: Dict[str, List[str]] = None,
     ) -> None:
-        """
-        Initialize the Project Metadata Output Wrapper.
+        """Initialize the Project Metadata Output Wrapper.
 
         Use the `direct_mappings` dict to define
         format-specific location for certain fields,
@@ -52,8 +50,7 @@ class ProjectMetadataWriter(ABC):
                 raise FileNotFoundError(f"The file {self.path} does not exist.")
 
     def _init_new_file(self) -> None:
-        """
-        Create an new suitable target file.
+        """Create an new suitable target file.
 
         Override to initialize file with minimal contents, if needed.
         Make sure to set `self._data` to match the contents.
@@ -62,8 +59,7 @@ class ProjectMetadataWriter(ABC):
 
     @abstractmethod
     def _load(self):
-        """
-        Load the output file and validate it.
+        """Load the output file and validate it.
 
         Implement this method so that it loads the file `self.path`
         into the `self._data` dict.
@@ -73,8 +69,7 @@ class ProjectMetadataWriter(ABC):
 
     @abstractmethod
     def _validate(self):
-        """
-        Validate the target file data.
+        """Validate the target file data.
 
         Implement this method so that it checks
         the validity of the metadata (relevant to somesy)
@@ -83,8 +78,7 @@ class ProjectMetadataWriter(ABC):
 
     @abstractmethod
     def save(self, path: Optional[Path]) -> None:
-        """
-        Save the output file to the given path.
+        """Save the output file to the given path.
 
         Implement this in a way that will carefully
         update the target file with new metadata
@@ -92,8 +86,7 @@ class ProjectMetadataWriter(ABC):
         """
 
     def _get_property(self, key: Union[str, List[str]]) -> Optional[Any]:
-        """
-        Get a property from the data.
+        """Get a property from the data.
 
         Override this to e.g. rewrite the retrieved key
         (e.g. if everything relevant is in some subobject).
@@ -109,8 +102,7 @@ class ProjectMetadataWriter(ABC):
         return curr
 
     def _set_property(self, key: Union[str, List[str]], value: Any) -> None:
-        """
-        Set a property in the data.
+        """Set a property in the data.
 
         Override this to e.g. rewrite the retrieved key
         (e.g. if everything relevant is in some subobject).
@@ -129,9 +121,10 @@ class ProjectMetadataWriter(ABC):
     # ----
     # special handling for person metadata
 
-    def _merge_person_metadata(self, old: List[Person], new: List[Person]) -> List[Person]:
-        """
-        Update metadata of a list of persons.
+    def _merge_person_metadata(
+        self, old: List[Person], new: List[Person]
+    ) -> List[Person]:
+        """Update metadata of a list of persons.
 
         Will identify people based on orcid, email or full name.
 
@@ -160,7 +153,9 @@ class ProjectMetadataWriter(ABC):
                 still_exists[i] = True
 
                 # if there were changes -> update person
-                overlapping_fields = person.model_dump(include=set(person_update.keys()))
+                overlapping_fields = person.model_dump(
+                    include=set(person_update.keys())
+                )
                 if person_update != overlapping_fields:
                     modified_people[i] = person.model_copy(update=person_update)
 
@@ -182,7 +177,9 @@ class ProjectMetadataWriter(ABC):
 
         # return updated list of (still existing) people,
         # and all new people coming after them.
-        existing_modified = [modified_people[i] for i in range(len(old)) if still_exists[i]]
+        existing_modified = [
+            modified_people[i] for i in range(len(old)) if still_exists[i]
+        ]
         return existing_modified + new_people
 
     def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
@@ -190,8 +187,7 @@ class ProjectMetadataWriter(ABC):
         return self._merge_person_metadata(old_people, new)
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
-        """
-        Sync output file authors with authors from metadata.
+        """Sync output file authors with authors from metadata.
 
         This method is existing for the publication_author special case
         when synchronizing to CITATION.cff.
@@ -210,7 +206,9 @@ class ProjectMetadataWriter(ABC):
             self.keywords = metadata.keywords
 
         self._sync_authors(metadata)
-        self.maintainers = self._sync_person_list(self.maintainers, metadata.maintainers())
+        self.maintainers = self._sync_person_list(
+            self.maintainers, metadata.maintainers()
+        )
 
         self.license = metadata.license.value
         if metadata.homepage:

@@ -17,7 +17,9 @@ def package_json_file(create_files, file_types):
 
 def test_content_match(package_json: PackageJSON):
     assert package_json.name == "test-package"
-    assert package_json.description == "This is a test package for demonstration purposes."
+    assert (
+        package_json.description == "This is a test package for demonstration purposes."
+    )
     assert package_json.license == "MIT"
     assert len(package_json.authors) == 1
 
@@ -61,7 +63,9 @@ def test_person_merge(package_json_file, person: Person):
     pj.save()
 
     # jane becomes john -> modified person
-    person1b = person.model_copy(update={"given_names": "John", "author": True, "publication_author": True})
+    person1b = person.model_copy(
+        update={"given_names": "John", "author": True, "publication_author": True}
+    )
 
     # different Jane Doe with different orcid -> new person
     person2 = person.model_copy(

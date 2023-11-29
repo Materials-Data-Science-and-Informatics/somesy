@@ -91,7 +91,9 @@ def test_custom_key_order():
     # correct subsequence of order
     expected_order = ["given_names", "family_names", "email"]
     assert list(p.model_dump(exclude_none=True).keys()) == expected_order
-    assert list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == expected_order
+    assert (
+        list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == expected_order
+    )
 
     # added field appears in right spot
     p.orcid = "https://orcid.org/1234-5678-9101"
@@ -102,7 +104,9 @@ def test_custom_key_order():
     p.affiliation = "Some institution"
     expected_order = p._key_order + ["affiliation"]
     assert list(p.model_dump(exclude_none=True).keys()) == expected_order
-    assert list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == expected_order
+    assert (
+        list(json.loads(p.model_dump_json(exclude_none=True)).keys()) == expected_order
+    )
 
     # key order also preserved by copy
     assert p.model_copy()._key_order == p._key_order

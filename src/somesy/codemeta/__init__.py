@@ -11,24 +11,30 @@ log = logging.getLogger("somesy")
 
 
 def collect_cm_sources(conf: SomesyConfig):
-    """
-    Assemble list of inputs for codemetapy based on somesy config.
+    """Assemble list of inputs for codemetapy based on somesy config.
 
     Returns files that are supported by both somesy and codemetapy and are enabled for somesy.
     """
     cm_sources = []
-    if not conf.no_sync_pyproject and conf.pyproject_file is not None and conf.pyproject_file.is_file():
+    if (
+        not conf.no_sync_pyproject
+        and conf.pyproject_file is not None
+        and conf.pyproject_file.is_file()
+    ):
         cm_sources.append(conf.pyproject_file)
     # NOTE: we don't add CFF directly, because it must be handled separately
     # NOTE: add other suitable somesy targets / codemeta sources (except CFF and codemeta) here
-    if conf.no_sync_package_json and conf.package_json_file is not None and conf.package_json_file.is_file():
+    if (
+        conf.no_sync_package_json
+        and conf.package_json_file is not None
+        and conf.package_json_file.is_file()
+    ):
         cm_sources.append(conf.package_json_file)
     return cm_sources
 
 
 def update_codemeta(conf: SomesyConfig):
-    """
-    Generate or update codemeta file based on sources that somesy supports.
+    """Generate or update codemeta file based on sources that somesy supports.
 
     Returns True if file has been written, False if it was up to date.
     """

@@ -11,8 +11,7 @@ logger = logging.getLogger("somesy")
 
 
 def init_config(input_path: Path, options: dict) -> None:
-    """
-    Initialize somesy configuration file.
+    """Initialize somesy configuration file.
 
     Args:
     ----

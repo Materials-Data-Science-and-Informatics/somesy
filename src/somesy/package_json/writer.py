@@ -21,8 +21,7 @@ class PackageJSON(ProjectMetadataWriter):
         self,
         path: Path,
     ):
-        """
-        package.json parser.
+        """package.json parser.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
@@ -61,7 +60,9 @@ class PackageJSON(ProjectMetadataWriter):
     def _validate(self) -> None:
         """Validate package.json content using pydantic class."""
         config = dict(self._get_property([]))
-        logger.debug(f"Validating config using {PackageJsonConfig.__name__}: {pretty_repr(config)}")
+        logger.debug(
+            f"Validating config using {PackageJsonConfig.__name__}: {pretty_repr(config)}"
+        )
         PackageJsonConfig(**config)
 
     def save(self, path: Optional[Path] = None) -> None:
@@ -88,7 +89,9 @@ class PackageJSON(ProjectMetadataWriter):
         """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
             # parse from package.json format
-            person = PackageJsonConfig.convert_author(person).model_dump(exclude_none=True)
+            person = PackageJsonConfig.convert_author(person).model_dump(
+                exclude_none=True
+            )
 
         names = list(map(lambda s: s.strip(), person["name"].split()))
         person_obj = {
@@ -102,8 +105,7 @@ class PackageJSON(ProjectMetadataWriter):
         return Person(**person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
-        """
-        Sync package.json with project metadata.
+        """Sync package.json with project metadata.
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """

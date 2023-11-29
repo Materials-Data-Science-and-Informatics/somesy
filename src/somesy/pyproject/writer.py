@@ -20,15 +20,18 @@ logger = logging.getLogger("somesy")
 class PyprojectCommon(ProjectMetadataWriter):
     """Poetry config file handler parsed from pyproject.toml."""
 
-    def __init__(self, path: Path, *, section: List[str], model_cls, direct_mappings=None):
-        """
-        Poetry config file handler parsed from pyproject.toml.
+    def __init__(
+        self, path: Path, *, section: List[str], model_cls, direct_mappings=None
+    ):
+        """Poetry config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self._model_cls = model_cls
         self._section = section
-        super().__init__(path, create_if_not_exists=False, direct_mappings=direct_mappings or {})
+        super().__init__(
+            path, create_if_not_exists=False, direct_mappings=direct_mappings or {}
+        )
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
@@ -36,14 +39,15 @@ class PyprojectCommon(ProjectMetadataWriter):
             self._data = tomlkit.load(f)
 
     def _validate(self) -> None:
-        """
-        Validate poetry config using pydantic class.
+        """Validate poetry config using pydantic class.
 
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
         config = dict(self._get_property([]))
-        logger.debug(f"Validating config using {self._model_cls.__name__}: {pretty_repr(config)}")
+        logger.debug(
+            f"Validating config using {self._model_cls.__name__}: {pretty_repr(config)}"
+        )
         self._model_cls(**config)
 
     def save(self, path: Optional[Path] = None) -> None:
@@ -76,8 +80,7 @@ class Poetry(PyprojectCommon):
     """Poetry config file handler parsed from pyproject.toml."""
 
     def __init__(self, path: Path):
-        """
-        Poetry config file handler parsed from pyproject.toml.
+        """Poetry config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
@@ -111,8 +114,7 @@ class SetupTools(PyprojectCommon):
     """Setuptools config file handler parsed from setup.cfg."""
 
     def __init__(self, path: Path):
-        """
-        Setuptools config file handler parsed from pyproject.toml.
+        """Setuptools config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
@@ -121,7 +123,9 @@ class SetupTools(PyprojectCommon):
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
         }
-        super().__init__(path, section=section, direct_mappings=mappings, model_cls=SetuptoolsConfig)
+        super().__init__(
+            path, section=section, direct_mappings=mappings, model_cls=SetuptoolsConfig
+        )
 
     @staticmethod
     def _from_person(person: Person):
@@ -152,8 +156,7 @@ class Pyproject(wrapt.ObjectProxy):
     __wrapped__: Union[SetupTools, Poetry]
 
     def __init__(self, path: Path):
-        """
-        Pyproject wrapper class. Wraps either setuptools or poetry.
+        """Pyproject wrapper class. Wraps either setuptools or poetry.
 
         Args:
         ----

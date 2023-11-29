@@ -17,7 +17,9 @@ def sync(somesy_input: SomesyInput):
     """Sync selected metadata files with given input file."""
     conf, metadata = somesy_input.config, somesy_input.project
 
-    logger.debug(f"Project metadata: {pretty_repr(metadata.model_dump(exclude_defaults=True))}")
+    logger.debug(
+        f"Project metadata: {pretty_repr(metadata.model_dump(exclude_defaults=True))}"
+    )
 
     # update these only if they exist:
 
@@ -41,8 +43,7 @@ def _sync_python(
     metadata: ProjectMetadata,
     pyproject_file: Path,
 ):
-    """
-    Sync pyproject.toml file using project metadata.
+    """Sync pyproject.toml file using project metadata.
 
     Args:
     ----
@@ -61,8 +62,7 @@ def _sync_cff(
     metadata: ProjectMetadata,
     cff_file: Path,
 ):
-    """
-    Sync CITATION.cff file using project metadata.
+    """Sync CITATION.cff file using project metadata.
 
     Args:
     ----
@@ -81,8 +81,7 @@ def _sync_package_json(
     metadata: ProjectMetadata,
     package_json_file: Path,
 ):
-    """
-    Sync package.json file using project metadata.
+    """Sync package.json file using project metadata.
 
     Args:
     ----

@@ -126,48 +126,12 @@ exclude_lines = [
 [tool.semantic_release]
 version_variable = "src/somesy/__init__.py:__version__"
 
-[tool.ruff]
-line-length = 120
-indent-width = 4
-exclude = [
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".git-rewrite",
-    ".hg",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".pytype",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
-]
-
-
 [tool.ruff.lint]
-select = ["E", "F", "I", "D", "B", "S", "W"]
-ignore = ["D203", "D212", "B008"]
+extend-select = ["I", "D", "B", "S", "W"]
+ignore = ["D203", "D213", "B008"]
 
 [tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E402"]
-"**/{test/*}/*" = ["D", "S"]
-"**/{tests,docs,tools,scripts}/*" = ["ALL"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-line-ending = "auto"
+"**/{tests,docs}/*" = ["ALL"]
 
 [tool.licensecheck]
 using = "poetry"

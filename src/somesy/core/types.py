@@ -519,8 +519,7 @@ class ContributionTypeEnum(MyEnum):
 
 
 class Country(MyEnum):
-    """
-    Country codes from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
+    """Country codes from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.
 
     It is used for the country of a person in project metadata.
     """

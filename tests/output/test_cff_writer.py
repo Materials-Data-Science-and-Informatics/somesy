@@ -68,7 +68,9 @@ def test_person_merge(tmp_path, person: Person):
     assert list(dct["authors"][0].keys()) == to_cff_keys(person._key_order)
 
     # jane becomes john -> modified person
-    person1b = person.model_copy(update={"given_names": "John", "author": True, "publication_author": True})
+    person1b = person.model_copy(
+        update={"given_names": "John", "author": True, "publication_author": True}
+    )
 
     # different Jane Doe with different orcid -> new person
     person2 = person.model_copy(
@@ -89,8 +91,12 @@ def test_person_merge(tmp_path, person: Person):
     cff.save()
 
     # existing author order preserved
-    assert cff.authors[0] == person1b.model_dump(by_alias=True, exclude={"author", "publication_author"})
-    assert cff.authors[1] == person2.model_dump(by_alias=True, exclude={"author", "publication_author"})
+    assert cff.authors[0] == person1b.model_dump(
+        by_alias=True, exclude={"author", "publication_author"}
+    )
+    assert cff.authors[1] == person2.model_dump(
+        by_alias=True, exclude={"author", "publication_author"}
+    )
     # existing author field order preserved
     dct = cff._yaml.load(open(cff_path, "r"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1b._key_order)
@@ -120,7 +126,11 @@ def test_person_merge(tmp_path, person: Person):
 
     assert len(cff.authors) == 2
     assert len(cff.maintainers) == 1
-    assert cff.authors[0] == person1c.model_dump(by_alias=True, exclude={"author", "publication_author"})
-    assert cff.authors[1] == person3.model_dump(by_alias=True, exclude={"author", "publication_author"})
+    assert cff.authors[0] == person1c.model_dump(
+        by_alias=True, exclude={"author", "publication_author"}
+    )
+    assert cff.authors[1] == person3.model_dump(
+        by_alias=True, exclude={"author", "publication_author"}
+    )
     dct = cff._yaml.load(open(cff_path, "r"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1c._key_order)

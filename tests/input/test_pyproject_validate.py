@@ -14,7 +14,11 @@ def test_poetry_validate(tmp_path):
     """Test validating a pyproject file in both poetry and setuptools formats."""
 
     # create a pyproject file in poetry format but with a invalid values
-    reject_poetry_object = {"tool": {"poetry": {"name": "somesy", "version": "abc", "authors": ["John Doe <"]}}}
+    reject_poetry_object = {
+        "tool": {
+            "poetry": {"name": "somesy", "version": "abc", "authors": ["John Doe <"]}
+        }
+    }
     invalid_poetry_path = tmp_path / "pyproject.toml"
     with open(invalid_poetry_path, "w+") as f:
         dump(reject_poetry_object, f)
@@ -23,7 +27,9 @@ def test_poetry_validate(tmp_path):
         Pyproject(invalid_poetry_path)
 
     # create a pyproject file in setuptools format but with a invalid values
-    reject_setuptools_object = {"project": {"name": "somesy", "version": "abc", "authors": ["John Doe <"]}}
+    reject_setuptools_object = {
+        "project": {"name": "somesy", "version": "abc", "authors": ["John Doe <"]}
+    }
     with open(invalid_poetry_path, "w+") as f:
         dump(reject_setuptools_object, f)
     with pytest.raises(ValueError):

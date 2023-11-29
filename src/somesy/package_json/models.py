@@ -13,7 +13,9 @@ class PackageAuthor(BaseModel):
 
     name: Annotated[Optional[str], Field(description="Author name")]
     email: Annotated[Optional[EmailStr], Field(description="Author email")]
-    url: Annotated[Optional[HttpUrlStr], Field(description="Author website or orcid page")]
+    url: Annotated[
+        Optional[HttpUrlStr], Field(description="Author website or orcid page")
+    ]
 
 
 class PackageRepository(BaseModel):
@@ -43,7 +45,9 @@ class PackageJsonConfig(BaseModel):
     name: Annotated[str, Field(description="Package name")]
     version: Annotated[str, Field(description="Package version")]
     description: Annotated[Optional[str], Field(description="Package description")]
-    author: Annotated[Optional[Union[str, PackageAuthor]], Field(description="Package author")]
+    author: Annotated[
+        Optional[Union[str, PackageAuthor]], Field(description="Package author")
+    ]
     maintainers: Annotated[
         Optional[List[Union[str, PackageAuthor]]],
         Field(description="Package maintainers"),
@@ -52,10 +56,18 @@ class PackageJsonConfig(BaseModel):
         Optional[List[Union[str, PackageAuthor]]],
         Field(description="Package contributors"),
     ] = None
-    license: Annotated[Optional[Union[str, PackageLicense]], Field(description="Package license")]
-    repository: Annotated[Optional[Union[PackageRepository, str]], Field(description="Package repository")]
-    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = None
-    keywords: Annotated[Optional[List[str]], Field(description="Keywords that describe the package")] = None
+    license: Annotated[
+        Optional[Union[str, PackageLicense]], Field(description="Package license")
+    ]
+    repository: Annotated[
+        Optional[Union[PackageRepository, str]], Field(description="Package repository")
+    ]
+    homepage: Annotated[
+        Optional[HttpUrlStr], Field(description="Package homepage")
+    ] = None
+    keywords: Annotated[
+        Optional[List[str]], Field(description="Keywords that describe the package")
+    ] = None
 
     # convert package author to dict if it is a string
     @classmethod

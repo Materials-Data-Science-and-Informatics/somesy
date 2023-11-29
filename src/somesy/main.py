@@ -24,7 +24,9 @@ def version(value: bool):
 @app.callback()
 def common(
     ctx: typer.Context,
-    version: bool = typer.Option(None, "--version", help=version.__doc__, callback=version),
+    version: bool = typer.Option(
+        None, "--version", help=version.__doc__, callback=version
+    ),
     show_info: bool = typer.Option(
         None,
         "--info",
@@ -48,14 +50,18 @@ def common(
     init_log()
 
     if sum(map(int, map(bool, [show_info, verbose, debug]))) > 1:
-        typer.echo("Only one of --info, --verbose or --debug may be set!", file=sys.stderr)
+        typer.echo(
+            "Only one of --info, --verbose or --debug may be set!", file=sys.stderr
+        )
         raise typer.Exit(1)
 
     if show_info or verbose or debug:
         # NOTE: only explicitly setting log level if a flag is passed,
         # in order to distinguish from using the "default log level"
         # (needed to check if the user did override the log level as a CLI flag)
-        set_log_level(SomesyLogLevel.from_flags(info=show_info, verbose=verbose, debug=debug))
+        set_log_level(
+            SomesyLogLevel.from_flags(info=show_info, verbose=verbose, debug=debug)
+        )
 
 
 # add subcommands
