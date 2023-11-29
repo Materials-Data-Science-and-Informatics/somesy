@@ -26,8 +26,7 @@ _codemeta_context = set(
     [
         "https://doi.org/10.5063/schema/codemeta-2.0",
         "https://w3id.org/software-iodata",
-        "https://raw.githubusercontent.com/jantman/repostatus.org/"
-        "master/badges/latest/ontology.jsonld",
+        "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
         "https://schema.org",
         "https://w3id.org/software-types",
     ]
@@ -35,7 +34,8 @@ _codemeta_context = set(
 
 
 def _localize_codemetapy_context(json):
-    """Prevent rdflib external context resolution by embedding it from a file.
+    """
+    Prevent rdflib external context resolution by embedding it from a file.
 
     The context is required to parse the JSON-LD correctly, fields with no
     context are ignored (not considered LD).
@@ -62,7 +62,7 @@ def serialize_codemeta(cm: Dict) -> str:
 
 
 def _graph_from_cm_dict(graph_dict):
-    """Returns codemeta with localized context from a dict produced by codemetapy."""
+    """Return codemeta with localized context from a dict produced by codemetapy."""
     g = rdflib.Graph()
     expanded = json.dumps(_localize_codemetapy_context(graph_dict))
     g.parse(data=expanded, format="json-ld")
@@ -70,7 +70,8 @@ def _graph_from_cm_dict(graph_dict):
 
 
 def _graph_from_cm_file(file: Path) -> rdflib.Graph:
-    """Returns loaded codemeta with localized context.
+    """
+    Return loaded codemeta with localized context.
 
     If file does not exist, returns `None` (to distinguish from existing but empty).
     """
@@ -84,7 +85,8 @@ def _graph_from_cm_file(file: Path) -> rdflib.Graph:
 
 
 def update_codemeta_file(cm_file: Path, cm_dict: Dict) -> bool:
-    """Update codemeta file with graph in dict if it changed.
+    """
+    Update codemeta file with graph in dict if it changed.
 
     Returns True if the file update happened.
     """
@@ -99,7 +101,7 @@ def update_codemeta_file(cm_file: Path, cm_dict: Dict) -> bool:
 
 
 def cff_codemeta_tempfile(cff_file: Path):
-    """Returns named temporary file with codemeta export of citation file."""
+    """Return named temporary file with codemeta export of citation file."""
     cm_cff = cff_to_codemeta(cff_file)
     temp_cff_cm = NamedTemporaryFile(prefix="cff_cm_", suffix=".json")
     temp_cff_cm.write(json.dumps(cm_cff).encode("utf-8"))

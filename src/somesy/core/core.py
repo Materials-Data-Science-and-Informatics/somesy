@@ -13,15 +13,19 @@ INPUT_FILES_ORDERED = [".somesy.toml", "somesy.toml", "pyproject.toml", "package
 
 
 def discover_input(input_file: Optional[Path] = None) -> Path:
-    """Check given input file path. If not given, find somesy configuration file path from default list.
+    """
+    Check given input file path. If not given, find somesy configuration file path from default list.
 
     Args:
+    ----
         input_file: somesy configuration file path. Defaults to None.
 
     Raises:
+    ------
         FileNotFoundError: Raised if no somesy input file found from cli input or the defaults.
 
     Returns:
+    -------
         somesy configuration file path.
     """
     if input_file:
@@ -48,18 +52,23 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
 
 
 def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
-    """Read contents of a supported somesy input file.
+    """
+    Read contents of a supported somesy input file.
 
     Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.
     The function checks if the file is a valid somesy input file by checking its name and content.
 
     Args:
+    ----
         path (Path): path to the input file
+        no_unwrap (bool): if True, the function returns the TOMLDocument object instead of unwrapping it
 
     Returns:
+    -------
         the content of the input file as a TOMLDocument object
 
     Raises:
+    ------
         ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.
         RuntimeError: if the input file does not contain a somesy input section at expected key
     """
@@ -77,9 +86,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
             if "tool" in input_content and "somesy" in input_content["tool"]:
                 return input_content["tool"]["somesy"].unwrap()
             else:
-                raise RuntimeError(
-                    "No tool.somesy section found in pyproject.toml file!"
-                )
+                raise RuntimeError("No tool.somesy section found in pyproject.toml file!")
 
     if path.suffix == ".json" and "package" in path.name:
         with open(path, "r") as f:

@@ -157,12 +157,12 @@ exclude = [
 
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "D", "RUF", "B", "S", "W"]
+select = ["E", "F", "I", "D", "B", "S", "W"]
 ignore = ["D203", "D212", "B008"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["E402"]
-"**/{test/*}/*" = ["D", "RUF", "S"]
+"**/{test/*}/*" = ["D", "S"]
 "**/{tests,docs,tools,scripts}/*" = ["ALL"]
 
 [tool.ruff.format]

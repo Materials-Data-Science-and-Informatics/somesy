@@ -18,7 +18,8 @@ class CFF(ProjectMetadataWriter):
         path: Path,
         create_if_not_exists: bool = True,
     ):
-        """Citation File Format (CFF) parser.
+        """
+        Citation File Format (CFF) parser.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
@@ -32,9 +33,7 @@ class CFF(ProjectMetadataWriter):
             "repository": ["repository-code"],
             "maintainers": ["contact"],
         }
-        super().__init__(
-            path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings
-        )
+        super().__init__(path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings)
 
     def _init_new_file(self):
         """Initialize new CFF file."""
@@ -66,9 +65,7 @@ class CFF(ProjectMetadataWriter):
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Ensure that publication authors are added all into author list."""
-        self.authors = self._sync_person_list(
-            self.authors, metadata.publication_authors()
-        )
+        self.authors = self._sync_person_list(self.authors, metadata.publication_authors())
 
     @staticmethod
     def _from_person(person: Person):

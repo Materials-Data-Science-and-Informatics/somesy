@@ -27,7 +27,8 @@ def wrap_exceptions(wrapped, instance, args, kwargs):
 
 
 def resolved_somesy_input(**cli_args) -> SomesyInput:
-    """Return a combined `SomesyInput` based on config file and passed CLI args.
+    """
+    Return a combined `SomesyInput` based on config file and passed CLI args.
 
     Will also adjust log levels accordingly.
     """
@@ -51,7 +52,5 @@ def resolved_somesy_input(**cli_args) -> SomesyInput:
         # no cli log level -> set it according to the loaded configuration
         set_log_level(somesy_input.config.log_level())
 
-    logger.debug(
-        f"Combined config (Defaults + File + CLI):\n{pretty_repr(somesy_input.config)}"
-    )
+    logger.debug(f"Combined config (Defaults + File + CLI):\n{pretty_repr(somesy_input.config)}")
     return somesy_input
