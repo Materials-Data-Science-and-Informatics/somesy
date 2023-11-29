@@ -46,6 +46,10 @@ Properly maintaining this kind of information in various files scattered around 
 
 ## Getting Started
 
+### Platform Support
+
+Please note that the current version of 'somesy' does not support Windows. We are actively working to include Windows support in our next release. Stay tuned for updates!
+
 ### Installing somesy
 
 Somesy requires Python `>=3.8`. To get a first impression, you can install the
@@ -136,7 +140,7 @@ file in the root folder of your repository:
 repos:
   # ... (your other hooks) ...
   - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-    rev: "v0.1.0"
+    rev: "v0.2.0"
     hooks:
       - id: somesy
 ```

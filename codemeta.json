@@ -65,20 +65,6 @@
     "softwareRequirements": [
         {
             "@type": "SoftwareApplication",
-            "identifier": "'version':",
-            "name": "'version':",
-            "runtimePlatform": "Python 3",
-            "version": "'^0.7.0'}"
-        },
-        {
-            "@type": "SoftwareApplication",
-            "identifier": "'version':",
-            "name": "'version':",
-            "runtimePlatform": "Python 3",
-            "version": "'^2.4.2'}"
-        },
-        {
-            "@type": "SoftwareApplication",
             "identifier": "cffconvert",
             "name": "cffconvert",
             "runtimePlatform": "Python 3",
@@ -117,7 +103,7 @@
             "identifier": "pydantic",
             "name": "pydantic",
             "runtimePlatform": "Python 3",
-            "version": "{'extras': ['email'"
+            "version": "^2.4.2"
         },
         {
             "@type": "SoftwareApplication",
@@ -152,7 +138,7 @@
             "identifier": "typer",
             "name": "typer",
             "runtimePlatform": "Python 3",
-            "version": "{'extras': ['all'"
+            "version": "^0.7.0"
         },
         {
             "@type": "SoftwareApplication",
@@ -170,5 +156,5 @@
         "runtimePlatform": "Python 3"
     },
     "url": "https://materials-data-science-and-informatics.github.io/somesy",
-    "version": "0.1.1"
+    "version": "0.2.0"
 }
