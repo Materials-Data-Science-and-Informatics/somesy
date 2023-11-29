@@ -34,10 +34,7 @@ def test_content_match(pyproject_poetry, pyproject_setuptools):
     # create a function to check both file formats
     def assert_content_match(pyproject_file):
         assert pyproject_file.name == "test-package"
-        assert (
-            pyproject_file.description
-            == "This is a test package for demonstration purposes."
-        )
+        assert pyproject_file.description == "This is a test package for demonstration purposes."
         assert pyproject_file.license == "MIT"
         assert len(pyproject_file.authors) == 1
 
@@ -107,9 +104,7 @@ def test_person_merge_pyproject(request, writer_class, writer_file_fixture, pers
     # ----
 
     # jane becomes john -> modified person
-    person1b = person.model_copy(
-        update={"given_names": "John", "author": True, "publication_author": True}
-    )
+    person1b = person.model_copy(update={"given_names": "John", "author": True, "publication_author": True})
 
     # different Jane Doe with different orcid -> new person
     person2 = person.model_copy(

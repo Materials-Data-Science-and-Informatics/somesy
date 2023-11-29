@@ -68,15 +68,10 @@ def test_somesy_input(somesy_input):
     assert isinstance(somesy_input.project, ProjectMetadata)
     assert somesy_input.project.name == "testproject"
     assert somesy_input.project.version == "1.0.0"
-    assert (
-        somesy_input.project.description
-        == "This is a test project for demonstration purposes."
-    )
+    assert somesy_input.project.description == "This is a test project for demonstration purposes."
     assert somesy_input.project.keywords == ["test", "demo", "example"]
     assert somesy_input.project.license == LicenseEnum.MIT
-    assert (
-        str(somesy_input.project.repository) == "https://github.com/example/testproject"
-    )
+    assert str(somesy_input.project.repository) == "https://github.com/example/testproject"
     assert str(somesy_input.project.homepage) == "https://example.com/testproject"
     assert len(somesy_input.project.people) == 3
     authors = somesy_input.project.authors()
@@ -85,10 +80,7 @@ def test_somesy_input(somesy_input):
     assert authors[0].email == "john.doe@example.com"
     assert str(authors[0].orcid) == "https://orcid.org/0000-0000-0000-0000"
     assert authors[0].contribution == "The main developer, maintainer, and tester."
-    assert (
-        authors[0].contribution_begin
-        == datetime.strptime("2023-01-15", "%Y-%m-%d").date()
-    )
+    assert authors[0].contribution_begin == datetime.strptime("2023-01-15", "%Y-%m-%d").date()
     assert authors[0].contribution_types == [
         ContributionTypeEnum.maintenance,
         ContributionTypeEnum.code,

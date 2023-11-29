@@ -123,19 +123,13 @@ def run_sync(somesy_input: SomesyInput):
     logger.info("[bold green]Synchronizing project metadata...[/bold green]")
     logger.info("Files to sync:")
     if not conf.no_sync_pyproject:
-        logger.info(
-            f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
-        )
+        logger.info(f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]")
     if not conf.no_sync_package_json:
-        logger.info(
-            f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]"
-        )
+        logger.info(f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]")
     if not conf.no_sync_cff:
         logger.info(f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]")
     if not conf.no_sync_codemeta:
-        logger.info(
-            f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
-        )
+        logger.info(f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n")
     # ----
     sync_command(somesy_input)
     # ----
