@@ -65,6 +65,20 @@
     "softwareRequirements": [
         {
             "@type": "SoftwareApplication",
+            "identifier": "'version':",
+            "name": "'version':",
+            "runtimePlatform": "Python 3",
+            "version": "'^2.4.2'}"
+        },
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "'version':",
+            "name": "'version':",
+            "runtimePlatform": "Python 3",
+            "version": "'^0.7.0'}"
+        },
+        {
+            "@type": "SoftwareApplication",
             "identifier": "cffconvert",
             "name": "cffconvert",
             "runtimePlatform": "Python 3",
@@ -103,7 +117,7 @@
             "identifier": "pydantic",
             "name": "pydantic",
             "runtimePlatform": "Python 3",
-            "version": "^2.4.2"
+            "version": "{'extras': ['email'"
         },
         {
             "@type": "SoftwareApplication",
@@ -138,7 +152,7 @@
             "identifier": "typer",
             "name": "typer",
             "runtimePlatform": "Python 3",
-            "version": "^0.7.0"
+            "version": "{'extras': ['all'"
         },
         {
             "@type": "SoftwareApplication",
