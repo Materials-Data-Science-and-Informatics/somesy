@@ -46,7 +46,6 @@ def _sync_python(
     """Sync pyproject.toml file using project metadata.
 
     Args:
-    ----
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
         pyproject_file (Path, optional): pyproject file to read project metadata from.
     """
@@ -65,7 +64,6 @@ def _sync_cff(
     """Sync CITATION.cff file using project metadata.
 
     Args:
-    ----
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
         cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
     """
@@ -84,7 +82,6 @@ def _sync_package_json(
     """Sync package.json file using project metadata.
 
     Args:
-    ----
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
         package_json_file (Path, optional): package.json file path if wanted to be synced. Defaults to None.
     """
