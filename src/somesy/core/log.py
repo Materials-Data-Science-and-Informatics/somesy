@@ -24,7 +24,7 @@ class SomesyLogLevel(Enum):
         *,
         info: Optional[bool] = None,
         verbose: Optional[bool] = None,
-        debug: Optional[bool] = None
+        debug: Optional[bool] = None,
     ):
         """Convert CLI/config flags into a log level."""
         if debug:
