@@ -322,7 +322,7 @@ class Person(SomesyBaseModel):
         """Ensure consistency of author and publication_author."""
         if values.get("author"):
             # NOTE: explicitly check for False (different case from None = missing!)
-            if values.get("publication_author") == False:
+            if values.get("publication_author") is False:
                 msg = "Combining author=true and publication_author=false is invalid!"
                 raise ValueError(msg)
             values["publication_author"] = True

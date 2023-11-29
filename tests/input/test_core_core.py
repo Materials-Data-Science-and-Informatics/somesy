@@ -53,16 +53,16 @@ def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatc
 def test_somesy_input(somesy_input):
     # test config inputs
     assert isinstance(somesy_input.config, SomesyConfig)
-    assert somesy_input.config.debug == True
-    assert somesy_input.config.verbose == False
-    assert somesy_input.config.show_info == False
-    assert somesy_input.config.no_sync_cff == False
+    assert somesy_input.config.debug is True
+    assert somesy_input.config.verbose is False
+    assert somesy_input.config.show_info is False
+    assert somesy_input.config.no_sync_cff is False
     assert somesy_input.config.cff_file == Path("CITATION.cff")
-    assert somesy_input.config.no_sync_pyproject == False
+    assert somesy_input.config.no_sync_pyproject is False
     assert somesy_input.config.pyproject_file == Path("pyproject.toml")
-    assert somesy_input.config.no_sync_codemeta == False
+    assert somesy_input.config.no_sync_codemeta is False
     assert somesy_input.config.codemeta_file == Path("codemeta.json")
-    assert somesy_input.config.no_sync_package_json == False
+    assert somesy_input.config.no_sync_package_json is False
 
     # test project inputs
     assert isinstance(somesy_input.project, ProjectMetadata)
@@ -98,4 +98,4 @@ def test_somesy_input(somesy_input):
     ]
 
     # check publication author
-    assert authors[1].publication_author == True
+    assert authors[1].publication_author is True
