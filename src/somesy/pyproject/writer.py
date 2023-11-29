@@ -159,11 +159,9 @@ class Pyproject(wrapt.ObjectProxy):
         """Pyproject wrapper class. Wraps either setuptools or poetry.
 
         Args:
-        ----
             path (Path): Path to pyproject.toml file.
 
         Raises:
-        ------
             FileNotFoundError: Raised when pyproject.toml file is not found.
             ValueError: Neither project nor tool.poetry object is found in pyproject.toml file.
         """

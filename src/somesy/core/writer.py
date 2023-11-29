@@ -30,7 +30,6 @@ class ProjectMetadataWriter(ABC):
         requires a customized setter.
 
         Args:
-        ----
             path: Path to target output file.
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
