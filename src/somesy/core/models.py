@@ -457,7 +457,10 @@ class SomesyInput(SomesyBaseModel):
     ]
     config: Annotated[
         Optional[SomesyConfig],
-        Field(description="somesy tool configuration (matches CLI flags)."),
+        Field(
+            description="somesy tool configuration (matches CLI flags).",
+            default_factory=lambda: SomesyConfig(),
+        ),
     ]
 
     def is_somesy_file(self) -> bool:
