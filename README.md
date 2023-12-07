@@ -22,6 +22,11 @@
 
 <!-- --8<-- [start:abstract] -->
 
+<div style="text-align: center;">
+    <img alt="HMC Logo" src="https://github.com/Materials-Data-Science-and-Informatics/Logos/raw/main/Somesy/Somesy_Logo_Text.png" style="width: 50%; height: 50%;" />
+</div>
+
+
 # somesy
 
 Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.
