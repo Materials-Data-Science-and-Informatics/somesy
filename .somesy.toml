@@ -76,4 +76,4 @@ codemeta_file = "codemeta.json"
 no_sync_package_json = true
 show_info = false
 verbose = false
-debug = false
+debug = true

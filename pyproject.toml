@@ -44,7 +44,7 @@ cffconvert = "^2.0.0"
 wrapt = "^1.15.0"
 packaging = "^23.1"
 rdflib = "^6.3.2"
-codemetapy = "^2.5.1"
+codemetapy = "2.5.2"
 jinja2 = "^3.1.2"
 
 [tool.poetry.group.dev.dependencies]
@@ -54,8 +54,6 @@ pytest = "^7.2.2"
 pytest-cov = "^4.0.0"
 hypothesis = "^6.68.2"
 licensecheck = "^2023.1.1"
-black = "^23.1.0"
-isort = "^5.12.0"
 pytest-mock = "^3.10.0"
 
 [tool.poetry.group.docs]
@@ -128,17 +126,12 @@ exclude_lines = [
 [tool.semantic_release]
 version_variable = "src/somesy/__init__.py:__version__"
 
-[tool.flake8]
-ignore = ["B008", "E501", "W503", "E712", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "F722"]
+[tool.ruff.lint]
+extend-select = ["I", "D", "B", "S", "W"]
+ignore = ["D203", "D213", "D407", "B008"]
 
-[tool.pydocstyle]
-convention = "google"
-
-[tool.interrogate]
-fail-under = 90
-
-[tool.bandit]
-exclude_dirs = ["tests", "scripts"]
+[tool.ruff.lint.per-file-ignores]
+"**/{tests,docs}/*" = ["ALL"]
 
 [tool.licensecheck]
 using = "poetry"

@@ -55,6 +55,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
 
     Args:
         path (Path): path to the input file
+        no_unwrap (bool): if True, the function returns the TOMLDocument object instead of unwrapping it
 
     Returns:
         the content of the input file as a TOMLDocument object

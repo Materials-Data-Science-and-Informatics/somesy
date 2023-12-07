@@ -31,11 +31,11 @@ def test_resolved_somesy_input(somesy_file):
     somesy_input = resolved_somesy_input(**cli_args)
 
     # check default values
-    assert somesy_input.config.no_sync_cff == False
+    assert somesy_input.config.no_sync_cff is False
     assert somesy_input.config.pyproject_file == Path("pyproject.toml")
 
     # check overwritten values
-    assert somesy_input.config.no_sync_pyproject == True
+    assert somesy_input.config.no_sync_pyproject is True
 
     # check newly add value
-    assert somesy_input.config.debug == True
+    assert somesy_input.config.debug is True

@@ -244,7 +244,8 @@ class Person(SomesyBaseModel):
         Optional[str],
         Field(
             alias="name-particle",
-            description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from' (for example 'von' in 'Alexander von Humboldt').",
+            description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from'"
+            " (for example 'von' in 'Alexander von Humboldt').",
             examples=["von"],
         ),
     ] = None
@@ -322,7 +323,7 @@ class Person(SomesyBaseModel):
         """Ensure consistency of author and publication_author."""
         if values.get("author"):
             # NOTE: explicitly check for False (different case from None = missing!)
-            if values.get("publication_author") == False:
+            if values.get("publication_author") is False:
                 msg = "Combining author=true and publication_author=false is invalid!"
                 raise ValueError(msg)
             values["publication_author"] = True
@@ -456,7 +457,10 @@ class SomesyInput(SomesyBaseModel):
     ]
     config: Annotated[
         Optional[SomesyConfig],
-        Field(description="somesy tool configuration (matches CLI flags)."),
+        Field(
+            description="somesy tool configuration (matches CLI flags).",
+            default_factory=lambda: SomesyConfig(),
+        ),
     ]
 
     def is_somesy_file(self) -> bool:
