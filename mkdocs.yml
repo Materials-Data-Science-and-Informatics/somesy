@@ -73,6 +73,8 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+  logo: "https://github.com/Materials-Data-Science-and-Informatics/Logos/raw/main/Somesy/Somesy_Logo.png"
+  favicon: "https://github.com/Materials-Data-Science-and-Informatics/Logos/raw/main/Somesy/Somesy_Logo.png"
 
 extra_css:
   # list of extra CSS files to override and configure defaults:
