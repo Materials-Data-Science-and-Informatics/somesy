@@ -2984,7 +2984,8 @@
             Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.types.MyEnum" href="#somesy.core.types.MyEnum">MyEnum</a></code></p>
 
   
-      <p>Country codes from <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2</a> . It is used for the country of a person in project metadata.</p>
+      <p>Country codes from <a href="https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2">https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2</a>.</p>
+<p>It is used for the country of a person in project metadata.</p>
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/core/types.py</code></summary>
@@ -3239,8 +3240,14 @@
 <span class="normal">769</span>
 <span class="normal">770</span>
 <span class="normal">771</span>
-<span class="normal">772</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Country</span><span class="p">(</span><span class="n">MyEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Country codes from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 . It is used for the country of a person in project metadata.&quot;&quot;&quot;</span>
+<span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Country</span><span class="p">(</span><span class="n">MyEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Country codes from https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2.</span>
+
+<span class="sd">    It is used for the country of a person in project metadata.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">AD</span> <span class="o">=</span> <span class="s2">&quot;AD&quot;</span>
     <span class="n">AE</span> <span class="o">=</span> <span class="s2">&quot;AE&quot;</span>
