@@ -435,6 +435,9 @@ class ProjectMetadata(SomesyBaseModel):
 
         This always includes people marked as authors.
         """
+        # return an empty list if no publication authors are specified
+        if not any(map(lambda p: p.publication_author, self.people)):
+            return []
         return [p for p in self.people if p.publication_author]
 
     def maintainers(self):
