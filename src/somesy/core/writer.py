@@ -45,9 +45,11 @@ class ProjectMetadataWriter(ABC):
         else:
             if self.create_if_not_exists:
                 self._init_new_file()
+                self._load()
             else:
                 raise FileNotFoundError(f"The file {self.path} does not exist.")
 
+    @abstractmethod
     def _init_new_file(self) -> None:
         """Create an new suitable target file.
 
@@ -228,6 +230,8 @@ class ProjectMetadataWriter(ABC):
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
         """Return a list of Persons parsed from list of format-specific people representations."""
+        if not people:
+            return []
         return list(map(cls._to_person, people or []))
 
     # ----
