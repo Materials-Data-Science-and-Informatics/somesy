@@ -3,7 +3,7 @@ import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from rich.pretty import pretty_repr
 
@@ -32,11 +32,15 @@ class Codemeta(ProjectMetadataWriter):
             "maintainers": ["maintainer"],
             "contributors": ["contributor"],
         }
+        # delete the file if it exists
+        if path.is_file():
+            logger.verbose("Deleting existing codemeta.json file.")
+            path.unlink()
         super().__init__(path, create_if_not_exists=True, direct_mappings=mappings)
 
     @property
     def authors(self):
-        """Return the only author of the package.json file as list."""
+        """Return the only author of the codemeta.json file as list."""
         return self._get_property(self._get_key("publication_authors")) or []
 
     @authors.setter
@@ -47,7 +51,7 @@ class Codemeta(ProjectMetadataWriter):
 
     @property
     def contributors(self):
-        """Return the contributors of the package.json file."""
+        """Return the contributors of the codemeta.json file."""
         return self._get_property(self._get_key("contributors"))
 
     @contributors.setter
@@ -57,16 +61,16 @@ class Codemeta(ProjectMetadataWriter):
         self._set_property(self._get_key("contributors"), contributors)
 
     def _load(self) -> None:
-        """Load package.json file."""
+        """Load codemeta.json file."""
         with self.path.open() as f:
             self._data = json.load(f, object_pairs_hook=OrderedDict)
 
     def _validate(self) -> None:
-        """Validate package.json content using pydantic class."""
+        """Validate codemeta.json content using pydantic class."""
         config = dict(self._get_property([]))
 
         logger.debug(
-            f"No validation for codemeta {Codemeta.__name__}: {pretty_repr(config)}"
+            f"No validation for codemeta.json files {Codemeta.__name__}: {pretty_repr(config)}"
         )
 
     def _init_new_file(self) -> None:
@@ -82,13 +86,13 @@ class Codemeta(ProjectMetadataWriter):
             "author": [],
         }
         # dump to file
-        with self.path.open("w") as f:
+        with self.path.open("w+") as f:
             json.dump(data, f, indent=2)
 
     def save(self, path: Optional[Path] = None) -> None:
-        """Save the package.json file."""
+        """Save the codemeta.json file."""
         path = path or self.path
-        logger.debug(f"Saving package.json to {path}")
+        logger.debug(f"Saving codemeta.json to {path}")
 
         # copy the _data
         data = self._data.copy()
@@ -102,38 +106,64 @@ class Codemeta(ProjectMetadataWriter):
             data["url"] = data["softwareHelp"]
 
         with path.open("w") as f:
-            # package.json indentation is 2 spaces
+            # codemeta.json indentation is 2 spaces
             json.dump(data, f, indent=2)
 
     @staticmethod
     def _from_person(person: Person):
-        """Convert project metadata person object to package.json dict for person format."""
+        """Convert project metadata person object to codemeta.json dict for person format."""
         person_dict = {
-            "givenName": person.given_names,
-            "familyName": person.family_names,
             "@type": "Person",
         }
+        logger.debug(f"Converting person {person} to codemeta.json format.")
+        if person.given_names:
+            person_dict["givenName"] = person.given_names
+        if person.family_names:
+            person_dict["familyName"] = person.family_names
         if person.email:
             person_dict["email"] = person.email
         if person.orcid:
             person_dict["@id"] = str(person.orcid)
+        if person.address:
+            person_dict["address"] = person.address
+        if person.affiliation:
+            person_dict["affiliation"] = person.affiliation
         return person_dict
 
     @staticmethod
     def _to_person(person) -> Person:
-        """Convert package.json dict or str for person format to project metadata person object."""
-        person_obj = {
-            "given-names": person["givenName"],
-            "family-names": person["familyName"],
-        }
+        """Convert codemeta.json dict or str for person format to project metadata person object."""
+        person_obj = {}
+        if "givenName" in person:
+            person_obj["given_names"] = person["givenName"].strip()
+        if "familyName" in person:
+            person_obj["family_names"] = person["familyName"].strip()
         if "email" in person:
             person_obj["email"] = person["email"].strip()
         if "@id" in person:
             person_obj["orcid"] = person["@id"].strip()
+        if "address" in person:
+            person_obj["address"] = person["address"].strip()
+        logger.debug(f"Converting person {person_obj} to pydantic person instance.")
+
         return Person(**person_obj)
 
+    def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
+        """Override the _sync_person_list function from ProjectMetadataWriter.
+
+        This method wont care about existing persons in codemeta.json file.
+
+        Args:
+            old (List[Any]): _description_
+            new (List[Person]): _description_
+
+        Returns:
+            List[Any]: _description_
+        """
+        return new
+
     def sync(self, metadata: ProjectMetadata) -> None:
-        """Sync package.json with project metadata.
+        """Sync codemeta.json with project metadata.
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
