@@ -95,7 +95,7 @@ def _sync_codemeta(
     metadata: ProjectMetadata,
     codemeta_file: Path,
 ):
-    """Sync package.json file using project metadata.
+    """Sync codemeta.json file using project metadata.
 
     Args:
         metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
