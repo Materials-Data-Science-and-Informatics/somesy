@@ -53,7 +53,7 @@ Properly maintaining this kind of information in various files scattered around 
 
 ### Platform Support
 
-Please note that the current version of 'somesy' does not support Windows. We are actively working to include Windows support in our next release. Stay tuned for updates!
+`somesy` is now compatible with MacOS, Ubuntu, and Windows. For Windows users, it's important to use a version `0.3.0` or higher of somesy to ensure compatibility.
 
 ### Installing somesy
 

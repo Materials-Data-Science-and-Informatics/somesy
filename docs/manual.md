@@ -375,13 +375,8 @@ after running somesy (to remove the duplicate entries with the incorrect ORCID).
 While `somesy` is modifying existing files for most supported formats,
 [CodeMeta](https://codemeta.github.io/) is implemented differently.
 
-In order to avoid redundant work, `somesy` relies on existing tools to generate
-`codemeta.json` files. So when you synchronize the metadata and the codemeta
-target is enabled, `somesy` will generate your `codemeta.json` by:
 
-* synchronizing metadata to a `pyproject.toml` or `package.json` (if enabled)
-* synchronizing metadata to a `CITATION.cff` (if enabled)
-* running `cffconvert` and `codemetapy` to combine both sources into a final `codemeta.json`
+Other formats implement person identification and merging, but for codemeta.json, there's a notable exception: person data gets overwritten by the source file. Given that `codemeta.json` is a `JSON-LD file`, it inherently represents data as a graph, allowing for diverse information storage methods. To navigate this complexity and ensure accurate data representation, we opt to regenerate the `codemeta.json` file directly from the source file.
 
 !!! warning
 
