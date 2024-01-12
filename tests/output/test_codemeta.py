@@ -35,7 +35,7 @@ def test_update_codemeta(somesy_input, tmp_path):
     with open(codemeta_file, "w") as f:
         codemeta = json.loads(dat3)
         codemeta["version"] = "0.0.2"
-        json.dump(codemeta, f)
+        json.dump(codemeta, f, ensure_ascii=False)
     cm.sync(somesy_input.project)
     cm.save()
     assert codemeta_file.is_file()

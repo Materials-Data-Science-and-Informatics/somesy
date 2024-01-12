@@ -87,7 +87,7 @@ class Codemeta(ProjectMetadataWriter):
         }
         # dump to file
         with self.path.open("w+") as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent=2, ensure_ascii=False)
 
     def save(self, path: Optional[Path] = None) -> None:
         """Save the codemeta.json file."""
@@ -107,7 +107,7 @@ class Codemeta(ProjectMetadataWriter):
 
         with path.open("w") as f:
             # codemeta.json indentation is 2 spaces
-            json.dump(data, f, indent=2)
+            json.dump(data, f, indent=2, ensure_ascii=False)
 
     @staticmethod
     def _from_person(person: Person):
