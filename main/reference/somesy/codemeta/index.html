@@ -16,7 +16,7 @@
         <link rel="prev" href="../cli/util/">
       
       
-        <link rel="next" href="exec/">
+        <link rel="next" href="writer/">
       
       
       <link rel="icon" href="https://github.com/Materials-Data-Science-and-Informatics/Logos/raw/main/Somesy/Somesy_Logo.png">
@@ -903,32 +903,11 @@
   
   
     <li class="md-nav__item">
-      <a href="exec/" class="md-nav__link">
+      <a href="writer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    exec
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="utils/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    utils
+    writer
   </span>
   
 
@@ -1598,20 +1577,62 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#somesy.codemeta.collect_cm_sources" class="md-nav__link">
+  <a href="#somesy.codemeta.Codemeta" class="md-nav__link">
     <span class="md-ellipsis">
-      collect_cm_sources()
+      Codemeta
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Codemeta">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#somesy.codemeta.Codemeta.authors" class="md-nav__link">
+    <span class="md-ellipsis">
+      authors
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#somesy.codemeta.update_codemeta" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#somesy.codemeta.Codemeta.contributors" class="md-nav__link">
     <span class="md-ellipsis">
-      update_codemeta()
+      contributors
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.codemeta.Codemeta.__init__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __init__()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.codemeta.Codemeta.save" class="md-nav__link">
+    <span class="md-ellipsis">
+      save()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.codemeta.Codemeta.sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      sync()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1668,6 +1689,402 @@
 
 
 
+<div class="doc doc-object doc-class">
+
+
+
+
+<h2 id="somesy.codemeta.Codemeta" class="doc doc-heading">
+          <span class="doc doc-object-name doc-class-name">Codemeta</span>
+
+
+<a href="#somesy.codemeta.Codemeta" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><a class="autorefs autorefs-internal" title="somesy.core.writer.ProjectMetadataWriter" href="../core/writer/#somesy.core.writer.ProjectMetadataWriter">ProjectMetadataWriter</a></code></p>
+
+  
+      <p>Codemeta.json parser and saver.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Codemeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Codemeta.json parser and saver.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Codemeta.json parser.</span>
+
+<span class="sd">        See [somesy.core.writer.ProjectMetadataWriter.__init__][].</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mappings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;repository&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;codeRepository&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;homepage&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;softwareHelp&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;keywords&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;authors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;author&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;maintainers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;maintainer&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;contributors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;contributor&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="c1"># delete the file if it exists</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Deleting existing codemeta.json file.&quot;</span><span class="p">)</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">create_if_not_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">direct_mappings</span><span class="o">=</span><span class="n">mappings</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the only author of the codemeta.json file as list.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;publication_authors&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="p">[]</span>
+
+    <span class="nd">@authors</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the authors of the project.&quot;&quot;&quot;</span>
+        <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">),</span> <span class="n">authors</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the contributors of the codemeta.json file.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;contributors&quot;</span><span class="p">))</span>
+
+    <span class="nd">@contributors</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the contributors of the project.&quot;&quot;&quot;</span>
+        <span class="n">contributors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">contributors</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;contributors&quot;</span><span class="p">),</span> <span class="n">contributors</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load codemeta.json file.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate codemeta.json content using pydantic class.&quot;&quot;&quot;</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">([]))</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;No validation for codemeta.json files </span><span class="si">{</span><span class="n">Codemeta</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_init_new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;@context&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;https://doi.org/10.5063/schema/codemeta-2.0&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;https://w3id.org/software-iodata&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;https://schema.org&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;https://w3id.org/software-types&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;SoftwareSourceCode&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+        <span class="c1"># dump to file</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the codemeta.json file.&quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving codemeta.json to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># copy the _data</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># set license</span>
+        <span class="k">if</span> <span class="s2">&quot;license&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://spdx.org/licenses/</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,)</span>
+
+        <span class="c1"># if softwareHelp is set, set url to softwareHelp</span>
+        <span class="k">if</span> <span class="s2">&quot;softwareHelp&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;softwareHelp&quot;</span><span class="p">]</span>
+
+        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># codemeta.json indentation is 2 spaces</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Person</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert project metadata person object to codemeta.json dict for person format.&quot;&quot;&quot;</span>
+        <span class="n">person_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting person </span><span class="si">{</span><span class="n">person</span><span class="si">}</span><span class="s2"> to codemeta.json format.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span><span class="p">:</span>
+            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span><span class="p">:</span>
+            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;familyName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">:</span>
+            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span><span class="p">:</span>
+            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">affiliation</span><span class="p">:</span>
+            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;affiliation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">affiliation</span>
+        <span class="k">return</span> <span class="n">person_dict</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Person</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert codemeta.json dict or str for person format to project metadata person object.&quot;&quot;&quot;</span>
+        <span class="n">person_obj</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s2">&quot;givenName&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;given_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;familyName&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;family_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;familyName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;email&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;@id&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;orcid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;address&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting person </span><span class="si">{</span><span class="n">person_obj</span><span class="si">}</span><span class="s2"> to pydantic person instance.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Person</span><span class="p">(</span><span class="o">**</span><span class="n">person_obj</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the _sync_person_list function from ProjectMetadataWriter.</span>
+
+<span class="sd">        This method wont care about existing persons in codemeta.json file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            old (List[Any]): _description_</span>
+<span class="sd">            new (List[Person]): _description_</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Any]: _description_</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">new</span>
+
+    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync codemeta.json with project metadata.</span>
+
+<span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">people</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="somesy.codemeta.Codemeta.authors" class="doc doc-heading">
+          <span class="doc doc-object-name doc-attribute-name">authors</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+<a href="#somesy.codemeta.Codemeta.authors" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">authors</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Return the only author of the codemeta.json file as list.</p>
+  </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+
+<h3 id="somesy.codemeta.Codemeta.contributors" class="doc doc-heading">
+          <span class="doc doc-object-name doc-attribute-name">contributors</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
+  </span>
+
+<a href="#somesy.codemeta.Codemeta.contributors" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">contributors</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Return the contributors of the codemeta.json file.</p>
+  </div>
+
+</div>
+
+
 
 
 <div class="doc doc-object doc-function">
@@ -1675,28 +2092,22 @@
 
 
 
-<h2 id="somesy.codemeta.collect_cm_sources" class="doc doc-heading">
-          <span class="doc doc-object-name doc-function-name">collect_cm_sources</span>
+<h3 id="somesy.codemeta.Codemeta.__init__" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">__init__</span>
 
 
-<a href="#somesy.codemeta.collect_cm_sources" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span>
+<a href="#somesy.codemeta.Codemeta.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>Assemble list of inputs for codemetapy based on somesy config.</p>
-<p>Returns files that are supported by both somesy and codemetapy and are enabled for somesy.</p>
+      <p>Codemeta.json parser.</p>
+<p>See <a class="autorefs autorefs-internal" href="../core/writer/#somesy.core.writer.ProjectMetadataWriter.__init__">somesy.core.writer.ProjectMetadataWriter.<strong>init</strong></a>.</p>
 
           <details class="quote">
-            <summary>Source code in <code>src/somesy/codemeta/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
+            <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span>
@@ -1710,27 +2121,33 @@
 <span class="normal">30</span>
 <span class="normal">31</span>
 <span class="normal">32</span>
-<span class="normal">33</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Assemble list of inputs for codemetapy based on somesy config.</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">,</span>
+    <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Codemeta.json parser.</span>
 
-<span class="sd">    Returns files that are supported by both somesy and codemetapy and are enabled for somesy.</span>
+<span class="sd">    See [somesy.core.writer.ProjectMetadataWriter.__init__][].</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cm_sources</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="p">(</span>
-        <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span>
-        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
-    <span class="p">):</span>
-        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="p">)</span>
-    <span class="c1"># NOTE: we don&#39;t add CFF directly, because it must be handled separately</span>
-    <span class="c1"># NOTE: add other suitable somesy targets / codemeta sources (except CFF and codemeta) here</span>
-    <span class="k">if</span> <span class="p">(</span>
-        <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_package_json</span>
-        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
-    <span class="p">):</span>
-        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">cm_sources</span>
+    <span class="n">mappings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;repository&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;codeRepository&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;homepage&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;softwareHelp&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;keywords&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;authors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;author&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;maintainers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;maintainer&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;contributors&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;contributor&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+    <span class="c1"># delete the file if it exists</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Deleting existing codemeta.json file.&quot;</span><span class="p">)</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">create_if_not_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">direct_mappings</span><span class="o">=</span><span class="n">mappings</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -1743,81 +2160,111 @@
 
 
 
-<h2 id="somesy.codemeta.update_codemeta" class="doc doc-heading">
-          <span class="doc doc-object-name doc-function-name">update_codemeta</span>
+<h3 id="somesy.codemeta.Codemeta.save" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">save</span>
 
 
-<a href="#somesy.codemeta.update_codemeta" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">update_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">)</span>
+<a href="#somesy.codemeta.Codemeta.save" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </code></pre></div>
 
   <div class="doc doc-contents ">
   
-      <p>Generate or update codemeta file based on sources that somesy supports.</p>
-<p>Returns True if file has been written, False if it was up to date.</p>
+      <p>Save the codemeta.json file.</p>
 
           <details class="quote">
-            <summary>Source code in <code>src/somesy/codemeta/__init__.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">update_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="n">SomesyConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate or update codemeta file based on sources that somesy supports.</span>
+            <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the codemeta.json file.&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving codemeta.json to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="sd">    Returns True if file has been written, False if it was up to date.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">cm_sources</span> <span class="o">=</span> <span class="n">collect_cm_sources</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+    <span class="c1"># copy the _data</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-    <span class="c1"># if cff file is given, convert it to codemeta tempfile and pass as extra input</span>
-    <span class="n">temp_cff_cm</span> <span class="o">=</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">nullcontext</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span> <span class="ow">and</span> <span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">temp_cff_cm</span> <span class="o">=</span> <span class="n">cff_codemeta_tempfile</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="p">)</span>
-        <span class="n">cm_sources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">temp_cff_cm</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="c1"># set license</span>
+    <span class="k">if</span> <span class="s2">&quot;license&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;license&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;https://spdx.org/licenses/</span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;license&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,)</span>
 
-    <span class="c1"># run codemetapy</span>
-    <span class="k">with</span> <span class="n">temp_cff_cm</span><span class="p">:</span>
-        <span class="n">cm_harvest</span> <span class="o">=</span> <span class="n">gen_codemeta</span><span class="p">(</span><span class="n">cm_sources</span><span class="p">)</span>
+    <span class="c1"># if softwareHelp is set, set url to softwareHelp</span>
+    <span class="k">if</span> <span class="s2">&quot;softwareHelp&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;softwareHelp&quot;</span><span class="p">]</span>
 
-    <span class="c1"># NOTE: once codemetapy is fixed (still broken with 2.5.1), we should not need</span>
-    <span class="c1"># update_codemeta_file + codemeta context dump + most of utils.py + their tests anymore</span>
-    <span class="c1"># we&#39;ll first disable the workaround and see for a while if everything works</span>
-    <span class="c1"># as expected, and if it does, the cleanup can be completed.</span>
-    <span class="c1">#</span>
-    <span class="c1"># save to file with same settings as used by codemetapy</span>
-    <span class="c1"># with open(conf.codemeta_file, &quot;w&quot;) as f:</span>
-    <span class="c1">#     f.write(json.dumps(cm_harvest, indent=4, ensure_ascii=False, sort_keys=True))</span>
-
-    <span class="c1"># check output and write file if needed (with workaround checking graph equivalence)</span>
-    <span class="k">return</span> <span class="n">update_codemeta_file</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="p">,</span> <span class="n">cm_harvest</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># codemeta.json indentation is 2 spaces</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
 
 </div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+
+<h3 id="somesy.codemeta.Codemeta.sync" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">sync</span>
+
+
+<a href="#somesy.codemeta.Codemeta.sync" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Sync codemeta.json with project metadata.</p>
+<p>Use existing sync function from ProjectMetadataWriter but update repository and contributors.</p>
+
+          <details class="quote">
+            <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync codemeta.json with project metadata.</span>
+
+<span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">people</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
 
 
 
@@ -1878,13 +2325,13 @@
         
         
           
-          <a href="exec/" class="md-footer__link md-footer__link--next" aria-label="Next: exec">
+          <a href="writer/" class="md-footer__link md-footer__link--next" aria-label="Next: writer">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                exec
+                writer
               </div>
             </div>
             <div class="md-footer__button md-icon">

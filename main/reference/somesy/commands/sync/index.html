@@ -901,32 +901,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../codemeta/exec/" class="md-nav__link">
+      <a href="../../codemeta/writer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    exec
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../codemeta/utils/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    utils
+    writer
   </span>
   
 
@@ -1755,9 +1734,7 @@
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.&quot;&quot;&quot;</span>
     <span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">project</span>
 
@@ -1774,13 +1751,11 @@
         <span class="n">_sync_package_json</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="p">)</span>
 
     <span class="c1"># create these by default if they are missing:</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
         <span class="n">_sync_cff</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="p">)</span>
 
-    <span class="c1"># NOTE: codemeta should always be last, it uses (some of) the other targets</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
-        <span class="n">_sync_codemeta</span><span class="p">(</span><span class="n">conf</span><span class="p">)</span>
+        <span class="n">_sync_codemeta</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
