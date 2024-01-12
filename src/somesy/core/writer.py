@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from somesy.core.models import Person, ProjectMetadata
 
-log = logging.getLogger("somesy")
+logger = logging.getLogger("somesy")
 
 
 class ProjectMetadataWriter(ABC):
@@ -45,6 +45,7 @@ class ProjectMetadataWriter(ABC):
         else:
             if self.create_if_not_exists:
                 self._init_new_file()
+                self._load()
             else:
                 raise FileNotFoundError(f"The file {self.path} does not exist.")
 
@@ -162,7 +163,7 @@ class ProjectMetadataWriter(ABC):
                     old_fmt = self._from_person(person)
                     new_fmt = self._from_person(modified_people[i])
                     if old_fmt != new_fmt:
-                        log.debug(f"Updating person\n{old_fmt}\nto\n{new_fmt}")
+                        logger.debug(f"Updating person\n{old_fmt}\nto\n{new_fmt}")
 
             if not person_existed:
                 new_people.append(person_meta)
@@ -170,9 +171,9 @@ class ProjectMetadataWriter(ABC):
         # show added and removed people in debug log
         removed_people = [old[i] for i in range(len(old)) if not still_exists[i]]
         for person in removed_people:
-            log.debug(f"Removing person\n{self._from_person(person)}")
+            logger.debug(f"Removing person\n{self._from_person(person)}")
         for person in new_people:
-            log.debug(f"Adding person\n{self._from_person(person)}")
+            logger.debug(f"Adding person\n{self._from_person(person)}")
 
         # return updated list of (still existing) people,
         # and all new people coming after them.
@@ -182,6 +183,15 @@ class ProjectMetadataWriter(ABC):
         return existing_modified + new_people
 
     def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
+        """Sync a list of persons with new metadata.
+
+        Args:
+            old (List[Any]): list of persons in format-specific representation
+            new (List[Person]): list of persons in somesy representation
+
+        Returns:
+            List[Any]: updated list of persons in format-specific representation
+        """
         old_people: List[Person] = self._parse_people(old)
         return self._merge_person_metadata(old_people, new)
 
@@ -228,6 +238,8 @@ class ProjectMetadataWriter(ABC):
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
         """Return a list of Persons parsed from list of format-specific people representations."""
+        if not people:
+            return []
         return list(map(cls._to_person, people or []))
 
     # ----

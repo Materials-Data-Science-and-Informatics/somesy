@@ -25,7 +25,7 @@ def init_somesy_logger():
 
 
 @pytest.fixture
-def somesy_input() -> dict:
+def somesy_input() -> SomesyInput:
     """Return a somesy input instance."""
     return SomesyInput.from_input_file(Path("tests/data/somesy.toml"))
 
