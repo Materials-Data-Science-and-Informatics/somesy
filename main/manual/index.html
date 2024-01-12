@@ -2854,14 +2854,7 @@ after running somesy (to remove the duplicate entries with the incorrect ORCID).
 <h3 id="codemeta">Codemeta<a class="headerlink" href="#codemeta" title="Permanent link">&para;</a></h3>
 <p>While <code>somesy</code> is modifying existing files for most supported formats,
 <a href="https://codemeta.github.io/">CodeMeta</a> is implemented differently.</p>
-<p>In order to avoid redundant work, <code>somesy</code> relies on existing tools to generate
-<code>codemeta.json</code> files. So when you synchronize the metadata and the codemeta
-target is enabled, <code>somesy</code> will generate your <code>codemeta.json</code> by:</p>
-<ul>
-<li>synchronizing metadata to a <code>pyproject.toml</code> or <code>package.json</code> (if enabled)</li>
-<li>synchronizing metadata to a <code>CITATION.cff</code> (if enabled)</li>
-<li>running <code>cffconvert</code> and <code>codemetapy</code> to combine both sources into a final <code>codemeta.json</code></li>
-</ul>
+<p>Other formats implement person identification and merging, but for codemeta.json, there's a notable exception: person data gets overwritten by the source file. Given that <code>codemeta.json</code> is a <code>JSON-LD file</code>, it inherently represents data as a graph, allowing for diverse information storage methods. To navigate this complexity and ensure accurate data representation, we opt to regenerate the <code>codemeta.json</code> file directly from the source file.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The <code>codemeta.json</code> is overwritten and regenerated from scratch every time you <code>sync</code>,
