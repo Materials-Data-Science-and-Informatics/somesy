@@ -4,6 +4,10 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## [v0.3.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.3.0) <small>(2024-01-12)</small> { id="0.3.0" }
+
+* replace codemetapy with an in-house writer, which enables windows support
+
 ## [v0.2.1](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.2.1) <small>(2023-11-29)</small> { id="0.2.1" }
 
 * **internal:** updated linters and dependencies
