@@ -43,6 +43,8 @@ jobs:
         run: |
           poetry install  # so somesy can check itself
           poetry run poe lint --all-files
+          git diff
+          poetry run poe lint --all-files
 
       - name: Scan dependencies for known vulnerabilities
         run: safety check -r pyproject.toml
