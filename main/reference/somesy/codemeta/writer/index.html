@@ -1290,6 +1290,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../json_wrapper/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    json_wrapper
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../main/" class="md-nav__link">
         
   
@@ -1320,7 +1341,7 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
         
           
           
@@ -1336,14 +1357,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2_3_1_7" id="__nav_2_3_1_7_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_3_1_8" id="__nav_2_3_1_8_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_3_1_7">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_8">
             <span class="md-nav__icon md-icon"></span>
             package_json
           </label>
@@ -1415,7 +1436,7 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_9" >
         
           
           
@@ -1431,14 +1452,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2_3_1_8" id="__nav_2_3_1_8_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_3_1_9" id="__nav_2_3_1_9_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_3_1_8">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_9">
             <span class="md-nav__icon md-icon"></span>
             pyproject
           </label>
@@ -1968,9 +1989,7 @@
 <span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Codemeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Codemeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Codemeta.json parser and saver.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -2044,7 +2063,7 @@
         <span class="p">}</span>
         <span class="c1"># dump to file</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the codemeta.json file.&quot;&quot;&quot;</span>
@@ -2064,7 +2083,7 @@
 
         <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="c1"># codemeta.json indentation is 2 spaces</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Person</span><span class="p">):</span>
@@ -2072,7 +2091,6 @@
         <span class="n">person_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting person </span><span class="si">{</span><span class="n">person</span><span class="si">}</span><span class="s2"> to codemeta.json format.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span><span class="p">:</span>
             <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span>
         <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span><span class="p">:</span>
@@ -2101,7 +2119,6 @@
             <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;orcid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="s2">&quot;address&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
             <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting person </span><span class="si">{</span><span class="n">person_obj</span><span class="si">}</span><span class="s2"> to pydantic person instance.&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Person</span><span class="p">(</span><span class="o">**</span><span class="n">person_obj</span><span class="p">)</span>
 
@@ -2315,7 +2332,7 @@
 
     <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="c1"># codemeta.json indentation is 2 spaces</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
           </details>
   </div>
@@ -2343,13 +2360,13 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">165</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync codemeta.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
