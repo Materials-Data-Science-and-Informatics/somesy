@@ -42,7 +42,7 @@ jobs:
       - name: Check that all static analysis tools run without errors
         run: |
           poetry install  # so somesy can check itself
-          poetry run poe lint --all-files
+          somesy sync
           git diff
           poetry run poe lint --all-files
 
