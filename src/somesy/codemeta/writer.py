@@ -1,5 +1,4 @@
 """codemeta.json creation module."""
-import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
@@ -9,7 +8,7 @@ from rich.pretty import pretty_repr
 
 from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
-from somesy.utils import json_dump_wrapper
+from somesy.json_wrapper import json
 
 logger = logging.getLogger("somesy")
 
@@ -74,7 +73,6 @@ class Codemeta(ProjectMetadataWriter):
             f"No validation for codemeta.json files {Codemeta.__name__}: {pretty_repr(config)}"
         )
 
-    @json_dump_wrapper
     def _init_new_file(self) -> None:
         data = {
             "@context": [
@@ -91,7 +89,6 @@ class Codemeta(ProjectMetadataWriter):
         with self.path.open("w+") as f:
             json.dump(data, f)
 
-    @json_dump_wrapper
     def save(self, path: Optional[Path] = None) -> None:
         """Save the codemeta.json file."""
         path = path or self.path

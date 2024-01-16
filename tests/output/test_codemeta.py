@@ -1,9 +1,7 @@
 from somesy.codemeta import Codemeta
-from somesy.utils import json_dump_wrapper
-import json
+from somesy.json_wrapper import json
 
 
-@json_dump_wrapper
 def test_update_codemeta(somesy_input, tmp_path):
     codemeta_file = tmp_path / "codemeta.json"
 
