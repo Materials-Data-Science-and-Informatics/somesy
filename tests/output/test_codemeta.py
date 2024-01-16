@@ -1,7 +1,9 @@
 from somesy.codemeta import Codemeta
+from somesy.utils import json_dump_wrapper
 import json
 
 
+@json_dump_wrapper
 def test_update_codemeta(somesy_input, tmp_path):
     codemeta_file = tmp_path / "codemeta.json"
 
@@ -35,7 +37,7 @@ def test_update_codemeta(somesy_input, tmp_path):
     with open(codemeta_file, "w") as f:
         codemeta = json.loads(dat3)
         codemeta["version"] = "0.0.2"
-        json.dump(codemeta, f, ensure_ascii=False)
+        json.dump(codemeta, f)
     cm.sync(somesy_input.project)
     cm.save()
     assert codemeta_file.is_file()

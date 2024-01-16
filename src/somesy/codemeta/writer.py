@@ -9,6 +9,7 @@ from rich.pretty import pretty_repr
 
 from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
+from somesy.utils import json_dump_wrapper
 
 logger = logging.getLogger("somesy")
 
@@ -73,6 +74,7 @@ class Codemeta(ProjectMetadataWriter):
             f"No validation for codemeta.json files {Codemeta.__name__}: {pretty_repr(config)}"
         )
 
+    @json_dump_wrapper
     def _init_new_file(self) -> None:
         data = {
             "@context": [
@@ -87,8 +89,9 @@ class Codemeta(ProjectMetadataWriter):
         }
         # dump to file
         with self.path.open("w+") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+            json.dump(data, f)
 
+    @json_dump_wrapper
     def save(self, path: Optional[Path] = None) -> None:
         """Save the codemeta.json file."""
         path = path or self.path
@@ -107,7 +110,7 @@ class Codemeta(ProjectMetadataWriter):
 
         with path.open("w") as f:
             # codemeta.json indentation is 2 spaces
-            json.dump(data, f, indent=2, ensure_ascii=False)
+            json.dump(data, f)
 
     @staticmethod
     def _from_person(person: Person):
