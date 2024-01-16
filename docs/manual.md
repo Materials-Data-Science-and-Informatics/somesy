@@ -372,11 +372,16 @@ after running somesy (to remove the duplicate entries with the incorrect ORCID).
 
 ### Codemeta
 
-While `somesy` is modifying existing files for most supported formats,
+While `somesy` is modifying existing files for most supported formats and implements
+features such as person identification and merging,
 [CodeMeta](https://codemeta.github.io/) is implemented differently.
 
-
-Other formats implement person identification and merging, but for codemeta.json, there's a notable exception: person data gets overwritten by the source file. Given that `codemeta.json` is a `JSON-LD file`, it inherently represents data as a graph, allowing for diverse information storage methods. To navigate this complexity and ensure accurate data representation, we opt to regenerate the `codemeta.json` file directly from the source file.
+As that `codemeta.json` is a [**JSON-LD**](https://json-ld.org/) file, it actually represents a graph,
+has various equally valid representations in a JSON file.
+Thus, supporting the same features as for other formats is technically much more
+challenging, if at all feasible. Therefore, for the time being, we regenerate the
+`codemeta.json` file directly from the source file, in order to avoid data inconsistency
+due to many pitfalls hiding in the details of the format.
 
 !!! warning
 
@@ -385,6 +390,9 @@ Other formats implement person identification and merging, but for codemeta.json
 
 As `codemeta.json` is considered a technical "backend-format" derived from other
 inputs, in most cases you probably do not need or should edit it by hand anyway.
+
+Of course, you are welcome to contribute an improved CodeMeta writer for somesy that can correctly
+understand and update the linked data graph which the `codemeta.json` file represents!
 
 ## Using somesy to insert metadata into project documentation
 

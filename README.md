@@ -53,7 +53,9 @@ Properly maintaining this kind of information in various files scattered around 
 
 ### Platform Support
 
-`somesy` is now compatible with MacOS, Ubuntu, and Windows. For Windows users, it's important to use a version `0.3.0` or higher of somesy to ensure compatibility.
+Starting with version **0.3.0**, `somesy` supports Linux, MacOS and Windows.
+
+Make sure that you use the latest version in order to avoid any problems.
 
 ### Installing somesy
 
@@ -145,7 +147,7 @@ file in the root folder of your repository:
 repos:
   # ... (your other hooks) ...
   - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-    rev: "v0.2.0"
+    rev: "v0.3.0"
     hooks:
       - id: somesy
 ```
