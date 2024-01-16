@@ -1,5 +1,4 @@
 """package.json parser and saver."""
-import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
@@ -9,6 +8,7 @@ from rich.pretty import pretty_repr
 
 from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
+from somesy.json_wrapper import json
 from somesy.package_json.models import PackageJsonConfig
 
 logger = logging.getLogger("somesy")
@@ -72,7 +72,7 @@ class PackageJSON(ProjectMetadataWriter):
 
         with path.open("w") as f:
             # package.json indentation is 2 spaces
-            json.dump(self._data, f, indent=2)
+            json.dump(self._data, f)
 
     @staticmethod
     def _from_person(person: Person):

@@ -115,7 +115,7 @@ class SomesyBaseModel(BaseModel):
 
         if by_alias:
             ret = {self.model_fields[k].alias or k: v for k, v in ret.items()}
-        return json.dumps(ret)
+        return json.dumps(ret, ensure_ascii=False)
 
 
 _SOMESY_TARGETS = ["cff", "pyproject", "package_json", "codemeta"]

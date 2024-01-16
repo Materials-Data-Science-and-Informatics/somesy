@@ -1,5 +1,4 @@
 """codemeta.json creation module."""
-import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
@@ -9,6 +8,7 @@ from rich.pretty import pretty_repr
 
 from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
+from somesy.json_wrapper import json
 
 logger = logging.getLogger("somesy")
 
@@ -87,7 +87,7 @@ class Codemeta(ProjectMetadataWriter):
         }
         # dump to file
         with self.path.open("w+") as f:
-            json.dump(data, f, indent=2)
+            json.dump(data, f)
 
     def save(self, path: Optional[Path] = None) -> None:
         """Save the codemeta.json file."""
@@ -107,7 +107,7 @@ class Codemeta(ProjectMetadataWriter):
 
         with path.open("w") as f:
             # codemeta.json indentation is 2 spaces
-            json.dump(data, f, indent=2)
+            json.dump(data, f)
 
     @staticmethod
     def _from_person(person: Person):
@@ -115,7 +115,6 @@ class Codemeta(ProjectMetadataWriter):
         person_dict = {
             "@type": "Person",
         }
-        logger.debug(f"Converting person {person} to codemeta.json format.")
         if person.given_names:
             person_dict["givenName"] = person.given_names
         if person.family_names:
@@ -144,7 +143,6 @@ class Codemeta(ProjectMetadataWriter):
             person_obj["orcid"] = person["@id"].strip()
         if "address" in person:
             person_obj["address"] = person["address"].strip()
-        logger.debug(f"Converting person {person_obj} to pydantic person instance.")
 
         return Person(**person_obj)
 

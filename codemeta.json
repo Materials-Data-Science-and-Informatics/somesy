@@ -25,7 +25,7 @@
   ],
   "name": "somesy",
   "description": "A CLI tool for synchronizing software project metadata.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "keywords": [
     "metadata",
     "FAIR"
@@ -62,7 +62,7 @@
     {
       "@type": "Person",
       "givenName": "Jens",
-      "familyName": "Br\u00f6der",
+      "familyName": "Bröder",
       "email": "j.broeder@fz-juelich.de",
       "@id": "https://orcid.org/0000-0001-7939-226X"
     },

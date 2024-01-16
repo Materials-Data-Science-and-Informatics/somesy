@@ -1,5 +1,5 @@
 from somesy.codemeta import Codemeta
-import json
+from somesy.json_wrapper import json
 
 
 def test_update_codemeta(somesy_input, tmp_path):
