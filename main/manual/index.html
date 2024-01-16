@@ -2771,7 +2771,7 @@ file in the root folder of your repository:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># ... (your other hooks) ...</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
-<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v0.2.0&quot;</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v0.3.0&quot;</span>
 <span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
 </code></pre></div>
@@ -2873,9 +2873,15 @@ Therefore, <strong>in such a case you will need to fix the ORCID in all configur
 before running somesy (so somesy will not create new person entries), or
 after running somesy (to remove the duplicate entries with the incorrect ORCID).</p>
 <h3 id="codemeta">Codemeta<a class="headerlink" href="#codemeta" title="Permanent link">&para;</a></h3>
-<p>While <code>somesy</code> is modifying existing files for most supported formats,
+<p>While <code>somesy</code> is modifying existing files for most supported formats and implements
+features such as person identification and merging,
 <a href="https://codemeta.github.io/">CodeMeta</a> is implemented differently.</p>
-<p>Other formats implement person identification and merging, but for codemeta.json, there's a notable exception: person data gets overwritten by the source file. Given that <code>codemeta.json</code> is a <code>JSON-LD file</code>, it inherently represents data as a graph, allowing for diverse information storage methods. To navigate this complexity and ensure accurate data representation, we opt to regenerate the <code>codemeta.json</code> file directly from the source file.</p>
+<p>As that <code>codemeta.json</code> is a <a href="https://json-ld.org/"><strong>JSON-LD</strong></a> file, it actually represents a graph,
+has various equally valid representations in a JSON file.
+Thus, supporting the same features as for other formats is technically much more
+challenging, if at all feasible. Therefore, for the time being, we regenerate the
+<code>codemeta.json</code> file directly from the source file, in order to avoid data inconsistency
+due to many pitfalls hiding in the details of the format.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The <code>codemeta.json</code> is overwritten and regenerated from scratch every time you <code>sync</code>,
@@ -2883,6 +2889,8 @@ so <strong>do not edit it</strong> if you have the codemeta target enabled in <c
 </div>
 <p>As <code>codemeta.json</code> is considered a technical "backend-format" derived from other
 inputs, in most cases you probably do not need or should edit it by hand anyway.</p>
+<p>Of course, you are welcome to contribute an improved CodeMeta writer for somesy that can correctly
+understand and update the linked data graph which the <code>codemeta.json</code> file represents!</p>
 <h2 id="using-somesy-to-insert-metadata-into-project-documentation">Using somesy to insert metadata into project documentation<a class="headerlink" href="#using-somesy-to-insert-metadata-into-project-documentation" title="Permanent link">&para;</a></h2>
 <p>While <code>somesy</code> can synchronize structured metadata files and formats, there is a common case that cannot be covered by the <code>sync</code> command - when project metadata should appear in plain text documents, such as documentation files and web pages.</p>
 <p>As for documentation the needs and used tooling in different projects is vastly different, <code>somesy</code> provides a very general solution to this problem
