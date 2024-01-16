@@ -115,7 +115,6 @@ class Codemeta(ProjectMetadataWriter):
         person_dict = {
             "@type": "Person",
         }
-        logger.debug(f"Converting person {person} to codemeta.json format.")
         if person.given_names:
             person_dict["givenName"] = person.given_names
         if person.family_names:
@@ -144,7 +143,6 @@ class Codemeta(ProjectMetadataWriter):
             person_obj["orcid"] = person["@id"].strip()
         if "address" in person:
             person_obj["address"] = person["address"].strip()
-        logger.debug(f"Converting person {person_obj} to pydantic person instance.")
 
         return Person(**person_obj)
 
