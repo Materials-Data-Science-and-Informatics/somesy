@@ -1,4 +1,6 @@
 """Utility functions for somesy."""
+import json
+
 import wrapt
 
 
@@ -10,3 +12,7 @@ def json_dump_wrapper(wrapped, instance, args, kwargs):
     # set indent to 2 if not set
     kwargs["indent"] = kwargs.get("indent", 2)
     return wrapped(*args, **kwargs)
+
+
+# Apply the wrapper
+json.dump = json_dump_wrapper(json.dump)
