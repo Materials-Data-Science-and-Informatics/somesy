@@ -161,9 +161,7 @@ class SetuptoolsConfig(BaseModel):
     ]
     description: str
     readme: Optional[Union[Path, List[Path], File]] = None
-    license: Optional[License] = Field(
-        None, description="An SPDX license identifier."
-    )
+    license: Optional[License] = Field(None, description="An SPDX license identifier.")
     authors: Optional[List[STPerson]] = None
     maintainers: Optional[List[STPerson]] = None
     keywords: Optional[Set[str]] = None

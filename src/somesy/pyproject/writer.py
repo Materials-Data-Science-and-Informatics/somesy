@@ -9,7 +9,7 @@ import wrapt
 from rich.pretty import pretty_repr
 from tomlkit import load
 
-from somesy.core.models import Person,ProjectMetadata
+from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
 
 from .models import PoetryConfig, SetuptoolsConfig
@@ -146,14 +146,16 @@ class SetupTools(PyprojectCommon):
                 "email": person_obj["email"].strip(),
             }
         )
-        
-    
+
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file and fix license field."""
         super().sync(metadata)
-        
+
         # if license field has both text and file, remove file
-        if self._get_property(["license", "file"]) is not None and self._get_property(["license", "text"]) is not None:
+        if (
+            self._get_property(["license", "file"]) is not None
+            and self._get_property(["license", "text"]) is not None
+        ):
             # delete license file property
             self._data["project"]["license"].pop("file")
             logger.debug("Removed license file from pyproject.toml")
