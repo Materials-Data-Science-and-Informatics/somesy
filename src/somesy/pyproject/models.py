@@ -122,8 +122,8 @@ class License(BaseModel):
 
     model_config = dict(validate_assignment=True)
 
-    file: Optional[Path]
-    text: Optional[LicenseEnum]
+    file: Optional[Path] = None
+    text: Optional[LicenseEnum] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -161,7 +161,7 @@ class SetuptoolsConfig(BaseModel):
     ]
     description: str
     readme: Optional[Union[Path, List[Path], File]] = None
-    license: Optional[Union[LicenseEnum, List[LicenseEnum]]] = Field(
+    license: Optional[License] = Field(
         None, description="An SPDX license identifier."
     )
     authors: Optional[List[STPerson]] = None
