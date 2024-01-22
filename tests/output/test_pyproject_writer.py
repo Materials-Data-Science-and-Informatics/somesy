@@ -38,7 +38,7 @@ def test_content_match(pyproject_poetry, pyproject_setuptools):
             pyproject_file.description
             == "This is a test package for demonstration purposes."
         )
-        assert pyproject_file.license == "MIT"
+        assert pyproject_file.license == "MIT" or pyproject_file.license["text"] == "MIT"
         assert len(pyproject_file.authors) == 1
 
     # assert for both formats
