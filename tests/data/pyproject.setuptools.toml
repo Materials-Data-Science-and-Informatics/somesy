@@ -2,8 +2,8 @@
 name = "test-package"
 version = "0.1.0"
 description = "This is a test package for demonstration purposes."
-authors = [{"name"="John Doe", "email"="john.doe@example.com"}]
-license = "MIT"
+authors = [{ "name" = "John Doe", "email" = "john.doe@example.com" }]
+license = { text = "MIT" }
 keywords = ["test", "demo", "example"]
 classifiers = [
     "Operating System :: POSIX :: Linux",
