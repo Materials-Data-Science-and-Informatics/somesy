@@ -38,7 +38,7 @@
       }
     },
     "d_f5af67d419469b2e_writer_py":{
-      "hash":"07404cfd273063510b83c5e42ba160cd",
+      "hash":"d887566a5db83ed7597bf6b81e8a3f37",
       "index":{
         "nums":[
           0,
@@ -89,14 +89,14 @@
       }
     },
     "d_1772db955a685d28_init_py":{
-      "hash":"058f871455b63ca61e2f81746ea7fa69",
+      "hash":"76018486d4af9bec3c2537cbdf890711",
       "index":{
         "nums":[
           0,
           1,
-          38,
+          42,
           0,
-          26,
+          30,
           0,
           0,
           0
@@ -106,7 +106,7 @@
       }
     },
     "d_1772db955a685d28_sync_py":{
-      "hash":"1258c6cb9db519742f37f6e354aa900f",
+      "hash":"ce565cb4ca3f5f5ff35ed29fab7d108d",
       "index":{
         "nums":[
           0,
@@ -157,7 +157,7 @@
       }
     },
     "d_3187dccd59625139_writer_py":{
-      "hash":"62b698f6bf069a8b5a2a5567aaaba9ce",
+      "hash":"189c888425b2b5b57e3e77cd05d58aee",
       "index":{
         "nums":[
           0,
@@ -208,14 +208,14 @@
       }
     },
     "d_52da451127691ee7_sync_py":{
-      "hash":"9886f51a98177dfce8fcab72773b7b4f",
+      "hash":"d6e45c407f34d2982dc89af4906f1464",
       "index":{
         "nums":[
           0,
           1,
-          48,
+          58,
           0,
-          34,
+          42,
           0,
           0,
           0
@@ -242,7 +242,7 @@
       }
     },
     "d_596ffba9215ba05d_core_py":{
-      "hash":"4a10afcd2e337a90bd58a8b8daa80721",
+      "hash":"eda4cb46d228e4d621983c5508a0a0e8",
       "index":{
         "nums":[
           0,
@@ -276,12 +276,12 @@
       }
     },
     "d_596ffba9215ba05d_models_py":{
-      "hash":"7b76a4a40002a98c073987d871798bfe",
+      "hash":"49c396d0ed49359f993fb90d804d372a",
       "index":{
         "nums":[
           0,
           1,
-          195,
+          206,
           0,
           12,
           0,
@@ -310,14 +310,14 @@
       }
     },
     "d_596ffba9215ba05d_writer_py":{
-      "hash":"b1c88514e58c5ca3de43b730f52f17d7",
+      "hash":"f6a8bb698fc68ae1c1b582cfab7ced79",
       "index":{
         "nums":[
           0,
           1,
-          152,
+          173,
           15,
-          8,
+          9,
           0,
           0,
           0
@@ -341,6 +341,57 @@
         ],
         "html_filename":"d_97b113e3d51588b3_json_wrapper_py.html",
         "relative_filename":"src/somesy/json_wrapper.py"
+      }
+    },
+    "d_55871f16c47673c2___init___py":{
+      "hash":"dd41ff9b16f7ac7e91ea305ca4f00ef3",
+      "index":{
+        "nums":[
+          0,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_55871f16c47673c2___init___py.html",
+        "relative_filename":"src/somesy/julia/__init__.py"
+      }
+    },
+    "d_55871f16c47673c2_models_py":{
+      "hash":"e9211618384f35bc3c6a8394e2a66c31",
+      "index":{
+        "nums":[
+          0,
+          1,
+          35,
+          0,
+          5,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_55871f16c47673c2_models_py.html",
+        "relative_filename":"src/somesy/julia/models.py"
+      }
+    },
+    "d_55871f16c47673c2_writer_py":{
+      "hash":"7ec4a72206eb2e537745c71458e16ac7",
+      "index":{
+        "nums":[
+          0,
+          1,
+          33,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_55871f16c47673c2_writer_py.html",
+        "relative_filename":"src/somesy/julia/writer.py"
       }
     },
     "d_97b113e3d51588b3_main_py":{
@@ -395,7 +446,7 @@
       }
     },
     "d_b9578909e48e55c1_writer_py":{
-      "hash":"d29b7b5ee14d9a9fcc55b1e038deaf91",
+      "hash":"f9691a3733e237d3e799888b93e60400",
       "index":{
         "nums":[
           0,
@@ -409,6 +460,23 @@
         ],
         "html_filename":"d_b9578909e48e55c1_writer_py.html",
         "relative_filename":"src/somesy/package_json/writer.py"
+      }
+    },
+    "d_9ea766248af4aff5___init___py":{
+      "hash":"b95651403879d1ad689991a537b8b7b9",
+      "index":{
+        "nums":[
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_9ea766248af4aff5___init___py.html",
+        "relative_filename":"src/somesy/pom_xml/__init__.py"
       }
     },
     "d_22470fc7858cbfa7___init___py":{
@@ -446,12 +514,12 @@
       }
     },
     "d_22470fc7858cbfa7_writer_py":{
-      "hash":"b2422eb1bd607797520a78cf9a1147fb",
+      "hash":"a7d05495421883ad109d6d269943aedc",
       "index":{
         "nums":[
           0,
           1,
-          86,
+          87,
           0,
           6,
           0,
