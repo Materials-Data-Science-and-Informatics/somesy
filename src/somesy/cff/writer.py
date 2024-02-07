@@ -7,7 +7,7 @@ from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
 
 from somesy.core.models import Person, ProjectMetadata
-from somesy.core.writer import ProjectMetadataWriter
+from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 
 class CFF(ProjectMetadataWriter):
@@ -25,11 +25,12 @@ class CFF(ProjectMetadataWriter):
         self._yaml = YAML()
         self._yaml.preserve_quotes = True
 
-        mappings = {
+        mappings: FieldKeyMapping = {
             "name": ["title"],
             "description": ["abstract"],
             "homepage": ["url"],
             "repository": ["repository-code"],
+            "documentation": IgnoreKey(),
             "maintainers": ["contact"],
         }
         super().__init__(

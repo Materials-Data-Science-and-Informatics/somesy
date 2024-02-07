@@ -6,6 +6,7 @@ keywords = ["metadata", "FAIR"]
 license = "MIT"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
+documentation = "https://materials-data-science-and-informatics.github.io/somesy"
 
 [[project.people]]
 family-names = "Soylu"
@@ -74,6 +75,7 @@ pyproject_file = "pyproject.toml"
 no_sync_codemeta = false
 codemeta_file = "codemeta.json"
 no_sync_package_json = true
+no_sync_julia = true
 show_info = false
 verbose = false
 debug = true

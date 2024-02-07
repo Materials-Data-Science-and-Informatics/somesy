@@ -8,7 +8,13 @@ import tomlkit
 
 logger = logging.getLogger("somesy")
 
-INPUT_FILES_ORDERED = [".somesy.toml", "somesy.toml", "pyproject.toml", "package.json"]
+INPUT_FILES_ORDERED = [
+    ".somesy.toml",
+    "somesy.toml",
+    "pyproject.toml",
+    "package.json",
+    "Project.toml",
+]
 """Input files ordered by priority for discovery."""
 
 
@@ -72,7 +78,9 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
             return ret if no_unwrap else ret.unwrap()
 
     # pyproject.toml
-    if path.suffix == ".toml" and "pyproject" in path.name:
+    if (
+        path.suffix == ".toml" and "pyproject" in path.name
+    ) or path.name == "Project.toml":
         with open(path, "r") as f:
             input_content = tomlkit.load(f)
             if "tool" in input_content and "somesy" in input_content["tool"]:

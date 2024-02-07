@@ -44,6 +44,7 @@
   ],
   "softwareHelp": "https://materials-data-science-and-informatics.github.io/somesy",
   "codeRepository": "https://github.com/Materials-Data-Science-and-Informatics/somesy",
+  "buildInstructions": "https://materials-data-science-and-informatics.github.io/somesy",
   "contributor": [
     {
       "@type": "Person",

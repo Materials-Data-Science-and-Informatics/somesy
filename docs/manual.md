@@ -113,34 +113,37 @@ print(model2md(SomesyConfig).getvalue())
 
 From its own schema `somesy` must convert the information into the target formats.
 The following tables sketch how fields are mapped to corresponding other fields in
-some of the currently supported formats.
+some of the currently supported formats. Bold field names are mandatory, the others are optional.
 
 === "Person Metadata"
 
-    | Field Name       | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
-    | ---------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
-    | given-names      | name+email    | name              | given-names     | name         | required    |
-    | family-names     | name+email    | name              | family-names    | name         | required    |
-    | email            | name+email    | email             | email           | email        | required    |
-    | orcid            | -             | -                 | orcid           | url          | optional    |
-    | *(many others)*  | -             | -                 | *(same)*        | -            | optional    |
+    | Somesy Field     | Poetry Config | SetupTools Config | Julia Config | package.json | CITATION.cff    | CodeMeta        |
+    | ---------------- | ------------- | ----------------- | ------------ | ------------ | --------------- | --------------- |
+    |                  |               |                   |              |              |                 |                 |
+    | **given-names**  | name+email    | name              | name+email   | name         | given-names     | givenName       |
+    | **family-names** | name+email    | name              | name+email   | name         | family-names    | familyName      |
+    | **email**        | name+email    | email             | name+email   | email        | email           | email           |
+    | orcid            | -             | -                 | -            | url          | orcid           | id              |
+    | *(many others)*  | -             | -                 | -            | -            | *(same)*        | *(same)*        |
 
 === "Project Metadata"
 
-    | Field Name        | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
-    | ----------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
-    | name              | name          | name              | title           | name         | required    |
-    | description       | description   | description       | abstract        | description  | required    |
-    | license           | license       | license           | license         | license      | required    |
-    | version           | version       | version           | version         | version      | optional    |
-    |                   |               |                   |                 |              |             |
-    | *author=true*     | authors       | authors           | authors         | author       | required    |
-    | *maintainer=true* | maintainers   | maintainers       | contact         | maintainers  | optional    |
-    | *people*          | -             | -                 | -               | contributors | optional    |
-    |                   |               |                   |                 |              |             |
-    | keywords          | keywords      | keywords          | keywords        | keywords     | optional    |
-    | repository        | repository    | urls.repository   | repository_code | repository   | optional    |
-    | homepage          | homepage      | urls.homepage     | url             | homepage     | optional    |
+    | Somesy Field      | Poetry Config | SetupTools Config  | Julia Config | package.json | CITATION.cff    | CodeMeta          |
+    | ----------------- | ------------- | ------------------ | ------------ | ------------ | --------------- | ----------------- |
+    |                   |               |                                   |              |                 |                   |
+    | **name**          | name          | name               | name         | name         | title           | name              |
+    | **description**   | description   | description        | -            | description  | abstract        | description       |
+    | **license**       | license       | license            | -            | license      | license         | license           |
+    | **version**       | version       | version            | version      | version      | version         | version           |
+    |                   |               |                    |              |              |                 |                   |
+    | ***author=true*** | authors       | authors            | authors      | author       | authors         | author            |
+    | *maintainer=true* | maintainers   | maintainers        | -            | maintainers  | contact         | maintainer        |
+    | *people*          | -             | -                  | -            | contributors | -               | contributor       |
+    |                   |               |                    |              |              |                 |                   |
+    | keywords          | keywords      | keywords           | -            | keywords     | keywords        | keywords          |
+    | homepage          | homepage      | urls.homepage      | -            | homepage     | url             | url               |
+    | repository        | repository    | urls.repository    | -            | repository   | repository_code | codeRepository    |
+    | documentation     | documentation | urls.documentation | -            | -            | -               | buildInstructions |
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
@@ -167,6 +170,7 @@ Without an input file specifically provided, somesy will check if it can find a 
 * `.somesy.toml`
 * `somesy.toml`
 * `pyproject.toml` (in `tool.somesy` section)
+* `Project.toml` (in `tool.somesy` section)
 * `package.json` (in `somesy` section)
 
 which is located in the current working directory. If you want to provide
@@ -187,6 +191,44 @@ one of the supported input formats:
     [tool.poetry]
     name = "my-amazing-project"
     version = "0.1.0"
+    ...
+
+    [tool.somesy.project]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    description = "Brief description of my amazing software."
+
+    keywords = ["some", "descriptive", "keywords"]
+    license = "MIT"
+    repository = "https://github.com/username/my-amazing-project"
+
+    # This is you, the proud author of your project
+    [[tool.somesy.project.people]]
+    given-names = "Jane"
+    family-names = "Doe"
+    email = "j.doe@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0001"
+    author = true      # is a full author of the project (i.e. appears in citations)
+    maintainer = true  # currently maintains the project (i.e. is a contact person)
+
+    # this person is a acknowledged contributor, but not author or maintainer:
+    [[tool.somesy.project.people]]
+    given-names = "Another"
+    family-names = "Contributor"
+    email = "a.contributor@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0002"
+
+    [tool.somesy.config]
+    verbose = true     # show detailed information about what somesy is doing
+    ```
+
+=== "Project.toml"
+    ```toml
+    name = "my-amazing-project"
+    version = "0.1.0"
+    uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
+
+    [deps]
     ...
 
     [tool.somesy.project]

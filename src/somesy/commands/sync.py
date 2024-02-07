@@ -7,6 +7,7 @@ from rich.pretty import pretty_repr
 from somesy.cff.writer import CFF
 from somesy.codemeta import Codemeta
 from somesy.core.models import ProjectMetadata, SomesyInput
+from somesy.julia.writer import Julia
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject.writer import Pyproject
 
@@ -35,6 +36,9 @@ def sync(somesy_input: SomesyInput):
 
     if not conf.no_sync_codemeta:
         _sync_codemeta(metadata, conf.codemeta_file)
+
+    if not conf.no_sync_julia:
+        _sync_julia(metadata, conf.julia_file)
 
 
 def _sync_python(
@@ -107,3 +111,21 @@ def _sync_codemeta(
     cm.sync(metadata)
     cm.save()
     logger.verbose(f"New codemeta graph written to {codemeta_file}.")
+
+
+def _sync_julia(
+    metadata: ProjectMetadata,
+    julia_file: Path,
+):
+    """Sync Project.toml file using project metadata.
+
+    Args:
+        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
+        julia_file (Path, optional): Project.toml file path if wanted to be synced. Defaults to None.
+    """
+    logger.verbose("Loading Project.toml file.")
+    cm = Julia(julia_file)
+    logger.verbose("Syncing Project.toml file.")
+    cm.sync(metadata)
+    cm.save()
+    logger.verbose(f"Saved synced Project.toml file to {julia_file}.")

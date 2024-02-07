@@ -1,27 +1,29 @@
-[project]
 name = "test-package"
 version = "0.1.0"
-description = "This is a test package for demonstration purposes."
-authors = [{ "name" = "John Doe", "email" = "john.doe@example.com" }]
-license = { text = "MIT" }
-keywords = ["test", "demo", "example"]
-classifiers = [
-    "Operating System :: POSIX :: Linux",
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
-    "Topic :: Software Development :: Libraries :: Application Frameworks",
-]
-requires-python = ">=3.8"
+uuid = "c8e1f9c6-0b0f-11ec-9a03-0242ac130003"
+authors = ["John Doe <john.doe@example.com>"]
 
-[project.urls]
-homepage = "https://example.com/test-package"
-repository = "https://github.com/example/test-package"
-documentation = "https://example.com/test-package"
+# other Project.toml fields are randomly copied from Flux.jl
+[deps]
+Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
+ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
 
-[build-system]
-requires = ["setuptools", "setuptools-scm"]
-build-backend = "setuptools.build_meta"
+[weakdeps]
+AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
+
+[extensions]
+FluxAMDGPUExt = "AMDGPU"
+FluxCUDAExt = "CUDA"
+
+[compat]
+AMDGPU = "0.7, 0.8"
+julia = "1.9"
+
+[extras]
+AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
+
+[targets]
+test = ["Test", "Documenter", "IterTools", "AMDGPU"]
 
 # project metadata
 [tool.somesy.project]
@@ -77,7 +79,7 @@ no_sync_pyproject = false
 pyproject_file = "pyproject.toml"
 no_sync_codemeta = false
 codemeta_file = "codemeta.json"
-no_sync_package_json = false
+no_sync_package_json = true
 show_info = false
 verbose = false
-debug = true
+debug = false
