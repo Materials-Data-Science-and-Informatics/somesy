@@ -109,7 +109,7 @@ verbose = true     # show detailed information about what somesy is doing
 <!-- --8<-- [end:somesytoml] -->
 
 Alternatively, you can also add the somesy configuration to an existing
-`pyproject.toml` or `package.json` file. The somesy [manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file) contains examples showing how to do that.
+`pyproject.toml`, `package.json` or `Project.toml` file. The somesy [manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file) contains examples showing how to do that.
 
 ### Using somesy
 
@@ -125,7 +125,7 @@ authoritative** source for project metadata, which is used to update all
 supported (and enabled) *target files*. You can find an overview of supported
 formats further below.
 
-By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository. If you happen to use `pyproject.toml` (in Python projects) or `package.json` (in JavaScript projects), somesy would also update the respective information there.
+By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository. If you happen to use `pyproject.toml` (in Python projects), `package.json` (in JavaScript projects), or `Project.toml` (in Julia projects), somesy would also update the respective information there.
 
 You can see call available options with `somesy --help`,
 all of these can also be conveniently set in your `somesy.toml` file.
@@ -169,6 +169,7 @@ Here is an overview of all the currently supported files and formats.
 | (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_     | ✓      |
 | pyproject.toml | ✓      | | pyproject.toml _(setuptools)_ | ✓(1.)  |
 | package.json   | ✓      | | package.json                  | ✓(2.)  |
+| Project.toml   | ✓      | | Project.toml                  | ✓      |
 |                |        | | CITATION.cff                  | ✓      |
 |                |        | | codemeta.json                 | ✓(3.)  |
 
