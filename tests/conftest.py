@@ -9,6 +9,7 @@ from somesy.core.log import SomesyLogLevel, set_log_level
 from somesy.core.models import Person, SomesyInput
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
+from somesy.julia import Julia
 
 
 class FileTypes(Enum):
@@ -17,6 +18,7 @@ class FileTypes(Enum):
     CITATION = "citation"
     SOMESY = "somesy"
     PACKAGE_JSON = "package_json"
+    JULIA = "julia"
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -68,6 +70,8 @@ def create_files(tmp_path):
                 read_file_name = read_file_path / Path("somesy.toml")
             elif file_type == FileTypes.PACKAGE_JSON:
                 read_file_name = read_file_path / Path("package.json")
+            elif file_type == FileTypes.JULIA:
+                read_file_name = read_file_path / Path("Project.toml")
 
             with open(read_file_name, "r") as f:
                 content = f.read()
@@ -113,6 +117,9 @@ def load_files():
             elif file_type == FileTypes.PACKAGE_JSON:
                 read_file_name = read_file_name / Path("package.json")
                 file_instances[file_type] = PackageJSON(read_file_name)
+            elif file_type == FileTypes.JULIA:
+                read_file_name = read_file_name / Path("Project.toml")
+                file_instances[file_type] = Julia(read_file_name)
 
         return file_instances
 

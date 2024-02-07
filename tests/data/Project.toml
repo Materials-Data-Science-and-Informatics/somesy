@@ -1,0 +1,85 @@
+name = "test-package"
+version = "0.1.0"
+uuid = "c8e1f9c6-0b0f-11ec-9a03-0242ac130003"
+authors = ["John Doe <john.doe@example.com>"]
+
+# other Project.toml fields are randomly copied from Flux.jl
+[deps]
+Adapt = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
+ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+
+[weakdeps]
+AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
+
+[extensions]
+FluxAMDGPUExt = "AMDGPU"
+FluxCUDAExt = "CUDA"
+
+[compat]
+AMDGPU = "0.7, 0.8"
+julia = "1.9"
+
+[extras]
+AMDGPU = "21141c5a-9bdb-4563-92ae-f87d6854732e"
+
+[targets]
+test = ["Test", "Documenter", "IterTools", "AMDGPU"]
+
+# project metadata
+[tool.somesy.project]
+name = "testproject"
+version = "1.0.0"
+description = "This is a test project for demonstration purposes."
+keywords = ["test", "demo", "example"]
+license = "MIT"
+repository = "https://github.com/example/testproject"
+homepage = "https://example.com/testproject"
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "John"
+email = "john.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0000"
+
+contribution = "The main developer, maintainer, and tester."
+contribution_begin = "2023-01-15"
+contribution_types = ["maintenance", "code", "test", "review", "doc"]
+
+author = true
+maintainer = true
+publication_author = true
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "Jane"
+email = "jane.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0001"
+
+contribution = "Initial concepts, tool development and enhancement, documentation."
+contribution_begin = "2023-02-20"
+contribution_types = ["ideas", "code", "test", "review", "doc"]
+
+author = true
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "Michael"
+email = "michael.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0002"
+
+contribution = "Valuable input concerning metadata standards and usability."
+contribution_begin = "2023-03-10"
+contribution_types = ["ideas"]
+publication_author = true
+
+[tool.somesy.config]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = false
+pyproject_file = "pyproject.toml"
+no_sync_codemeta = false
+codemeta_file = "codemeta.json"
+no_sync_package_json = true
+show_info = false
+verbose = false
+debug = false
