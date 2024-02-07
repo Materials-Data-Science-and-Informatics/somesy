@@ -16,6 +16,12 @@ class IgnoreKey:
 FieldKeyMapping = Dict[str, Union[List[str], IgnoreKey]]
 """Type to be used for the dict passed as `direct_mappings`."""
 
+DictLike = Any
+"""Dict-like that supports getitem, setitem, delitem, etc.
+
+NOTE: This should be probably turned into a proper protocol.
+"""
+
 
 class ProjectMetadataWriter(ABC):
     """Base class for Project Metadata Output Wrapper.
@@ -42,7 +48,7 @@ class ProjectMetadataWriter(ABC):
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
         """
-        self._data: Dict = {}
+        self._data: DictLike = {}
         self.path = path
         self.create_if_not_exists = create_if_not_exists
         self.direct_mappings = direct_mappings or {}

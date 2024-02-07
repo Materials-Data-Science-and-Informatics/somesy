@@ -1,4 +1,4 @@
 """Integration with codemeta.json (to re-generate codemeta as part of somesy sync)."""
-from .writer import Codemeta
+from .writer import CodeMeta
 
-__all__ = ["Codemeta"]
+__all__ = ["CodeMeta"]

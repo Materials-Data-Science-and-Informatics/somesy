@@ -14,6 +14,18 @@ from somesy.core.models import SomesyConfig, SomesyInput
 logger = logging.getLogger("somesy")
 
 
+# configuration dicts for CLI file arguments
+file_arg_config = dict(
+    file_okay=True,
+    dir_okay=False,
+    writable=True,
+    readable=True,
+    resolve_path=True,
+)
+existing_file_arg_config = dict(file_arg_config)
+existing_file_arg_config.update(dict(exists=True))
+
+
 @wrapt.decorator
 def wrap_exceptions(wrapped, instance, args, kwargs):
     """Format and log exceptions for cli commands."""

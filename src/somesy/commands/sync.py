@@ -1,131 +1,59 @@
 """Sync selected metadata files with given input file."""
 import logging
 from pathlib import Path
+from typing import Type
 
 from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
-from somesy.codemeta import Codemeta
+from somesy.codemeta import CodeMeta
 from somesy.core.models import ProjectMetadata, SomesyInput
+from somesy.core.writer import ProjectMetadataWriter
 from somesy.julia.writer import Julia
 from somesy.package_json.writer import PackageJSON
+from somesy.pom_xml.writer import POM
 from somesy.pyproject.writer import Pyproject
 
 logger = logging.getLogger("somesy")
+
+
+def _sync_file(
+    metadata: ProjectMetadata, file: Path, writer_cls: Type[ProjectMetadataWriter]
+):
+    """Sync metadata to a file using the provided writer."""
+    logger.verbose(f"Loading '{file.name}' ...")
+    writer = writer_cls(file)
+    logger.verbose(f"Syncing '{file.name}' ...")
+    writer.sync(metadata)
+    writer.save(file)
+    logger.verbose(f"Saved synced '{file.name}'.\n")
 
 
 def sync(somesy_input: SomesyInput):
     """Sync selected metadata files with given input file."""
     conf, metadata = somesy_input.config, somesy_input.project
 
-    logger.debug(
-        f"Project metadata: {pretty_repr(metadata.model_dump(exclude_defaults=True))}"
-    )
+    pp_metadata = pretty_repr(metadata.model_dump(exclude_defaults=True))
+    logger.debug(f"Project metadata: {pp_metadata}")
 
     # update these only if they exist:
 
     if conf.pyproject_file.is_file() and not conf.no_sync_pyproject:
-        _sync_python(metadata, conf.pyproject_file)
+        _sync_file(metadata, conf.pyproject_file, Pyproject)
 
     if conf.package_json_file.is_file() and not conf.no_sync_package_json:
-        _sync_package_json(metadata, conf.package_json_file)
+        _sync_file(metadata, conf.package_json_file, PackageJSON)
+
+    if conf.julia_file.is_file() and not conf.no_sync_julia:
+        _sync_file(metadata, conf.julia_file, Julia)
+
+    if conf.pom_xml_file.is_file() and not conf.no_sync_pom_xml:
+        _sync_file(metadata, conf.pom_xml_file, POM)
 
     # create these by default if they are missing:
+
     if not conf.no_sync_cff:
-        _sync_cff(metadata, conf.cff_file)
+        _sync_file(metadata, conf.cff_file, CFF)
 
     if not conf.no_sync_codemeta:
-        _sync_codemeta(metadata, conf.codemeta_file)
-
-    if not conf.no_sync_julia:
-        _sync_julia(metadata, conf.julia_file)
-
-
-def _sync_python(
-    metadata: ProjectMetadata,
-    pyproject_file: Path,
-):
-    """Sync pyproject.toml file using project metadata.
-
-    Args:
-        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
-        pyproject_file (Path, optional): pyproject file to read project metadata from.
-    """
-    logger.verbose("Loading pyproject.toml file.")
-    pyproject = Pyproject(pyproject_file)
-    logger.verbose("Syncing pyproject.toml file.")
-    pyproject.sync(metadata)
-    pyproject.save()
-    logger.verbose("Saved synced pyproject.toml file.\n")
-
-
-def _sync_cff(
-    metadata: ProjectMetadata,
-    cff_file: Path,
-):
-    """Sync CITATION.cff file using project metadata.
-
-    Args:
-        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
-        cff_file (Path, optional): CFF file path if wanted to be synced. Defaults to None.
-    """
-    logger.verbose("Loading CITATION.cff file.")
-    cff = CFF(cff_file)
-    logger.verbose("Syncing CITATION.cff file.")
-    cff.sync(metadata)
-    cff.save()
-    logger.verbose("Saved synced CITATION.cff file.\n")
-
-
-def _sync_package_json(
-    metadata: ProjectMetadata,
-    package_json_file: Path,
-):
-    """Sync package.json file using project metadata.
-
-    Args:
-        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
-        package_json_file (Path, optional): package.json file path if wanted to be synced. Defaults to None.
-    """
-    logger.verbose("Loading package.json file.")
-    package_json = PackageJSON(package_json_file)
-    logger.verbose("Syncing package.json file.")
-    package_json.sync(metadata)
-    package_json.save()
-    logger.verbose("Saved synced package.json file.\n")
-
-
-def _sync_codemeta(
-    metadata: ProjectMetadata,
-    codemeta_file: Path,
-):
-    """Sync codemeta.json file using project metadata.
-
-    Args:
-        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
-        codemeta_file (Path, optional): codemeta.json file path if wanted to be synced. Defaults to None.
-    """
-    logger.verbose("Creating codemeta.json file.")
-    cm = Codemeta(codemeta_file)
-    logger.verbose("Syncing codemeta.json file.")
-    cm.sync(metadata)
-    cm.save()
-    logger.verbose(f"New codemeta graph written to {codemeta_file}.")
-
-
-def _sync_julia(
-    metadata: ProjectMetadata,
-    julia_file: Path,
-):
-    """Sync Project.toml file using project metadata.
-
-    Args:
-        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
-        julia_file (Path, optional): Project.toml file path if wanted to be synced. Defaults to None.
-    """
-    logger.verbose("Loading Project.toml file.")
-    cm = Julia(julia_file)
-    logger.verbose("Syncing Project.toml file.")
-    cm.sync(metadata)
-    cm.save()
-    logger.verbose(f"Saved synced Project.toml file to {julia_file}.")
+        _sync_file(metadata, conf.codemeta_file, CodeMeta)

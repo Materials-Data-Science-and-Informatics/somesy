@@ -13,7 +13,7 @@ from somesy.json_wrapper import json
 logger = logging.getLogger("somesy")
 
 
-class Codemeta(ProjectMetadataWriter):
+class CodeMeta(ProjectMetadataWriter):
     """Codemeta.json parser and saver."""
 
     def __init__(
@@ -71,7 +71,7 @@ class Codemeta(ProjectMetadataWriter):
         config = dict(self._get_property([]))
 
         logger.debug(
-            f"No validation for codemeta.json files {Codemeta.__name__}: {pretty_repr(config)}"
+            f"No validation for codemeta.json files {CodeMeta.__name__}: {pretty_repr(config)}"
         )
 
     def _init_new_file(self) -> None:

@@ -119,7 +119,7 @@ class SomesyBaseModel(BaseModel):
         return json.dumps(ret, ensure_ascii=False)
 
 
-_SOMESY_TARGETS = ["cff", "pyproject", "package_json", "codemeta", "julia"]
+_SOMESY_TARGETS = ["cff", "pyproject", "package_json", "codemeta", "julia", "pom_xml"]
 
 
 class SomesyConfig(SomesyBaseModel):
@@ -171,6 +171,20 @@ class SomesyConfig(SomesyBaseModel):
         Path, Field(description="package.json file path.")
     ] = Path("package.json")
 
+    no_sync_julia: Annotated[
+        bool, Field(description="Do not sync with Project.toml.")
+    ] = False
+    julia_file: Annotated[Path, Field(description="Project.toml file path.")] = Path(
+        "Project.toml"
+    )
+
+    no_sync_pom_xml: Annotated[
+        bool, Field(description="Do not sync with pom.xml.")
+    ] = False
+    pom_xml_file: Annotated[Path, Field(description="pom.xml file path.")] = Path(
+        "pom.xml"
+    )
+
     no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
     cff_file: Annotated[Path, Field(description="CFF file path.")] = Path(
         "CITATION.cff"
@@ -182,13 +196,6 @@ class SomesyConfig(SomesyBaseModel):
     codemeta_file: Annotated[
         Path, Field(description="codemeta.json file path.")
     ] = Path("codemeta.json")
-
-    no_sync_julia: Annotated[
-        bool, Field(description="Do not sync with Project.toml.")
-    ] = False
-    julia_file: Annotated[Path, Field(description="Project.toml file path.")] = Path(
-        "Project.toml"
-    )
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
