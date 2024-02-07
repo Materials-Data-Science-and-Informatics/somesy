@@ -3,10 +3,11 @@
 Here we provide notes that summarize the most important changes in each released version.
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
-## [Unreleased] - yyyy-mm-dd
 
-### Added
-* added julia support for `Project.toml` file
+## [v0.4.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.4.0) <small>(2024-02-??)</small> { id="0.4.0" }
+
+* added separate `documentation` URL to Project metadata model
+* added support for Julia `Project.toml` file
 
 ## [v0.3.1](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.3.1) <small>(2024-01-23)</small> { id="0.3.1" }
 

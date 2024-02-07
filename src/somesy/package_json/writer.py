@@ -7,7 +7,7 @@ from typing import List, Optional
 from rich.pretty import pretty_repr
 
 from somesy.core.models import Person, ProjectMetadata
-from somesy.core.writer import ProjectMetadataWriter
+from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.json_wrapper import json
 from somesy.package_json.models import PackageJsonConfig
 
@@ -25,8 +25,9 @@ class PackageJSON(ProjectMetadataWriter):
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        mappings = {
+        mappings: FieldKeyMapping = {
             "authors": ["author"],
+            "documentation": IgnoreKey(),
         }
         super().__init__(path, create_if_not_exists=False, direct_mappings=mappings)
 

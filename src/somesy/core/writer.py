@@ -9,6 +9,14 @@ from somesy.core.models import Person, ProjectMetadata
 logger = logging.getLogger("somesy")
 
 
+class IgnoreKey:
+    """Special marker to be passed for dropping a key from serialization."""
+
+
+FieldKeyMapping = Dict[str, Union[List[str], IgnoreKey]]
+"""Type to be used for the dict passed as `direct_mappings`."""
+
+
 class ProjectMetadataWriter(ABC):
     """Base class for Project Metadata Output Wrapper.
 
@@ -20,7 +28,7 @@ class ProjectMetadataWriter(ABC):
         path: Path,
         *,
         create_if_not_exists: Optional[bool] = False,
-        direct_mappings: Dict[str, List[str]] = None,
+        direct_mappings: FieldKeyMapping = None,
     ) -> None:
         """Initialize the Project Metadata Output Wrapper.
 
@@ -85,31 +93,54 @@ class ProjectMetadataWriter(ABC):
         without destroying its other contents or structure.
         """
 
-    def _get_property(self, key: Union[str, List[str]]) -> Optional[Any]:
+    def _get_property(
+        self, key: Union[str, List[str]], *, remove: bool = False
+    ) -> Optional[Any]:
         """Get a property from the data.
 
         Override this to e.g. rewrite the retrieved key
         (e.g. if everything relevant is in some subobject).
+
+        Args:
+            key: Name of the key or sequence of multiple keys to retrieve the value.
+            remove: If True, will remove the retrieved value and clean up the dict.
         """
         key_path = [key] if isinstance(key, str) else key
 
         curr = self._data
+        seq = [curr]
         for k in key_path:
             curr = curr.get(k)
+            seq.append(curr)
             if curr is None:
                 return None
 
+        if remove:
+            seq.pop()
+            logger.debug("remove in")
+            logger.debug(seq[-1])
+            del seq[-1][key_path[-1]]  # remove leaf value
+            # clean up the tree
+            for key, dct in reversed(list(zip(key_path[:-1], seq[:-1]))):
+                if not dct.get(key):
+                    del dct[key]
+
         return curr
 
-    def _set_property(self, key: Union[str, List[str]], value: Any) -> None:
+    def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
         """Set a property in the data.
 
         Override this to e.g. rewrite the retrieved key
         (e.g. if everything relevant is in some subobject).
         """
-        if not value:
+        if isinstance(key, IgnoreKey):
             return
         key_path = [key] if isinstance(key, str) else key
+
+        if not value:  # remove value and clean up the sub-dict
+            self._get_property(key_path, remove=True)
+            return
+
         # create path on the fly if needed
         curr = self._data
         for key in key_path[:-1]:
@@ -220,10 +251,12 @@ class ProjectMetadataWriter(ABC):
         )
 
         self.license = metadata.license.value
-        if metadata.homepage:
-            self.homepage = str(metadata.homepage)
-        if metadata.repository:
-            self.repository = str(metadata.repository)
+
+        self.homepage = str(metadata.homepage) if metadata.homepage else None
+        self.repository = str(metadata.repository) if metadata.repository else None
+        self.documentation = (
+            str(metadata.documentation) if metadata.documentation else None
+        )
 
     @staticmethod
     @abstractmethod
@@ -326,9 +359,9 @@ class ProjectMetadataWriter(ABC):
         return self._get_property(self._get_key("homepage"))
 
     @homepage.setter
-    def homepage(self, homepage: Optional[str]) -> None:
+    def homepage(self, value: Optional[str]) -> None:
         """Set the homepage url of the project."""
-        self._set_property(self._get_key("homepage"), homepage)
+        self._set_property(self._get_key("homepage"), value)
 
     @property
     def repository(self) -> Optional[Union[str, dict]]:
@@ -336,6 +369,16 @@ class ProjectMetadataWriter(ABC):
         return self._get_property(self._get_key("repository"))
 
     @repository.setter
-    def repository(self, repository: Optional[Union[str, dict]]) -> None:
+    def repository(self, value: Optional[Union[str, dict]]) -> None:
         """Set the repository url of the project."""
-        self._set_property(self._get_key("repository"), repository)
+        self._set_property(self._get_key("repository"), value)
+
+    @property
+    def documentation(self) -> Optional[Union[str, dict]]:
+        """Return the documentation url of the project."""
+        return self._get_property(self._get_key("documentation"))
+
+    @documentation.setter
+    def documentation(self, value: Optional[Union[str, dict]]) -> None:
+        """Set the documentation url of the project."""
+        self._set_property(self._get_key("documentation"), value)

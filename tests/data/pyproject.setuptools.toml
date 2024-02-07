@@ -17,6 +17,7 @@ requires-python = ">=3.8"
 [project.urls]
 homepage = "https://example.com/test-package"
 repository = "https://github.com/example/test-package"
+documentation = "https://example.com/test-package"
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]

@@ -1,6 +1,5 @@
 """Pyproject writers for setuptools and poetry."""
 import logging
-import re
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
@@ -10,7 +9,7 @@ from rich.pretty import pretty_repr
 from tomlkit import load
 
 from somesy.core.models import Person, ProjectMetadata
-from somesy.core.writer import ProjectMetadataWriter
+from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
 
 from .models import PoetryConfig, SetuptoolsConfig
 
@@ -56,17 +55,27 @@ class PyprojectCommon(ProjectMetadataWriter):
         with open(path, "w") as f:
             tomlkit.dump(self._data, f)
 
-    def _get_property(self, key: Union[str, List[str]]) -> Optional[Any]:
+    def _get_property(
+        self, key: Union[str, List[str]], *, remove: bool = False
+    ) -> Optional[Any]:
         """Get a property from the pyproject.toml file."""
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
-        return super()._get_property(full_path)
+        return super()._get_property(full_path, remove=remove)
 
-    def _set_property(self, key: Union[str, List[str]], value: Any) -> None:
+    def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
         """Set a property in the pyproject.toml file."""
+        if isinstance(key, IgnoreKey):
+            return
         key_path = [key] if isinstance(key, str) else key
+
+        if not value:  # remove value and clean up the sub-dict
+            self._get_property(key_path, remove=True)
+            return
+
         # get the tomlkit object of the section
         dat = self._get_property([])
+
         # dig down, create missing nested objects on the fly
         curr = dat
         for key in key_path[:-1]:
@@ -89,25 +98,12 @@ class Poetry(PyprojectCommon):
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to poetry string for person format "full name <email>."""
-        return f"{person.full_name} <{person.email}>"
+        return person.to_name_email_string()
 
     @staticmethod
     def _to_person(person_obj: str) -> Person:
         """Parse poetry person string to a Person."""
-        m = re.match(r"\s*([^<]+)<([^>]+)>", person_obj)
-        names, mail = (
-            list(map(lambda s: s.strip(), m.group(1).split())),
-            m.group(2).strip(),
-        )
-        # NOTE: for our purposes, does not matter what are given or family names,
-        # we only compare on full_name anyway.
-        return Person(
-            **{
-                "given-names": " ".join(names[:-1]),
-                "family-names": names[-1],
-                "email": mail,
-            }
-        )
+        return Person.from_name_email_string(person_obj)
 
 
 class SetupTools(PyprojectCommon):
@@ -122,6 +118,7 @@ class SetupTools(PyprojectCommon):
         mappings = {
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
+            "documentation": ["urls", "documentation"],
             "license": ["license", "text"],
         }
         super().__init__(
@@ -158,7 +155,6 @@ class SetupTools(PyprojectCommon):
         ):
             # delete license file property
             self._data["project"]["license"].pop("file")
-            logger.debug("Removed license file from pyproject.toml")
 
 
 # ----

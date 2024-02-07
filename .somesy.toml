@@ -6,6 +6,7 @@ keywords = ["metadata", "FAIR"]
 license = "MIT"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
+documentation = "https://materials-data-science-and-informatics.github.io/somesy"
 
 [[project.people]]
 family-names = "Soylu"

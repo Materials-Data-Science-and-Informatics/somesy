@@ -7,7 +7,7 @@ from typing import Any, List, Optional
 from rich.pretty import pretty_repr
 
 from somesy.core.models import Person, ProjectMetadata
-from somesy.core.writer import ProjectMetadataWriter
+from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 from somesy.json_wrapper import json
 
 logger = logging.getLogger("somesy")
@@ -24,9 +24,10 @@ class Codemeta(ProjectMetadataWriter):
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        mappings = {
+        mappings: FieldKeyMapping = {
             "repository": ["codeRepository"],
             "homepage": ["softwareHelp"],
+            "documentation": ["buildInstructions"],
             "keywords": ["keywords"],
             "authors": ["author"],
             "maintainers": ["maintainer"],

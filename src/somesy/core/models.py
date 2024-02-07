@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import functools
 import json
+import re
 from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -357,6 +358,31 @@ class Person(SomesyBaseModel):
 
         return " ".join(names) if names else ""
 
+    def to_name_email_string(self) -> str:
+        """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
+        return f"{self.full_name} <{self.email}>"
+
+    @classmethod
+    def from_name_email_string(cls, person: str) -> Person:
+        """Return a `Person` based on an name/e-mail string like `full name <x@y.z>`.
+
+        If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
+        """
+        m = re.match(r"\s*([^<]+)<([^>]+)>", person)
+        names, mail = (
+            list(map(lambda s: s.strip(), m.group(1).split())),
+            m.group(2).strip(),
+        )
+        # NOTE: for our purposes, does not matter what are given or family names,
+        # we only compare on full_name anyway.
+        return Person(
+            **{
+                "given-names": " ".join(names[:-1]),
+                "family-names": names[-1],
+                "email": mail,
+            }
+        )
+
     def same_person(self, other) -> bool:
         """Return whether two Person metadata records are about the same real person.
 
@@ -413,12 +439,15 @@ class ProjectMetadata(SomesyBaseModel):
     version: Annotated[str, Field(description="Project version.")]
     license: Annotated[LicenseEnum, Field(description="SPDX License string.")]
 
+    homepage: Annotated[
+        Optional[HttpUrlStr], Field(description="URL of the project homepage.")
+    ] = None
     repository: Annotated[
         Optional[HttpUrlStr],
         Field(description="URL of the project source code repository."),
     ] = None
-    homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="URL of the project homepage.")
+    documentation: Annotated[
+        Optional[HttpUrlStr], Field(description="URL of the project documentation.")
     ] = None
 
     keywords: Annotated[

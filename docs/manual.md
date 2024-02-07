@@ -113,34 +113,37 @@ print(model2md(SomesyConfig).getvalue())
 
 From its own schema `somesy` must convert the information into the target formats.
 The following tables sketch how fields are mapped to corresponding other fields in
-some of the currently supported formats.
+some of the currently supported formats. Bold field names are mandatory, the others are optional.
 
 === "Person Metadata"
 
-    | Field Name       | Poetry Config | SetupTools Config | CITATION.cff    | package.json | Requirement |
-    | ---------------- | ------------- | ----------------- | --------------- | ------------ | ----------- |
-    | given-names      | name+email    | name              | given-names     | name         | required    |
-    | family-names     | name+email    | name              | family-names    | name         | required    |
-    | email            | name+email    | email             | email           | email        | required    |
-    | orcid            | -             | -                 | orcid           | url          | optional    |
-    | *(many others)*  | -             | -                 | *(same)*        | -            | optional    |
+    | Somesy Field     | Poetry Config | SetupTools Config | Julia Config | package.json | CITATION.cff    | CodeMeta        |
+    | ---------------- | ------------- | ----------------- | ------------ | ------------ | --------------- | --------------- |
+    |                  |               |                   |              |              |                 |                 |
+    | **given-names**  | name+email    | name              | name+email   | name         | given-names     | givenName       |
+    | **family-names** | name+email    | name              | name+email   | name         | family-names    | familyName      |
+    | **email**        | name+email    | email             | name+email   | email        | email           | email           |
+    | orcid            | -             | -                 | -            | url          | orcid           | id              |
+    | *(many others)*  | -             | -                 | -            | -            | *(same)*        | *(same)*        |
 
 === "Project Metadata"
 
-    | Field Name        | Poetry Config | SetupTools Config | Julia Config || CITATION.cff    | package.json | Requirement |
-    | ----------------- | ------------- | ----------------- | ------------ || --------------- | ------------ | ----------- |
-    | name              | name          | name              | name         || title           | name         | required    |
-    | description       | description   | description       | -            || abstract        | description  | required    |
-    | license           | license       | license           | -            || license         | license      | required    |
-    | version           | version       | version           | version      || version         | version      | optional    |
-    |                   |               |                   |              ||                 |              |             |
-    | *author=true*     | authors       | authors           | authors      || authors         | author       | required    |
-    | *maintainer=true* | maintainers   | maintainers       | -            || contact         | maintainers  | optional    |
-    | *people*          | -             | -                 | -            || -               | contributors | optional    |
-    |                   |               |                   |              ||                 |              |             |
-    | keywords          | keywords      | keywords          | -            || keywords        | keywords     | optional    |
-    | repository        | repository    | urls.repository   | =            || repository_code | repository   | optional    |
-    | homepage          | homepage      | urls.homepage     | -            || url             | homepage     | optional    |
+    | Somesy Field      | Poetry Config | SetupTools Config  | Julia Config | package.json | CITATION.cff    | CodeMeta          |
+    | ----------------- | ------------- | ------------------ | ------------ | ------------ | --------------- | ----------------- |
+    |                   |               |                                   |              |                 |                   |
+    | **name**          | name          | name               | name         | name         | title           | name              |
+    | **description**   | description   | description        | -            | description  | abstract        | description       |
+    | **license**       | license       | license            | -            | license      | license         | license           |
+    | **version**       | version       | version            | version      | version      | version         | version           |
+    |                   |               |                    |              |              |                 |                   |
+    | ***author=true*** | authors       | authors            | authors      | author       | authors         | author            |
+    | *maintainer=true* | maintainers   | maintainers        | -            | maintainers  | contact         | maintainer        |
+    | *people*          | -             | -                  | -            | contributors | -               | contributor       |
+    |                   |               |                    |              |              |                 |                   |
+    | keywords          | keywords      | keywords           | -            | keywords     | keywords        | keywords          |
+    | homepage          | homepage      | urls.homepage      | -            | homepage     | url             | url               |
+    | repository        | repository    | urls.repository    | -            | repository   | repository_code | codeRepository    |
+    | documentation     | documentation | urls.documentation | -            | -            | -               | buildInstructions |
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,

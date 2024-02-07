@@ -1,6 +1,5 @@
 """Julia writer."""
 import logging
-import re
 from pathlib import Path
 from typing import Optional
 
@@ -50,32 +49,18 @@ class Julia(ProjectMetadataWriter):
 
     @staticmethod
     def _from_person(person: Person):
-        """Convert project metadata person object to poetry string for person format "full name <email>."""
-        return f"{person.full_name} <{person.email}>"
+        """Convert project metadata person object to a name+email string."""
+        return person.to_name_email_string()
 
     @staticmethod
     def _to_person(person_obj: str) -> Person:
-        """Parse poetry person string to a Person."""
-        m = re.match(r"\s*([^<]+)<([^>]+)>", person_obj)
-        names, mail = (
-            list(map(lambda s: s.strip(), m.group(1).split())),
-            m.group(2).strip(),
-        )
-        # NOTE: for our purposes, does not matter what are given or family names,
-        # we only compare on full_name anyway.
-        return Person(
-            **{
-                "given-names": " ".join(names[:-1]),
-                "family-names": names[-1],
-                "email": mail,
-            }
-        )
+        """Parse name+email string to a Person."""
+        return Person.from_name_email_string(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
+        # overridden to not sync fields that are not present in the Project.toml file
         self.name = metadata.name
-
-        if metadata.version:
-            self.version = metadata.version
+        self.version = metadata.version
 
         self._sync_authors(metadata)
