@@ -56,6 +56,13 @@ def config():
     if codemeta_file is not None or codemeta_file != "":
         options["codemeta_file"] = codemeta_file
 
+    options["no_sync_julia"] = not typer.confirm(
+        "Do you want to sync to a Project.toml(Julia) file?", default=True
+    )
+    julia_file = typer.prompt("Project.toml(Julia) file path", default="Project.toml")
+    if julia_file is not None or julia_file != "":
+        options["julia_file"] = julia_file
+
     options["show_info"] = typer.confirm(
         "Do you want to show info about the sync process?"
     )

@@ -101,6 +101,24 @@ def sync(
         resolve_path=True,
         help="Custom codemeta.json file path",
     ),
+    no_sync_julia: bool = typer.Option(
+        None,
+        "--no-sync-julia",
+        "-M",
+        help="Do not sync Project.toml(Julia) file",
+    ),
+    julia_file: Path = typer.Option(
+        None,
+        "--julia-file",
+        "-m",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=True,
+        resolve_path=True,
+        help="Custom Project.toml(Julia) file path",
+    ),
 ):
     """Sync project metadata input with metadata files."""
     somesy_input = resolved_somesy_input(
@@ -113,6 +131,8 @@ def sync(
         package_json_file=package_json_file,
         no_sync_codemeta=no_sync_codemeta,
         codemeta_file=codemeta_file,
+        no_sync_julia=no_sync_julia,
+        julia_file=julia_file,
     )
     run_sync(somesy_input)
 
