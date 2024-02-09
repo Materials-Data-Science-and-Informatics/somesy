@@ -2,46 +2,16 @@
 import logging
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Dict, Optional
-
-import defusedxml.ElementTree as DET
+from typing import Optional
 
 from somesy.core.models import Person
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
+from . import POM_ROOT_ATRS, POM_URL
 from .xmlproxy import XMLProxy
 
-logger = logging.getLogger("somesy")
-
-# some POM-related constants and reusable objects
-POM_URL = "http://maven.apache.org/POM/4.0.0"
-POM_PREF = "{" + POM_URL + "}"
-POM_NS_MAP = dict(pom=POM_URL)
-POM_ROOT_ATRS: Dict[str, str] = {
-    "xmlns": "http://maven.apache.org/POM/4.0.0",
-    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
-    "xsi:schemaLocation": "http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd",
-}
-POM_PARSER = DET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
-
 ET.register_namespace("pom", POM_URL)  # globally register xml namespace for POM
-
-# helper methods
-
-
-def new_pom() -> ET.ElementTree:
-    """Create a minimal pom.xml file."""
-    return ET.ElementTree(ET.Element("project", POM_ROOT_ATRS))
-
-
-def parse_pom(path: Path) -> ET.ElementTree:
-    """Parse a pom.xml file into an ElementTree, preserving comments."""
-    return DET.parse(path, parser=POM_PARSER)
-
-
-def write_pom(tree: ET.ElementTree, path: Path):
-    """Write the POM DOM to a file."""
-    tree.write(path, encoding="UTF-8", xml_declaration=True, default_namespace=POM_URL)
+logger = logging.getLogger("somesy")
 
 
 class POM(ProjectMetadataWriter):
@@ -74,11 +44,12 @@ class POM(ProjectMetadataWriter):
 
     def _init_new_file(self):
         """Initialize new pom.xml file."""
-        write_pom(new_pom(), self.path)
+        pom = XMLProxy(ET.Element("project", POM_ROOT_ATRS))
+        pom.write(self.path, default_namespace=POM_URL)
 
     def _load(self):
         """Load the POM file."""
-        self._data = XMLProxy(parse_pom(self.path))
+        self._data = XMLProxy.parse(self.path, default_namespace=POM_URL)
 
     def _validate(self):
         """Validate the POM file."""
@@ -87,7 +58,7 @@ class POM(ProjectMetadataWriter):
     def save(self, path: Optional[Path] = None) -> None:
         """Save the POM DOM to a file."""
         path = path or self.path
-        write_pom(self._data, path)
+        self._data.write(path)
 
     @staticmethod
     def _from_person(person: Person):
