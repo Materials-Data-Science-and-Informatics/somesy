@@ -104,13 +104,13 @@ def sync(
     no_sync_julia: bool = typer.Option(
         None,
         "--no-sync-julia",
-        "-M",
-        help="Do not sync Project.toml(Julia) file",
+        "-K",
+        help="Do not sync Project.toml(Julia) file (default: False)",
     ),
     julia_file: Path = typer.Option(
         None,
         "--julia-file",
-        "-m",
+        "-k",
         exists=True,
         file_okay=True,
         dir_okay=False,
@@ -118,6 +118,24 @@ def sync(
         readable=True,
         resolve_path=True,
         help="Custom Project.toml(Julia) file path",
+    ),
+    no_sync_fortran: bool = typer.Option(
+        None,
+        "--no-sync-fortran",
+        "-F",
+        help="Do not sync fpm.toml(fortran) file (default: False)",
+    ),
+    fortran_file: Path = typer.Option(
+        None,
+        "--fortran-file",
+        "-f",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        readable=True,
+        resolve_path=True,
+        help="Custom fpm.toml(fortran) file path",
     ),
 ):
     """Sync project metadata input with metadata files."""
@@ -133,6 +151,8 @@ def sync(
         codemeta_file=codemeta_file,
         no_sync_julia=no_sync_julia,
         julia_file=julia_file,
+        no_sync_fortran=no_sync_fortran,
+        fortran_file=fortran_file,
     )
     run_sync(somesy_input)
 
@@ -155,6 +175,14 @@ def run_sync(somesy_input: SomesyInput):
     if not conf.no_sync_codemeta:
         logger.info(
             f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
+        )
+    if not conf.no_sync_julia:
+        logger.info(
+            f"  - [italic]Project.toml(Julia)[/italic]:\t[grey]{conf.julia_file}[/grey]"
+        )
+    if not conf.no_sync_fortran:
+        logger.info(
+            f"  - [italic]fpm.toml(fortran)[/italic]:\t[grey]{conf.fortran_file}[/grey]"
         )
     # ----
     sync_command(somesy_input)
