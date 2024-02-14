@@ -1,0 +1,81 @@
+name = "test-package"
+version = "0.1.0"
+description = "This is a test package for demonstration purposes."
+license = "MIT"
+author = "John Doe <john.doe@example.com>"
+copyright = "2020 John Doe"
+categories = ["Command Line"]
+keywords = ["test", "demo", "example"]
+homepage = "https://example.com/test-package"
+
+# unit test program
+test = [
+   { name="test_func", source-dir="test", main="test_func.f90" }
+   ]
+
+[install]
+library=true
+
+[library]
+source-dir="src"
+
+# project metadata
+[tool.somesy.project]
+name = "testproject"
+version = "1.0.0"
+description = "This is a test project for demonstration purposes."
+keywords = ["test", "demo", "example"]
+license = "MIT"
+repository = "https://github.com/example/testproject"
+homepage = "https://example.com/testproject"
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "John"
+email = "john.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0000"
+
+contribution = "The main developer, maintainer, and tester."
+contribution_begin = "2023-01-15"
+contribution_types = ["maintenance", "code", "test", "review", "doc"]
+
+author = true
+maintainer = true
+publication_author = true
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "Jane"
+email = "jane.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0001"
+
+contribution = "Initial concepts, tool development and enhancement, documentation."
+contribution_begin = "2023-02-20"
+contribution_types = ["ideas", "code", "test", "review", "doc"]
+
+author = true
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "Michael"
+email = "michael.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0002"
+
+contribution = "Valuable input concerning metadata standards and usability."
+contribution_begin = "2023-03-10"
+contribution_types = ["ideas"]
+publication_author = true
+
+[tool.somesy.config]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = true
+no_sync_codemeta = false
+codemeta_file = "codemeta.json"
+no_sync_package_json = true
+no_sync_julia = true
+no_sync_fortran = false
+fortran_file = "fpm.toml"
+show_info = false
+verbose = false
+debug = false
