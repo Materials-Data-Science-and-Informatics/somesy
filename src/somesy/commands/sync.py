@@ -7,6 +7,7 @@ from rich.pretty import pretty_repr
 from somesy.cff.writer import CFF
 from somesy.codemeta import Codemeta
 from somesy.core.models import ProjectMetadata, SomesyInput
+from somesy.fortran.writer import Fortran
 from somesy.julia.writer import Julia
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject.writer import Pyproject
@@ -39,6 +40,9 @@ def sync(somesy_input: SomesyInput):
 
     if not conf.no_sync_julia:
         _sync_julia(metadata, conf.julia_file)
+
+    if not conf.no_sync_fortran:
+        _sync_fortran(metadata, conf.fortran_file)
 
 
 def _sync_python(
@@ -120,7 +124,7 @@ def _sync_julia(
     """Sync Project.toml file using project metadata.
 
     Args:
-        metadata (ProjectMetadata): project metadata to sync pyproject.toml file.
+        metadata (ProjectMetadata): project metadata to sync Project.toml file.
         julia_file (Path, optional): Project.toml file path if wanted to be synced. Defaults to None.
     """
     logger.verbose("Loading Project.toml file.")
@@ -129,3 +133,21 @@ def _sync_julia(
     cm.sync(metadata)
     cm.save()
     logger.verbose(f"Saved synced Project.toml file to {julia_file}.")
+
+
+def _sync_fortran(
+    metadata: ProjectMetadata,
+    fortran_file: Path,
+):
+    """Sync fpm.toml file using project metadata.
+
+    Args:
+        metadata (ProjectMetadata): project metadata to sync fpm.toml file.
+        fortran_file (Path, optional): fpm.toml file path if wanted to be synced. Defaults to None.
+    """
+    logger.verbose("Loading fpm.toml file.")
+    cm = Fortran(fortran_file)
+    logger.verbose("Syncing fpm.toml file.")
+    cm.sync(metadata)
+    cm.save()
+    logger.verbose(f"Saved synced fpm.toml file to {fortran_file}.")

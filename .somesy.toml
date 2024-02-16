@@ -76,6 +76,7 @@ no_sync_codemeta = false
 codemeta_file = "codemeta.json"
 no_sync_package_json = true
 no_sync_julia = true
+no_sync_fortran = true
 show_info = false
 verbose = false
 debug = true
