@@ -104,13 +104,13 @@ def sync(
     no_sync_julia: bool = typer.Option(
         None,
         "--no-sync-julia",
-        "-K",
+        "-L",
         help="Do not sync Project.toml(Julia) file (default: False)",
     ),
     julia_file: Path = typer.Option(
         None,
         "--julia-file",
-        "-k",
+        "-l",
         exists=True,
         file_okay=True,
         dir_okay=False,
