@@ -123,8 +123,6 @@ class ProjectMetadataWriter(ABC):
 
         if remove:
             seq.pop()
-            logger.debug("remove in")
-            logger.debug(seq[-1])
             del seq[-1][key_path[-1]]  # remove leaf value
             # clean up the tree
             for key, dct in reversed(list(zip(key_path[:-1], seq[:-1]))):
@@ -338,6 +336,17 @@ class ProjectMetadataWriter(ABC):
         """Set the maintainers of the project."""
         maintainers = [self._from_person(c) for c in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers)
+
+    @property
+    def contributors(self):
+        """Return the contributors of the project."""
+        return self._get_property(self._get_key("contributors"))
+
+    @contributors.setter
+    def contributors(self, contributors: List[Person]) -> None:
+        """Set the contributors of the project."""
+        contributors = [self._from_person(c) for c in contributors]
+        self._set_property(self._get_key("contributors"), contributors)
 
     @property
     def keywords(self) -> Optional[List[str]]:

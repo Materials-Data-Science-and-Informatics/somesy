@@ -29,15 +29,14 @@ class POM(ProjectMetadataWriter):
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        mappings: FieldKeyMapping = None
-        # {
-        #     "name": ["title"],
-        #     "description": ["abstract"],
-        #     "homepage": ["url"],
-        #     "repository": ["repository-code"],
-        #     "documentation": IgnoreKey(),
-        #     "maintainers": ["contact"],
-        # }
+        mappings: FieldKeyMapping = {
+            "year": ["inceptionYear"],
+            "license": ["licenses", "license"],
+            "homepage": ["url"],
+            "project_slug": ["artifactId"],
+            "authors": ["developers", "developer"],
+            "contributors": ["contributors", "contributor"],
+        }
         super().__init__(
             path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings
         )
@@ -45,6 +44,7 @@ class POM(ProjectMetadataWriter):
     def _init_new_file(self):
         """Initialize new pom.xml file."""
         pom = XMLProxy(ET.Element("project", POM_ROOT_ATRS))
+        pom["properties"] = {"info.versionScheme": "semver-spec"}
         pom.write(self.path, default_namespace=POM_URL)
 
     def _load(self):
@@ -63,9 +63,24 @@ class POM(ProjectMetadataWriter):
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to cff dict for person format."""
-        raise NotImplementedError
+        ret = {}
+        person_id = person.orcid or person.to_name_email_string()
+        ret["id"] = person_id
+        ret["name"] = person.name
+        ret["email"] = person.email
+        if person.orcid:
+            ret["url"] = person.orcid
+        if person.contribution_types:
+            ret["roles"] = dict(role=person.contribution_types)
+        return ret
 
     @staticmethod
     def _to_person(person_obj) -> Person:
         """Parse CFF Person to a somesy Person."""
+        return Person(
+            name=person_obj["name"],
+            email=person_obj["email"],
+            orcid=person_obj["orcid"],
+            contribution_types=person_obj["roles"]["role"],
+        )
         raise NotImplementedError
