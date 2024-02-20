@@ -36,6 +36,7 @@ class SomesyBaseModel(BaseModel):
 
     model_config = dict(
         extra="forbid",
+        validate_assignment=True,
         populate_by_name=True,
         str_strip_whitespace=True,
         str_min_length=1,

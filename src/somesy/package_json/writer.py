@@ -2,7 +2,7 @@
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional, Union
 
 from rich.pretty import pretty_repr
 
@@ -112,5 +112,19 @@ class PackageJSON(ProjectMetadataWriter):
         """
         super().sync(metadata)
         self.contributors = self._sync_person_list(self.contributors, metadata.people)
-        if metadata.repository:
-            self.repository = {"type": "git", "url": str(metadata.repository)}
+
+    @property
+    def repository(self) -> Optional[Union[str, Dict]]:
+        """Return the repository url of the project."""
+        if repo := super().repository:
+            if isinstance(repo, str):
+                return repo
+            else:
+                return repo.get("url")
+        else:
+            return None
+
+    @repository.setter
+    def repository(self, value: Optional[Union[str, Dict]]) -> None:
+        """Set the repository url of the project."""
+        self._set_property(self._get_key("repository"), dict(type="git", url=value))

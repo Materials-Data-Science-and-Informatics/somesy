@@ -167,4 +167,6 @@ class CodeMeta(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
-        self.contributors = self._sync_person_list(self.contributors, metadata.people)
+        self.contributors = self._sync_person_list(
+            self.contributors, metadata.contributors()
+        )

@@ -18,6 +18,23 @@ def load_xml(path: Path) -> ET.ElementTree:
     return DET.parse(path, parser=parser)
 
 
+def indent(elem, level=0):
+    """Indent the elements of this XML node (i.e. pretty print)."""
+    i = "\n" + level * "  "
+    if len(elem):
+        if not elem.text or not elem.text.strip():
+            elem.text = i + "  "
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+        for el in elem:
+            indent(el, level + 1)
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
+    else:
+        if level and (not elem.tail or not elem.tail.strip()):
+            elem.tail = i
+
+
 class XMLProxy:
     """Class providing dict-like access to edit XML via ElementTree.
 
@@ -73,6 +90,7 @@ class XMLProxy:
         et = ET.ElementTree(self._node)
         if self._def_ns and "default_namespace" not in kwargs:
             kwargs["default_namespace"] = self._def_ns
+        indent(et.getroot())
         et.write(path, encoding="UTF-8", xml_declaration=header, **kwargs)
 
     def __repr__(self):
@@ -210,7 +228,7 @@ class XMLProxy:
 
             elif isinstance(v, list):
                 for vv in XMLProxy.from_jsonlike(v, root_name=k, **kwargs):
-                    elem.append(vv)
+                    elem.append(vv._node)
             elif not isinstance(v, dict):  # primitive val
                 # FIXME: use better case-splitting for type of function to avoid cast
                 tmp = cast(
@@ -342,7 +360,7 @@ class XMLProxy:
         if isinstance(key, str):
             nodes = self.get(key, as_nodes=True)
             # delete all existing elements if multiple exist or are passed
-            if len(nodes) > 1 or isinstance(val, list):
+            if len(nodes) > 1 or (len(nodes) and isinstance(val, list)):
                 del self[key]
                 nodes = []
             # now we can assume there's zero or one suitable target elements
