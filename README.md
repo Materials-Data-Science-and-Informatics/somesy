@@ -125,7 +125,16 @@ authoritative** source for project metadata, which is used to update all
 supported (and enabled) *target files*. You can find an overview of supported
 formats further below.
 
-By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository. If you happen to use `pyproject.toml` (in Python projects), `package.json` (in JavaScript projects), `Project.toml` (in Julia projects), or `fpm.toml` (in Fortran projects) somesy would also update the respective information there.
+By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository.
+If you happen to use
+
+* `pyproject.toml` (in Python projects),
+* `package.json` (in JavaScript projects),
+* `Project.toml` (in Julia projects),
+* `fpm.toml` (in Fortran projects),
+* `pom.xml` (in Java projects),
+
+then somesy would also update the respective information there.
 
 You can see call available options with `somesy --help`,
 all of these can also be conveniently set in your `somesy.toml` file.

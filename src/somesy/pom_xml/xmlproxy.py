@@ -201,7 +201,9 @@ class XMLProxy:
             return cls(elem, **kwargs)
 
     @classmethod
-    def from_jsonlike(cls, val, *, root_name: Optional[str] = None, **kwargs):
+    def from_jsonlike(
+        cls, val: JSONLike, *, root_name: Optional[str] = None, **kwargs: Any
+    ):
         """Convert a JSON-like primitive, array or dict into an XML element.
 
         Note that booleans are serialized as `true`/`false` and None as `null`.
