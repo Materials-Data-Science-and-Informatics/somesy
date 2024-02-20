@@ -117,33 +117,33 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 
 === "Person Metadata"
 
-    | Somesy Field     | Poetry Config | SetupTools Config | Julia Config | package.json | CITATION.cff    | CodeMeta        |
-    | ---------------- | ------------- | ----------------- | ------------ | ------------ | --------------- | --------------- |
-    |                  |               |                   |              |              |                 |                 |
-    | **given-names**  | name+email    | name              | name+email   | name         | given-names     | givenName       |
-    | **family-names** | name+email    | name              | name+email   | name         | family-names    | familyName      |
-    | **email**        | name+email    | email             | name+email   | email        | email           | email           |
-    | orcid            | -             | -                 | -            | url          | orcid           | id              |
-    | *(many others)*  | -             | -                 | -            | -            | *(same)*        | *(same)*        |
+    | Somesy Field     | Poetry Config | SetupTools Config | Julia Config | Fortran Config | package.json | CITATION.cff    | CodeMeta        |
+    | ---------------- | ------------- | ----------------- | ------------ | -------------- | ------------ | --------------- | --------------- |
+    |                  |               |                   |              |                |              |                 |                 |
+    | **given-names**  | name+email    | name              | name+email   | name+email     | name         | given-names     | givenName       |
+    | **family-names** | name+email    | name              | name+email   | name+email     | name         | family-names    | familyName      |
+    | **email**        | name+email    | email             | name+email   | name+email     | email        | email           | email           |
+    | orcid            | -             | -                 | -            | -              | url          | orcid           | id              |
+    | *(many others)*  | -             | -                 | -            | -              | -            | *(same)*        | *(same)*        |
 
 === "Project Metadata"
 
-    | Somesy Field      | Poetry Config | SetupTools Config  | Julia Config | package.json | CITATION.cff    | CodeMeta          |
-    | ----------------- | ------------- | ------------------ | ------------ | ------------ | --------------- | ----------------- |
-    |                   |               |                                   |              |                 |                   |
-    | **name**          | name          | name               | name         | name         | title           | name              |
-    | **description**   | description   | description        | -            | description  | abstract        | description       |
-    | **license**       | license       | license            | -            | license      | license         | license           |
-    | **version**       | version       | version            | version      | version      | version         | version           |
-    |                   |               |                    |              |              |                 |                   |
-    | ***author=true*** | authors       | authors            | authors      | author       | authors         | author            |
-    | *maintainer=true* | maintainers   | maintainers        | -            | maintainers  | contact         | maintainer        |
-    | *people*          | -             | -                  | -            | contributors | -               | contributor       |
-    |                   |               |                    |              |              |                 |                   |
-    | keywords          | keywords      | keywords           | -            | keywords     | keywords        | keywords          |
-    | homepage          | homepage      | urls.homepage      | -            | homepage     | url             | url               |
-    | repository        | repository    | urls.repository    | -            | repository   | repository_code | codeRepository    |
-    | documentation     | documentation | urls.documentation | -            | -            | -               | buildInstructions |
+    | Somesy Field      | Poetry Config | SetupTools Config  | Julia Config | Fortran Config | package.json | CITATION.cff    | CodeMeta          |
+    | ----------------- | ------------- | ------------------ | ------------ | -------------- | ------------ | --------------- | ----------------- |
+    |                   |               |                                   |                |              |                 |                   |
+    | **name**          | name          | name               | name         | name           | name         | title           | name              |
+    | **description**   | description   | description        | -            | description    | description  | abstract        | description       |
+    | **license**       | license       | license            | -            | license        | license      | license         | license           |
+    | **version**       | version       | version            | version      | version        | version      | version         | version           |
+    |                   |               |                    |              |                |              |                 |                   |
+    | ***author=true*** | authors       | authors            | authors      | author         | author       | authors         | author            |
+    | *maintainer=true* | maintainers   | maintainers        | -            | maintainer     | maintainers  | contact         | maintainer        |
+    | *people*          | -             | -                  | -            | -              | contributors | -               | contributor       |
+    |                   |               |                    |              |                |              |                 |                   |
+    | keywords          | keywords      | keywords           | -            | keywords       | keywords     | keywords        | keywords          |
+    | homepage          | homepage      | urls.homepage      | -            | homepage       | homepage     | url             | url               |
+    | repository        | repository    | urls.repository    | -            | -              | repository   | repository_code | codeRepository    |
+    | documentation     | documentation | urls.documentation | -            | -              | -            | -               | buildInstructions |
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
@@ -171,6 +171,7 @@ Without an input file specifically provided, somesy will check if it can find a 
 * `somesy.toml`
 * `pyproject.toml` (in `tool.somesy` section)
 * `Project.toml` (in `tool.somesy` section)
+* `fpm.toml` (in `tool.somesy` section)
 * `package.json` (in `somesy` section)
 
 which is located in the current working directory. If you want to provide
@@ -230,6 +231,40 @@ one of the supported input formats:
 
     [deps]
     ...
+
+    [tool.somesy.project]
+    name = "my-amazing-project"
+    version = "0.1.0"
+    description = "Brief description of my amazing software."
+
+    keywords = ["some", "descriptive", "keywords"]
+    license = "MIT"
+    repository = "https://github.com/username/my-amazing-project"
+
+    # This is you, the proud author of your project
+    [[tool.somesy.project.people]]
+    given-names = "Jane"
+    family-names = "Doe"
+    email = "j.doe@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0001"
+    author = true      # is a full author of the project (i.e. appears in citations)
+    maintainer = true  # currently maintains the project (i.e. is a contact person)
+
+    # this person is a acknowledged contributor, but not author or maintainer:
+    [[tool.somesy.project.people]]
+    given-names = "Another"
+    family-names = "Contributor"
+    email = "a.contributor@example.com"
+    orcid = "https://orcid.org/0000-0000-0000-0002"
+
+    [tool.somesy.config]
+    verbose = true     # show detailed information about what somesy is doing
+    ```
+
+=== "fpm.toml"
+    ```toml
+    name = "my-amazing-project"
+    version = "0.1.0"
 
     [tool.somesy.project]
     name = "my-amazing-project"
@@ -411,6 +446,10 @@ If you initially have stated an incorrect ORCID for a person and then change it,
 Therefore, **in such a case you will need to fix the ORCID in all configured somesy targets** either
 before running somesy (so somesy will not create new person entries), or
 after running somesy (to remove the duplicate entries with the incorrect ORCID).
+
+!!! warning
+
+    Person identification and merging is not applied to standards with free text fields for authors or maintainers, such as `fpm.toml`.
 
 ### Codemeta
 

@@ -68,6 +68,19 @@ def sync(
         help="Custom Project.toml (Julia) file path (default: Project.toml)",
         **existing_file_arg_config,
     ),
+    no_sync_fortran: bool = typer.Option(
+        None,
+        "--no-sync-fortran",
+        "-F",
+        help="Do not sync fpm.toml (Fortran) file (default: False)",
+        **existing_file_arg_config,
+    ),
+    fortran_file: Path = typer.Option(
+        None,
+        "--fortran-file",
+        "-f",
+        help="Custom fpm.toml (Fortran) file path (default: fpm.toml)",
+    ),
     no_sync_pom_xml: bool = typer.Option(
         None,
         "--no-sync-pomxml",
@@ -121,6 +134,8 @@ def sync(
         codemeta_file=codemeta_file,
         no_sync_julia=no_sync_julia,
         julia_file=julia_file,
+        no_sync_fortran=no_sync_fortran,
+        fortran_file=fortran_file,
         no_sync_pom_xml=no_sync_pom_xml,
         pom_xml_file=pom_xml_file,
     )
@@ -144,10 +159,15 @@ def run_sync(somesy_input: SomesyInput):
         logger.info(
             f"  - [italic]Project.toml[/italic]:\t[grey]{conf.julia_file}[/grey]\n"
         )
+    if not conf.no_sync_fortran:
+        logger.info(
+            f"  - [italic]fpm.toml(fortran)[/italic]:\t[grey]{conf.fortran_file}[/grey]"
+        )
     if not conf.no_sync_pom_xml:
         logger.info(
             f"  - [italic]pom.xml[/italic]:\t[grey]{conf.pom_xml_file}[/grey]\n"
         )
+
     if not conf.no_sync_cff:
         logger.info(f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]")
     if not conf.no_sync_codemeta:

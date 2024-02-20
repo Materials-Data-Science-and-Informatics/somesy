@@ -120,7 +120,15 @@ class SomesyBaseModel(BaseModel):
         return json.dumps(ret, ensure_ascii=False)
 
 
-_SOMESY_TARGETS = ["cff", "pyproject", "package_json", "codemeta", "julia", "pom_xml"]
+_SOMESY_TARGETS = [
+    "cff",
+    "pyproject",
+    "package_json",
+    "codemeta",
+    "julia",
+    "fortran",
+    "pom_xml",
+]
 
 
 class SomesyConfig(SomesyBaseModel):
@@ -177,6 +185,13 @@ class SomesyConfig(SomesyBaseModel):
     ] = False
     julia_file: Annotated[Path, Field(description="Project.toml file path.")] = Path(
         "Project.toml"
+    )
+
+    no_sync_fortran: Annotated[
+        bool, Field(description="Do not sync with fpm.toml.")
+    ] = False
+    fortran_file: Annotated[Path, Field(description="fpm.toml file path.")] = Path(
+        "fpm.toml"
     )
 
     no_sync_pom_xml: Annotated[

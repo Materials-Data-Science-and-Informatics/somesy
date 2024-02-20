@@ -65,6 +65,13 @@ def config():
     ):
         options["julia_file"] = julia_file
 
+    options["no_sync_fortran"] = not typer.confirm(
+        "Do you want to sync to a fpm.toml(fortran) file?", default=True
+    )
+    fortran_file = typer.prompt("fpm.toml(fortran) file path", default="fpm.toml")
+    if fortran_file is not None or fortran_file != "":
+        options["fortran_file"] = fortran_file
+
     options["no_sync_pom_xml"] = not typer.confirm(
         "Do you want to sync to a pom.xml file?", default=True
     )

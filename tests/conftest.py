@@ -10,6 +10,7 @@ from somesy.core.models import Person, SomesyInput
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
 from somesy.julia import Julia
+from somesy.fortran import Fortran
 from somesy.pom_xml.writer import POM
 
 TEST_DIR = Path(__file__).resolve().parent
@@ -25,6 +26,7 @@ class FileTypes(Enum):
     SOMESY = "somesy"
     PACKAGE_JSON = "package_json"
     JULIA = "julia"
+    FORTRAN = "fortran"
     POM_XML = "pom_xml"
 
 
@@ -79,6 +81,8 @@ def create_files(tmp_path):
                 read_file_name = read_file_path / Path("package.json")
             elif file_type == FileTypes.JULIA:
                 read_file_name = read_file_path / Path("Project.toml")
+            elif file_type == FileTypes.FORTRAN:
+                read_file_name = read_file_path / Path("fpm.toml")
             elif file_type == FileTypes.POM_XML:
                 read_file_name = read_file_path / Path("pom.xml")
 
@@ -129,6 +133,9 @@ def load_files():
             elif file_type == FileTypes.JULIA:
                 read_file_name = read_file_name / Path("Project.toml")
                 file_instances[file_type] = Julia(read_file_name)
+            elif file_type == FileTypes.FORTRAN:
+                read_file_name = read_file_name / Path("fpm.toml")
+                file_instances[file_type] = Fortran(read_file_name)
             elif file_type == FileTypes.POM_XML:
                 read_file_name = read_file_name / Path("pom.xml")
                 file_instances[file_type] = POM(read_file_name)

@@ -9,6 +9,7 @@ from somesy.cff.writer import CFF
 from somesy.codemeta import CodeMeta
 from somesy.core.models import ProjectMetadata, SomesyInput
 from somesy.core.writer import ProjectMetadataWriter
+from somesy.fortran.writer import Fortran
 from somesy.julia.writer import Julia
 from somesy.package_json.writer import PackageJSON
 from somesy.pom_xml.writer import POM
@@ -46,6 +47,9 @@ def sync(somesy_input: SomesyInput):
 
     if conf.julia_file.is_file() and not conf.no_sync_julia:
         _sync_file(metadata, conf.julia_file, Julia)
+
+    if not conf.no_sync_fortran:
+        _sync_file(metadata, conf.fortran_file, Fortran)
 
     if conf.pom_xml_file.is_file() and not conf.no_sync_pom_xml:
         _sync_file(metadata, conf.pom_xml_file, POM)
