@@ -180,15 +180,17 @@ Here is an overview of all the currently supported files and formats.
 | package.json   | ✓      | | package.json _(JavaScript)_   | ✓(2.)  |
 | Project.toml   | ✓      | | Project.toml _(Julia)_        | ✓      |
 | fpm.toml       | ✓      | | fpm.toml _(Fortran)_          | ✓(3.)  |
+|                | ✓      | | pom.toml _(Java)_             | ✓(4.)  |
 |                |        | | CITATION.cff                  | ✓      |
-|                |        | | codemeta.json                 | ✓(4.)  |
+|                |        | | codemeta.json                 | ✓(5.)  |
 
 **Notes:**
 
 1. note that `somesy` does not support setuptools *dynamic fields*
 2. `package.json` only supports one author, so `somesy` will pick the *first* listed author
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the *first* listed author and maintainer
-4. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
+4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses (somesy only supports one main project license)
+5. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
 
 <!-- --8<-- [end:quickstart] -->
 
