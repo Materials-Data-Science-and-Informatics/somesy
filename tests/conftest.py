@@ -10,6 +10,12 @@ from somesy.core.models import Person, SomesyInput
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
 from somesy.julia import Julia
+from somesy.pom_xml import load_xml
+
+TEST_DIR = Path(__file__).resolve().parent
+
+TEST_DATA_DIR = TEST_DIR / "data"
+"""Location of the test input data."""
 
 
 class FileTypes(Enum):
@@ -101,7 +107,7 @@ def load_files():
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
 
-            read_file_name = Path("tests/data")
+            read_file_name = TEST_DATA_DIR
             if file_type == FileTypes.CITATION:
                 read_file_name = read_file_name / Path("CITATION.cff")
                 file_instances[file_type] = CFF(read_file_name)
@@ -137,3 +143,11 @@ def person() -> Person:
     ret = Person.model_validate(p)
     ret.set_key_order(list(p.keys()))  # custom order!
     return ret
+
+
+@pytest.fixture
+def xml_examples():
+    def _xml_loader(filename: str) -> Path:
+        return TEST_DATA_DIR / filename
+
+    yield _xml_loader
