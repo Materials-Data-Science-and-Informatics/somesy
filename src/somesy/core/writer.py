@@ -264,9 +264,6 @@ class ProjectMetadataWriter(ABC):
         self.maintainers = self._sync_person_list(
             self.maintainers, metadata.maintainers()
         )
-        # self.contributors = self._sync_person_list(
-        #     self.contributors, metadata.contributors()
-        # )
 
         self.license = metadata.license.value
 

@@ -48,7 +48,7 @@ def sync(somesy_input: SomesyInput):
     if conf.julia_file.is_file() and not conf.no_sync_julia:
         _sync_file(metadata, conf.julia_file, Julia)
 
-    if not conf.no_sync_fortran:
+    if conf.fortran_file.is_file() and not conf.no_sync_fortran:
         _sync_file(metadata, conf.fortran_file, Fortran)
 
     if conf.pom_xml_file.is_file() and not conf.no_sync_pom_xml:
