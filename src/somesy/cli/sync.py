@@ -97,13 +97,13 @@ def sync(
     no_sync_mkdocs: bool = typer.Option(
         None,
         "--no-sync-mkdocs",
-        "-X",
+        "-D",
         help="Do not sync mkdocs.yml file (default: False)",
     ),
     mkdocs_file: Path = typer.Option(
         None,
         "--mkdocs-file",
-        "-x",
+        "-d",
         help="Custom mkdocs.yml file path (default: mkdocs.yml)",
         **existing_file_arg_config,
     ),
