@@ -1713,16 +1713,90 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../reference/somesy/pom_xml/" class="md-nav__link">
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
         
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_11" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/somesy/pom_xml/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     pom_xml
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_1_11" id="__nav_2_3_1_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            pom_xml
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/pom_xml/writer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    writer
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/pom_xml/xmlproxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    xmlproxy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2604,34 +2678,6 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>package.json file path.</td>
 </tr>
 <tr>
-<td>no_sync_cff</td>
-<td>bool</td>
-<td>no</td>
-<td>false</td>
-<td>Do not sync with CFF.</td>
-</tr>
-<tr>
-<td>cff_file</td>
-<td>Path</td>
-<td>no</td>
-<td>"CITATION.cff"</td>
-<td>CFF file path.</td>
-</tr>
-<tr>
-<td>no_sync_codemeta</td>
-<td>bool</td>
-<td>no</td>
-<td>false</td>
-<td>Do not sync with codemeta.json.</td>
-</tr>
-<tr>
-<td>codemeta_file</td>
-<td>Path</td>
-<td>no</td>
-<td>"codemeta.json"</td>
-<td>codemeta.json file path.</td>
-</tr>
-<tr>
 <td>no_sync_julia</td>
 <td>bool</td>
 <td>no</td>
@@ -2659,6 +2705,48 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>"fpm.toml"</td>
 <td>fpm.toml file path.</td>
 </tr>
+<tr>
+<td>no_sync_pom_xml</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with pom.xml.</td>
+</tr>
+<tr>
+<td>pom_xml_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"pom.xml"</td>
+<td>pom.xml file path.</td>
+</tr>
+<tr>
+<td>no_sync_cff</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with CFF.</td>
+</tr>
+<tr>
+<td>cff_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"CITATION.cff"</td>
+<td>CFF file path.</td>
+</tr>
+<tr>
+<td>no_sync_codemeta</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with codemeta.json.</td>
+</tr>
+<tr>
+<td>codemeta_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"codemeta.json"</td>
+<td>codemeta.json file path.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2677,6 +2765,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <th>Somesy Field</th>
 <th>Poetry Config</th>
 <th>SetupTools Config</th>
+<th>Java POM</th>
 <th>Julia Config</th>
 <th>Fortran Config</th>
 <th>package.json</th>
@@ -2694,10 +2783,12 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
 <td><strong>given-names</strong></td>
 <td>name+email</td>
+<td>name</td>
 <td>name</td>
 <td>name+email</td>
 <td>name+email</td>
@@ -2709,6 +2800,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td><strong>family-names</strong></td>
 <td>name+email</td>
 <td>name</td>
+<td>name</td>
 <td>name+email</td>
 <td>name+email</td>
 <td>name</td>
@@ -2719,6 +2811,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td><strong>email</strong></td>
 <td>name+email</td>
 <td>email</td>
+<td>email</td>
 <td>name+email</td>
 <td>name+email</td>
 <td>email</td>
@@ -2729,6 +2822,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>orcid</td>
 <td>-</td>
 <td>-</td>
+<td>url</td>
 <td>-</td>
 <td>-</td>
 <td>url</td>
@@ -2737,6 +2831,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 </tr>
 <tr>
 <td><em>(many others)</em></td>
+<td>-</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
@@ -2755,6 +2850,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <th>Somesy Field</th>
 <th>Poetry Config</th>
 <th>SetupTools Config</th>
+<th>Java POM</th>
 <th>Julia Config</th>
 <th>Fortran Config</th>
 <th>package.json</th>
@@ -2772,9 +2868,11 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
 <td><strong>name</strong></td>
+<td>name</td>
 <td>name</td>
 <td>name</td>
 <td>name</td>
@@ -2787,6 +2885,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td><strong>description</strong></td>
 <td>description</td>
 <td>description</td>
+<td>description</td>
 <td>-</td>
 <td>description</td>
 <td>description</td>
@@ -2797,6 +2896,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td><strong>license</strong></td>
 <td>license</td>
 <td>license</td>
+<td>licenses.license</td>
 <td>-</td>
 <td>license</td>
 <td>license</td>
@@ -2812,8 +2912,10 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>version</td>
 <td>version</td>
 <td>version</td>
+<td>version</td>
 </tr>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2827,6 +2929,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td><strong><em>author=true</em></strong></td>
 <td>authors</td>
 <td>authors</td>
+<td>developers</td>
 <td>authors</td>
 <td>author</td>
 <td>author</td>
@@ -2838,6 +2941,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>maintainers</td>
 <td>maintainers</td>
 <td>-</td>
+<td>-</td>
 <td>maintainer</td>
 <td>maintainers</td>
 <td>contact</td>
@@ -2845,6 +2949,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 </tr>
 <tr>
 <td><em>people</em></td>
+<td>-</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
@@ -2862,11 +2967,13 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
 <td>keywords</td>
 <td>keywords</td>
 <td>keywords</td>
+<td>-</td>
 <td>-</td>
 <td>keywords</td>
 <td>keywords</td>
@@ -2877,6 +2984,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>homepage</td>
 <td>homepage</td>
 <td>urls.homepage</td>
+<td>urls</td>
 <td>-</td>
 <td>homepage</td>
 <td>homepage</td>
@@ -2887,6 +2995,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>repository</td>
 <td>repository</td>
 <td>urls.repository</td>
+<td>scm.url</td>
 <td>-</td>
 <td>-</td>
 <td>repository</td>
@@ -2897,6 +3006,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>documentation</td>
 <td>documentation</td>
 <td>urls.documentation</td>
+<td>distributionManagement.site.url</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
@@ -2938,22 +3048,31 @@ issue or consult the <code>somesy</code> code.</p>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Existing package.json file path        <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       (default: package.json)                <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-julia</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-L</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync Project.toml (Julia) file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--julia-file</span>            <span class=" -Color -Color-Bold -Color-Bold-Green">-l</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom Project.toml (Julia) file path  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: Project.toml)                <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-fortran</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-F</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync fpm.toml (Fortran) file    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--fortran-file</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-f</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">PATH</span>  Custom fpm.toml (Fortran) file path    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: fpm.toml)                    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pomxml</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-X</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync pom.xml (Java Maven) file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pomxml-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-x</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom pom.xml (Java Maven) file path  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: pom.xml)                     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>              <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:       <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       CITATION.cff)                          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync codemeta.json file         <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom codemeta.json file path         <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]               </span>         <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-julia</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-L</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync Project.toml(Julia) file   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--julia-file</span>            <span class=" -Color -Color-Bold -Color-Bold-Green">-l</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom Project.toml(Julia) file path   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                     </span>   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-fortran</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-F</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync fpm.toml(fortran) file     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--fortran-file</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-f</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom fpm.toml(fortran) file path     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                   </span>     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       (default: codemeta.json)               <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                          <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Show this message and exit.            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">╰──────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre></div>

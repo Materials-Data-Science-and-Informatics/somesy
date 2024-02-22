@@ -1610,16 +1610,90 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../reference/somesy/pom_xml/" class="md-nav__link">
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
         
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_11" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/somesy/pom_xml/" class="md-nav__link ">
+              
   
   <span class="md-ellipsis">
     pom_xml
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_1_11" id="__nav_2_3_1_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_11">
+            <span class="md-nav__icon md-icon"></span>
+            pom_xml
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/pom_xml/writer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    writer
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/pom_xml/xmlproxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    xmlproxy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -2055,7 +2129,16 @@ Now you can run <code>somesy</code> simply by using</p>
 authoritative</strong> source for project metadata, which is used to update all
 supported (and enabled) <em>target files</em>. You can find an overview of supported
 formats further below.</p>
-<p>By default, <code>somesy</code> will create (if they did not exist) or update <code>CITATION.cff</code> and <code>codemeta.json</code> files in your repository. If you happen to use <code>pyproject.toml</code> (in Python projects), <code>package.json</code> (in JavaScript projects), <code>Project.toml</code> (in Julia projects), or <code>fpm.toml</code> (in Fortran projects) somesy would also update the respective information there.</p>
+<p>By default, <code>somesy</code> will create (if they did not exist) or update <code>CITATION.cff</code> and <code>codemeta.json</code> files in your repository.
+If you happen to use</p>
+<ul>
+<li><code>pyproject.toml</code> (in Python projects),</li>
+<li><code>package.json</code> (in JavaScript projects),</li>
+<li><code>Project.toml</code> (in Julia projects),</li>
+<li><code>fpm.toml</code> (in Fortran projects),</li>
+<li><code>pom.xml</code> (in Java projects),</li>
+</ul>
+<p>then somesy would also update the respective information there.</p>
 <p>You can see call available options with <code>somesy --help</code>,
 all of these can also be conveniently set in your <code>somesy.toml</code> file.</p>
 <h3 id="somesy-as-a-pre-commit-hook">Somesy as a pre-commit hook<a class="headerlink" href="#somesy-as-a-pre-commit-hook" title="Permanent link">&para;</a></h3>
@@ -2129,6 +2212,13 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 </tr>
 <tr>
 <td></td>
+<td>✓</td>
+<td></td>
+<td>pom.toml <em>(Java)</em></td>
+<td>✓(4.)</td>
+</tr>
+<tr>
+<td></td>
 <td></td>
 <td></td>
 <td>CITATION.cff</td>
@@ -2139,7 +2229,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td></td>
 <td></td>
 <td>codemeta.json</td>
-<td>✓(4.)</td>
+<td>✓(5.)</td>
 </tr>
 </tbody>
 </table>
@@ -2148,6 +2238,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <li>note that <code>somesy</code> does not support setuptools <em>dynamic fields</em></li>
 <li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
 <li><code>fpm.toml</code> only supports one author and maintainer, so <code>somesy</code> will pick the <em>first</em> listed author and maintainer</li>
+<li><code>pom.xml</code> has no concept of <code>maintainers</code>, but it can have multiple licenses (somesy only supports one main project license)</li>
 <li>unlike other targets, <code>somesy</code> will <em>re-create</em> the <code>codemeta.json</code> (i.e. do not edit it by hand!)</li>
 </ol>
 
