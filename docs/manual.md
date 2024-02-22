@@ -117,33 +117,33 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 
 === "Person Metadata"
 
-    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | CITATION.cff    | CodeMeta        |
-    | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | --------------- | --------------- |
-    |                  |               |                   |              |              |                |              |                 |                 |
-    | **given-names**  | name+email    | name              | name         | name+email   | name+email     | name         | given-names     | givenName       |
-    | **family-names** | name+email    | name              | name         | name+email   | name+email     | name         | family-names    | familyName      |
-    | **email**        | name+email    | email             | email        | name+email   | name+email     | email        | email           | email           |
-    | orcid            | -             | -                 | url          | -            | -              | url          | orcid           | id              |
-    | *(many others)*  | -             | -                 | -            | -            | -              | -            | *(same)*        | *(same)*        |
+    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | CITATION.cff    | CodeMeta        |
+    | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | ---------- | --------------- | --------------- |
+    |                  |               |                   |              |              |                |              |            |                 |                 |
+    | **given-names**  | name+email    | name              | name         | name+email   | name+email     | name         | name+email | given-names     | givenName       |
+    | **family-names** | name+email    | name              | name         | name+email   | name+email     | name         | name+email | family-names    | familyName      |
+    | **email**        | name+email    | email             | email        | name+email   | name+email     | email        | name+email | email           | email           |
+    | orcid            | -             | -                 | url          | -            | -              | url          | -          | orcid           | id              |
+    | *(many others)*  | -             | -                 | -            | -            | -              | -            | -          | *(same)*        | *(same)*        |
 
 === "Project Metadata"
 
-    | Somesy Field      | Poetry Config | SetupTools Config  | Java POM                        | Julia Config | Fortran Config | package.json | CITATION.cff    | CodeMeta          |
-    | ----------------- | ------------- | ------------------ | ------------------------------- | ------------ | -------------- | ------------ | --------------- | ----------------- |
-    |                   |               |                    |                                 |              |                |              |                 |                   |
-    | **name**          | name          | name               | name                            | name         | name           | name         | title           | name              |
-    | **description**   | description   | description        | description                     | -            | description    | description  | abstract        | description       |
-    | **license**       | license       | license            | licenses.license                | -            | license        | license      | license         | license           |
-    | **version**       | version       | version            | version                         | version      | version        | version      | version         | version           |
-    |                   |               |                    |                                 |              |                |              |                 |                   |
-    | ***author=true*** | authors       | authors            | developers                      | authors      | author         | author       | authors         | author            |
-    | *maintainer=true* | maintainers   | maintainers        | -                               | -            | maintainer     | maintainers  | contact         | maintainer        |
-    | *people*          | -             | -                  | -                               | -            | -              | contributors | -               | contributor       |
-    |                   |               |                    |                                 |              |                |              |                 |                   |
-    | keywords          | keywords      | keywords           | -                               | -            | keywords       | keywords     | keywords        | keywords          |
-    | homepage          | homepage      | urls.homepage      | urls                            | -            | homepage       | homepage     | url             | url               |
-    | repository        | repository    | urls.repository    | scm.url                         | -            | -              | repository   | repository_code | codeRepository    |
-    | documentation     | documentation | urls.documentation | distributionManagement.site.url | -            | -              | -            | -               | buildInstructions |
+    | Somesy Field      | Poetry Config | SetupTools Config  | Java POM                        | Julia Config | Fortran Config | package.json | mkdocs.yml       | CITATION.cff    | CodeMeta          |
+    | ----------------- | ------------- | ------------------ | ------------------------------- | ------------ | -------------- | ------------ | ---------------- | --------------- | ----------------- |
+    |                   |               |                    |                                 |              |                |              |                  |                 |                   |
+    | **name**          | name          | name               | name                            | name         | name           | name         | site_name        | title           | name              |
+    | **description**   | description   | description        | description                     | -            | description    | description  | site_description | abstract        | description       |
+    | **license**       | license       | license            | licenses.license                | -            | license        | license      | -                | license         | license           |
+    | **version**       | version       | version            | version                         | version      | version        | version      | -                | version         | version           |
+    |                   |               |                    |                                 |              |                |              |                  |                 |                   |
+    | ***author=true*** | authors       | authors            | developers                      | authors      | author         | author       | site_author      | authors         | author            |
+    | *maintainer=true* | maintainers   | maintainers        | -                               | -            | maintainer     | maintainers  | -                | contact         | maintainer        |
+    | *people*          | -             | -                  | -                               | -            | -              | contributors | -                | -               | contributor       |
+    |                   |               |                    |                                 |              |                |              |                  |                 |                   |
+    | keywords          | keywords      | keywords           | -                               | -            | keywords       | keywords     | -                | keywords        | keywords          |
+    | homepage          | homepage      | urls.homepage      | urls                            | -            | homepage       | homepage     | site_url         | url             | url               |
+    | repository        | repository    | urls.repository    | scm.url                         | -            | -              | repository   | repo_url         | repository_code | codeRepository    |
+    | documentation     | documentation | urls.documentation | distributionManagement.site.url | -            | -              | -            | -                | -               | buildInstructions |
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
