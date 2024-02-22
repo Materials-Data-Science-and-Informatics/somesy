@@ -11,6 +11,7 @@ from somesy.core.models import ProjectMetadata, SomesyInput
 from somesy.core.writer import ProjectMetadataWriter
 from somesy.fortran.writer import Fortran
 from somesy.julia.writer import Julia
+from somesy.mkdocs import MkDocs
 from somesy.package_json.writer import PackageJSON
 from somesy.pom_xml.writer import POM
 from somesy.pyproject.writer import Pyproject
@@ -54,8 +55,10 @@ def sync(somesy_input: SomesyInput):
     if conf.pom_xml_file.is_file() and not conf.no_sync_pom_xml:
         _sync_file(metadata, conf.pom_xml_file, POM)
 
-    # create these by default if they are missing:
+    if conf.mkdocs_file.is_file() and not conf.no_sync_mkdocs:
+        _sync_file(metadata, conf.mkdocs_file, MkDocs)
 
+    # create these by default if they are missing:
     if not conf.no_sync_cff:
         _sync_file(metadata, conf.cff_file, CFF)
 
