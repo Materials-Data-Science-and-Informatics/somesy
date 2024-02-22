@@ -13,7 +13,7 @@ from somesy.json_wrapper import json
 logger = logging.getLogger("somesy")
 
 
-class Codemeta(ProjectMetadataWriter):
+class CodeMeta(ProjectMetadataWriter):
     """Codemeta.json parser and saver."""
 
     def __init__(
@@ -71,7 +71,7 @@ class Codemeta(ProjectMetadataWriter):
         config = dict(self._get_property([]))
 
         logger.debug(
-            f"No validation for codemeta.json files {Codemeta.__name__}: {pretty_repr(config)}"
+            f"No validation for codemeta.json files {CodeMeta.__name__}: {pretty_repr(config)}"
         )
 
     def _init_new_file(self) -> None:
@@ -167,4 +167,6 @@ class Codemeta(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
-        self.contributors = self._sync_person_list(self.contributors, metadata.people)
+        self.contributors = self._sync_person_list(
+            self.contributors, metadata.contributors()
+        )

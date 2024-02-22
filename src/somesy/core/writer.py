@@ -16,6 +16,12 @@ class IgnoreKey:
 FieldKeyMapping = Dict[str, Union[List[str], IgnoreKey]]
 """Type to be used for the dict passed as `direct_mappings`."""
 
+DictLike = Any
+"""Dict-like that supports getitem, setitem, delitem, etc.
+
+NOTE: This should be probably turned into a proper protocol.
+"""
+
 
 class ProjectMetadataWriter(ABC):
     """Base class for Project Metadata Output Wrapper.
@@ -42,8 +48,8 @@ class ProjectMetadataWriter(ABC):
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
         """
-        self._data: Dict = {}
-        self.path = path
+        self._data: DictLike = {}
+        self.path = path if isinstance(path, Path) else Path(path)
         self.create_if_not_exists = create_if_not_exists
         self.direct_mappings = direct_mappings or {}
 
@@ -94,7 +100,11 @@ class ProjectMetadataWriter(ABC):
         """
 
     def _get_property(
-        self, key: Union[str, List[str]], *, remove: bool = False
+        self,
+        key: Union[str, List[str]],
+        *,
+        only_first: bool = False,
+        remove: bool = False,
     ) -> Optional[Any]:
         """Get a property from the data.
 
@@ -103,6 +113,7 @@ class ProjectMetadataWriter(ABC):
 
         Args:
             key: Name of the key or sequence of multiple keys to retrieve the value.
+            only_first: If True, returns only first entry if the value is a list.
             remove: If True, will remove the retrieved value and clean up the dict.
         """
         key_path = [key] if isinstance(key, str) else key
@@ -111,24 +122,27 @@ class ProjectMetadataWriter(ABC):
         seq = [curr]
         for k in key_path:
             curr = curr.get(k)
+            curr = curr[0] if isinstance(curr, list) and only_first else curr
             seq.append(curr)
             if curr is None:
                 return None
 
         if remove:
             seq.pop()
-            logger.debug("remove in")
-            logger.debug(seq[-1])
             del seq[-1][key_path[-1]]  # remove leaf value
             # clean up the tree
             for key, dct in reversed(list(zip(key_path[:-1], seq[:-1]))):
                 if not dct.get(key):
                     del dct[key]
 
+        if isinstance(curr, list) and only_first:
+            return curr[0]
         return curr
 
     def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
         """Set a property in the data.
+
+        Note if there are lists along the path, they are cleared out.
 
         Override this to e.g. rewrite the retrieved key
         (e.g. if everything relevant is in some subobject).
@@ -147,6 +161,7 @@ class ProjectMetadataWriter(ABC):
             if key not in curr:
                 curr[key] = {}
             curr = curr[key]
+
         curr[key_path[-1]] = value
 
     # ----
@@ -271,8 +286,6 @@ class ProjectMetadataWriter(ABC):
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
         """Return a list of Persons parsed from list of format-specific people representations."""
-        if not people:
-            return []
         return list(map(cls._to_person, people or []))
 
     # ----
@@ -332,6 +345,17 @@ class ProjectMetadataWriter(ABC):
         """Set the maintainers of the project."""
         maintainers = [self._from_person(c) for c in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers)
+
+    @property
+    def contributors(self):
+        """Return the contributors of the project."""
+        return self._get_property(self._get_key("contributors"))
+
+    @contributors.setter
+    def contributors(self, contributors: List[Person]) -> None:
+        """Set the contributors of the project."""
+        contributors = [self._from_person(c) for c in contributors]
+        self._set_property(self._get_key("contributors"), contributors)
 
     @property
     def keywords(self) -> Optional[List[str]]:

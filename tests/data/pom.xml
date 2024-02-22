@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <name>test-package</name>
+    <artifactId>test-package</artifactId>
+    <description>This is a test package for demonstration purposes.</description>
+    <url>https://github.com/lampepfl/dotty</url>
+    <version>0.1.0</version>
+    <properties>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <!-- some comment -->
+    <licenses>
+        <license>
+            <name>MIT</name>
+            <distribution>repo</distribution>
+        </license>
+        <license>
+            <name>Apache-2.0</name>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/lampepfl/dotty</url>
+        <connection>scm:git:git@github.com:lampepfl/dotty.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>jane</id>
+            <name>Jane Doe</name>
+            <url>https://github.com/janedoe</url>
+            <email>jane.doe@acme.com</email>
+            <roles>
+                <role>maintenance</role>
+                <role>code</role>
+                <role>test</role>
+                <role>review</role>
+            </roles>
+        </developer>
+    </developers>
+</project>

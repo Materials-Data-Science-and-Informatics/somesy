@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <name>ACME Tools</name>
+    <artifactId>acme-tools</artifactId>
+    <description>The ACME tools.</description>
+    <url>https://github.com/lampepfl/dotty</url>
+    <version>0.1.0</version>
+    <properties>
+        <info.versionScheme>semver-spec</info.versionScheme>
+    </properties>
+    <!-- some comment -->
+    <licenses>
+        <license>
+            <name>Apache-2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <scm>
+        <url>https://github.com/lampepfl/dotty</url>
+        <connection>scm:git:git@github.com:lampepfl/dotty.git</connection>
+    </scm>
+    <developers>
+        <developer>
+            <id>odersky</id>
+            <name>Martin Odersky</name>
+            <url>https://github.com/odersky</url>
+            <email>martin.odersky@epfl.ch</email>
+        </developer>
+        <developer>
+            <id>DarkDimius</id>
+            <name>Dmitry Petrashko</name>
+            <url>https://d-d.me</url>
+            <email>me@d-d.me</email>
+        </developer>
+    </developers>
+</project>

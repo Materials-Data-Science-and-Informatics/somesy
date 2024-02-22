@@ -11,6 +11,12 @@ from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
 from somesy.julia import Julia
 from somesy.fortran import Fortran
+from somesy.pom_xml.writer import POM
+
+TEST_DIR = Path(__file__).resolve().parent
+
+TEST_DATA_DIR = TEST_DIR / "data"
+"""Location of the test input data."""
 
 
 class FileTypes(Enum):
@@ -21,6 +27,7 @@ class FileTypes(Enum):
     PACKAGE_JSON = "package_json"
     JULIA = "julia"
     FORTRAN = "fortran"
+    POM_XML = "pom_xml"
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -76,6 +83,8 @@ def create_files(tmp_path):
                 read_file_name = read_file_path / Path("Project.toml")
             elif file_type == FileTypes.FORTRAN:
                 read_file_name = read_file_path / Path("fpm.toml")
+            elif file_type == FileTypes.POM_XML:
+                read_file_name = read_file_path / Path("pom.xml")
 
             with open(read_file_name, "r") as f:
                 content = f.read()
@@ -105,7 +114,7 @@ def load_files():
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
 
-            read_file_name = Path("tests/data")
+            read_file_name = TEST_DATA_DIR
             if file_type == FileTypes.CITATION:
                 read_file_name = read_file_name / Path("CITATION.cff")
                 file_instances[file_type] = CFF(read_file_name)
@@ -127,6 +136,9 @@ def load_files():
             elif file_type == FileTypes.FORTRAN:
                 read_file_name = read_file_name / Path("fpm.toml")
                 file_instances[file_type] = Fortran(read_file_name)
+            elif file_type == FileTypes.POM_XML:
+                read_file_name = read_file_name / Path("pom.xml")
+                file_instances[file_type] = POM(read_file_name)
 
         return file_instances
 
@@ -135,6 +147,7 @@ def load_files():
 
 @pytest.fixture
 def person() -> Person:
+    """Return example person."""
     p = {
         "given-names": "Jane",
         "email": "j.doe@example.com",
@@ -144,3 +157,13 @@ def person() -> Person:
     ret = Person.model_validate(p)
     ret.set_key_order(list(p.keys()))  # custom order!
     return ret
+
+
+@pytest.fixture
+def xml_examples():
+    """Return path for an xml example file in test directory, based on file name."""
+
+    def _xml_loader(filename: str) -> Path:
+        return TEST_DATA_DIR / filename
+
+    yield _xml_loader

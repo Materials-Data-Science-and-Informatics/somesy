@@ -1,11 +1,11 @@
-from somesy.codemeta import Codemeta
+from somesy.codemeta import CodeMeta
 from somesy.json_wrapper import json
 
 
 def test_update_codemeta(somesy_input, tmp_path):
     codemeta_file = tmp_path / "codemeta.json"
 
-    cm = Codemeta(codemeta_file)
+    cm = CodeMeta(codemeta_file)
 
     # firstly, create a codemeta file
     cm.sync(somesy_input.project)

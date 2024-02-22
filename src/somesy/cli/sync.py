@@ -7,7 +7,12 @@ import typer
 from somesy.commands import sync as sync_command
 from somesy.core.models import SomesyInput
 
-from .util import resolved_somesy_input, wrap_exceptions
+from .util import (
+    existing_file_arg_config,
+    file_arg_config,
+    resolved_somesy_input,
+    wrap_exceptions,
+)
 
 logger = logging.getLogger("somesy")
 
@@ -21,13 +26,8 @@ def sync(
         None,
         "--input-file",
         "-i",
-        exists=False,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
         help="Somesy input file path (default: .somesy.toml)",
+        **file_arg_config,
     ),
     no_sync_pyproject: bool = typer.Option(
         None,
@@ -39,13 +39,8 @@ def sync(
         None,
         "--pyproject-file",
         "-p",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
         help="Existing pyproject.toml file path (default: pyproject.toml)",
+        **existing_file_arg_config,
     ),
     no_sync_package_json: bool = typer.Option(
         None,
@@ -57,13 +52,47 @@ def sync(
         None,
         "--package-json-file",
         "-j",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
         help="Existing package.json file path (default: package.json)",
+        **existing_file_arg_config,
+    ),
+    no_sync_julia: bool = typer.Option(
+        None,
+        "--no-sync-julia",
+        "-L",
+        help="Do not sync Project.toml (Julia) file (default: False)",
+    ),
+    julia_file: Path = typer.Option(
+        None,
+        "--julia-file",
+        "-l",
+        help="Custom Project.toml (Julia) file path (default: Project.toml)",
+        **existing_file_arg_config,
+    ),
+    no_sync_fortran: bool = typer.Option(
+        None,
+        "--no-sync-fortran",
+        "-F",
+        help="Do not sync fpm.toml (Fortran) file (default: False)",
+        **existing_file_arg_config,
+    ),
+    fortran_file: Path = typer.Option(
+        None,
+        "--fortran-file",
+        "-f",
+        help="Custom fpm.toml (Fortran) file path (default: fpm.toml)",
+    ),
+    no_sync_pom_xml: bool = typer.Option(
+        None,
+        "--no-sync-pomxml",
+        "-X",
+        help="Do not sync pom.xml (Java Maven) file (default: False)",
+    ),
+    pom_xml_file: Path = typer.Option(
+        None,
+        "--pomxml-file",
+        "-x",
+        help="Custom pom.xml (Java Maven) file path (default: pom.xml)",
+        **existing_file_arg_config,
     ),
     no_sync_cff: bool = typer.Option(
         None,
@@ -75,67 +104,21 @@ def sync(
         None,
         "--cff-file",
         "-c",
-        exists=False,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
         help="CITATION.cff file path (default: CITATION.cff)",
+        **file_arg_config,
     ),
     no_sync_codemeta: bool = typer.Option(
         None,
         "--no-sync-codemeta",
         "-M",
-        help="Do not sync codemeta.json file",
+        help="Do not sync codemeta.json file (default: False)",
     ),
     codemeta_file: Path = typer.Option(
         None,
         "--codemeta-file",
         "-m",
-        exists=False,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
-        help="Custom codemeta.json file path",
-    ),
-    no_sync_julia: bool = typer.Option(
-        None,
-        "--no-sync-julia",
-        "-L",
-        help="Do not sync Project.toml(Julia) file (default: False)",
-    ),
-    julia_file: Path = typer.Option(
-        None,
-        "--julia-file",
-        "-l",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
-        help="Custom Project.toml(Julia) file path",
-    ),
-    no_sync_fortran: bool = typer.Option(
-        None,
-        "--no-sync-fortran",
-        "-F",
-        help="Do not sync fpm.toml(fortran) file (default: False)",
-    ),
-    fortran_file: Path = typer.Option(
-        None,
-        "--fortran-file",
-        "-f",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
-        help="Custom fpm.toml(fortran) file path",
+        help="Custom codemeta.json file path (default: codemeta.json)",
+        **file_arg_config,
     ),
 ):
     """Sync project metadata input with metadata files."""
@@ -153,6 +136,8 @@ def sync(
         julia_file=julia_file,
         no_sync_fortran=no_sync_fortran,
         fortran_file=fortran_file,
+        no_sync_pom_xml=no_sync_pom_xml,
+        pom_xml_file=pom_xml_file,
     )
     run_sync(somesy_input)
 
@@ -170,19 +155,24 @@ def run_sync(somesy_input: SomesyInput):
         logger.info(
             f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]"
         )
+    if not conf.no_sync_julia:
+        logger.info(
+            f"  - [italic]Project.toml[/italic]:\t[grey]{conf.julia_file}[/grey]\n"
+        )
+    if not conf.no_sync_fortran:
+        logger.info(
+            f"  - [italic]fpm.toml(fortran)[/italic]:\t[grey]{conf.fortran_file}[/grey]"
+        )
+    if not conf.no_sync_pom_xml:
+        logger.info(
+            f"  - [italic]pom.xml[/italic]:\t[grey]{conf.pom_xml_file}[/grey]\n"
+        )
+
     if not conf.no_sync_cff:
         logger.info(f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]")
     if not conf.no_sync_codemeta:
         logger.info(
             f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
-        )
-    if not conf.no_sync_julia:
-        logger.info(
-            f"  - [italic]Project.toml(Julia)[/italic]:\t[grey]{conf.julia_file}[/grey]"
-        )
-    if not conf.no_sync_fortran:
-        logger.info(
-            f"  - [italic]fpm.toml(fortran)[/italic]:\t[grey]{conf.fortran_file}[/grey]"
         )
     # ----
     sync_command(somesy_input)

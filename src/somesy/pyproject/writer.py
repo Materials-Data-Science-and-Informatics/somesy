@@ -56,12 +56,12 @@ class PyprojectCommon(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     def _get_property(
-        self, key: Union[str, List[str]], *, remove: bool = False
+        self, key: Union[str, List[str]], *, remove: bool = False, **kwargs
     ) -> Optional[Any]:
         """Get a property from the pyproject.toml file."""
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
-        return super()._get_property(full_path, remove=remove)
+        return super()._get_property(full_path, remove=remove, **kwargs)
 
     def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
         """Set a property in the pyproject.toml file."""

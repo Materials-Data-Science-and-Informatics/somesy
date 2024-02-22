@@ -6,7 +6,12 @@ from sys import stdin
 import typer
 from jinja2 import Environment, FunctionLoader, select_autoescape
 
-from .util import resolved_somesy_input, wrap_exceptions
+from .util import (
+    existing_file_arg_config,
+    file_arg_config,
+    resolved_somesy_input,
+    wrap_exceptions,
+)
 
 logger = logging.getLogger("somesy")
 app = typer.Typer()
@@ -19,37 +24,22 @@ def fill(
         None,
         "--template",
         "-t",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=False,
-        readable=True,
-        resolve_path=False,
         help="Path to a Jinja2 template for somesy to fill (default: stdin).",
+        **existing_file_arg_config,
     ),
     input_file: Path = typer.Option(
         None,
         "--input-file",
         "-i",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=True,
-        resolve_path=True,
         help="Path of somesy input file (default: try to infer).",
+        **existing_file_arg_config,
     ),
     output_file: Path = typer.Option(
         None,
         "--output-file",
         "-o",
-        exists=False,
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        readable=False,
-        resolve_path=True,
         help="Path for target file (default: stdout).",
+        **file_arg_config,
     ),
 ):
     """Fill a Jinja2 template with somesy project metadata (e.g. list authors in project docs)."""
