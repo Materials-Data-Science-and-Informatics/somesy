@@ -1,0 +1,24 @@
+# basic configuration:
+site_name: "test-package"
+site_description: "This is a test package for demonstration purposes."
+site_url: "https://example.com/test-package"
+repo_url: "https://github.com/example/test-package"
+edit_uri: "blob/main/docs/"
+repo_name: "/example/test-package"
+site_author: "John Doe"
+
+nav:
+  - Home:
+    - Overview: index.md
+    - Changelog: changelog.md
+    - Credits: credits.md
+    - License: license.md
+  - Usage:
+    - Quickstart: quickstart.md
+    - User Manual: manual.md
+    - API: reference/
+  - Development:
+    - How To Contribute: contributing.md
+    - Developer Guide: dev_guide.md
+    - Code of Conduct: code_of_conduct.md
+    - Coverage Report: coverage.md
