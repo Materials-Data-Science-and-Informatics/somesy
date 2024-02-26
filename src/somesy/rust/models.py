@@ -72,7 +72,7 @@ class RustConfig(BaseModel):
     @classmethod
     def license_or_file(cls, values):
         """License and license file are mutually exclusive."""
-        if values["license"] and values["license_file"]:
+        if "license" in values and "license_file" in values:
             raise ValueError("license and license_file are mutually exclusive")
         return values
 
