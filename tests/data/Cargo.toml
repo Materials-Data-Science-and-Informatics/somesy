@@ -1,0 +1,13 @@
+[package]
+name = "test-package"
+version = "0.1.0"
+description = "This is a test package for demonstration purposes."
+authors = ["John Doe <john.doe@example.com>"]
+license = "MIT"
+repository = "https://github.com/example/test-package"
+homepage = "https://example.com/test-package"
+documentation = "https://example.com/test-package"
+keywords = ["test", "demo", "example"]
+edition = "2021"
+
+[dependencies]
