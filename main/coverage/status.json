@@ -89,14 +89,14 @@
       }
     },
     "d_1772db955a685d28_init_py":{
-      "hash":"333525be81e44f2e90c1a98795f600c3",
+      "hash":"93ad5bc218b1b5c7041261b4a1be7d2d",
       "index":{
         "nums":[
           0,
           1,
-          44,
+          47,
           0,
-          32,
+          35,
           0,
           0,
           0
@@ -106,14 +106,14 @@
       }
     },
     "d_1772db955a685d28_sync_py":{
-      "hash":"d89d40ea1b0d5b15e9f8ce0fad7fc59b",
+      "hash":"bffa4a57f3e66a7ac0867143a03e134d",
       "index":{
         "nums":[
           0,
           1,
-          33,
+          35,
           0,
-          21,
+          23,
           0,
           0,
           0
@@ -208,14 +208,14 @@
       }
     },
     "d_52da451127691ee7_sync_py":{
-      "hash":"d683ee02b39ffca1c99c142ac92fa29b",
+      "hash":"abd7ad0d3422bffc8c04bdd5481c7885",
       "index":{
         "nums":[
           0,
           1,
-          39,
+          42,
           0,
-          23,
+          25,
           0,
           0,
           0
@@ -276,12 +276,12 @@
       }
     },
     "d_596ffba9215ba05d_models_py":{
-      "hash":"2c7322edb156f63c686e891d6937ab85",
+      "hash":"748d3567a94d11ce37ef6bc2b1eb796d",
       "index":{
         "nums":[
           0,
           1,
-          210,
+          212,
           0,
           11,
           0,
@@ -310,14 +310,14 @@
       }
     },
     "d_596ffba9215ba05d_writer_py":{
-      "hash":"dd3a2b9bc13e6db9a404b8940320d054",
+      "hash":"416fd8ed4bf61a026180420052ff79cf",
       "index":{
         "nums":[
           0,
           1,
           181,
           15,
-          10,
+          9,
           0,
           0,
           0
@@ -460,6 +460,57 @@
         ],
         "html_filename":"d_97b113e3d51588b3_main_py.html",
         "relative_filename":"src/somesy/main.py"
+      }
+    },
+    "d_6c09ba444e4cc07f___init___py":{
+      "hash":"f977835273e2fe89300a9376cd1ed1a4",
+      "index":{
+        "nums":[
+          0,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_6c09ba444e4cc07f___init___py.html",
+        "relative_filename":"src/somesy/mkdocs/__init__.py"
+      }
+    },
+    "d_6c09ba444e4cc07f_models_py":{
+      "hash":"aedb19f3ed101b79efe55d8210cc9996",
+      "index":{
+        "nums":[
+          0,
+          1,
+          12,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_6c09ba444e4cc07f_models_py.html",
+        "relative_filename":"src/somesy/mkdocs/models.py"
+      }
+    },
+    "d_6c09ba444e4cc07f_writer_py":{
+      "hash":"cf194d1e0a11797a0ab63c72b1d211f7",
+      "index":{
+        "nums":[
+          0,
+          1,
+          53,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "html_filename":"d_6c09ba444e4cc07f_writer_py.html",
+        "relative_filename":"src/somesy/mkdocs/writer.py"
       }
     },
     "d_b9578909e48e55c1___init___py":{

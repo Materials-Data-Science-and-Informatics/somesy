@@ -6,8 +6,10 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Somesy is a CLI tool to avoid messy software project metadata by keeping it in sync.">
+        <meta name="description" content="A CLI tool for synchronizing software project metadata.">
       
+      
+        <meta name="author" content="Mustafa Soylu <m.soylu@fz-juelich.de>">
       
       
         <link rel="canonical" href="https://materials-data-science-and-informatics.github.io/somesy/main/manual/">
@@ -1633,11 +1635,11 @@
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../reference/somesy/package_json/" class="md-nav__link ">
+            <a href="../reference/somesy/mkdocs/" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
-    package_json
+    mkdocs
   </span>
   
 
@@ -1652,6 +1654,101 @@
         
         <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_10_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2_3_1_10">
+            <span class="md-nav__icon md-icon"></span>
+            mkdocs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/mkdocs/models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/mkdocs/writer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    writer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_11" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/somesy/package_json/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    package_json
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_1_11" id="__nav_2_3_1_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_11">
             <span class="md-nav__icon md-icon"></span>
             package_json
           </label>
@@ -1723,7 +1820,7 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_11" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_12" >
         
           
           
@@ -1739,14 +1836,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2_3_1_11" id="__nav_2_3_1_11_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_3_1_12" id="__nav_2_3_1_12_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_11_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_3_1_11">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_12">
             <span class="md-nav__icon md-icon"></span>
             pom_xml
           </label>
@@ -1818,7 +1915,7 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_12" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_13" >
         
           
           
@@ -1834,14 +1931,14 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_2_3_1_12" id="__nav_2_3_1_12_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_2_3_1_13" id="__nav_2_3_1_13_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_12_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_3_1_12">
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_13">
             <span class="md-nav__icon md-icon"></span>
             pyproject
           </label>
@@ -2720,6 +2817,20 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>pom.xml file path.</td>
 </tr>
 <tr>
+<td>no_sync_mkdocs</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with mkdocs.yml.</td>
+</tr>
+<tr>
+<td>mkdocs_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"mkdocs.yml"</td>
+<td>mkdocs.yml file path.</td>
+</tr>
+<tr>
 <td>no_sync_cff</td>
 <td>bool</td>
 <td>no</td>
@@ -2769,12 +2880,14 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <th>Julia Config</th>
 <th>Fortran Config</th>
 <th>package.json</th>
+<th>mkdocs.yml</th>
 <th>CITATION.cff</th>
 <th>CodeMeta</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2793,6 +2906,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name+email</td>
 <td>name+email</td>
 <td>name</td>
+<td>name+email</td>
 <td>given-names</td>
 <td>givenName</td>
 </tr>
@@ -2804,6 +2918,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name+email</td>
 <td>name+email</td>
 <td>name</td>
+<td>name+email</td>
 <td>family-names</td>
 <td>familyName</td>
 </tr>
@@ -2815,6 +2930,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name+email</td>
 <td>name+email</td>
 <td>email</td>
+<td>name+email</td>
 <td>email</td>
 <td>email</td>
 </tr>
@@ -2826,11 +2942,13 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>-</td>
 <td>url</td>
+<td>-</td>
 <td>orcid</td>
 <td>id</td>
 </tr>
 <tr>
 <td><em>(many others)</em></td>
+<td>-</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
@@ -2854,12 +2972,14 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <th>Julia Config</th>
 <th>Fortran Config</th>
 <th>package.json</th>
+<th>mkdocs.yml</th>
 <th>CITATION.cff</th>
 <th>CodeMeta</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2878,6 +2998,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name</td>
 <td>name</td>
 <td>name</td>
+<td>site_name</td>
 <td>title</td>
 <td>name</td>
 </tr>
@@ -2889,6 +3010,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>description</td>
 <td>description</td>
+<td>site_description</td>
 <td>abstract</td>
 <td>description</td>
 </tr>
@@ -2900,6 +3022,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>license</td>
 <td>license</td>
+<td>-</td>
 <td>license</td>
 <td>license</td>
 </tr>
@@ -2911,10 +3034,12 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>version</td>
 <td>version</td>
 <td>version</td>
+<td>-</td>
 <td>version</td>
 <td>version</td>
 </tr>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2933,6 +3058,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>authors</td>
 <td>author</td>
 <td>author</td>
+<td>site_author</td>
 <td>authors</td>
 <td>author</td>
 </tr>
@@ -2944,6 +3070,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>maintainer</td>
 <td>maintainers</td>
+<td>-</td>
 <td>contact</td>
 <td>maintainer</td>
 </tr>
@@ -2955,6 +3082,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>-</td>
 <td>contributors</td>
+<td>-</td>
 <td>-</td>
 <td>contributor</td>
 </tr>
@@ -2968,6 +3096,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
 <td>keywords</td>
@@ -2977,6 +3106,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>keywords</td>
 <td>keywords</td>
+<td>-</td>
 <td>keywords</td>
 <td>keywords</td>
 </tr>
@@ -2988,6 +3118,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>homepage</td>
 <td>homepage</td>
+<td>site_url</td>
 <td>url</td>
 <td>url</td>
 </tr>
@@ -2999,6 +3130,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>-</td>
 <td>repository</td>
+<td>repo_url</td>
 <td>repository_code</td>
 <td>codeRepository</td>
 </tr>
@@ -3007,6 +3139,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>documentation</td>
 <td>urls.documentation</td>
 <td>distributionManagement.site.url</td>
+<td>-</td>
 <td>-</td>
 <td>-</td>
 <td>-</td>
@@ -3062,6 +3195,11 @@ issue or consult the <code>somesy</code> code.</p>
 <span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pomxml-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-x</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom pom.xml (Java Maven) file path  <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       (default: pom.xml)                     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-mkdocs</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-D</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync mkdocs.yml file (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       False)                                 <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--mkdocs-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-d</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom mkdocs.yml file path (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       mkdocs.yml)                            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
