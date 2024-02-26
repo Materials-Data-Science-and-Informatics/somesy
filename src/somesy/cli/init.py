@@ -78,6 +78,12 @@ def config():
     if pom_xml_file := typer.prompt("pom.xml file path", default="pom.xml"):
         options["pom_xml_file"] = pom_xml_file
 
+    options["no_sync_mkdocs"] = not typer.confirm(
+        "Do you want to sync to a mkdocs.yml file?", default=True
+    )
+    if mkdocs_file := typer.prompt("mkdocs.yml file path", default="mkdocs.yml"):
+        options["mkdocs_file"] = mkdocs_file
+
     # ----
 
     options["show_info"] = typer.confirm(

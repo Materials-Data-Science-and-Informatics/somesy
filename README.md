@@ -133,6 +133,7 @@ If you happen to use
 * `Project.toml` (in Julia projects),
 * `fpm.toml` (in Fortran projects),
 * `pom.xml` (in Java projects),
+* `mkdocs.yml` (in projects using MkDocs),
 
 then somesy would also update the respective information there.
 
@@ -181,8 +182,9 @@ Here is an overview of all the currently supported files and formats.
 | Project.toml   | ✓      | | Project.toml _(Julia)_        | ✓      |
 | fpm.toml       | ✓      | | fpm.toml _(Fortran)_          | ✓(3.)  |
 |                | ✓      | | pom.toml _(Java)_             | ✓(4.)  |
+|                |        | | mkdocs.yml                    | ✓(5.)  |
 |                |        | | CITATION.cff                  | ✓      |
-|                |        | | codemeta.json                 | ✓(5.)  |
+|                |        | | codemeta.json                 | ✓(6.)  |
 
 **Notes:**
 
@@ -190,7 +192,8 @@ Here is an overview of all the currently supported files and formats.
 2. `package.json` only supports one author, so `somesy` will pick the *first* listed author
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the *first* listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses (somesy only supports one main project license)
-5. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
+5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration
+6. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
 
 <!-- --8<-- [end:quickstart] -->
 

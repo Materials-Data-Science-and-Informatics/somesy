@@ -128,6 +128,7 @@ _SOMESY_TARGETS = [
     "julia",
     "fortran",
     "pom_xml",
+    "mkdocs",
 ]
 
 
@@ -199,6 +200,13 @@ class SomesyConfig(SomesyBaseModel):
     ] = False
     pom_xml_file: Annotated[Path, Field(description="pom.xml file path.")] = Path(
         "pom.xml"
+    )
+
+    no_sync_mkdocs: Annotated[
+        bool, Field(description="Do not sync with mkdocs.yml.")
+    ] = False
+    mkdocs_file: Annotated[Path, Field(description="mkdocs.yml file path.")] = Path(
+        "mkdocs.yml"
     )
 
     no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False

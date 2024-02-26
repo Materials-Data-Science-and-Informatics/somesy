@@ -12,6 +12,7 @@ from somesy.pyproject import Pyproject
 from somesy.julia import Julia
 from somesy.fortran import Fortran
 from somesy.pom_xml.writer import POM
+from somesy.mkdocs import MkDocs
 
 TEST_DIR = Path(__file__).resolve().parent
 
@@ -28,6 +29,7 @@ class FileTypes(Enum):
     JULIA = "julia"
     FORTRAN = "fortran"
     POM_XML = "pom_xml"
+    MKDOCS = "mkdocs"
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -85,6 +87,8 @@ def create_files(tmp_path):
                 read_file_name = read_file_path / Path("fpm.toml")
             elif file_type == FileTypes.POM_XML:
                 read_file_name = read_file_path / Path("pom.xml")
+            elif file_type == FileTypes.MKDOCS:
+                read_file_name = read_file_path / Path("mkdocs.yml")
 
             with open(read_file_name, "r") as f:
                 content = f.read()
@@ -139,6 +143,9 @@ def load_files():
             elif file_type == FileTypes.POM_XML:
                 read_file_name = read_file_name / Path("pom.xml")
                 file_instances[file_type] = POM(read_file_name)
+            elif file_type == FileTypes.MKDOCS:
+                read_file_name = read_file_name / Path("mkdocs.yml")
+                file_instances[file_type] = MkDocs(read_file_name)
 
         return file_instances
 

@@ -94,6 +94,19 @@ def sync(
         help="Custom pom.xml (Java Maven) file path (default: pom.xml)",
         **existing_file_arg_config,
     ),
+    no_sync_mkdocs: bool = typer.Option(
+        None,
+        "--no-sync-mkdocs",
+        "-D",
+        help="Do not sync mkdocs.yml file (default: False)",
+    ),
+    mkdocs_file: Path = typer.Option(
+        None,
+        "--mkdocs-file",
+        "-d",
+        help="Custom mkdocs.yml file path (default: mkdocs.yml)",
+        **existing_file_arg_config,
+    ),
     no_sync_cff: bool = typer.Option(
         None,
         "--no-sync-cff",
@@ -138,6 +151,8 @@ def sync(
         fortran_file=fortran_file,
         no_sync_pom_xml=no_sync_pom_xml,
         pom_xml_file=pom_xml_file,
+        no_sync_mkdocs=no_sync_mkdocs,
+        mkdocs_file=mkdocs_file,
     )
     run_sync(somesy_input)
 
@@ -166,6 +181,10 @@ def run_sync(somesy_input: SomesyInput):
     if not conf.no_sync_pom_xml:
         logger.info(
             f"  - [italic]pom.xml[/italic]:\t[grey]{conf.pom_xml_file}[/grey]\n"
+        )
+    if not conf.no_sync_mkdocs:
+        logger.info(
+            f"  - [italic]mkdocs.yml[/italic]:\t[grey]{conf.mkdocs_file}[/grey]"
         )
 
     if not conf.no_sync_cff:
