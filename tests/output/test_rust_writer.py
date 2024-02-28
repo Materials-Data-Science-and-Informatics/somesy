@@ -46,8 +46,11 @@ def test_from_to_person(person):
     assert p.full_name == person.full_name
     assert p.email == person.email
 
+    # rust also has only name format
+    assert Rust._to_person(person.full_name) == None
 
-def test_person_merge_pyproject(rust_file, person):
+
+def test_person_merge(rust_file, person):
     pj = Rust(rust_file)
     # update project file with known data
     pm = ProjectMetadata(
@@ -118,3 +121,22 @@ def test_person_merge_pyproject(rust_file, person):
     assert len(pj.maintainers) == 1
     assert pj.authors[0] == person1c_rep
     assert pj.authors[1] == person3_rep
+
+
+def test_person_merge_no_email(rust_file, person):
+    # try with a rust file that has an author with only name
+    r = Rust(rust_file)
+    r._data["package"]["authors"] = ["Jane Doe"]
+    r.save()
+
+    # update project file with known data
+    pm = ProjectMetadata(
+        name="My-awesome-project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[person.model_copy(update=dict(author=True, publication_author=True))],
+    )
+
+    r.sync(pm)
+    assert r.authors[0] == Rust._from_person(person)
