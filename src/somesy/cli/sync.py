@@ -107,6 +107,19 @@ def sync(
         help="Custom mkdocs.yml file path (default: mkdocs.yml)",
         **existing_file_arg_config,
     ),
+    no_sync_rust: bool = typer.Option(
+        None,
+        "--no-sync-rust",
+        "-R",
+        help="Do not sync Cargo.toml file (default: False)",
+    ),
+    rust_file: Path = typer.Option(
+        None,
+        "--rust-file",
+        "-r",
+        help="Custom Cargo.toml file path (default: Cargo.toml)",
+        **existing_file_arg_config,
+    ),
     no_sync_cff: bool = typer.Option(
         None,
         "--no-sync-cff",
@@ -153,6 +166,8 @@ def sync(
         pom_xml_file=pom_xml_file,
         no_sync_mkdocs=no_sync_mkdocs,
         mkdocs_file=mkdocs_file,
+        no_sync_rust=no_sync_rust,
+        rust_file=rust_file,
     )
     run_sync(somesy_input)
 
@@ -186,6 +201,8 @@ def run_sync(somesy_input: SomesyInput):
         logger.info(
             f"  - [italic]mkdocs.yml[/italic]:\t[grey]{conf.mkdocs_file}[/grey]"
         )
+    if not conf.no_sync_rust:
+        logger.info(f"  - [italic]Cargo.toml[/italic]:\t[grey]{conf.rust_file}[/grey]")
 
     if not conf.no_sync_cff:
         logger.info(f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]")

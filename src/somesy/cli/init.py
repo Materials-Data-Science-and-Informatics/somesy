@@ -84,6 +84,12 @@ def config():
     if mkdocs_file := typer.prompt("mkdocs.yml file path", default="mkdocs.yml"):
         options["mkdocs_file"] = mkdocs_file
 
+    options["no_sync_rust"] = not typer.confirm(
+        "Do you want to sync to a Cargo.toml file?", default=True
+    )
+    if rust_file := typer.prompt("Cargo.toml file path", default="Cargo.toml"):
+        options["rust_file"] = rust_file
+
     # ----
 
     options["show_info"] = typer.confirm(

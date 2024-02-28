@@ -15,6 +15,7 @@ from somesy.mkdocs import MkDocs
 from somesy.package_json.writer import PackageJSON
 from somesy.pom_xml.writer import POM
 from somesy.pyproject.writer import Pyproject
+from somesy.rust import Rust
 
 logger = logging.getLogger("somesy")
 
@@ -57,6 +58,9 @@ def sync(somesy_input: SomesyInput):
 
     if conf.mkdocs_file.is_file() and not conf.no_sync_mkdocs:
         _sync_file(metadata, conf.mkdocs_file, MkDocs)
+
+    if conf.rust_file.is_file() and not conf.no_sync_rust:
+        _sync_file(metadata, conf.rust_file, Rust)
 
     # create these by default if they are missing:
     if not conf.no_sync_cff:

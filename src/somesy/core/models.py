@@ -129,6 +129,7 @@ _SOMESY_TARGETS = [
     "fortran",
     "pom_xml",
     "mkdocs",
+    "rust",
 ]
 
 
@@ -207,6 +208,13 @@ class SomesyConfig(SomesyBaseModel):
     ] = False
     mkdocs_file: Annotated[Path, Field(description="mkdocs.yml file path.")] = Path(
         "mkdocs.yml"
+    )
+
+    no_sync_rust: Annotated[
+        bool, Field(description="Do not sync with Cargo.toml.")
+    ] = False
+    rust_file: Annotated[Path, Field(description="Cargo.toml file path.")] = Path(
+        "Cargo.toml"
     )
 
     no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
