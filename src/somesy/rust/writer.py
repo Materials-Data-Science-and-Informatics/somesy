@@ -7,7 +7,7 @@ from rich.pretty import pretty_repr
 from tomlkit import dump, load, table
 
 from somesy.core.models import Person, ProjectMetadata
-from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
+from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 from .models import RustConfig, check_keyword
 
@@ -17,15 +17,16 @@ logger = logging.getLogger("somesy")
 class Rust(ProjectMetadataWriter):
     """Rust config file handler parsed from Cargo.toml."""
 
-    def __init__(self, path: Path, *, direct_mappings=None):
+    def __init__(self, path: Path):
         """Rust config file handler parsed from Cargo.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self._section = ["package"]
-        super().__init__(
-            path, create_if_not_exists=False, direct_mappings=direct_mappings or {}
-        )
+        mappings: FieldKeyMapping = {
+            "maintainers": IgnoreKey(),
+        }
+        super().__init__(path, create_if_not_exists=False, direct_mappings=mappings)
 
     def _load(self) -> None:
         """Load Cargo.toml file."""
@@ -51,9 +52,11 @@ class Rust(ProjectMetadataWriter):
             dump(self._data, f)
 
     def _get_property(
-        self, key: Union[str, List[str]], *, remove: bool = False, **kwargs
+        self, key: Union[str, List[str], IgnoreKey], *, remove: bool = False, **kwargs
     ) -> Optional[Any]:
         """Get a property from the Cargo.toml file."""
+        if isinstance(key, IgnoreKey):
+            return None
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
         return super()._get_property(full_path, remove=remove, **kwargs)

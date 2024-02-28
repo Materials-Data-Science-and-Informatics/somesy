@@ -118,7 +118,6 @@ def test_person_merge(rust_file, person):
     pj.sync(pm)
     pj.save()
 
-    assert len(pj.maintainers) == 1
     assert pj.authors[0] == person1c_rep
     assert pj.authors[1] == person3_rep
 
