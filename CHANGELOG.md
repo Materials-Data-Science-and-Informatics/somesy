@@ -11,6 +11,7 @@ Please consult the changelog to inform yourself about breaking changes and secur
 * added support for Fortran `fpm.toml` file
 * added support for Java `pom.xml` file
 * added support for MkDocs `mkdocs.yml` file
+* added support for Rust `Cargo.toml` file
 
 ## [v0.3.1](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.3.1) <small>(2024-01-23)</small> { id="0.3.1" }
 

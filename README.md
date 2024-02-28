@@ -134,6 +134,7 @@ If you happen to use
 * `fpm.toml` (in Fortran projects),
 * `pom.xml` (in Java projects),
 * `mkdocs.yml` (in projects using MkDocs),
+* `Cargo.toml` (in Rust projects)
 
 then somesy would also update the respective information there.
 
@@ -182,6 +183,7 @@ Here is an overview of all the currently supported files and formats.
 | Project.toml   | ✓      | | Project.toml _(Julia)_        | ✓      |
 | fpm.toml       | ✓      | | fpm.toml _(Fortran)_          | ✓(3.)  |
 |                | ✓      | | pom.toml _(Java)_             | ✓(4.)  |
+| Cargo.toml     | ✓      | | Cargo.toml _(Rust)_           | ✓      |
 |                |        | | mkdocs.yml                    | ✓(5.)  |
 |                |        | | CITATION.cff                  | ✓      |
 |                |        | | codemeta.json                 | ✓(6.)  |
