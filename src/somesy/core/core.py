@@ -15,6 +15,7 @@ INPUT_FILES_ORDERED = [
     "package.json",
     "Project.toml",
     "fpm.toml",
+    "Cargo.toml",
 ]
 """Input files ordered by priority for discovery."""
 
@@ -78,7 +79,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
             ret = tomlkit.load(f)
             return ret if no_unwrap else ret.unwrap()
 
-    # pyproject.toml
+    # pyproject.toml or fpm.toml
     if (path.suffix == ".toml" and "pyproject" in path.name) or path.name in [
         "Project.toml",
         "fpm.toml",
@@ -92,6 +93,22 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
                     "No tool.somesy section found in pyproject.toml file!"
                 )
 
+    # Cargo.toml
+    if path.name == "Cargo.toml":
+        with open(path, "r") as f:
+            input_content = tomlkit.load(f)
+            if (
+                "package" in input_content
+                and "metadata" in input_content["package"]
+                and "somesy" in input_content["package"]["metadata"]
+            ):
+                return input_content["package"]["metadata"]["somesy"].unwrap()
+            else:
+                raise RuntimeError(
+                    "No package.somesy section found in Cargo.toml file!"
+                )
+
+    # package.json
     if path.suffix == ".json" and "package" in path.name:
         with open(path, "r") as f:
             input_content = json.load(f)
