@@ -1994,6 +1994,101 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_14" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/somesy/rust/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    rust
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_1_14" id="__nav_2_3_1_14_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_14">
+            <span class="md-nav__icon md-icon"></span>
+            rust
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/rust/models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/rust/writer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    writer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2831,6 +2926,20 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>mkdocs.yml file path.</td>
 </tr>
 <tr>
+<td>no_sync_rust</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Do not sync with Cargo.toml.</td>
+</tr>
+<tr>
+<td>rust_file</td>
+<td>Path</td>
+<td>no</td>
+<td>"Cargo.toml"</td>
+<td>Cargo.toml file path.</td>
+</tr>
+<tr>
 <td>no_sync_cff</td>
 <td>bool</td>
 <td>no</td>
@@ -2881,12 +2990,14 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <th>Fortran Config</th>
 <th>package.json</th>
 <th>mkdocs.yml</th>
+<th>Rust Config</th>
 <th>CITATION.cff</th>
 <th>CodeMeta</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2907,8 +3018,9 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name+email</td>
 <td>name</td>
 <td>name+email</td>
-<td>given-names</td>
+<td>name+email</td>
 <td>givenName</td>
+<td>name+email</td>
 </tr>
 <tr>
 <td><strong>family-names</strong></td>
@@ -2919,8 +3031,9 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name+email</td>
 <td>name</td>
 <td>name+email</td>
-<td>family-names</td>
+<td>name+email</td>
 <td>familyName</td>
+<td>name+email</td>
 </tr>
 <tr>
 <td><strong>email</strong></td>
@@ -2931,8 +3044,9 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name+email</td>
 <td>email</td>
 <td>name+email</td>
+<td>name+email</td>
 <td>email</td>
-<td>email</td>
+<td>name+email</td>
 </tr>
 <tr>
 <td>orcid</td>
@@ -2943,8 +3057,9 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>url</td>
 <td>-</td>
-<td>orcid</td>
+<td>-</td>
 <td>id</td>
+<td>-</td>
 </tr>
 <tr>
 <td><em>(many others)</em></td>
@@ -2955,8 +3070,9 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>-</td>
 <td>-</td>
+<td>-</td>
 <td><em>(same)</em></td>
-<td><em>(same)</em></td>
+<td>-</td>
 </tr>
 </tbody>
 </table>
@@ -2973,12 +3089,14 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <th>Fortran Config</th>
 <th>package.json</th>
 <th>mkdocs.yml</th>
+<th>Rust Config</th>
 <th>CITATION.cff</th>
 <th>CodeMeta</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -2999,6 +3117,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>name</td>
 <td>name</td>
 <td>site_name</td>
+<td>name</td>
 <td>title</td>
 <td>name</td>
 </tr>
@@ -3011,6 +3130,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>description</td>
 <td>description</td>
 <td>site_description</td>
+<td>description</td>
 <td>abstract</td>
 <td>description</td>
 </tr>
@@ -3025,6 +3145,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>license</td>
 <td>license</td>
+<td>license</td>
 </tr>
 <tr>
 <td><strong>version</strong></td>
@@ -3037,8 +3158,10 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>version</td>
 <td>version</td>
+<td>version</td>
 </tr>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
@@ -3060,6 +3183,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>author</td>
 <td>site_author</td>
 <td>authors</td>
+<td>authors</td>
 <td>author</td>
 </tr>
 <tr>
@@ -3070,6 +3194,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>maintainer</td>
 <td>maintainers</td>
+<td>-</td>
 <td>-</td>
 <td>contact</td>
 <td>maintainer</td>
@@ -3082,6 +3207,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>-</td>
 <td>contributors</td>
+<td>-</td>
 <td>-</td>
 <td>-</td>
 <td>contributor</td>
@@ -3097,6 +3223,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td></td>
 <td></td>
 <td></td>
+<td></td>
 </tr>
 <tr>
 <td>keywords</td>
@@ -3107,6 +3234,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>keywords</td>
 <td>keywords</td>
 <td>-</td>
+<td>keywords</td>
 <td>keywords</td>
 <td>keywords</td>
 </tr>
@@ -3119,6 +3247,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>homepage</td>
 <td>homepage</td>
 <td>site_url</td>
+<td>homepage</td>
 <td>url</td>
 <td>url</td>
 </tr>
@@ -3131,6 +3260,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>repository</td>
 <td>repo_url</td>
+<td>repository</td>
 <td>repository_code</td>
 <td>codeRepository</td>
 </tr>
@@ -3143,6 +3273,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>-</td>
 <td>-</td>
 <td>-</td>
+<td>documentation</td>
 <td>-</td>
 <td>buildInstructions</td>
 </tr>
@@ -3201,6 +3332,11 @@ issue or consult the <code>somesy</code> code.</p>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--mkdocs-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-d</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom mkdocs.yml file path (default:  <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       mkdocs.yml)                            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-rust</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-R</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync Cargo.toml file (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       False)                                 <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--rust-file</span>             <span class=" -Color -Color-Bold -Color-Bold-Green">-r</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Custom Cargo.toml file path (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       Cargo.toml)                            <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                       <span class=" -Color -Color-Faint">[default: None]                       </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Do not sync CITATION.cff file          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                       (default: False)                       <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>              <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>      <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  CITATION.cff file path (default:       <span class=" -Color -Color-Faint">│</span>
@@ -3225,6 +3361,7 @@ defaults, while options passed as CLI arguments override the configuration.</p>
 <li><code>Project.toml</code> (in <code>tool.somesy</code> section)</li>
 <li><code>fpm.toml</code> (in <code>tool.somesy</code> section)</li>
 <li><code>package.json</code> (in <code>somesy</code> section)</li>
+<li><code>Cargo.toml</code> (in <code>package.metadata.somesy</code> section)</li>
 </ul>
 <p>which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the <code>-i</code> option.</p>

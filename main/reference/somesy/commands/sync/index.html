@@ -1846,6 +1846,101 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_14" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../rust/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    rust
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_1_14" id="__nav_2_3_1_14_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_14">
+            <span class="md-nav__icon md-icon"></span>
+            rust
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rust/models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rust/writer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    writer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2116,8 +2211,7 @@
 
           <details class="quote">
             <summary>Source code in <code>src/somesy/commands/sync.py</code></summary>
-            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
-<span class="normal">35</span>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
 <span class="normal">38</span>
@@ -2148,7 +2242,11 @@
 <span class="normal">63</span>
 <span class="normal">64</span>
 <span class="normal">65</span>
-<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.&quot;&quot;&quot;</span>
     <span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">project</span>
 
@@ -2174,6 +2272,9 @@
 
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_mkdocs</span><span class="p">:</span>
         <span class="n">_sync_file</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span><span class="p">,</span> <span class="n">MkDocs</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_rust</span><span class="p">:</span>
+        <span class="n">_sync_file</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span><span class="p">,</span> <span class="n">Rust</span><span class="p">)</span>
 
     <span class="c1"># create these by default if they are missing:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>

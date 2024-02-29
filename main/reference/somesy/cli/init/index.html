@@ -1846,6 +1846,101 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3_1_14" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../rust/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    rust
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3_1_14" id="__nav_2_3_1_14_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_2_3_1_14_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3_1_14">
+            <span class="md-nav__icon md-icon"></span>
+            rust
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rust/models/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../rust/writer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    writer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2207,7 +2302,13 @@
 <span class="normal">105</span>
 <span class="normal">106</span>
 <span class="normal">107</span>
-<span class="normal">108</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span> <span class="nf">config</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set CLI configs for somesy.&quot;&quot;&quot;</span>
@@ -2276,6 +2377,12 @@
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">mkdocs_file</span> <span class="o">:=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;mkdocs.yml file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mkdocs.yml&quot;</span><span class="p">):</span>
         <span class="n">options</span><span class="p">[</span><span class="s2">&quot;mkdocs_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mkdocs_file</span>
+
+    <span class="n">options</span><span class="p">[</span><span class="s2">&quot;no_sync_rust&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">typer</span><span class="o">.</span><span class="n">confirm</span><span class="p">(</span>
+        <span class="s2">&quot;Do you want to sync to a Cargo.toml file?&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">rust_file</span> <span class="o">:=</span> <span class="n">typer</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="s2">&quot;Cargo.toml file path&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Cargo.toml&quot;</span><span class="p">):</span>
+        <span class="n">options</span><span class="p">[</span><span class="s2">&quot;rust_file&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rust_file</span>
 
     <span class="c1"># ----</span>
 
