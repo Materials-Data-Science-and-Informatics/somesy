@@ -257,6 +257,140 @@ class SomesyConfig(SomesyBaseModel):
 # Project metadata model (modified from CITATION.cff)
 
 
+class Entity(SomesyBaseModel):
+    """Metadata about an entity in the context of a software project ownership.
+
+    An entity, i.e., an institution, team, research group, company, conference, etc., as opposed to a single natural person.
+    This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
+    """
+
+    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
+
+    address: Annotated[Optional[str], Field(description="The entity's address.")] = None
+    alias: Annotated[Optional[str], Field(description="The entity's alias.")] = None
+    city: Annotated[Optional[str], Field(description="The entity's city.")] = None
+    country: Annotated[
+        Optional[Country], Field(description="The entity's country.")
+    ] = None
+    email: Annotated[
+        str,
+        Field(
+            pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
+            description="The entity's email address.",
+        ),
+    ]
+    date_end: Annotated[
+        Optional[date],
+        Field(
+            alias="date-end",
+            description="The entity's ending date, e.g., when the entity is a conference.",
+        ),
+    ] = None
+    date_start: Annotated[
+        Optional[date],
+        Field(
+            alias="date-start",
+            description="The entity's starting date, e.g., when the entity is a conference.",
+        ),
+    ] = None
+    fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
+    location: Annotated[
+        Optional[str],
+        Field(
+            description="The entity's location, e.g., when the entity is a conference."
+        ),
+    ] = None
+    name: Annotated[str, Field(description="The entity's name.")]
+    orcid: Annotated[
+        Optional[HttpUrlStr],
+        Field(
+            description="The person's ORCID url **(not required, but highly suggested)**."
+        ),
+    ] = None
+    post_code: Annotated[
+        Optional[str], Field(alias="post-code", description="The entity's post-code.")
+    ] = None
+    region: Annotated[Optional[str], Field(description="The entity's region.")] = None
+    tel: Annotated[
+        Optional[str], Field(description="The entity's phone number.")
+    ] = None
+    website: Annotated[
+        Optional[HttpUrlStr], Field(description="The entity's website.")
+    ] = None
+
+    # ----
+    # somesy-specific extensions
+    author: Annotated[
+        bool,
+        Field(
+            description="Indicates whether the entity is an author of the project (i.e. significant contributor)."
+        ),
+    ] = False
+    publication_author: Annotated[
+        Optional[bool],
+        Field(
+            description="Indicates whether the entity is to be listed as an author in academic citations."
+        ),
+    ] = None
+    maintainer: Annotated[
+        bool,
+        Field(
+            description="Indicates whether the entity is a maintainer of the project (i.e. for contact)."
+        ),
+    ] = False
+
+    # NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.
+    contribution: Annotated[
+        Optional[str],
+        Field(description="Summary of how the entity contributed to the project."),
+    ] = None
+    contribution_types: Annotated[
+        Optional[List[ContributionTypeEnum]],
+        Field(
+            description="Relevant types of contributions (see https://allcontributors.org/docs/de/emoji-key).",
+            min_length=1,
+        ),
+    ] = None
+    contribution_begin: Annotated[
+        Optional[date], Field(description="Beginning date of the contribution.")
+    ] = None
+    contribution_end: Annotated[
+        Optional[date], Field(description="Ending date of the contribution.")
+    ] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def author_implies_publication(cls, values):
+        """Ensure consistency of author and publication_author."""
+        if values.get("author"):
+            # NOTE: explicitly check for False (different case from None = missing!)
+            if values.get("publication_author") is False:
+                msg = "Combining author=true and publication_author=false is invalid!"
+                raise ValueError(msg)
+            values["publication_author"] = True
+        return values
+
+    # helper methods
+    def to_name_email_string(self) -> str:
+        """Convert project metadata entity object to poetry string for person format `name <x@y.z>`."""
+        return f"{self.name} <{self.email}>"
+
+    @classmethod
+    def from_name_email_string(cls, entity: str) -> Entity:
+        """Return an `Entity` based on an name/e-mail string like `name <x@y.z>`."""
+        m = re.match(r"\s*([^<]+)<([^>]+)>", entity)
+        name, mail = (
+            list(map(lambda s: s.strip(), m.group(1).split())),
+            m.group(2).strip(),
+        )
+        return Entity(
+            **{
+                "name": name,
+                "email": mail,
+            }
+        )
+
+
 class Person(SomesyBaseModel):
     """Metadata about a person in the context of a software project.
 
@@ -501,9 +635,19 @@ class ProjectMetadata(SomesyBaseModel):
         ),
     ]
 
+    entities: Annotated[
+        Optional[List[Entity]],
+        Field(
+            min_length=1,
+            description="Project authors, maintainers and contributors as entities.",
+        ),
+    ] = []
+
     def authors(self):
-        """Return people explicitly marked as authors."""
-        return [p for p in self.people if p.author]
+        """Return people and entities explicitly marked as authors."""
+        authors = [p for p in self.people if p.author]
+        authors += [e for e in self.entities if e.author]
+        return authors
 
     def publication_authors(self):
         """Return people marked as publication authors.
@@ -511,17 +655,25 @@ class ProjectMetadata(SomesyBaseModel):
         This always includes people marked as authors.
         """
         # return an empty list if no publication authors are specified
-        if not any(map(lambda p: p.publication_author, self.people)):
+        if not any(map(lambda p: p.publication_author, self.people)) and not any(
+            map(lambda p: p.publication_author, self.entities)
+        ):
             return []
-        return [p for p in self.people if p.publication_author]
+        publication_authors = [p for p in self.people if p.publication_author]
+        publication_authors += [e for e in self.entities if e.publication_author]
+        return publication_authors
 
     def maintainers(self):
-        """Return people marked as maintainers."""
-        return [p for p in self.people if p.maintainer]
+        """Return people and entities marked as maintainers."""
+        maintainers = [p for p in self.people if p.maintainer]
+        maintainers += [e for e in self.entities if e.maintainer]
+        return maintainers
 
     def contributors(self):
-        """Return only people not marked as authors."""
-        return [p for p in self.people if not p.author]
+        """Return only people and entities not marked as authors."""
+        contributors = [p for p in self.people if not p.author]
+        contributors += [e for e in self.entities if not e.author]
+        return contributors
 
 
 class SomesyInput(SomesyBaseModel):
