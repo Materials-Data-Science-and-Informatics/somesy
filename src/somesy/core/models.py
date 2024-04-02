@@ -258,7 +258,7 @@ class SomesyConfig(SomesyBaseModel):
 
 
 class Person(SomesyBaseModel):
-    """Metadata abount a person in the context of a software project.
+    """Metadata about a person in the context of a software project.
 
     This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
     """
