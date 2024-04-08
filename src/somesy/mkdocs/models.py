@@ -19,10 +19,12 @@ class MkDocsConfig(BaseModel):
         str,
         Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Site name"),
     ]
-    site_description: Annotated[str, Field(description="Site description")] = None
-    site_author: Annotated[str, Field(description="Site authors")] = None
+    site_description: Annotated[
+        Optional[str], Field(description="Site description")
+    ] = None
+    site_author: Annotated[Optional[str], Field(description="Site authors")] = None
     site_url: Annotated[Optional[HttpUrlStr], Field(description="Site homepage")] = None
     repo_url: Annotated[
         Optional[HttpUrlStr], Field(description="Package repository")
     ] = None
-    repo_name: Annotated[str, Field(description="Repository name")] = None
+    repo_name: Annotated[Optional[str], Field(description="Repository name")] = None
