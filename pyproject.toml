@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "somesy"
-version = "0.4.0"
+version = "0.4.1"
 description = "A CLI tool for synchronizing software project metadata."
 authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>", "Anton Pirogov <a.pirogov@fz-juelich.de>"]
 maintainers = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
