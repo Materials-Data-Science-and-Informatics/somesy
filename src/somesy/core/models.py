@@ -301,12 +301,6 @@ class Entity(SomesyBaseModel):
         ),
     ] = None
     name: Annotated[str, Field(description="The entity's name.")]
-    orcid: Annotated[
-        Optional[HttpUrlStr],
-        Field(
-            description="The person's ORCID url **(not required, but highly suggested)**."
-        ),
-    ] = None
     post_code: Annotated[
         Optional[str], Field(alias="post-code", description="The entity's post-code.")
     ] = None
@@ -357,18 +351,6 @@ class Entity(SomesyBaseModel):
     contribution_end: Annotated[
         Optional[date], Field(description="Ending date of the contribution.")
     ] = None
-
-    @model_validator(mode="before")
-    @classmethod
-    def author_implies_publication(cls, values):
-        """Ensure consistency of author and publication_author."""
-        if values.get("author"):
-            # NOTE: explicitly check for False (different case from None = missing!)
-            if values.get("publication_author") is False:
-                msg = "Combining author=true and publication_author=false is invalid!"
-                raise ValueError(msg)
-            values["publication_author"] = True
-        return values
 
     # helper methods
     def to_name_email_string(self) -> str:
