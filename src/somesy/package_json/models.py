@@ -28,8 +28,8 @@ class PackageRepository(BaseModel):
 class PackageLicense(BaseModel):
     """Package license model."""
 
-    type: Annotated[Optional[str], Field(description="License type")]
-    url: Annotated[str, Field(description="License url")] = None
+    type: Annotated[Optional[str], Field(description="License type")] = None
+    url: Annotated[str, Field(description="License url")]
 
 
 NPM_PKG_AUTHOR = r"^(.*?)\s*(?:<([^>]+)>)?\s*(?:\(([^)]+)\))?$"
