@@ -5,6 +5,7 @@ from typing import Optional
 
 import typer
 import wrapt
+from rich.markup import escape
 from rich.pretty import pretty_repr
 
 from somesy.core.core import discover_input
@@ -33,8 +34,12 @@ def wrap_exceptions(wrapped, instance, args, kwargs):
         return wrapped(*args, **kwargs)
 
     except Exception as e:
-        logger.error(f"[bold red]Error: {e}[/bold red]")
-        logger.debug(f"[red]{traceback.format_exc()}[/red]")
+        # Escape the error message to prevent Rich from misinterpreting it
+        escaped_error_message = escape(str(e))
+        escaped_traceback = escape(traceback.format_exc())
+
+        logger.error(f"[bold red]Error: {escaped_error_message}[/bold red]")
+        logger.debug(f"[red]{escaped_traceback}[/red]")
         raise typer.Exit(code=1) from e
 
 
