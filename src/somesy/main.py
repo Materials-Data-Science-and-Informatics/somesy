@@ -1,4 +1,5 @@
 """Main entry point for the somesy CLI."""
+
 import logging
 import sys
 

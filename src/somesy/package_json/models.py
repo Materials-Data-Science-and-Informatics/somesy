@@ -1,4 +1,5 @@
 """package.json validation models."""
+
 import re
 from typing import List, Optional, Union
 
@@ -44,9 +45,9 @@ class PackageJsonConfig(BaseModel):
 
     name: Annotated[str, Field(description="Package name")]
     version: Annotated[str, Field(description="Package version")]
-    description: Annotated[
-        Optional[str], Field(description="Package description")
-    ] = None
+    description: Annotated[Optional[str], Field(description="Package description")] = (
+        None
+    )
     author: Annotated[
         Optional[Union[str, PackageAuthor]], Field(description="Package author")
     ] = None
@@ -64,9 +65,9 @@ class PackageJsonConfig(BaseModel):
     repository: Annotated[
         Optional[Union[PackageRepository, str]], Field(description="Package repository")
     ] = None
-    homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="Package homepage")
-    ] = None
+    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
+        None
+    )
     keywords: Annotated[
         Optional[List[str]], Field(description="Keywords that describe the package")
     ] = None

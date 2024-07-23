@@ -1,4 +1,5 @@
 """Writer adapter for pom.xml files."""
+
 import logging
 import xml.etree.ElementTree as ET
 from pathlib import Path

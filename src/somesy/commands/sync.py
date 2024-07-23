@@ -1,4 +1,5 @@
 """Sync selected metadata files with given input file."""
+
 import logging
 from pathlib import Path
 from typing import Type

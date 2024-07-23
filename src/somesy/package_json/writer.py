@@ -1,4 +1,5 @@
 """package.json parser and saver."""
+
 import logging
 from collections import OrderedDict
 from pathlib import Path

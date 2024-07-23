@@ -1,4 +1,5 @@
 """Set config files for somesy."""
+
 import logging
 from pathlib import Path
 

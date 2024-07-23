@@ -1,4 +1,5 @@
 """Pyproject writers for setuptools and poetry."""
+
 import logging
 from pathlib import Path
 from typing import Any, List, Optional, Union
@@ -174,6 +175,7 @@ class Pyproject(wrapt.ObjectProxy):
         Raises:
             FileNotFoundError: Raised when pyproject.toml file is not found.
             ValueError: Neither project nor tool.poetry object is found in pyproject.toml file.
+
         """
         data = None
         if not path.is_file():

@@ -1,4 +1,5 @@
 """Pyproject models."""
+
 import re
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
@@ -30,9 +31,9 @@ class RustConfig(BaseModel):
             description="Package version",
         ),
     ]
-    description: Annotated[
-        Optional[str], Field(description="Package description")
-    ] = None
+    description: Annotated[Optional[str], Field(description="Package description")] = (
+        None
+    )
     license: Annotated[
         Optional[str],
         Field(
@@ -49,9 +50,9 @@ class RustConfig(BaseModel):
     license_file: Annotated[
         Optional[Path], Field(description="Package license file")
     ] = None
-    homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="Package homepage")
-    ] = None
+    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
+        None
+    )
     repository: Annotated[
         Optional[HttpUrlStr], Field(description="Package repository")
     ] = None

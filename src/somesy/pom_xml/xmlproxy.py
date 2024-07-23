@@ -1,4 +1,5 @@
 """Wrapper to provide dict-like access to XML via ElementTree."""
+
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
@@ -147,6 +148,7 @@ class XMLProxy:
         Args:
             strip_default_ns: Do not qualify keys from the default namespace
             keep_root: If true, the root tag name will be preserved (`{"root_tag": {...}}`)
+
         """
         if not len(self):  # leaf -> assume it's a primitive value
             return self._node.text or ""
@@ -212,6 +214,7 @@ class XMLProxy:
             val: Value to convert into an XML element.
             root_name: If `val` is a dict, defines the tag name for the root element.
             kwargs: Additional arguments for XML element instantiation.
+
         """
         if isinstance(val, list):
             return list(
@@ -255,6 +258,7 @@ class XMLProxy:
             key: tag name to retrieve
             as_nodes: If true, will *always* return a list of (zero or more) XML nodes
             deep: Expand nested XML elements instead of returning them as XML nodes
+
         """
         # NOTE: could allow to retrieve comments when using empty string/none as key?
 

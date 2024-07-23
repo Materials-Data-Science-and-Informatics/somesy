@@ -1,4 +1,5 @@
 """Utility functions for CLI commands."""
+
 import logging
 import traceback
 from typing import Optional

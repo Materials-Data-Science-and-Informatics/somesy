@@ -1,4 +1,5 @@
 """Pyproject writers for setuptools and rust."""
+
 import logging
 from pathlib import Path
 from typing import Any, List, Optional, Union

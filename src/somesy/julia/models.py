@@ -1,4 +1,5 @@
 """Julia model."""
+
 import uuid
 from typing import Optional, Set
 
