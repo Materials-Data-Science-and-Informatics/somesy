@@ -1,4 +1,5 @@
 """somesy package."""
+
 import importlib_metadata
 from typing_extensions import Final
 

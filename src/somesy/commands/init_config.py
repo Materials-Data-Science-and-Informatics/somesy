@@ -1,4 +1,5 @@
 """CLI command to initialize somesy configuration file."""
+
 import logging
 from pathlib import Path
 
@@ -16,6 +17,7 @@ def init_config(input_path: Path, options: dict) -> None:
     Args:
         input_path (Path): Path to somesy file (will be created/overwritten).
         options (dict): CLI options.
+
     """
     logger.info(f"Updating input file ({input_path}) with CLI configurations...")
 

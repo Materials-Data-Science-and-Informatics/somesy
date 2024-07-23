@@ -1,4 +1,5 @@
 """Somesy log configuration."""
+
 import logging
 from enum import Enum, auto
 from typing import Optional

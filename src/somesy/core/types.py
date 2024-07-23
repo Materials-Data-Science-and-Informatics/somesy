@@ -1,4 +1,5 @@
 """Types and enums used in the somesy models."""
+
 from enum import Enum
 
 from pydantic import HttpUrl

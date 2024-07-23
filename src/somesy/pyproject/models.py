@@ -1,4 +1,5 @@
 """Pyproject models."""
+
 from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
@@ -48,9 +49,9 @@ class PoetryConfig(BaseModel):
     readme: Annotated[
         Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
     ] = None
-    homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="Package homepage")
-    ] = None
+    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
+        None
+    )
     repository: Annotated[
         Optional[HttpUrlStr], Field(description="Package repository")
     ] = None

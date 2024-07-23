@@ -1,4 +1,5 @@
 """Fill command of somesy."""
+
 import logging
 from pathlib import Path
 from sys import stdin

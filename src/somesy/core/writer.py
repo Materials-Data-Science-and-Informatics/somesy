@@ -1,4 +1,5 @@
 """Project metadata writer base-class."""
+
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -47,6 +48,7 @@ class ProjectMetadataWriter(ABC):
             path: Path to target output file.
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
+
         """
         self._data: DictLike = {}
         self.path = path if isinstance(path, Path) else Path(path)
@@ -115,6 +117,7 @@ class ProjectMetadataWriter(ABC):
             key: Name of the key or sequence of multiple keys to retrieve the value.
             only_first: If True, returns only first entry if the value is a list.
             remove: If True, will remove the retrieved value and clean up the dict.
+
         """
         key_path = [key] if isinstance(key, str) else key
 
@@ -237,6 +240,7 @@ class ProjectMetadataWriter(ABC):
 
         Returns:
             List[Any]: updated list of persons in format-specific representation
+
         """
         old_people: List[Person] = self._parse_people(old)
         return self._merge_person_metadata(old_people, new)
