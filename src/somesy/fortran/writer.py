@@ -94,7 +94,7 @@ class Fortran(ProjectMetadataWriter):
         """Cannot convert from free string to person object."""
         try:
             return Person.from_name_email_string(person_obj)
-        except ValueError:
+        except (ValueError, AttributeError):
             logger.warning(f"Cannot convert {person_obj} to Person object.")
             return None
 
