@@ -2398,7 +2398,7 @@
         <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Person</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse rust person string to a Person. It has format &quot;full name &lt;email&gt;.&quot; but email is optional.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Person</span><span class="o">.</span><span class="n">from_name_email_string</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span>

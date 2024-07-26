@@ -3002,7 +3002,25 @@
 <span class="normal">409</span>
 <span class="normal">410</span>
 <span class="normal">411</span>
-<span class="normal">412</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Project Metadata Output Wrapper.</span>
 
 <span class="sd">    All supported output formats are implemented as subclasses.</span>
@@ -3309,7 +3327,15 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the authors of the project.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">))</span>
+        <span class="n">authors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">authors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># only return authors that can be converted to Person</span>
+        <span class="n">authors_validated</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">authors_validated</span>
 
     <span class="nd">@authors</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -3320,7 +3346,17 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maintainers of the project.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;maintainers&quot;</span><span class="p">))</span>
+        <span class="n">maintainers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;maintainers&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">maintainers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c1"># only return maintainers that can be converted to Person</span>
+        <span class="n">maintainers_validated</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">maintainer</span>
+            <span class="k">for</span> <span class="n">maintainer</span> <span class="ow">in</span> <span class="n">maintainers</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">maintainer</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">]</span>
+        <span class="k">return</span> <span class="n">maintainers_validated</span>
 
     <span class="nd">@maintainers</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maintainers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

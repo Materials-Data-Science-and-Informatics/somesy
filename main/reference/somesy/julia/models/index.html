@@ -2289,10 +2289,7 @@
 
               <details class="quote">
                 <summary>Source code in <code>src/somesy/julia/models.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">22</span>
 <span class="normal">23</span>
 <span class="normal">24</span>
 <span class="normal">25</span>
@@ -2339,7 +2336,20 @@
 <span class="normal">66</span>
 <span class="normal">67</span>
 <span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">JuliaConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">JuliaConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Julia configuration model.&quot;&quot;&quot;</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">use_enum_values</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2371,15 +2381,25 @@
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">validate_email_format</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate email format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate person format, omit person that is not in correct format, don&#39;t raise an error.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">validated</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span>
-                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="s2">&quot; &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">author</span>
-                <span class="ow">or</span> <span class="ow">not</span> <span class="n">EMailAddress</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid email format&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">v</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                    <span class="ow">or</span> <span class="s2">&quot; &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">author</span>
+                    <span class="ow">or</span> <span class="ow">not</span> <span class="n">EMailAddress</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">):</span>
+                    <span class="n">validated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Invalid email format for author </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">, omitting.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid format for author </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">, omitting.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">validated</span>
 
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;uuid&quot;</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
@@ -2426,15 +2446,15 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/julia/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
-<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate version using PEP 440.&quot;&quot;&quot;</span>
@@ -2466,14 +2486,11 @@
 
     <div class="doc doc-contents ">
 
-      <p>Validate email format.</p>
+      <p>Validate person format, omit person that is not in correct format, don't raise an error.</p>
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/julia/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">51</span>
 <span class="normal">52</span>
 <span class="normal">53</span>
 <span class="normal">54</span>
@@ -2481,18 +2498,41 @@
 <span class="normal">56</span>
 <span class="normal">57</span>
 <span class="normal">58</span>
-<span class="normal">59</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">)</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_email_format</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate email format.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate person format, omit person that is not in correct format, don&#39;t raise an error.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="n">validated</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span>
-            <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="s2">&quot; &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">author</span>
-            <span class="ow">or</span> <span class="ow">not</span> <span class="n">EMailAddress</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid email format&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">v</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="s2">&quot; &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">author</span>
+                <span class="ow">or</span> <span class="ow">not</span> <span class="n">EMailAddress</span><span class="o">.</span><span class="n">validate_python</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="p">):</span>
+                <span class="n">validated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Invalid email format for author </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">, omitting.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid format for author </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s2">, omitting.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">validated</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2520,15 +2560,15 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/julia/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;uuid&quot;</span><span class="p">)</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;uuid&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_uuid</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate uuid field.&quot;&quot;&quot;</span>

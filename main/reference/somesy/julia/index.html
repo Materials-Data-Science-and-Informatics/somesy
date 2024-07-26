@@ -2251,7 +2251,11 @@
 <span class="normal">64</span>
 <span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Julia</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Julia</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Julia config file handler parsed from Project.toml.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
@@ -2290,9 +2294,13 @@
         <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Person</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse name+email string to a Person.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Person</span><span class="o">.</span><span class="n">from_name_email_string</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Person</span><span class="o">.</span><span class="n">from_name_email_string</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert </span><span class="si">{</span><span class="n">person_obj</span><span class="si">}</span><span class="s2"> to Person object.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync output file with other metadata files.&quot;&quot;&quot;</span>
@@ -2400,13 +2408,13 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/julia/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">65</span>
 <span class="normal">66</span>
-<span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync output file with other metadata files.&quot;&quot;&quot;</span>
     <span class="c1"># overridden to not sync fields that are not present in the Project.toml file</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">name</span>
