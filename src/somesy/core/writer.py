@@ -331,7 +331,15 @@ class ProjectMetadataWriter(ABC):
     @property
     def authors(self):
         """Return the authors of the project."""
-        return self._get_property(self._get_key("authors"))
+        authors = self._get_property(self._get_key("authors"))
+        if authors is None:
+            return []
+
+        # only return authors that can be converted to Person
+        authors_validated = [
+            author for author in authors if self._to_person(author) is not None
+        ]
+        return authors_validated
 
     @authors.setter
     def authors(self, authors: List[Person]) -> None:
@@ -342,7 +350,17 @@ class ProjectMetadataWriter(ABC):
     @property
     def maintainers(self):
         """Return the maintainers of the project."""
-        return self._get_property(self._get_key("maintainers"))
+        maintainers = self._get_property(self._get_key("maintainers"))
+        if maintainers is None:
+            return []
+
+        # only return maintainers that can be converted to Person
+        maintainers_validated = [
+            maintainer
+            for maintainer in maintainers
+            if self._to_person(maintainer) is not None
+        ]
+        return maintainers_validated
 
     @maintainers.setter
     def maintainers(self, maintainers: List[Person]) -> None:
