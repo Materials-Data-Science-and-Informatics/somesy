@@ -96,61 +96,19 @@ class Poetry(PyprojectCommon):
         """
         super().__init__(path, section=["tool", "poetry"], model_cls=PoetryConfig)
 
-    @property
-    def authors(self) -> List[str]:
-        """Get authors from the pyproject.toml file."""
-        # check if authors can be converted to person, only return valid ones
-        authors = self._get_property("authors")
-        if authors is None:
-            return []
-
-        valid_authors = []
-        for author in authors:
-            try:
-                self._to_person(author)
-                valid_authors.append(author)
-            except (ValueError, AttributeError):
-                logger.warning(f"Invalid author format: {author}")
-        return valid_authors
-
-    @authors.setter
-    def authors(self, authors: List[Person]) -> None:
-        """Set the authors of the project."""
-        authors = [self._from_person(c) for c in authors]
-        self._set_property(self._get_key("authors"), authors)
-
-    @property
-    def maintainers(self) -> List[str]:
-        """Get maintainers from the pyproject.toml file."""
-        # check if maintainers can be converted to person, only return valid ones
-        maintainers = self._get_property("maintainers")
-        if maintainers is None:
-            return []
-
-        valid_maintainers = []
-        for maintainer in maintainers:
-            try:
-                self._to_person(maintainer)
-                valid_maintainers.append(maintainer)
-            except (ValueError, AttributeError):
-                logger.warning(f"Invalid maintainer format: {maintainer}")
-        return valid_maintainers
-
-    @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
-        """Set the maintainers of the project."""
-        maintainers = [self._from_person(c) for c in maintainers]
-        self._set_property(self._get_key("maintainers"), maintainers)
-
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to poetry string for person format "full name <email>."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Person:
+    def _to_person(person_obj: str) -> Optional[Person]:
         """Parse poetry person string to a Person."""
-        return Person.from_name_email_string(person_obj)
+        try:
+            return Person.from_name_email_string(person_obj)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            return None
 
 
 class SetupTools(PyprojectCommon):
