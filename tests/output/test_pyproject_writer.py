@@ -77,8 +77,9 @@ def test_from_to_person(person):
     assert p.full_name == person.full_name
     assert p.email == person.email
 
-    with pytest.raises(AttributeError):
-        p = Poetry._to_person("John Doe")
+    # this should return None since there is no email
+    p = Poetry._to_person("John Doe")
+    assert p is None
 
     # test for setuptools
     assert SetupTools._from_person(person) == {
