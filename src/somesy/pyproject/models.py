@@ -1,6 +1,7 @@
 """Pyproject models."""
 
 from enum import Enum
+from logging import getLogger
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 
@@ -10,6 +11,7 @@ from pydantic import (
     EmailStr,
     Field,
     TypeAdapter,
+    ValidationError,
     field_validator,
     model_validator,
 )
@@ -19,6 +21,7 @@ from somesy.core.models import LicenseEnum
 from somesy.core.types import HttpUrlStr
 
 EMailAddress = TypeAdapter(EmailStr)
+logger = getLogger("somesy")
 
 
 class PoetryConfig(BaseModel):
@@ -81,15 +84,27 @@ class PoetryConfig(BaseModel):
     @field_validator("authors", "maintainers")
     @classmethod
     def validate_email_format(cls, v):
-        """Validate email format."""
+        """Validate person format, omit person that is not in correct format, don't raise an error."""
+        if v is None:
+            return []
+        validated = []
         for author in v:
-            if (
-                not isinstance(author, str)
-                or " " not in author
-                or not EMailAddress.validate_python(author.split(" ")[-1][1:-1])
-            ):
-                raise ValueError("Invalid email format")
-        return v
+            try:
+                if not (
+                    not isinstance(author, str)
+                    or " " not in author
+                    or not EMailAddress.validate_python(author.split(" ")[-1][1:-1])
+                ):
+                    validated.append(author)
+                else:
+                    logger.warning(
+                        f"Invalid email format for author/maintainer {author}, omitting."
+                    )
+            except ValidationError:
+                logger.warning(
+                    f"Invalid email format for author/maintainer {author}, omitting."
+                )
+        return validated
 
     @field_validator("readme")
     @classmethod
@@ -97,10 +112,10 @@ class PoetryConfig(BaseModel):
         """Validate readme file(s) by checking whether files exist."""
         if isinstance(v, list):
             if any(not e.is_file() for e in v):
-                raise ValueError("Some file(s) do not exist")
+                logger.warning("Some readme file(s) do not exist")
         else:
             if not v.is_file():
-                raise ValueError("File does not exist")
+                logger.warning("Readme file does not exist")
 
 
 class ContentTypeEnum(Enum):

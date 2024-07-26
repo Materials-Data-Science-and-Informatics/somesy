@@ -102,9 +102,13 @@ class Poetry(PyprojectCommon):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Person:
+    def _to_person(person_obj: str) -> Optional[Person]:
         """Parse poetry person string to a Person."""
-        return Person.from_name_email_string(person_obj)
+        try:
+            return Person.from_name_email_string(person_obj)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            return None
 
 
 class SetupTools(PyprojectCommon):

@@ -89,7 +89,7 @@ class Rust(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Person:
+    def _to_person(person_obj: str) -> Optional[Person]:
         """Parse rust person string to a Person. It has format "full name <email>." but email is optional."""
         try:
             return Person.from_name_email_string(person_obj)

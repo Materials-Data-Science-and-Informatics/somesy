@@ -1,12 +1,15 @@
 """package.json validation models."""
 
 import re
+from logging import getLogger
 from typing import List, Optional, Union
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing_extensions import Annotated
 
 from somesy.core.types import HttpUrlStr
+
+logger = getLogger("somesy")
 
 
 class PackageAuthor(BaseModel):
@@ -74,7 +77,7 @@ class PackageJsonConfig(BaseModel):
 
     # convert package author to dict if it is a string
     @classmethod
-    def convert_author(cls, author: str) -> PackageAuthor:
+    def convert_author(cls, author: str) -> Optional[PackageAuthor]:
         """Convert author string to PackageAuthor model."""
         # parse author string to "name <email> (url)" format with regex
         author_match = re.match(NPM_PKG_AUTHOR, author)
@@ -84,6 +87,8 @@ class PackageJsonConfig(BaseModel):
         author_email = author_match[2]
         author_url = author_match[3]
 
+        if author_email is None:
+            return None
         return PackageAuthor(name=author_name, email=author_email, url=author_url)
 
     @field_validator("name")
@@ -116,7 +121,17 @@ class PackageJsonConfig(BaseModel):
         people = []
         for p in v:
             if isinstance(p, str):
-                people.append(cls.convert_author(p))
-            else:
+                author = cls.convert_author(p)
+                if author is not None:
+                    people.append(cls.convert_author(p))
+                else:
+                    logger.warning(
+                        f"Invalid email format for maintainer/contributor {p}, omitting."
+                    )
+            elif p.email is not None:
                 people.append(p)
+            else:
+                logger.warning(
+                    f"Invalid email format for maintainer/contributor {p}, omitting."
+                )
         return people
