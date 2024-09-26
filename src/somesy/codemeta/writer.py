@@ -11,6 +11,8 @@ from somesy.core.models import Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 from somesy.json_wrapper import json
 
+from .enhance import enhance
+
 logger = logging.getLogger("somesy")
 
 
@@ -91,7 +93,9 @@ class CodeMeta(ProjectMetadataWriter):
         with self.path.open("w+") as f:
             json.dump(data, f)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(
+        self, path: Optional[Path] = None, pyproject_file: Optional[Path] = None
+    ) -> None:
         """Save the codemeta.json file."""
         path = path or self.path
         logger.debug(f"Saving codemeta.json to {path}")
@@ -107,9 +111,13 @@ class CodeMeta(ProjectMetadataWriter):
         if "softwareHelp" in data:
             data["url"] = data["softwareHelp"]
 
+        # enhance codemeta.json with poetry
+        logger.info("Enhancing codemeta.json with poetry config")
+        enhanced_metadata = enhance(data, pyproject_file)
+
         with path.open("w") as f:
             # codemeta.json indentation is 2 spaces
-            json.dump(data, f)
+            json.dump(enhanced_metadata, f)
 
     @staticmethod
     def _from_person(person: Person):
@@ -129,6 +137,16 @@ class CodeMeta(ProjectMetadataWriter):
             person_dict["address"] = person.address
         if person.affiliation:
             person_dict["affiliation"] = person.affiliation
+        if person.contribution_begin:
+            # save the data in YYYY-MM-DD format
+            person_dict["startDate"] = person.contribution_begin.strftime("%Y-%m-%d")
+        if person.contribution_end:
+            person_dict["endDate"] = person.contribution_end.strftime("%Y-%m-%d")
+        if person.contribution_types:
+            # contribution_types elements are enums
+            contribution = ", ".join([str(item) for item in person.contribution_types])
+            person_dict["roleName"] = contribution
+
         return person_dict
 
     @staticmethod

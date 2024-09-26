@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Type
+from typing import Optional, Type
 
 from rich.pretty import pretty_repr
 
@@ -30,6 +30,18 @@ def _sync_file(
     logger.verbose(f"Syncing '{file.name}' ...")
     writer.sync(metadata)
     writer.save(file)
+    logger.verbose(f"Saved synced '{file.name}'.\n")
+
+
+def _sync_codemeta(
+    metadata: ProjectMetadata, file: Path, pyproject_file: Optional[Path] = None
+):
+    """Sync metadata to a file using the provided writer."""
+    logger.verbose(f"Loading '{file.name}' ...")
+    writer = CodeMeta(file)
+    logger.verbose(f"Syncing '{file.name}' ...")
+    writer.sync(metadata)
+    writer.save(file, pyproject_file)
     logger.verbose(f"Saved synced '{file.name}'.\n")
 
 
@@ -68,4 +80,7 @@ def sync(somesy_input: SomesyInput):
         _sync_file(metadata, conf.cff_file, CFF)
 
     if not conf.no_sync_codemeta:
-        _sync_file(metadata, conf.codemeta_file, CodeMeta)
+        if conf.pyproject_file.is_file() and not conf.no_sync_pyproject:
+            _sync_codemeta(metadata, conf.codemeta_file, conf.pyproject_file)
+        else:
+            _sync_codemeta(metadata, conf.codemeta_file)
