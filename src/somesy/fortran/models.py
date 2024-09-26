@@ -1,4 +1,4 @@
-"""Pyproject models."""
+"""Fortran models."""
 
 from typing import Optional, Set
 

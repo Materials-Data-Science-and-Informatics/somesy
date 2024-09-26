@@ -1,4 +1,4 @@
-"""Pyproject models."""
+"""Mkdocs models."""
 
 from typing import Optional
 

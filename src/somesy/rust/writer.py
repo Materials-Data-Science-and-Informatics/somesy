@@ -1,4 +1,4 @@
-"""Pyproject writers for setuptools and rust."""
+"""Rust writers for setuptools and rust."""
 
 import logging
 from pathlib import Path

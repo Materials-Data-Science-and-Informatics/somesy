@@ -1,4 +1,4 @@
-"""Pyproject models."""
+"""Rust models."""
 
 import re
 from pathlib import Path
