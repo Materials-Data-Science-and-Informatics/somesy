@@ -50,7 +50,8 @@ class PoetryConfig(BaseModel):
         Optional[Set[str]], Field(description="Package maintainers")
     ] = None
     readme: Annotated[
-        Optional[Union[Path, List[Path], HttpUrlStr]], Field(description="Package readme file(s) or URLs")
+        Optional[Union[Path, List[Path], HttpUrlStr]],
+        Field(description="Package readme file(s) or URLs"),
     ] = None
     homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
         None
@@ -117,11 +118,11 @@ class PoetryConfig(BaseModel):
         if isinstance(v, list):
             for item in v:
                 # check if the item type is not a URL
-                if not isinstance(item, HttpUrlStr):
+                if not str(item).startswith("http"):
                     if not Path(item).is_file():
                         logger.warning("Some readme file(s) do not exist")
         else:
-            if not isinstance(item, HttpUrlStr):
+            if not str(v).startswith("http"):
                 if not v.is_file():
                     logger.warning("Readme file does not exist")
 
