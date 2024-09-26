@@ -50,7 +50,7 @@ class PoetryConfig(BaseModel):
         Optional[Set[str]], Field(description="Package maintainers")
     ] = None
     readme: Annotated[
-        Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
+        Optional[Union[Path, List[Path], HttpUrlStr]], Field(description="Package readme file(s) or URLs")
     ] = None
     homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
         None
@@ -115,11 +115,15 @@ class PoetryConfig(BaseModel):
     def validate_readme(cls, v):
         """Validate readme file(s) by checking whether files exist."""
         if isinstance(v, list):
-            if any(not e.is_file() for e in v):
-                logger.warning("Some readme file(s) do not exist")
+            for item in v:
+                # check if the item type is not a URL
+                if not isinstance(item, HttpUrlStr):
+                    if not Path(item).is_file():
+                        logger.warning("Some readme file(s) do not exist")
         else:
-            if not v.is_file():
-                logger.warning("Readme file does not exist")
+            if not isinstance(item, HttpUrlStr):
+                if not v.is_file():
+                    logger.warning("Readme file does not exist")
 
 
 class ContentTypeEnum(Enum):
