@@ -4,10 +4,21 @@ from tomlkit import dump
 from somesy.pyproject import Pyproject
 
 
-def test_poetry_validate_accept(load_files, file_types):
+def test_poetry_setuptools_validate_accept(load_files, file_types):
     """Validate by loading the data pyproject file using the fixture."""
     load_files([file_types.SETUPTOOLS])
     load_files([file_types.POETRY])
+
+
+def test_poetry_dependencies_validate(load_files, file_types):
+    files = load_files([file_types.POETRY])
+    poetry = files[file_types.POETRY]
+
+    # there are 3 dependencies in the poetry file
+    assert len(poetry.dependencies) == 3
+
+    # check version of the first dependency
+    assert poetry.dependencies["python"] == "^3.8"
 
 
 def test_poetry_validate(tmp_path):

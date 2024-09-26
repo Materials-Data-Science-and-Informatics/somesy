@@ -70,6 +70,10 @@ class PoetryConfig(BaseModel):
     urls: Annotated[
         Optional[Dict[str, HttpUrlStr]], Field(description="Package URLs")
     ] = None
+    dependencies: Annotated[
+        Optional[Dict[str, Union[str, Dict[str, Union[str, List[str]]]]]],
+        Field(description="Package dependencies"),
+    ] = None
 
     @field_validator("version")
     @classmethod

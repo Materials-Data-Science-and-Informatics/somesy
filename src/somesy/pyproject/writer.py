@@ -110,6 +110,16 @@ class Poetry(PyprojectCommon):
             logger.warning(f"Cannot convert {person_obj} to Person object.")
             return None
 
+    @property
+    def dependencies(self):
+        """Get dependencies from the pyproject.toml file."""
+        return self._get_property(["dependencies"])
+
+    @dependencies.setter
+    def dependencies(self, value):
+        """Set dependencies in the pyproject.toml file."""
+        self._set_property("dependencies", value)
+
 
 class SetupTools(PyprojectCommon):
     """Setuptools config file handler parsed from setup.cfg."""
