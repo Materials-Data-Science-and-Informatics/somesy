@@ -274,12 +274,12 @@ class Person(SomesyBaseModel):
     ] = None
 
     email: Annotated[
-        str,
+        Optional[str],
         Field(
             pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
             description="The person's email address.",
         ),
-    ]
+    ] = None
 
     family_names: Annotated[
         str, Field(alias="family-names", description="The person's family names.")
@@ -400,7 +400,10 @@ class Person(SomesyBaseModel):
 
     def to_name_email_string(self) -> str:
         """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
-        return f"{self.full_name} <{self.email}>"
+        if self.email:
+            return f"{self.full_name} <{self.email}>"
+        else:
+            return self.full_name
 
     @classmethod
     def from_name_email_string(cls, person: str) -> Person:
@@ -409,6 +412,14 @@ class Person(SomesyBaseModel):
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
+        if m is None:
+            names = list(map(lambda s: s.strip(), person.split()))
+            return Person(
+                **{
+                    "given-names": " ".join(names[:-1]),
+                    "family-names": names[-1],
+                }
+            )
         names, mail = (
             list(map(lambda s: s.strip(), m.group(1).split())),
             m.group(2).strip(),
