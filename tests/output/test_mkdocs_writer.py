@@ -13,7 +13,7 @@ def mkdocs(load_files, file_types):
 def test_content_match(mkdocs: MkDocs):
     assert mkdocs.name == "test-package"
     assert mkdocs.description == "This is a test package for demonstration purposes."
-    assert len(mkdocs.authors) == 0
+    assert len(mkdocs.authors) == 1
 
 
 def test_sync(mkdocs: MkDocs, somesy_input: dict):

@@ -79,7 +79,8 @@ def test_from_to_person(person):
 
     # this should return None since there is no email
     p = Poetry._to_person("John Doe")
-    assert p is None
+    assert p.given_names == "John"
+    assert p.family_names == "Doe"
 
     # test for setuptools
     assert SetupTools._from_person(person) == {
@@ -195,7 +196,7 @@ def test_without_email(tmp_path, person):
 
     # load and sync
     p = Poetry(pyproject_file)
-    assert len(p.authors) == 0
+    assert len(p.authors) == 1
 
     pm = ProjectMetadata(
         name="My awesome project",
