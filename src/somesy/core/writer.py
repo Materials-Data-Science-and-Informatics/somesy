@@ -290,7 +290,11 @@ class ProjectMetadataWriter(ABC):
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
         """Return a list of Persons parsed from list of format-specific people representations."""
-        return list(map(cls._to_person, people or []))
+        # remove None values
+        people = [p for p in people if p is not None]
+
+        people = list(map(cls._to_person, people or []))
+        return people
 
     # ----
     # individual magic getters and setters
