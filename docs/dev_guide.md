@@ -52,9 +52,7 @@ Best practices for modern Python development are implemented by using:
 * `pytest` for unit testing
 * `hypothesis` for property-based testing
 * `pre-commit` for orchestrating linters, formatters and other utilities
-* `black` for source-code formatting
-* `autoflake` for automatically removing unused imports
-* `flake8` for general linting (using various linter plugins)
+* `ruff` for source-code formatting and for general linting
 * `pydocstyle` for checking docstring conventions
 * `interrogate` for computing docstring coverage
 * `mypy` for editor-independent type-checking
