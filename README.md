@@ -111,7 +111,7 @@ publication_author = true
 verbose = true     # show detailed information about what somesy is doing
 ```
 
-As Helmholtz Metadata Collaboration(HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, we set some fields in `somesy.toml` as compulsory fields to increase the metadata quality in the software projects `somesy` is used.
+As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in `somesy.toml` are set as required fields. This is to increase rigour and completeness of metadata recorded with `somesy` .
 
 <!-- --8<-- [end:somesytoml] -->
 
