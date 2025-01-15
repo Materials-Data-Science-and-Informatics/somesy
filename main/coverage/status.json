@@ -2,7 +2,7 @@
   "note":"This file is an internal implementation detail to speed up HTML report generation. Its format can change at any time. You might be looking for the JSON report: https://coverage.rtfd.io/cmd.html#cmd-json",
   "format":5,
   "version":"7.6.0",
-  "globals":"19d0e811468ce554ec3b5ec042bf5a96",
+  "globals":"0a8c51eb60d07aa4c0ad3358177d75a8",
   "files":{
     "z_97b113e3d51588b3___init___py":{
       "hash":"0b7442e339cccfa336b6852807e46823",

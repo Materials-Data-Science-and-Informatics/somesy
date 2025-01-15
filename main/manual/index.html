@@ -3414,6 +3414,7 @@ one of the supported input formats:</p>
 <span class="k">[config]</span>
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
 </code></pre></div>
+<p>As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in <code>somesy.toml</code> are set as required fields. This is to increase rigour and completeness of metadata recorded with <code>somesy</code> .</p>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="k">[tool.poetry]</span>
@@ -3572,10 +3573,14 @@ file in the root folder of your repository:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># ... (your other hooks) ...</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
-<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v0.4.3&quot;</span>
+<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v0.5.0&quot;</span>
 <span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
 </code></pre></div>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Please add the latest version of Somesy to your project. You can update the version of Somesy in your config file now and later to use the newest versions as they become available.</p>
+</blockquote>
 <p>Note that <code>pre-commit</code> gives <code>somesy</code> the <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">staged</a> version of files,
 so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <ul>
