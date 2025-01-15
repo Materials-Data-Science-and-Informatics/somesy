@@ -293,7 +293,7 @@
       }
     },
     "z_596ffba9215ba05d_models_py":{
-      "hash":"db31bca26f17eabaeae4f4e3fdc66a7b",
+      "hash":"08518058a0b14d3237878ca6bd9bdf26",
       "index":{
         "url":"z_596ffba9215ba05d_models_py.html",
         "file":"src/somesy/core/models.py",
@@ -301,7 +301,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":214,
+          "n_statements":219,
           "n_excluded":0,
           "n_missing":11,
           "n_branches":0,
@@ -329,7 +329,7 @@
       }
     },
     "z_596ffba9215ba05d_writer_py":{
-      "hash":"88090afc59396782080652cc69eac788",
+      "hash":"b50a35828a5f2b4bf2597117cd5cff19",
       "index":{
         "url":"z_596ffba9215ba05d_writer_py.html",
         "file":"src/somesy/core/writer.py",
@@ -337,7 +337,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":187,
+          "n_statements":189,
           "n_excluded":33,
           "n_missing":9,
           "n_branches":0,
@@ -455,7 +455,7 @@
       }
     },
     "z_55871f16c47673c2_writer_py":{
-      "hash":"8effbf356727df54fe0c61a06c7727e9",
+      "hash":"f319361d2dc6823c3c9e036fb9b7c08c",
       "index":{
         "url":"z_55871f16c47673c2_writer_py.html",
         "file":"src/somesy/julia/writer.py",
@@ -465,7 +465,7 @@
           "n_files":1,
           "n_statements":37,
           "n_excluded":0,
-          "n_missing":0,
+          "n_missing":3,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -527,7 +527,7 @@
       }
     },
     "z_6c09ba444e4cc07f_writer_py":{
-      "hash":"b0582e452cbf4dc8e93f0a38bb05ff35",
+      "hash":"4b7ad671919bf86faaf2f49ea1e9008a",
       "index":{
         "url":"z_6c09ba444e4cc07f_writer_py.html",
         "file":"src/somesy/mkdocs/writer.py",
@@ -537,7 +537,7 @@
           "n_files":1,
           "n_statements":54,
           "n_excluded":0,
-          "n_missing":0,
+          "n_missing":4,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -671,7 +671,7 @@
       }
     },
     "z_22470fc7858cbfa7_models_py":{
-      "hash":"3a12cf1fc681faf8f25de7b80c6f2b86",
+      "hash":"f695277707dc7b28b7ba3689af58fa4e",
       "index":{
         "url":"z_22470fc7858cbfa7_models_py.html",
         "file":"src/somesy/pyproject/models.py",
@@ -689,7 +689,7 @@
       }
     },
     "z_22470fc7858cbfa7_writer_py":{
-      "hash":"45bda068dc8bb3212d98ff253761e3db",
+      "hash":"0938c13367ad2e0b1b41a478556be11b",
       "index":{
         "url":"z_22470fc7858cbfa7_writer_py.html",
         "file":"src/somesy/pyproject/writer.py",
@@ -699,7 +699,7 @@
           "n_files":1,
           "n_statements":91,
           "n_excluded":0,
-          "n_missing":6,
+          "n_missing":9,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -743,7 +743,7 @@
       }
     },
     "z_3ca2b73183ed41f7_writer_py":{
-      "hash":"af44b7f1604ea9e4f776adec877f6cdd",
+      "hash":"334160e50f70c6915473aaa3b6f95fe3",
       "index":{
         "url":"z_3ca2b73183ed41f7_writer_py.html",
         "file":"src/somesy/rust/writer.py",
@@ -751,7 +751,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":76,
+          "n_statements":73,
           "n_excluded":0,
           "n_missing":7,
           "n_branches":0,

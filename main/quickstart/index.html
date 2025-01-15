@@ -2288,6 +2288,10 @@
 latest stable version of somesy from PyPI using <code>pip</code>:</p>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>somesy
 </code></pre></div>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>If you use somesy as a pre-commit hook, you don't have to install somesy on your PC nor add it as a dependency in your Python project. Pre-commit will handle the installation automatically.</p>
+</blockquote>
 <h3 id="configuring-somesy">Configuring somesy<a class="headerlink" href="#configuring-somesy" title="Permanent link">&para;</a></h3>
 <p>Yes, somesy is <em>another</em> tool with its own configuration. However, for your
 project metadata it is hopefully the last file you need, and the only one you
@@ -2323,6 +2327,7 @@ have to think about, <code>somesy</code> will take care of the others for you!</
 <span class="k">[config]</span>
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
 </code></pre></div>
+<p>As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in <code>somesy.toml</code> are set as required fields. This is to increase rigour and completeness of metadata recorded with <code>somesy</code> .</p>
 <p>Alternatively, you can also add the somesy configuration to an existing
 <code>pyproject.toml</code>, <code>package.json</code>, <code>Project.toml</code>, or <code>fpm.toml</code> file. The somesy <a href="https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file">manual</a> contains examples showing how to do that.</p>
 <h3 id="using-somesy">Using somesy<a class="headerlink" href="#using-somesy" title="Permanent link">&para;</a></h3>
@@ -2363,6 +2368,10 @@ file in the root folder of your repository:</p>
 <span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
 </code></pre></div>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>Please add the latest version of Somesy to your project. You can update the version of Somesy in your config file now and later to use the newest versions as they become available.</p>
+</blockquote>
 <p>Note that <code>pre-commit</code> gives <code>somesy</code> the <a href="https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F">staged</a> version of files,
 so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <ul>
