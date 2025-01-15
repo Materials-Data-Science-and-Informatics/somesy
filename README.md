@@ -65,6 +65,10 @@ latest stable version of somesy from PyPI using `pip`:
 pip install somesy
 ```
 
+> **Note**
+>
+> If you use somesy as a pre-commit hook, you don't have to install somesy on your PC nor add it as a dependency in your Python project. Pre-commit will handle the installation automatically.
+
 ### Configuring somesy
 
 Yes, somesy is _another_ tool with its own configuration. However, for your
@@ -106,6 +110,8 @@ publication_author = true
 [config]
 verbose = true     # show detailed information about what somesy is doing
 ```
+
+As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in `somesy.toml` are set as required fields. This is to increase rigour and completeness of metadata recorded with `somesy` .
 
 <!-- --8<-- [end:somesytoml] -->
 
@@ -163,6 +169,10 @@ repos:
     hooks:
       - id: somesy
 ```
+
+> **Note**
+>
+> Please add the latest version of Somesy to your project. You can update the version of Somesy in your config file now and later to use the newest versions as they become available.
 
 Note that `pre-commit` gives `somesy` the [staged](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F) version of files,
 so when using `somesy` with pre-commit, keep in mind that
