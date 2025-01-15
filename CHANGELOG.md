@@ -4,6 +4,10 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## [v0.5.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.4.3) <small>(2025-01-15)</small> { id="0.5.0" }
+
+- make person argument email optional
+
 ## [v0.4.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.4.3) <small>(2024-07-29)</small> { id="0.4.3" }
 
 - update python dependencies
