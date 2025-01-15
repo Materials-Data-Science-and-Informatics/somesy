@@ -154,7 +154,7 @@ class STPerson(BaseModel):
     """Person model for setuptools."""
 
     name: Annotated[str, Field(min_length=1)]
-    email: Annotated[str, Field(min_length=1)]
+    email: Annotated[Optional[str], Field(min_length=1)] = None
 
 
 class URLs(BaseModel):

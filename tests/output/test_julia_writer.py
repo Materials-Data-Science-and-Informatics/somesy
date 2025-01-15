@@ -131,7 +131,8 @@ def test_without_email(tmp_path, person):
     # load and sync
     pj = Julia(project_file)
 
-    assert len(pj.authors) == 0
+    assert len(pj.authors) == 1
+    assert pj.authors[0] == person.full_name
 
     pm = ProjectMetadata(
         name="My awesome project",
