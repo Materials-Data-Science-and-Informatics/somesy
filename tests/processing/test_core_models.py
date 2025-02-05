@@ -2,9 +2,9 @@ import json
 
 import pytest
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Person, ProjectMetadata, Entity
 
-# dicts with testinputs for people
+# dicts with test inputs for people
 p1 = {
     "given-names": "Jane",
     "family-names": "Doe",
@@ -21,6 +21,12 @@ p4 = {**p2, "email": p1["email"]}
 p5 = {**p2, "orcid": "https://orcid.org/1234-5678-9101"}
 p6 = {**p5, "orcid": p1["orcid"]}
 
+# dicts with test inputs for entities
+e1 = {"name": "Test Org 1"}
+e2 = {"name": "Test Org 2", "email": "org2@example.com"}
+e3 = {"name": "Test Org 1", "email": "org1@example.com"}
+e4 = {"name": "Test Org 3", "email": "org1@example.com"}
+
 
 def test_same_person():
     # same is same (reflexivity)
@@ -35,6 +41,17 @@ def test_same_person():
     assert not Person(**p1).same_person(Person(**p5))
     # same orcid -> same
     assert Person(**p1).same_person(Person(**p6))
+
+
+def test_same_entity():
+    # same is same (reflexivity)
+    assert Entity(**e1).same_person(Entity(**e1))
+    # different mail, different name -> not same
+    assert not Entity(**e2).same_person(Entity(**e3))
+    # same email, different name -> same
+    assert Entity(**e3).same_person(Entity(**e4))
+    # no email, same name -> same
+    assert Entity(**e1).same_person(Entity(**e3))
 
 
 def test_detect_duplicate_person(somesy_input):
@@ -75,6 +92,26 @@ def test_detect_duplicate_person(somesy_input):
     meta.people.append(Person(**p2))
     with pytest.raises(ValueError):
         ProjectMetadata(**meta.model_dump())
+
+
+def test_detect_duplicate_entity(somesy_input):
+    metadata = somesy_input.project
+
+    meta = metadata.model_copy()
+    meta.entities.append(Entity(**e1))
+    dump = meta.model_dump()
+    ProjectMetadata(**dump)
+
+    # E1 ~= E3
+    meta.entities.append(Entity(**e3))
+    with pytest.raises(ValueError):
+        dump = meta.model_dump()
+        ProjectMetadata(**dump)
+
+    # E2 /= E3
+    meta.entities = [Entity(**e2), Entity(**e3)]
+    dump = meta.model_dump()
+    ProjectMetadata(**dump)
 
 
 def test_custom_key_order():

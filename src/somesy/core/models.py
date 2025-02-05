@@ -9,7 +9,13 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
@@ -78,7 +84,7 @@ class SomesyBaseModel(BaseModel):
 
     @staticmethod
     def _patch_kwargs_defaults(kwargs):
-        for key in ["exclude_defaults", "exclude_none", "exclude_unset"]:
+        for key in ["exclude_defaults", "exclude_none"]:
             if not kwargs.get(key):
                 kwargs[key] = True
 
@@ -258,50 +264,30 @@ class SomesyConfig(SomesyBaseModel):
 # Project metadata model (modified from CITATION.cff)
 
 
-class Entity(SomesyBaseModel):
-    """Metadata about an entity in the context of a software project ownership.
+class ContributorBaseModel(SomesyBaseModel):
+    """Base model for Person and Entity models.
 
-    An entity, i.e., an institution, team, research group, company, conference, etc., as opposed to a single natural person.
     This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
     """
 
-    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
-
-    address: Annotated[Optional[str], Field(description="The entity's address.")] = None
-    alias: Annotated[Optional[str], Field(description="The entity's alias.")] = None
+    email: Annotated[
+        Optional[str],
+        Field(
+            pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
+            description="The person's email address.",
+        ),
+    ] = None
+    alias: Annotated[Optional[str], Field(description="The contributor's alias.")] = (
+        None
+    )
+    address: Annotated[
+        Optional[str], Field(description="The contributor's address.")
+    ] = None
     city: Annotated[Optional[str], Field(description="The entity's city.")] = None
     country: Annotated[
         Optional[Country], Field(description="The entity's country.")
     ] = None
-    email: Annotated[
-        str,
-        Field(
-            pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
-            description="The entity's email address.",
-        ),
-    ]
-    date_end: Annotated[
-        Optional[date],
-        Field(
-            alias="date-end",
-            description="The entity's ending date, e.g., when the entity is a conference.",
-        ),
-    ] = None
-    date_start: Annotated[
-        Optional[date],
-        Field(
-            alias="date-start",
-            description="The entity's starting date, e.g., when the entity is a conference.",
-        ),
-    ] = None
     fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
-    location: Annotated[
-        Optional[str],
-        Field(
-            description="The entity's location, e.g., when the entity is a conference."
-        ),
-    ] = None
-    name: Annotated[str, Field(description="The entity's name.")]
     post_code: Annotated[
         Optional[str], Field(alias="post-code", description="The entity's post-code.")
     ] = None
@@ -309,9 +295,6 @@ class Entity(SomesyBaseModel):
     tel: Annotated[Optional[str], Field(description="The entity's phone number.")] = (
         None
     )
-    website: Annotated[
-        Optional[HttpUrlStr], Field(description="The entity's website.")
-    ] = None
 
     # ----
     # somesy-specific extensions
@@ -353,17 +336,89 @@ class Entity(SomesyBaseModel):
         Optional[date], Field(description="Ending date of the contribution.")
     ] = None
 
+    @model_validator(mode="before")
+    @classmethod
+    def author_implies_publication(cls, values):
+        """Ensure consistency of author and publication_author."""
+        if values.get("author"):
+            # NOTE: explicitly check for False (different case from None = missing!)
+            if values.get("publication_author") is False:
+                msg = "Combining author=true and publication_author=false is invalid!"
+                raise ValueError(msg)
+            values["publication_author"] = True
+        return values
+
     # helper methods
+    @property
+    def full_name(self) -> str:
+        """Return the name of the contributor."""
+        pass
+
     def to_name_email_string(self) -> str:
-        """Convert project metadata entity object to poetry string for person format `name <x@y.z>`."""
-        return f"{self.name} <{self.email}>"
+        """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
+        if self.email:
+            return f"{self.full_name} <{self.email}>"
+        else:
+            return self.full_name
+
+    @classmethod
+    def from_name_email_string(cls, person: str):
+        """Return the type of class based on an name/e-mail string like `full name <x@y.z>`.
+
+        If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
+        """
+        pass
+
+
+class Entity(ContributorBaseModel):
+    """Metadata about an entity in the context of a software project ownership.
+
+    An entity, i.e., an institution, team, research group, company, conference, etc., as opposed to a single natural person.
+    This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
+    """
+
+    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
+
+    date_end: Annotated[
+        Optional[date],
+        Field(
+            alias="date-end",
+            description="The entity's ending date, e.g., when the entity is a conference.",
+        ),
+    ] = None
+    date_start: Annotated[
+        Optional[date],
+        Field(
+            alias="date-start",
+            description="The entity's starting date, e.g., when the entity is a conference.",
+        ),
+    ] = None
+    location: Annotated[
+        Optional[str],
+        Field(
+            description="The entity's location, e.g., when the entity is a conference."
+        ),
+    ] = None
+    name: Annotated[str, Field(description="The entity's name.")]
+    website: Annotated[
+        Optional[HttpUrlStr], Field(description="The entity's website.")
+    ] = None
+
+    # helper methods
+    @property
+    def full_name(self) -> str:
+        """Use same property as Person for code integration."""
+        return self.name
 
     @classmethod
     def from_name_email_string(cls, entity: str) -> Entity:
         """Return an `Entity` based on an name/e-mail string like `name <x@y.z>`."""
         m = re.match(r"\s*([^<]+)<([^>]+)>", entity)
+        if m is None:
+            return Entity(**{"name": entity})
+
         name, mail = (
-            list(map(lambda s: s.strip(), m.group(1).split())),
+            m.group(1).strip(),
             m.group(2).strip(),
         )
         return Entity(
@@ -373,8 +428,18 @@ class Entity(SomesyBaseModel):
             }
         )
 
+    def same_person(self, other: Entity) -> bool:
+        """Return whether two Entity metadata records are about the same real person.
 
-class Person(SomesyBaseModel):
+        Uses heuristic match based on email and name (whichever are provided).
+        """
+        if self.email is not None and other.email is not None:
+            if self.email == other.email:
+                return True
+        return self.name == other.name
+
+
+class Person(ContributorBaseModel):
     """Metadata about a person in the context of a software project.
 
     This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
@@ -388,22 +453,12 @@ class Person(SomesyBaseModel):
             description="The person's ORCID url **(not required, but highly suggested)**."
         ),
     ] = None
-
-    email: Annotated[
-        Optional[str],
-        Field(
-            pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
-            description="The person's email address.",
-        ),
-    ] = None
-
     family_names: Annotated[
         str, Field(alias="family-names", description="The person's family names.")
     ]
     given_names: Annotated[
         str, Field(alias="given-names", description="The person's given names.")
     ]
-
     name_particle: Annotated[
         Optional[str],
         Field(
@@ -421,77 +476,9 @@ class Person(SomesyBaseModel):
             examples=["Jr.", "III"],
         ),
     ] = None
-    alias: Annotated[Optional[str], Field(description="The person's alias.")] = None
-
     affiliation: Annotated[
         Optional[str], Field(description="The person's affiliation.")
     ] = None
-
-    address: Annotated[Optional[str], Field(description="The person's address.")] = None
-    city: Annotated[Optional[str], Field(description="The person's city.")] = None
-    country: Annotated[
-        Optional[Country], Field(description="The person's country.")
-    ] = None
-    fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
-    post_code: Annotated[
-        Optional[str], Field(alias="post-code", description="The person's post-code.")
-    ] = None
-    region: Annotated[Optional[str], Field(description="The person's region.")] = None
-    tel: Annotated[Optional[str], Field(description="The person's phone number.")] = (
-        None
-    )
-
-    # ----
-    # somesy-specific extensions
-    author: Annotated[
-        bool,
-        Field(
-            description="Indicates whether the person is an author of the project (i.e. significant contributor)."
-        ),
-    ] = False
-    publication_author: Annotated[
-        Optional[bool],
-        Field(
-            description="Indicates whether the person is to be listed as an author in academic citations."
-        ),
-    ] = None
-    maintainer: Annotated[
-        bool,
-        Field(
-            description="Indicates whether the person is a maintainer of the project (i.e. for contact)."
-        ),
-    ] = False
-
-    # NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.
-    contribution: Annotated[
-        Optional[str],
-        Field(description="Summary of how the person contributed to the project."),
-    ] = None
-    contribution_types: Annotated[
-        Optional[List[ContributionTypeEnum]],
-        Field(
-            description="Relevant types of contributions (see https://allcontributors.org/docs/de/emoji-key).",
-            min_length=1,
-        ),
-    ] = None
-    contribution_begin: Annotated[
-        Optional[date], Field(description="Beginning date of the contribution.")
-    ] = None
-    contribution_end: Annotated[
-        Optional[date], Field(description="Ending date of the contribution.")
-    ] = None
-
-    @model_validator(mode="before")
-    @classmethod
-    def author_implies_publication(cls, values):
-        """Ensure consistency of author and publication_author."""
-        if values.get("author"):
-            # NOTE: explicitly check for False (different case from None = missing!)
-            if values.get("publication_author") is False:
-                msg = "Combining author=true and publication_author=false is invalid!"
-                raise ValueError(msg)
-            values["publication_author"] = True
-        return values
 
     # helper methods
 
@@ -513,13 +500,6 @@ class Person(SomesyBaseModel):
             names.append(self.name_suffix)
 
         return " ".join(names) if names else ""
-
-    def to_name_email_string(self) -> str:
-        """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
-        if self.email:
-            return f"{self.full_name} <{self.email}>"
-        else:
-            return self.full_name
 
     @classmethod
     def from_name_email_string(cls, person: str) -> Person:
@@ -583,7 +563,7 @@ class ProjectMetadata(SomesyBaseModel):
     @field_validator("people")
     @classmethod
     def ensure_distinct_people(cls, people):
-        """Make sure that no person is listed twice in the same person list."""
+        """Make sure that no person is listed twice in the same list."""
         for i in range(len(people)):
             for j in range(i + 1, len(people)):
                 if people[i].same_person(people[j]):
@@ -593,13 +573,31 @@ class ProjectMetadata(SomesyBaseModel):
                     raise ValueError(msg)
         return people
 
-    @field_validator("people")
+    @field_validator("entities")
     @classmethod
-    def at_least_one_author(cls, people):
+    def ensure_distinct_entities(cls, entities):
+        """Make sure that no entity is listed twice in the same list."""
+        for i in range(len(entities)):
+            for j in range(i + 1, len(entities)):
+                if entities[i].same_person(entities[j]):
+                    e1 = pretty_repr(json.loads(entities[i].model_dump_json()))
+                    e2 = pretty_repr(json.loads(entities[j].model_dump_json()))
+                    msg = f"Same entity is listed twice:\n{e1}\n{e2}"
+                    raise ValueError(msg)
+        return entities
+
+    @model_validator(mode="after")
+    def at_least_one_author(self) -> ProjectMetadata:
         """Make sure there is at least one author."""
-        if not any(map(lambda p: p.author, people)):
+        if not self.people and not self.entities:
+            raise ValueError(
+                "There have to be at least a person or an organization in the input"
+            )
+        if not any(map(lambda p: p.author, self.people)) and not any(
+            map(lambda e: e.author, self.entities)
+        ):
             raise ValueError("At least one person must be an author of this project.")
-        return people
+        return self
 
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
@@ -623,24 +621,25 @@ class ProjectMetadata(SomesyBaseModel):
     ] = None
 
     people: Annotated[
-        List[Person],
+        Optional[List[Person]],
         Field(
-            min_length=1, description="Project authors, maintainers and contributors."
+            description="Project authors, maintainers and contributors.",
+            default_factory=list,
         ),
     ]
 
     entities: Annotated[
         Optional[List[Entity]],
         Field(
-            min_length=1,
-            description="Project authors, maintainers and contributors as entities.",
+            description="Project authors, maintainers and contributors as entities (organizations).",
+            default_factory=list,
         ),
-    ] = []
+    ]
 
     def authors(self):
         """Return people and entities explicitly marked as authors."""
         authors = [p for p in self.people if p.author]
-        authors += [e for e in self.entities if e.author]
+        authors.extend([e for e in self.entities if e.author])
         return authors
 
     def publication_authors(self):
@@ -654,19 +653,19 @@ class ProjectMetadata(SomesyBaseModel):
         ):
             return []
         publication_authors = [p for p in self.people if p.publication_author]
-        publication_authors += [e for e in self.entities if e.publication_author]
+        publication_authors.extend([e for e in self.entities if e.publication_author])
         return publication_authors
 
     def maintainers(self):
         """Return people and entities marked as maintainers."""
         maintainers = [p for p in self.people if p.maintainer]
-        maintainers += [e for e in self.entities if e.maintainer]
+        maintainers.extend([e for e in self.entities if e.maintainer])
         return maintainers
 
     def contributors(self):
         """Return only people and entities not marked as authors."""
         contributors = [p for p in self.people if not p.author]
-        contributors += [e for e in self.entities if not e.author]
+        contributors.extend([e for e in self.entities if not e.author])
         return contributors
 
 
