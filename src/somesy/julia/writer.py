@@ -1,4 +1,5 @@
 """Julia writer."""
+
 import logging
 from pathlib import Path
 from typing import Optional
@@ -53,9 +54,13 @@ class Julia(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Person:
+    def _to_person(person_obj) -> Optional[Person]:
         """Parse name+email string to a Person."""
-        return Person.from_name_email_string(person_obj)
+        try:
+            return Person.from_name_email_string(person_obj)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            return None
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""

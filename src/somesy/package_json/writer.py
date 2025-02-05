@@ -1,4 +1,5 @@
 """package.json parser and saver."""
+
 import logging
 from collections import OrderedDict
 from pathlib import Path
@@ -34,6 +35,12 @@ class PackageJSON(ProjectMetadataWriter):
     @property
     def authors(self):
         """Return the only author of the package.json file as list."""
+        # check if the author has the correct format
+        if isinstance(author := self._get_property(self._get_key("authors")), str):
+            author = PackageJsonConfig.convert_author(author)
+            if author is None:
+                return []
+
         return [self._get_property(self._get_key("authors"))]
 
     @authors.setter
@@ -43,9 +50,48 @@ class PackageJSON(ProjectMetadataWriter):
         self._set_property(self._get_key("authors"), authors)
 
     @property
+    def maintainers(self):
+        """Return the maintainers of the package.json file."""
+        # check if the maintainer has the correct format
+        maintainers = self._get_property(self._get_key("maintainers"))
+        # return empty list if maintainers is None
+        if maintainers is None:
+            return []
+
+        maintainers_valid = []
+
+        for maintainer in maintainers:
+            if isinstance(maintainer, str):
+                maintainer = PackageJsonConfig.convert_author(maintainer)
+                if maintainer is None:
+                    continue
+            maintainers_valid.append(maintainer)
+        return maintainers_valid
+
+    @maintainers.setter
+    def maintainers(self, maintainers: List[Person]) -> None:
+        """Set the maintainers of the project."""
+        maintainers = [self._from_person(m) for m in maintainers]
+        self._set_property(self._get_key("maintainers"), maintainers)
+
+    @property
     def contributors(self):
         """Return the contributors of the package.json file."""
-        return self._get_property(self._get_key("contributors"))
+        # check if the contributor has the correct format
+        contributors = self._get_property(self._get_key("contributors"))
+        # return empty list if contributors is None
+        if contributors is None:
+            return []
+
+        contributors_valid = []
+
+        for contributor in contributors:
+            if isinstance(contributor, str):
+                contributor = PackageJsonConfig.convert_author(contributor)
+                if contributor is None:
+                    continue
+            contributors_valid.append(contributor)
+        return contributors_valid
 
     @contributors.setter
     def contributors(self, contributors: List[Person]) -> None:
@@ -90,9 +136,12 @@ class PackageJSON(ProjectMetadataWriter):
         """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
             # parse from package.json format
-            person = PackageJsonConfig.convert_author(person).model_dump(
-                exclude_none=True
-            )
+            person = PackageJsonConfig.convert_author(person)
+
+            if person is None:
+                return None
+
+            person = person.model_dump(exclude_none=True)
 
         names = list(map(lambda s: s.strip(), person["name"].split()))
         person_obj = {

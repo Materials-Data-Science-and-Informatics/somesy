@@ -1,5 +1,7 @@
 """package.json validation models."""
+
 import re
+from logging import getLogger
 from typing import List, Optional, Union
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
@@ -7,28 +9,30 @@ from typing_extensions import Annotated
 
 from somesy.core.types import HttpUrlStr
 
+logger = getLogger("somesy")
+
 
 class PackageAuthor(BaseModel):
     """Package author model."""
 
     name: Annotated[Optional[str], Field(description="Author name")]
-    email: Annotated[Optional[EmailStr], Field(description="Author email")]
+    email: Annotated[Optional[EmailStr], Field(description="Author email")] = None
     url: Annotated[
         Optional[HttpUrlStr], Field(description="Author website or orcid page")
-    ]
+    ] = None
 
 
 class PackageRepository(BaseModel):
     """Package repository model."""
 
-    type: Annotated[Optional[str], Field(description="Repository type")]
+    type: Annotated[Optional[str], Field(description="Repository type")] = None
     url: Annotated[str, Field(description="Repository url")]
 
 
 class PackageLicense(BaseModel):
     """Package license model."""
 
-    type: Annotated[Optional[str], Field(description="License type")]
+    type: Annotated[Optional[str], Field(description="License type")] = None
     url: Annotated[str, Field(description="License url")]
 
 
@@ -44,10 +48,12 @@ class PackageJsonConfig(BaseModel):
 
     name: Annotated[str, Field(description="Package name")]
     version: Annotated[str, Field(description="Package version")]
-    description: Annotated[Optional[str], Field(description="Package description")]
+    description: Annotated[Optional[str], Field(description="Package description")] = (
+        None
+    )
     author: Annotated[
         Optional[Union[str, PackageAuthor]], Field(description="Package author")
-    ]
+    ] = None
     maintainers: Annotated[
         Optional[List[Union[str, PackageAuthor]]],
         Field(description="Package maintainers"),
@@ -58,20 +64,20 @@ class PackageJsonConfig(BaseModel):
     ] = None
     license: Annotated[
         Optional[Union[str, PackageLicense]], Field(description="Package license")
-    ]
+    ] = None
     repository: Annotated[
         Optional[Union[PackageRepository, str]], Field(description="Package repository")
-    ]
-    homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="Package homepage")
     ] = None
+    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
+        None
+    )
     keywords: Annotated[
         Optional[List[str]], Field(description="Keywords that describe the package")
     ] = None
 
     # convert package author to dict if it is a string
     @classmethod
-    def convert_author(cls, author: str) -> PackageAuthor:
+    def convert_author(cls, author: str) -> Optional[PackageAuthor]:
         """Convert author string to PackageAuthor model."""
         # parse author string to "name <email> (url)" format with regex
         author_match = re.match(NPM_PKG_AUTHOR, author)
@@ -81,6 +87,8 @@ class PackageJsonConfig(BaseModel):
         author_email = author_match[2]
         author_url = author_match[3]
 
+        if author_email is None:
+            return None
         return PackageAuthor(name=author_name, email=author_email, url=author_url)
 
     @field_validator("name")
@@ -113,7 +121,17 @@ class PackageJsonConfig(BaseModel):
         people = []
         for p in v:
             if isinstance(p, str):
-                people.append(cls.convert_author(p))
-            else:
+                author = cls.convert_author(p)
+                if author is not None:
+                    people.append(cls.convert_author(p))
+                else:
+                    logger.warning(
+                        f"Invalid email format for maintainer/contributor {p}, omitting."
+                    )
+            elif p.email is not None:
                 people.append(p)
+            else:
+                logger.warning(
+                    f"Invalid email format for maintainer/contributor {p}, omitting."
+                )
         return people

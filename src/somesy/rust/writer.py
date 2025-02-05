@@ -1,4 +1,5 @@
 """Pyproject writers for setuptools and rust."""
+
 import logging
 from pathlib import Path
 from typing import Any, List, Optional, Union
@@ -88,12 +89,9 @@ class Rust(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Person:
+    def _to_person(person_obj: str) -> Optional[Person]:
         """Parse rust person string to a Person. It has format "full name <email>." but email is optional."""
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            return None
+        return Person.from_name_email_string(person_obj)
 
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:

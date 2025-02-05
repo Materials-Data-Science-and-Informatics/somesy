@@ -1,4 +1,5 @@
 """Project metadata writer base-class."""
+
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -47,6 +48,7 @@ class ProjectMetadataWriter(ABC):
             path: Path to target output file.
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
+
         """
         self._data: DictLike = {}
         self.path = path if isinstance(path, Path) else Path(path)
@@ -115,6 +117,7 @@ class ProjectMetadataWriter(ABC):
             key: Name of the key or sequence of multiple keys to retrieve the value.
             only_first: If True, returns only first entry if the value is a list.
             remove: If True, will remove the retrieved value and clean up the dict.
+
         """
         key_path = [key] if isinstance(key, str) else key
 
@@ -237,6 +240,7 @@ class ProjectMetadataWriter(ABC):
 
         Returns:
             List[Any]: updated list of persons in format-specific representation
+
         """
         old_people: List[Person] = self._parse_people(old)
         return self._merge_person_metadata(old_people, new)
@@ -286,7 +290,11 @@ class ProjectMetadataWriter(ABC):
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
         """Return a list of Persons parsed from list of format-specific people representations."""
-        return list(map(cls._to_person, people or []))
+        # remove None values
+        people = [p for p in people if p is not None]
+
+        people = list(map(cls._to_person, people or []))
+        return people
 
     # ----
     # individual magic getters and setters
@@ -327,7 +335,15 @@ class ProjectMetadataWriter(ABC):
     @property
     def authors(self):
         """Return the authors of the project."""
-        return self._get_property(self._get_key("authors"))
+        authors = self._get_property(self._get_key("authors"))
+        if authors is None:
+            return []
+
+        # only return authors that can be converted to Person
+        authors_validated = [
+            author for author in authors if self._to_person(author) is not None
+        ]
+        return authors_validated
 
     @authors.setter
     def authors(self, authors: List[Person]) -> None:
@@ -338,7 +354,17 @@ class ProjectMetadataWriter(ABC):
     @property
     def maintainers(self):
         """Return the maintainers of the project."""
-        return self._get_property(self._get_key("maintainers"))
+        maintainers = self._get_property(self._get_key("maintainers"))
+        if maintainers is None:
+            return []
+
+        # only return maintainers that can be converted to Person
+        maintainers_validated = [
+            maintainer
+            for maintainer in maintainers
+            if self._to_person(maintainer) is not None
+        ]
+        return maintainers_validated
 
     @maintainers.setter
     def maintainers(self, maintainers: List[Person]) -> None:

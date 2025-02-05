@@ -26,7 +26,6 @@
     <img alt="HMC Logo" src="https://github.com/Materials-Data-Science-and-Informatics/Logos/raw/main/Somesy/Somesy_Logo_Text.png" style="width: 50%; height: 50%;" />
 </div>
 
-
 # somesy
 
 Somesy (**so**ftware **me**tadata **sy**nc) is a CLI tool to avoid messy software project metadata by keeping it in sync.
@@ -66,15 +65,20 @@ latest stable version of somesy from PyPI using `pip`:
 pip install somesy
 ```
 
+> **Note**
+>
+> If you use somesy as a pre-commit hook, you don't have to install somesy on your PC nor add it as a dependency in your Python project. Pre-commit will handle the installation automatically.
+
 ### Configuring somesy
 
-Yes, somesy is *another* tool with its own configuration. However, for your
+Yes, somesy is _another_ tool with its own configuration. However, for your
 project metadata it is hopefully the last file you need, and the only one you
 have to think about, `somesy` will take care of the others for you!
 
 To get started, create a file named `somesy.toml`:
 
 <!-- --8<-- [start:somesytoml] -->
+
 ```toml
 [project]
 name = "my-amazing-project"
@@ -106,6 +110,9 @@ publication_author = true
 [config]
 verbose = true     # show detailed information about what somesy is doing
 ```
+
+As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in `somesy.toml` are set as required fields. This is to increase rigour and completeness of metadata recorded with `somesy` .
+
 <!-- --8<-- [end:somesytoml] -->
 
 Alternatively, you can also add the somesy configuration to an existing
@@ -122,19 +129,19 @@ somesy sync
 
 The information in your `somesy.toml` is used as the **primary and
 authoritative** source for project metadata, which is used to update all
-supported (and enabled) *target files*. You can find an overview of supported
+supported (and enabled) _target files_. You can find an overview of supported
 formats further below.
 
 By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository.
 If you happen to use
 
-* `pyproject.toml` (in Python projects),
-* `package.json` (in JavaScript projects),
-* `Project.toml` (in Julia projects),
-* `fpm.toml` (in Fortran projects),
-* `pom.xml` (in Java projects),
-* `mkdocs.yml` (in projects using MkDocs),
-* `Cargo.toml` (in Rust projects)
+- `pyproject.toml` (in Python projects),
+- `package.json` (in JavaScript projects),
+- `Project.toml` (in Julia projects),
+- `fpm.toml` (in Fortran projects),
+- `pom.xml` (in Java projects),
+- `mkdocs.yml` (in projects using MkDocs),
+- `Cargo.toml` (in Rust projects)
 
 then somesy would also update the respective information there.
 
@@ -158,16 +165,20 @@ file in the root folder of your repository:
 repos:
   # ... (your other hooks) ...
   - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-    rev: "v0.3.0"
+    rev: "v0.5.0"
     hooks:
       - id: somesy
 ```
 
+> **Note**
+>
+> Please add the latest version of Somesy to your project. You can update the version of Somesy in your config file now and later to use the newest versions as they become available.
+
 Note that `pre-commit` gives `somesy` the [staged](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F) version of files,
 so when using `somesy` with pre-commit, keep in mind that
 
-* if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
-* if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
+- if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
+- if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
 
 <!-- --8<-- [end:precommit] -->
 
@@ -175,27 +186,27 @@ so when using `somesy` with pre-commit, keep in mind that
 
 Here is an overview of all the currently supported files and formats.
 
-| Input Formats  | Status | | Target Formats                | Status |
-| -------------- | ------ |-| ----------------------------- | ------ |
-| (.)somesy.toml | ✓      | | pyproject.toml _(poetry)_     | ✓      |
-| pyproject.toml | ✓      | | pyproject.toml _(setuptools)_ | ✓(1.)  |
-| package.json   | ✓      | | package.json _(JavaScript)_   | ✓(2.)  |
-| Project.toml   | ✓      | | Project.toml _(Julia)_        | ✓      |
-| fpm.toml       | ✓      | | fpm.toml _(Fortran)_          | ✓(3.)  |
-|                | ✓      | | pom.toml _(Java)_             | ✓(4.)  |
-| Cargo.toml     | ✓      | | Cargo.toml _(Rust)_           | ✓      |
-|                |        | | mkdocs.yml                    | ✓(5.)  |
-|                |        | | CITATION.cff                  | ✓      |
-|                |        | | codemeta.json                 | ✓(6.)  |
+| Input Formats  | Status |     | Target Formats                | Status |
+| -------------- | ------ | --- | ----------------------------- | ------ |
+| (.)somesy.toml | ✓      |     | pyproject.toml _(poetry)_     | ✓      |
+| pyproject.toml | ✓      |     | pyproject.toml _(setuptools)_ | ✓(1.)  |
+| package.json   | ✓      |     | package.json _(JavaScript)_   | ✓(2.)  |
+| Project.toml   | ✓      |     | Project.toml _(Julia)_        | ✓      |
+| fpm.toml       | ✓      |     | fpm.toml _(Fortran)_          | ✓(3.)  |
+|                | ✓      |     | pom.toml _(Java)_             | ✓(4.)  |
+| Cargo.toml     | ✓      |     | Cargo.toml _(Rust)_           | ✓      |
+|                |        |     | mkdocs.yml                    | ✓(5.)  |
+|                |        |     | CITATION.cff                  | ✓      |
+|                |        |     | codemeta.json                 | ✓(6.)  |
 
 **Notes:**
 
-1. note that `somesy` does not support setuptools *dynamic fields*
-2. `package.json` only supports one author, so `somesy` will pick the *first* listed author
-3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the *first* listed author and maintainer
+1. note that `somesy` does not support setuptools _dynamic fields_
+2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author
+3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses (somesy only supports one main project license)
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration
-6. unlike other targets, `somesy` will *re-create* the `codemeta.json` (i.e. do not edit it by hand!)
+6. unlike other targets, `somesy` will _re-create_ the `codemeta.json` (i.e. do not edit it by hand!)
 
 <!-- --8<-- [end:quickstart] -->
 
@@ -214,7 +225,6 @@ in the [repository](https://github.com/Materials-Data-Science-and-Informatics/so
 
 We kindly thank all
 [authors and contributors](https://materials-data-science-and-informatics.github.io/somesy/latest/credits).
-
 
 <div>
 <img style="vertical-align: middle;" alt="HMC Logo" src="https://github.com/Materials-Data-Science-and-Informatics/Logos/raw/main/HMC/HMC_Logo_M.png" width=50% height=50% />

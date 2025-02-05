@@ -1,4 +1,5 @@
 """Fortran writer."""
+
 import logging
 from pathlib import Path
 from typing import Any, List, Optional
@@ -89,11 +90,11 @@ class Fortran(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: Any) -> Person:
+    def _to_person(person_obj: Any) -> Optional[Person]:
         """Cannot convert from free string to person object."""
         try:
             return Person.from_name_email_string(person_obj)
-        except ValueError:
+        except (ValueError, AttributeError):
             logger.warning(f"Cannot convert {person_obj} to Person object.")
             return None
 

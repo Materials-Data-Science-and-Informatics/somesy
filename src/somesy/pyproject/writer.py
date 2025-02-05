@@ -1,4 +1,5 @@
 """Pyproject writers for setuptools and poetry."""
+
 import logging
 from pathlib import Path
 from typing import Any, List, Optional, Union
@@ -101,9 +102,13 @@ class Poetry(PyprojectCommon):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Person:
+    def _to_person(person_obj: str) -> Optional[Person]:
         """Parse poetry person string to a Person."""
-        return Person.from_name_email_string(person_obj)
+        try:
+            return Person.from_name_email_string(person_obj)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            return None
 
 
 class SetupTools(PyprojectCommon):
@@ -174,6 +179,7 @@ class Pyproject(wrapt.ObjectProxy):
         Raises:
             FileNotFoundError: Raised when pyproject.toml file is not found.
             ValueError: Neither project nor tool.poetry object is found in pyproject.toml file.
+
         """
         data = None
         if not path.is_file():

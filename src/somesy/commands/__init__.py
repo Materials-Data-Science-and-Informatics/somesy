@@ -1,4 +1,5 @@
 """Commands for somesy."""
+
 from .init_config import init_config
 from .sync import sync
 

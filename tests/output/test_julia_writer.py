@@ -115,3 +115,38 @@ def test_person_merge(request, julia_file, person):
     assert len(pj.authors) == 2
     assert pj.authors[0] == person1c_rep
     assert pj.authors[1] == person3_rep
+
+
+def test_without_email(tmp_path, person):
+    project_toml_str = """
+        name = "test-package"
+        version = "0.1.0"
+        authors = ["Jane Doe"]
+        uuid = "608dde89-f1f1-4a1a-863e-3c5da0c9a9e3"
+    """
+    # save to file
+    project_file = tmp_path / Path("Project.toml")
+    project_file.write_text(project_toml_str)
+
+    # load and sync
+    pj = Julia(project_file)
+
+    assert len(pj.authors) == 1
+    assert pj.authors[0] == person.full_name
+
+    pm = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            person.model_copy(
+                update=dict(author=True, publication_author=True, maintainer=True)
+            )
+        ],
+    )
+
+    pj.sync(pm)
+
+    assert len(pj.authors) == 1
+    assert pj.authors[0] == f"{person.full_name} <{person.email}>"

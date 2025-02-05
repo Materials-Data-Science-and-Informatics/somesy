@@ -1,4 +1,5 @@
 """codemeta.json creation module."""
+
 import logging
 from collections import OrderedDict
 from pathlib import Path
@@ -158,6 +159,7 @@ class CodeMeta(ProjectMetadataWriter):
 
         Returns:
             List[Any]: _description_
+
         """
         return new
 

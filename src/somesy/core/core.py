@@ -1,4 +1,5 @@
 """Core somesy functions."""
+
 import json
 import logging
 from pathlib import Path
@@ -31,6 +32,7 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
 
     Returns:
         somesy configuration file path.
+
     """
     if input_file:
         if input_file.is_file():
@@ -71,6 +73,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
     Raises:
         ValueError: if the input file is not a valid somesy input file or if the file is not a TOML file.
         RuntimeError: if the input file does not contain a somesy input section at expected key
+
     """
     logger.debug(f"Path {path}")
     # somesy.toml / .somesy.toml

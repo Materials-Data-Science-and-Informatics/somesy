@@ -48,6 +48,39 @@ def test_from_to_person(person: Person):
     assert p.email == person.email
     assert p.orcid == person.orcid
 
+    # without email
+    p = PackageJSON._to_person("John Doe")
+    assert p is None
+
+
+def test_only_name(package_json: PackageJSON, person: Person):
+    package_json._data["author"] = "John Doe"
+    package_json._data["maintainers"] = ["Jane Doe"]
+
+    assert len(package_json.authors) == 0
+    assert len(package_json.maintainers) == 0
+
+    # merge and see if it works
+    pm = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            person.model_copy(
+                update=dict(author=True, publication_author=True, maintainer=True)
+            )
+        ],
+    )
+    package_json.sync(pm)
+
+    assert len(package_json.authors) == 1
+    assert len(package_json.maintainers) == 1
+
+    assert package_json.authors[0]["name"] == person.full_name
+    assert package_json.authors[0]["email"] == person.email
+    assert package_json.authors[0]["url"] == str(person.orcid)
+
 
 def test_person_merge(package_json_file, person: Person):
     pj = PackageJSON(package_json_file)

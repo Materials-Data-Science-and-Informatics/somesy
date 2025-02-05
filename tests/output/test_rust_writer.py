@@ -47,7 +47,9 @@ def test_from_to_person(person):
     assert p.email == person.email
 
     # rust also has only name format
-    assert Rust._to_person(person.full_name) == None
+    converted_person = Rust._to_person(person.full_name)
+    assert converted_person.given_names == person.given_names
+    assert converted_person.family_names == person.family_names
 
 
 def test_person_merge(rust_file, person):

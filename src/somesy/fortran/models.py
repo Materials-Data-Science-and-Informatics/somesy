@@ -1,4 +1,5 @@
 """Pyproject models."""
+
 from typing import Optional, Set
 
 from packaging.version import parse as parse_version
@@ -28,9 +29,9 @@ class FortranConfig(BaseModel):
             description="Package version",
         ),
     ] = None
-    description: Annotated[
-        Optional[str], Field(description="Package description")
-    ] = None
+    description: Annotated[Optional[str], Field(description="Package description")] = (
+        None
+    )
     license: Annotated[
         Optional[str],
         Field(description="SPDX license identifier(s)."),
@@ -41,12 +42,12 @@ class FortranConfig(BaseModel):
     maintainer: Annotated[
         Optional[str], Field(description="Package maintainer information")
     ] = None
-    copyright: Annotated[
-        Optional[str], Field(description="Package copyright text")
-    ] = None
-    homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="Package homepage")
-    ] = None
+    copyright: Annotated[Optional[str], Field(description="Package copyright text")] = (
+        None
+    )
+    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
+        None
+    )
     keywords: Annotated[
         Optional[Set[str]], Field(description="Keywords that describe the package")
     ] = None

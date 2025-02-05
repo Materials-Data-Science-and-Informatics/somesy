@@ -117,12 +117,12 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 
 === "Person Metadata"
 
-    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta        |
+    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
     | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | ---------- | -------------- | --------------- | -------------- |
     |                  |               |                   |              |              |                |              |            |                |                 |                |
     | **given-names**  | name+email    | name              | name         | name+email   | name+email     | name         | name+email | name+email     | givenName       | name+email     |
     | **family-names** | name+email    | name              | name         | name+email   | name+email     | name         | name+email | name+email     | familyName      | name+email     |
-    | **email**        | name+email    | email             | email        | name+email   | name+email     | email        | name+email | name+email     | email           | name+email     |
+    | email            | name+email    | email             | email        | name+email   | name+email     | email        | name+email | name+email     | email           | name+email     |
     | orcid            | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
     | *(many others)*  | -             | -                 | -            | -            | -              | -            | -          | -              | *(same)*        | -              |
 

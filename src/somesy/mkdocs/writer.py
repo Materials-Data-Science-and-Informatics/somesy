@@ -1,4 +1,5 @@
 """Project documentation with Markdown (MkDocs) parser and saver."""
+
 import logging
 from pathlib import Path
 from typing import List, Optional
@@ -61,13 +62,11 @@ class MkDocs(ProjectMetadataWriter):
     @property
     def authors(self):
         """Return the only author from the source file as list."""
-        authors = []
-        try:
-            self._to_person(self._get_property(self._get_key("authors")))
-            authors = [self._get_property(self._get_key("authors"))]
-        except AttributeError:
-            logger.warning("Cannot convert authors to Person object.")
-        return authors
+        authors = self._get_property(self._get_key("authors"))
+        if authors is None or self._to_person(authors) is None:
+            return []
+        else:
+            return [authors]
 
     @authors.setter
     def authors(self, authors: List[Person]) -> None:
@@ -81,9 +80,13 @@ class MkDocs(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str):
+    def _to_person(person: str) -> Optional[Person]:
         """MkDocs Person is a string with full name."""
-        return Person.from_name_email_string(person)
+        try:
+            return Person.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Person object.")
+            return None
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync the MkDocs object with the ProjectMetadata object."""

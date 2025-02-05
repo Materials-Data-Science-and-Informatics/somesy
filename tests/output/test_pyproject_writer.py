@@ -77,6 +77,11 @@ def test_from_to_person(person):
     assert p.full_name == person.full_name
     assert p.email == person.email
 
+    # this should return None since there is no email
+    p = Poetry._to_person("John Doe")
+    assert p.given_names == "John"
+    assert p.family_names == "Doe"
+
     # test for setuptools
     assert SetupTools._from_person(person) == {
         "name": person.full_name,
@@ -165,3 +170,47 @@ def test_person_merge_pyproject(request, writer_class, writer_file_fixture, pers
     assert len(pj.maintainers) == 1
     assert pj.authors[0] == person1c_rep
     assert pj.authors[1] == person3_rep
+
+
+def test_without_email(tmp_path, person):
+    pyproject_str = """
+    [tool.poetry]
+    name = "ttt"
+    version = "0.1.0"
+    description = "asd"
+    authors = ["John Doe"]
+    license = "MIT"
+
+    [tool.poetry.dependencies]
+    python = "^3.10"
+
+
+    [build-system]
+    requires = ["poetry-core"]
+    build-backend = "poetry.core.masonry.api"
+    """
+
+    # save to file
+    pyproject_file = tmp_path / Path("pyproject.toml")
+    pyproject_file.write_text(pyproject_str)
+
+    # load and sync
+    p = Poetry(pyproject_file)
+    assert len(p.authors) == 1
+
+    pm = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            person.model_copy(
+                update=dict(author=True, publication_author=True, maintainer=True)
+            )
+        ],
+    )
+
+    p.sync(pm)
+
+    assert len(p.authors) == 1
+    assert len(p.maintainers) == 1

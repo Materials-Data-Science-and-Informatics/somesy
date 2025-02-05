@@ -1,4 +1,5 @@
 """Core models for the somesy package."""
+
 from __future__ import annotations
 
 import functools
@@ -171,16 +172,16 @@ class SomesyConfig(SomesyBaseModel):
     no_sync_pyproject: Annotated[
         bool, Field(description="Do not sync with pyproject.toml.")
     ] = False
-    pyproject_file: Annotated[
-        Path, Field(description="pyproject.toml file path.")
-    ] = Path("pyproject.toml")
+    pyproject_file: Annotated[Path, Field(description="pyproject.toml file path.")] = (
+        Path("pyproject.toml")
+    )
 
     no_sync_package_json: Annotated[
         bool, Field(description="Do not sync with package.json.")
     ] = False
-    package_json_file: Annotated[
-        Path, Field(description="package.json file path.")
-    ] = Path("package.json")
+    package_json_file: Annotated[Path, Field(description="package.json file path.")] = (
+        Path("package.json")
+    )
 
     no_sync_julia: Annotated[
         bool, Field(description="Do not sync with Project.toml.")
@@ -196,9 +197,9 @@ class SomesyConfig(SomesyBaseModel):
         "fpm.toml"
     )
 
-    no_sync_pom_xml: Annotated[
-        bool, Field(description="Do not sync with pom.xml.")
-    ] = False
+    no_sync_pom_xml: Annotated[bool, Field(description="Do not sync with pom.xml.")] = (
+        False
+    )
     pom_xml_file: Annotated[Path, Field(description="pom.xml file path.")] = Path(
         "pom.xml"
     )
@@ -210,9 +211,9 @@ class SomesyConfig(SomesyBaseModel):
         "mkdocs.yml"
     )
 
-    no_sync_rust: Annotated[
-        bool, Field(description="Do not sync with Cargo.toml.")
-    ] = False
+    no_sync_rust: Annotated[bool, Field(description="Do not sync with Cargo.toml.")] = (
+        False
+    )
     rust_file: Annotated[Path, Field(description="Cargo.toml file path.")] = Path(
         "Cargo.toml"
     )
@@ -225,9 +226,9 @@ class SomesyConfig(SomesyBaseModel):
     no_sync_codemeta: Annotated[
         bool, Field(description="Do not sync with codemeta.json.")
     ] = False
-    codemeta_file: Annotated[
-        Path, Field(description="codemeta.json file path.")
-    ] = Path("codemeta.json")
+    codemeta_file: Annotated[Path, Field(description="codemeta.json file path.")] = (
+        Path("codemeta.json")
+    )
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
@@ -305,9 +306,9 @@ class Entity(SomesyBaseModel):
         Optional[str], Field(alias="post-code", description="The entity's post-code.")
     ] = None
     region: Annotated[Optional[str], Field(description="The entity's region.")] = None
-    tel: Annotated[
-        Optional[str], Field(description="The entity's phone number.")
-    ] = None
+    tel: Annotated[Optional[str], Field(description="The entity's phone number.")] = (
+        None
+    )
     website: Annotated[
         Optional[HttpUrlStr], Field(description="The entity's website.")
     ] = None
@@ -389,12 +390,12 @@ class Person(SomesyBaseModel):
     ] = None
 
     email: Annotated[
-        str,
+        Optional[str],
         Field(
             pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
             description="The person's email address.",
         ),
-    ]
+    ] = None
 
     family_names: Annotated[
         str, Field(alias="family-names", description="The person's family names.")
@@ -436,9 +437,9 @@ class Person(SomesyBaseModel):
         Optional[str], Field(alias="post-code", description="The person's post-code.")
     ] = None
     region: Annotated[Optional[str], Field(description="The person's region.")] = None
-    tel: Annotated[
-        Optional[str], Field(description="The person's phone number.")
-    ] = None
+    tel: Annotated[Optional[str], Field(description="The person's phone number.")] = (
+        None
+    )
 
     # ----
     # somesy-specific extensions
@@ -515,7 +516,10 @@ class Person(SomesyBaseModel):
 
     def to_name_email_string(self) -> str:
         """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
-        return f"{self.full_name} <{self.email}>"
+        if self.email:
+            return f"{self.full_name} <{self.email}>"
+        else:
+            return self.full_name
 
     @classmethod
     def from_name_email_string(cls, person: str) -> Person:
@@ -524,6 +528,14 @@ class Person(SomesyBaseModel):
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
+        if m is None:
+            names = list(map(lambda s: s.strip(), person.split()))
+            return Person(
+                **{
+                    "given-names": " ".join(names[:-1]),
+                    "family-names": names[-1],
+                }
+            )
         names, mail = (
             list(map(lambda s: s.strip(), m.group(1).split())),
             m.group(2).strip(),
