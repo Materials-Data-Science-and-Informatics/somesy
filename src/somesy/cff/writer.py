@@ -2,12 +2,12 @@
 
 import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 
@@ -73,8 +73,8 @@ class CFF(ProjectMetadataWriter):
         )
 
     @staticmethod
-    def _from_person(person: Person):
-        """Convert project metadata person object to cff dict for person format."""
+    def _from_person(person: Union[Person, Entity]):
+        """Convert project metadata person or entity object to cff dict for person format."""
         json_str = person.model_dump_json(
             exclude={
                 "contribution",
@@ -90,10 +90,16 @@ class CFF(ProjectMetadataWriter):
         return json.loads(json_str)
 
     @staticmethod
-    def _to_person(person_obj) -> Person:
-        """Parse CFF Person to a somesy Person."""
+    def _to_person(person_obj) -> Union[Person, Entity]:
+        """Parse CFF Person to a somesy Person or entity."""
+        # if the object has key name, it is an entity
+        if "name" in person_obj:
+            Entity._aliases()
+            ret = Entity.make_partial(person_obj)
+        else:
+            Person._aliases()
+            ret = Person.make_partial(person_obj)
+
         # construct (partial) Person while preserving key order from YAML
-        Person._aliases()
-        ret = Person.make_partial(person_obj)
         ret.set_key_order(list(person_obj.keys()))
         return ret
