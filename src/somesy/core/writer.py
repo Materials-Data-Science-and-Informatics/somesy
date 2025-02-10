@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 
 logger = logging.getLogger("somesy")
 
@@ -171,8 +171,8 @@ class ProjectMetadataWriter(ABC):
     # special handling for person metadata
 
     def _merge_person_metadata(
-        self, old: List[Person], new: List[Person]
-    ) -> List[Person]:
+        self, old: List[Union[Person, Entity]], new: List[Union[Person, Entity]]
+    ) -> List[Union[Person, Entity]]:
         """Update metadata of a list of persons.
 
         Will identify people based on orcid, email or full name.
@@ -231,7 +231,9 @@ class ProjectMetadataWriter(ABC):
         ]
         return existing_modified + new_people
 
-    def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
+    def _sync_person_list(
+        self, old: List[Any], new: List[Union[Person, Entity]]
+    ) -> List[Any]:
         """Sync a list of persons with new metadata.
 
         Args:
@@ -242,7 +244,7 @@ class ProjectMetadataWriter(ABC):
             List[Any]: updated list of persons in format-specific representation
 
         """
-        old_people: List[Person] = self._parse_people(old)
+        old_people: List[Union[Person, Entity]] = self._parse_people(old)
         return self._merge_person_metadata(old_people, new)
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
@@ -279,17 +281,17 @@ class ProjectMetadataWriter(ABC):
 
     @staticmethod
     @abstractmethod
-    def _from_person(person: Person) -> Any:
-        """Convert a `Person` object into suitable target format."""
+    def _from_person(person: Union[Person, Entity]) -> Any:
+        """Convert a `Person` or `Entity` object into suitable target format."""
 
     @staticmethod
     @abstractmethod
-    def _to_person(person_obj: Any) -> Person:
-        """Convert an object representing a person into a `Person` object."""
+    def _to_person(person_obj: Any) -> Union[Person, Entity]:
+        """Convert an object representing a person into a `Person` or `Entity` object."""
 
     @classmethod
-    def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
-        """Return a list of Persons parsed from list of format-specific people representations."""
+    def _parse_people(cls, people: Optional[List[Any]]) -> List[Union[Person, Entity]]:
+        """Return a list of Persons and Entities parsed from list of format-specific people representations."""
         # remove None values
         people = [p for p in people if p is not None]
 
@@ -346,7 +348,7 @@ class ProjectMetadataWriter(ABC):
         return authors_validated
 
     @authors.setter
-    def authors(self, authors: List[Person]) -> None:
+    def authors(self, authors: List[Union[Person, Entity]]) -> None:
         """Set the authors of the project."""
         authors = [self._from_person(c) for c in authors]
         self._set_property(self._get_key("authors"), authors)
@@ -367,7 +369,7 @@ class ProjectMetadataWriter(ABC):
         return maintainers_validated
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
+    def maintainers(self, maintainers: List[Union[Person, Entity]]) -> None:
         """Set the maintainers of the project."""
         maintainers = [self._from_person(c) for c in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers)
@@ -378,7 +380,7 @@ class ProjectMetadataWriter(ABC):
         return self._get_property(self._get_key("contributors"))
 
     @contributors.setter
-    def contributors(self, contributors: List[Person]) -> None:
+    def contributors(self, contributors: List[Union[Person, Entity]]) -> None:
         """Set the contributors of the project."""
         contributors = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contributors)
