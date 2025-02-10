@@ -3,14 +3,14 @@
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from rich.pretty import pretty_repr
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.json_wrapper import json
-from somesy.package_json.models import PackageJsonConfig
+from somesy.package_json.models import PackageAuthor, PackageJsonConfig
 
 logger = logging.getLogger("somesy")
 
@@ -44,10 +44,10 @@ class PackageJSON(ProjectMetadataWriter):
         return [self._get_property(self._get_key("authors"))]
 
     @authors.setter
-    def authors(self, authors: List[Person]) -> None:
+    def authors(self, authors: List[Union[Entity, Person]]) -> None:
         """Set the authors of the project."""
-        authors = self._from_person(authors[0])
-        self._set_property(self._get_key("authors"), authors)
+        authors_dict = self._from_person(authors[0])
+        self._set_property(self._get_key("authors"), authors_dict)
 
     @property
     def maintainers(self):
@@ -69,10 +69,10 @@ class PackageJSON(ProjectMetadataWriter):
         return maintainers_valid
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
+    def maintainers(self, maintainers: List[Union[Entity, Person]]) -> None:
         """Set the maintainers of the project."""
-        maintainers = [self._from_person(m) for m in maintainers]
-        self._set_property(self._get_key("maintainers"), maintainers)
+        maintainers_dict = [self._from_person(m) for m in maintainers]
+        self._set_property(self._get_key("maintainers"), maintainers_dict)
 
     @property
     def contributors(self):
@@ -94,10 +94,10 @@ class PackageJSON(ProjectMetadataWriter):
         return contributors_valid
 
     @contributors.setter
-    def contributors(self, contributors: List[Person]) -> None:
+    def contributors(self, contributors: List[Union[Entity, Person]]) -> None:
         """Set the contributors of the project."""
-        contributors = [self._from_person(c) for c in contributors]
-        self._set_property(self._get_key("contributors"), contributors)
+        contributors_dict = [self._from_person(c) for c in contributors]
+        self._set_property(self._get_key("contributors"), contributors_dict)
 
     def _load(self) -> None:
         """Load package.json file."""
@@ -122,37 +122,55 @@ class PackageJSON(ProjectMetadataWriter):
             json.dump(self._data, f)
 
     @staticmethod
-    def _from_person(person: Person):
-        """Convert project metadata person object to package.json dict for person format."""
-        person_dict = {"name": person.full_name}
+    def _from_person(person: Union[Entity, Person]) -> dict:
+        """Convert project metadata person/entity object to package.json dict for person format."""
+        response = {}
+        if isinstance(person, Person):
+            response["name"] = person.full_name
+            if person.orcid:
+                response["url"] = str(person.orcid)
+        else:
+            response["name"] = person.name
+            if person.website:
+                response["url"] = person.website
+
         if person.email:
-            person_dict["email"] = person.email
-        if person.orcid:
-            person_dict["url"] = str(person.orcid)
-        return person_dict
+            response["email"] = person.email
+
+        return response
 
     @staticmethod
-    def _to_person(person) -> Person:
+    def _to_person(
+        person: Union[str, dict[str, Any], PackageAuthor],
+    ) -> Union[Entity, Person]:
         """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
             # parse from package.json format
             person = PackageJsonConfig.convert_author(person)
 
-            if person is None:
-                return None
-
+        if isinstance(person, PackageAuthor):
             person = person.model_dump(exclude_none=True)
 
-        names = list(map(lambda s: s.strip(), person["name"].split()))
-        person_obj = {
-            "given-names": " ".join(names[:-1]),
-            "family-names": names[-1],
-        }
-        if "email" in person:
-            person_obj["email"] = person["email"].strip()
-        if "url" in person:
-            person_obj["orcid"] = person["url"].strip()
-        return Person(**person_obj)
+        person_dict: dict[str, Any] = person  # type: ignore
+
+        if "name" in person_dict and " " in person_dict["name"]:
+            names = list(map(lambda s: s.strip(), person_dict["name"].split()))
+            person_obj = {
+                "given-names": " ".join(names[:-1]),
+                "family-names": names[-1],
+            }
+            if "email" in person_dict:
+                person_obj["email"] = person_dict["email"].strip()
+            if "url" in person_dict:
+                person_obj["orcid"] = person_dict["url"].strip()
+            return Person(**person_obj)
+        else:
+            entity_obj = {"name": person_dict["name"]}
+            if "email" in person_dict:
+                entity_obj["email"] = person_dict["email"].strip()
+            if "url" in person_dict:
+                entity_obj["orcid"] = person_dict["url"].strip()
+            return Entity(**entity_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync package.json with project metadata.

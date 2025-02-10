@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from somesy.core.models import Person
+from somesy.core.models import Entity, Person
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
 from . import POM_ROOT_ATRS, POM_URL
@@ -78,41 +78,64 @@ class POM(ProjectMetadataWriter):
         return None
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Union[Entity, Person]):
         """Convert person object to dict for POM XML person format."""
         ret: Dict[str, Any] = {}
-        person_id = str(person.orcid) or person.to_name_email_string()
+        if isinstance(person, Person):
+            person_id = person.to_name_email_string()
+            if person.orcid:
+                person_id = str(person.orcid)
+                ret["url"] = str(person.orcid)
+        else:
+            person_id = person.to_name_email_string()
+            if person.website:
+                person_id = str(person.website)
+                ret["url"] = person.website
         ret["id"] = person_id
         ret["name"] = person.full_name
-        ret["email"] = person.email
-        if person.orcid:
-            ret["url"] = str(person.orcid)
+        if person.email:
+            ret["email"] = person.email
         if person.contribution_types:
             ret["roles"] = dict(role=[c.value for c in person.contribution_types])
         return ret
 
     @staticmethod
-    def _to_person(person_obj) -> Person:
+    def _to_person(person_obj: dict) -> Union[Entity, Person]:
         """Parse POM XML person to a somesy Person."""
-        print(person_obj)
-        names = person_obj["name"].split()
-        gnames = " ".join(names[:-1])
-        fname = names[-1]
-        email = person_obj["email"]
-        url = person_obj.get("url")
-        maybe_orcid = url if url.find("orcid.org") >= 0 else None
-        if roles := person_obj.get("roles"):
-            contr = roles["role"]
-        else:
-            contr = None
+        if " " in person_obj["name"]:
+            names = person_obj["name"].split()
+            gnames = " ".join(names[:-1])
+            fname = names[-1]
+            email = person_obj["email"]
+            url = person_obj.get("url")
+            maybe_orcid = url if url.find("orcid.org") >= 0 else None
+            if roles := person_obj.get("roles"):
+                contr = roles["role"]
+            else:
+                contr = None
 
-        return Person(
-            given_names=gnames,
-            family_names=fname,
-            email=email,
-            orcid=maybe_orcid,
-            contribution_types=contr,
-        )
+            return Person(
+                given_names=gnames,
+                family_names=fname,
+                email=email,
+                orcid=maybe_orcid,
+                contribution_types=contr,
+            )
+        else:
+            name = person_obj["name"]
+            email = person_obj.get("email")
+            url = person_obj.get("url")
+            if roles := person_obj.get("roles"):
+                contr = roles["role"]
+            else:
+                contr = None
+
+            return Entity(
+                name=name,
+                email=email,
+                website=url,
+                contribution_types=contr,
+            )
 
     # no search keywords supported in POM
     @property
@@ -133,7 +156,7 @@ class POM(ProjectMetadataWriter):
         return authors if isinstance(authors, list) else [authors]
 
     @authors.setter
-    def authors(self, authors: List[Person]) -> None:
+    def authors(self, authors: List[Union[Entity, Person]]) -> None:
         """Set the authors of the project."""
         authors = [self._from_person(c) for c in authors]
         self._set_property(self._get_key("authors"), authors)
@@ -148,7 +171,7 @@ class POM(ProjectMetadataWriter):
         return contr if isinstance(contr, list) else [contr]
 
     @contributors.setter
-    def contributors(self, contributors: List[Person]) -> None:
+    def contributors(self, contributors: List[Union[Entity, Person]]) -> None:
         """Set the contributors of the project."""
         contr = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contr)

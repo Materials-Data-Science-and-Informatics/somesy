@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import LicenseEnum, Person, ProjectMetadata, Entity
 from somesy.pyproject.writer import Poetry, SetupTools
 
 
@@ -77,10 +77,13 @@ def test_from_to_person(person):
     assert p.full_name == person.full_name
     assert p.email == person.email
 
-    # this should return None since there is no email
     p = Poetry._to_person("John Doe")
     assert p.given_names == "John"
     assert p.family_names == "Doe"
+
+    e = Poetry._to_person("Entity")
+    assert isinstance(e, Entity)
+    assert e.name == "Entity"
 
     # test for setuptools
     assert SetupTools._from_person(person) == {

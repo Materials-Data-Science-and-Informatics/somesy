@@ -1,6 +1,6 @@
 import pytest
 
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import Entity, LicenseEnum, Person, ProjectMetadata
 from somesy.package_json.writer import PackageJSON
 
 
@@ -50,15 +50,19 @@ def test_from_to_person(person: Person):
 
     # without email
     p = PackageJSON._to_person("John Doe")
-    assert p is None
+    assert p.full_name == "John Doe"
+
+    # if name has no empty space, our algorithm takes it as an entity
+    e = PackageJSON._to_person("FZJ")
+    assert isinstance(e, Entity)
 
 
 def test_only_name(package_json: PackageJSON, person: Person):
     package_json._data["author"] = "John Doe"
     package_json._data["maintainers"] = ["Jane Doe"]
 
-    assert len(package_json.authors) == 0
-    assert len(package_json.maintainers) == 0
+    assert len(package_json.authors) == 1
+    assert len(package_json.maintainers) == 1
 
     # merge and see if it works
     pm = ProjectMetadata(
