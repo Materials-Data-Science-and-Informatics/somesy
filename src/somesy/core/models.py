@@ -433,6 +433,8 @@ class Entity(ContributorBaseModel):
 
         Uses heuristic match based on email and name (whichever are provided).
         """
+        if not isinstance(other, Entity):
+            return False
         if self.email is not None and other.email is not None:
             if self.email == other.email:
                 return True
@@ -535,6 +537,8 @@ class Person(ContributorBaseModel):
 
         Uses heuristic match based on orcid, email and name (whichever are provided).
         """
+        if not isinstance(other, Person):
+            return False
         if self.orcid is not None and other.orcid is not None:
             # having orcids is the best case, a real identifier
             # NOTE: converting to str from pydantic-internal Url object for == !
