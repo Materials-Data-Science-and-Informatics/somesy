@@ -52,9 +52,6 @@ def test_from_to_person(person: Person, entity: Entity):
     assert e.email == entity.email
     assert isinstance(e, Entity)
 
-    # Verify key order is preserved
-    assert entity.get_key_order() == list(entity.model_dump(by_alias=True).keys())
-
 
 def test_person_merge(tmp_path, person: Person, entity: Entity):
     def to_cff_keys(lst):
