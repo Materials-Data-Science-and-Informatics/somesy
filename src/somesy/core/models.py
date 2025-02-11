@@ -273,6 +273,7 @@ class ContributorBaseModel(SomesyBaseModel):
 
     email: Annotated[
         Optional[str],
+        Optional[str],
         Field(
             pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
             description="The person's email address.",
@@ -511,6 +512,14 @@ class Person(ContributorBaseModel):
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
+        if m is None:
+            names = list(map(lambda s: s.strip(), person.split()))
+            return Person(
+                **{
+                    "given-names": " ".join(names[:-1]),
+                    "family-names": names[-1],
+                }
+            )
         if m is None:
             names = list(map(lambda s: s.strip(), person.split()))
             return Person(

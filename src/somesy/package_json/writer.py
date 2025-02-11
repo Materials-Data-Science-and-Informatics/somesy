@@ -92,6 +92,21 @@ class PackageJSON(ProjectMetadataWriter):
                     continue
             contributors_valid.append(contributor)
         return contributors_valid
+        # check if the contributor has the correct format
+        contributors = self._get_property(self._get_key("contributors"))
+        # return empty list if contributors is None
+        if contributors is None:
+            return []
+
+        contributors_valid = []
+
+        for contributor in contributors:
+            if isinstance(contributor, str):
+                contributor = PackageJsonConfig.convert_author(contributor)
+                if contributor is None:
+                    continue
+            contributors_valid.append(contributor)
+        return contributors_valid
 
     @contributors.setter
     def contributors(self, contributors: List[Union[Entity, Person]]) -> None:

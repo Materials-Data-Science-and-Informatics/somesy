@@ -196,6 +196,7 @@ class Pyproject(wrapt.ObjectProxy):
             FileNotFoundError: Raised when pyproject.toml file is not found.
             ValueError: Neither project nor tool.poetry object is found in pyproject.toml file.
 
+
         """
         data = None
         if not path.is_file():

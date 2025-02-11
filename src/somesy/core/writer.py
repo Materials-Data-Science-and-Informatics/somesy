@@ -118,6 +118,7 @@ class ProjectMetadataWriter(ABC):
             only_first: If True, returns only first entry if the value is a list.
             remove: If True, will remove the retrieved value and clean up the dict.
 
+
         """
         key_path = [key] if isinstance(key, str) else key
 
@@ -243,6 +244,7 @@ class ProjectMetadataWriter(ABC):
         Returns:
             List[Any]: updated list of persons in format-specific representation
 
+
         """
         old_people: List[Union[Person, Entity]] = self._parse_people(old)
         return self._merge_person_metadata(old_people, new)
@@ -347,6 +349,15 @@ class ProjectMetadataWriter(ABC):
             author for author in authors if self._to_person(author) is not None
         ]
         return authors_validated
+        authors = self._get_property(self._get_key("authors"))
+        if authors is None:
+            return []
+
+        # only return authors that can be converted to Person
+        authors_validated = [
+            author for author in authors if self._to_person(author) is not None
+        ]
+        return authors_validated
 
     @authors.setter
     def authors(self, authors: List[Union[Person, Entity]]) -> None:
@@ -357,6 +368,17 @@ class ProjectMetadataWriter(ABC):
     @property
     def maintainers(self):
         """Return the maintainers of the project."""
+        maintainers = self._get_property(self._get_key("maintainers"))
+        if maintainers is None:
+            return []
+
+        # only return maintainers that can be converted to Person
+        maintainers_validated = [
+            maintainer
+            for maintainer in maintainers
+            if self._to_person(maintainer) is not None
+        ]
+        return maintainers_validated
         maintainers = self._get_property(self._get_key("maintainers"))
         if maintainers is None:
             return []
