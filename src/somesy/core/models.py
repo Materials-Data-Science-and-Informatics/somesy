@@ -86,7 +86,7 @@ class SomesyBaseModel(BaseModel):
     def _patch_kwargs_defaults(kwargs):
         """Set some default arguments if they are not set by kwargs."""
         for key in ["exclude_defaults", "exclude_none"]:
-            if not kwargs.get(key):
+            if kwargs.get(key, None) is None:
                 kwargs[key] = True
 
     def _reorder_dict(self, dct):
