@@ -43,12 +43,17 @@ def test_from_to_person(person: Person, entity: Entity):
     assert p.full_name == person.full_name
     assert p.email == person.email
     assert p.orcid == str(person.orcid)
+    assert isinstance(p, Person)
 
     assert CFF._from_person(entity) == entity.model_dump(by_alias=True)
 
-    p = CFF._to_person(CFF._from_person(entity))
-    assert p.name == entity.name
-    assert p.email == entity.email
+    e = CFF._to_person(CFF._from_person(entity))
+    assert e.name == entity.name
+    assert e.email == entity.email
+    assert isinstance(e, Entity)
+
+    # Verify key order is preserved
+    assert entity.get_key_order() == list(entity.model_dump(by_alias=True).keys())
 
 
 def test_person_merge(tmp_path, person: Person, entity: Entity):
