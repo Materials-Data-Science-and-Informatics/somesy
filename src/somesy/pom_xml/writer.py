@@ -69,6 +69,7 @@ class POM(ProjectMetadataWriter):
         only_first: bool = False,
         remove: bool = False,
     ) -> Optional[Any]:
+        """Get (a) property by key."""
         elem = super()._get_property(key, only_first=only_first, remove=remove)
         if elem is not None:
             if isinstance(elem, list):

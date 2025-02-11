@@ -302,6 +302,7 @@ class ProjectMetadataWriter(ABC):
     # individual magic getters and setters
 
     def _get_key(self, key):
+        """Get a key itself."""
         return self.direct_mappings.get(key) or key
 
     @property

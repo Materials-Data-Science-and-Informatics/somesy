@@ -76,6 +76,7 @@ class CodeMeta(ProjectMetadataWriter):
         )
 
     def _init_new_file(self) -> None:
+        """Create a new codemeta.json file with bare minimum generic data."""
         data = {
             "@context": [
                 "https://doi.org/10.5063/schema/codemeta-2.0",

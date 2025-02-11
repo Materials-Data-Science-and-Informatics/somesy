@@ -84,6 +84,7 @@ class SomesyBaseModel(BaseModel):
 
     @staticmethod
     def _patch_kwargs_defaults(kwargs):
+        """Set some default arguments if they are not set by kwargs."""
         for key in ["exclude_defaults", "exclude_none"]:
             if not kwargs.get(key):
                 kwargs[key] = True
