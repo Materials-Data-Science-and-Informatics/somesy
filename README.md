@@ -107,6 +107,12 @@ orcid = "https://orcid.org/0000-0000-0000-0002"
 # ... but for scientific publications, this contributor should be listed as author:
 publication_author = true
 
+# add an organization as a maintainer
+[[project.entities]]
+name = "My Super Organization"
+email = "info@my-super-org.com"
+website = "https://my-super-org.com"
+
 [config]
 verbose = true     # show detailed information about what somesy is doing
 ```
@@ -135,13 +141,13 @@ formats further below.
 By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository.
 If you happen to use
 
-- `pyproject.toml` (in Python projects),
-- `package.json` (in JavaScript projects),
-- `Project.toml` (in Julia projects),
-- `fpm.toml` (in Fortran projects),
-- `pom.xml` (in Java projects),
-- `mkdocs.yml` (in projects using MkDocs),
-- `Cargo.toml` (in Rust projects)
+-   `pyproject.toml` (in Python projects),
+-   `package.json` (in JavaScript projects),
+-   `Project.toml` (in Julia projects),
+-   `fpm.toml` (in Fortran projects),
+-   `pom.xml` (in Java projects),
+-   `mkdocs.yml` (in projects using MkDocs),
+-   `Cargo.toml` (in Rust projects)
 
 then somesy would also update the respective information there.
 
@@ -163,11 +169,11 @@ file in the root folder of your repository:
 
 ```yaml
 repos:
-  # ... (your other hooks) ...
-  - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-    rev: "v0.5.0"
-    hooks:
-      - id: somesy
+    # ... (your other hooks) ...
+    - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
+      rev: 'v0.6.0'
+      hooks:
+          - id: somesy
 ```
 
 > **Note**
@@ -177,8 +183,8 @@ repos:
 Note that `pre-commit` gives `somesy` the [staged](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F) version of files,
 so when using `somesy` with pre-commit, keep in mind that
 
-- if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
-- if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
+-   if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
+-   if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
 
 <!-- --8<-- [end:precommit] -->
 

@@ -65,7 +65,7 @@ Here is an overview of the schemas used in somesy.
 # Just make sure to check docs when changing the models!
 import json
 from io import StringIO
-from somesy.core.models import SomesyInput, ProjectMetadata, Person, SomesyConfig
+from somesy.core.models import SomesyInput, ProjectMetadata, Person, SomesyConfig, Entity
 from pydantic_core import PydanticUndefined
 from typing_extensions import get_args
 
@@ -106,6 +106,7 @@ def model2md(m, out = None):
 print(model2md(SomesyInput).getvalue())
 print(model2md(ProjectMetadata).getvalue())
 print(model2md(Person).getvalue())
+print(model2md(Entity).getvalue())
 print(model2md(SomesyConfig).getvalue())
 ```
 
@@ -120,10 +121,20 @@ some of the currently supported formats. Bold field names are mandatory, the oth
     | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
     | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | ---------- | -------------- | --------------- | -------------- |
     |                  |               |                   |              |              |                |              |            |                |                 |                |
-    | **given-names**  | name+email    | name              | name         | name+email   | name+email     | name         | name+email | name+email     | givenName       | name+email     |
-    | **family-names** | name+email    | name              | name         | name+email   | name+email     | name         | name+email | name+email     | familyName      | name+email     |
-    | email            | name+email    | email             | email        | name+email   | name+email     | email        | name+email | name+email     | email           | name+email     |
+    | **given-names**  | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | givenName       | name(+email)     |
+    | **family-names** | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | familyName      | name(+email)     |
+    | email            | name(+email)    | email             | email        | name(+email)   | name(+email)     | email        | name(+email) | name(+email)     | email           | name(+email)     |
     | orcid            | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
+    | *(many others)*  | -             | -                 | -            | -            | -              | -            | -          | -              | *(same)*        | -              |
+
+=== "Entity Metadata"
+
+    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
+    | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | ---------- | -------------- | --------------- | -------------- |
+    |                  |               |                   |              |              |                |              |            |                |                 |                |
+    | **name**  | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | givenName       | name(+email)     |
+    | email     | name(+email)    | email             | email        | name(+email)   | name(+email)     | email        | name(+email) | name(+email)     | email           | name(+email)     |
+    | website   | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
     | *(many others)*  | -             | -                 | -            | -            | -              | -            | -          | -              | *(same)*        | -              |
 
 === "Project Metadata"
@@ -139,12 +150,12 @@ some of the currently supported formats. Bold field names are mandatory, the oth
     | ***author=true*** | authors       | authors            | developers                      | authors      | author         | author       | site_author      | authors         | authors         | author            |
     | *maintainer=true* | maintainers   | maintainers        | -                               | -            | maintainer     | maintainers  | -                | -               | contact         | maintainer        |
     | *people*          | -             | -                  | -                               | -            | -              | contributors | -                | -               | -               | contributor       |
+    | *entities*          | -             | -                  | -                               | -            | -              | contributors | -                | -               | -               | contributor       |
     |                   |               |                    |                                 |              |                |              |                  |                 |                 |                   |
     | keywords          | keywords      | keywords           | -                               | -            | keywords       | keywords     | -                | keywords        | keywords        | keywords          |
     | homepage          | homepage      | urls.homepage      | urls                            | -            | homepage       | homepage     | site_url         | homepage        | url             | url               |
     | repository        | repository    | urls.repository    | scm.url                         | -            | -              | repository   | repo_url         | repository      | repository_code | codeRepository    |
     | documentation     | documentation | urls.documentation | distributionManagement.site.url | -            | -              | -            | -                | documentation   | -               | buildInstructions |
-
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
@@ -153,6 +164,10 @@ to list authors and maintainers. **Therefore somesy sometimes must do much more
 than just move or rename fields**. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the `somesy` code.
+
+**people** and **entities** are mapped to authors/maintainers/contributors depending
+on the output format. Both fields are marked as necessary but what `somesy` need is an
+author either in **people** or **entities**.
 
 ## The somesy CLI tool
 
@@ -168,13 +183,13 @@ defaults, while options passed as CLI arguments override the configuration.
 
 Without an input file specifically provided, somesy will check if it can find a valid
 
-* `.somesy.toml`
-* `somesy.toml`
-* `pyproject.toml` (in `tool.somesy` section)
-* `Project.toml` (in `tool.somesy` section)
-* `fpm.toml` (in `tool.somesy` section)
-* `package.json` (in `somesy` section)
-* `Cargo.toml` (in `package.metadata.somesy` section)
+-   `.somesy.toml`
+-   `somesy.toml`
+-   `pyproject.toml` (in `tool.somesy` section)
+-   `Project.toml` (in `tool.somesy` section)
+-   `fpm.toml` (in `tool.somesy` section)
+-   `package.json` (in `somesy` section)
+-   `Cargo.toml` (in `package.metadata.somesy` section)
 
 which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the `-i` option.
@@ -221,15 +236,22 @@ one of the supported input formats:
     email = "a.contributor@example.com"
     orcid = "https://orcid.org/0000-0000-0000-0002"
 
+    # add an organization as a maintainer
+    [[tool.somesy.project.entities]]
+    name = "My Super Organization"
+    email = "info@my-super-org.com"
+    website = "https://my-super-org.com"
+
     [tool.somesy.config]
     verbose = true     # show detailed information about what somesy is doing
     ```
 
 === "Project.toml"
-    ```toml
-    name = "my-amazing-project"
-    version = "0.1.0"
-    uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
+
+````toml
+name = "my-amazing-project"
+version = "0.1.0"
+uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
 
     [deps]
     ...
@@ -259,14 +281,20 @@ one of the supported input formats:
     email = "a.contributor@example.com"
     orcid = "https://orcid.org/0000-0000-0000-0002"
 
+    # add an organization as a maintainer
+    [[tool.somesy.project.entities]]
+    name = "My Super Organization"
+    email = "info@my-super-org.com"
+    website = "https://my-super-org.com"
+
     [tool.somesy.config]
     verbose = true     # show detailed information about what somesy is doing
     ```
 
 === "fpm.toml"
-    ```toml
-    name = "my-amazing-project"
-    version = "0.1.0"
+```toml
+name = "my-amazing-project"
+version = "0.1.0"
 
     [tool.somesy.project]
     name = "my-amazing-project"
@@ -292,6 +320,12 @@ one of the supported input formats:
     family-names = "Contributor"
     email = "a.contributor@example.com"
     orcid = "https://orcid.org/0000-0000-0000-0002"
+
+    # add an organization as a maintainer
+    [[tool.somesy.project.entities]]
+    name = "My Super Organization"
+    email = "info@my-super-org.com"
+    website = "https://my-super-org.com"
 
     [tool.somesy.config]
     verbose = true     # show detailed information about what somesy is doing
@@ -330,6 +364,13 @@ one of the supported input formats:
             }
           ]
         },
+        "entities":[
+            {
+                "name": "My Super Organization",
+                "email": "info@my-super-org.com",
+                "website": "https://my-super-org.com"
+            }
+        ],
         "config": {
           "verbose": true
         }
@@ -453,6 +494,26 @@ after running somesy (to remove the duplicate entries with the incorrect ORCID).
 
     Person identification and merging is not applied to standards with free text fields for authors or maintainers, such as `fpm.toml`.
 
+When somesy compares two metadata records about an entity, it will proceed as follows:
+
+1. If both records contain a website URL, and it is the same URL, then they are the same entity.
+2. Otherwise, if both records have an attached email address, and it is the same email, then they are the same entity.
+3. Otherwise, the records are considered to be about the same entity if they agree on the name.
+
+!!! tip
+
+    State website URLs for entities whenever possible to ensure reliable identification!
+
+Somesy will usually correctly understand cases such as:
+
+1. A website URL being added to an entity (i.e. if it was not present before)
+2. A changed email address (if the name stays the same)
+3. A changed name (if the email address stays the same)
+4. Any other relevant metadata attached to the entity
+
+Nevertheless, you should **check the changes somesy does** before committing them to your repository,
+especially **after you significantly modified your project metadata**.
+
 ### Codemeta
 
 While `somesy` is modifying existing files for most supported formats and implements
@@ -493,17 +554,13 @@ file in the somesy repository, which is also shown as the
 
 ```shell
 somesy fill docs/_template_authors.md -o AUTHORS.md
-```
+````
 
-??? example "_template_authors.md"
-    ```
-    --8<-- "docs/_template_authors.md"
-    ```
+??? example "\_template_authors.md"
+`--8<-- "docs/_template_authors.md"`
 
 ??? example "AUTHORS.md"
-    ```
-    --8<-- "AUTHORS.md"
-    ```
+`--8<-- "AUTHORS.md"`
 
 The template gets the complete
 [ProjectMetadata](reference/somesy/core/models.md#somesy.core.models.ProjectMetadata) as its context, so it is possible to access all included project and contributor information.

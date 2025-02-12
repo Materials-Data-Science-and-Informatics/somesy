@@ -4,7 +4,12 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
-## [v0.5.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.4.3) <small>(2025-01-15)</small> { id="0.5.0" }
+## [v0.6.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.6.0) <small>(2025-xx-xx)</small> { id="0.6.0" }
+
+- implement CFF Entity model for author/maintainer/contributor
+- fix SomesyBaseModel kwargs being overwritten
+
+## [v0.5.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.5.0) <small>(2025-01-15)</small> { id="0.5.0" }
 
 - make person argument email optional
 
