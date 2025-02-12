@@ -141,7 +141,7 @@ class PackageJSON(ProjectMetadataWriter):
 
     @staticmethod
     def _to_person(
-        person: Union[str, dict[str, Any], PackageAuthor],
+        person: Union[str, Dict[str, Any], PackageAuthor],
     ) -> Union[Entity, Person]:
         """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
