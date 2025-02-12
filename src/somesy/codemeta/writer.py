@@ -3,11 +3,11 @@
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, List, Optional, Union
 
 from rich.pretty import pretty_repr
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 from somesy.json_wrapper import json
 
@@ -46,10 +46,10 @@ class CodeMeta(ProjectMetadataWriter):
         return self._get_property(self._get_key("publication_authors")) or []
 
     @authors.setter
-    def authors(self, authors: List[Person]) -> None:
+    def authors(self, authors: List[Union[Person, Entity]]) -> None:
         """Set the authors of the project."""
-        authors = [self._from_person(a) for a in authors]
-        self._set_property(self._get_key("authors"), authors)
+        authors_dict = [self._from_person(a) for a in authors]
+        self._set_property(self._get_key("authors"), authors_dict)
 
     @property
     def contributors(self):
@@ -57,10 +57,10 @@ class CodeMeta(ProjectMetadataWriter):
         return self._get_property(self._get_key("contributors"))
 
     @contributors.setter
-    def contributors(self, contributors: List[Person]) -> None:
+    def contributors(self, contributors: List[Union[Person, Entity]]) -> None:
         """Set the contributors of the project."""
-        contributors = [self._from_person(c) for c in contributors]
-        self._set_property(self._get_key("contributors"), contributors)
+        contributors_dict = [self._from_person(c) for c in contributors]
+        self._set_property(self._get_key("contributors"), contributors_dict)
 
     def _load(self) -> None:
         """Load codemeta.json file."""
@@ -76,6 +76,7 @@ class CodeMeta(ProjectMetadataWriter):
         )
 
     def _init_new_file(self) -> None:
+        """Create a new codemeta.json file with bare minimum generic data."""
         data = {
             "@context": [
                 "https://doi.org/10.5063/schema/codemeta-2.0",
@@ -112,43 +113,68 @@ class CodeMeta(ProjectMetadataWriter):
             json.dump(data, f)
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Union[Person, Entity]) -> dict:
         """Convert project metadata person object to codemeta.json dict for person format."""
-        person_dict = {
-            "@type": "Person",
-        }
-        if person.given_names:
-            person_dict["givenName"] = person.given_names
-        if person.family_names:
-            person_dict["familyName"] = person.family_names
-        if person.email:
-            person_dict["email"] = person.email
-        if person.orcid:
-            person_dict["@id"] = str(person.orcid)
-        if person.address:
-            person_dict["address"] = person.address
-        if person.affiliation:
-            person_dict["affiliation"] = person.affiliation
-        return person_dict
+        if isinstance(person, Person):
+            person_dict = {
+                "@type": "Person",
+            }
+            if person.given_names:
+                person_dict["givenName"] = person.given_names
+            if person.family_names:
+                person_dict["familyName"] = person.family_names
+            if person.email:
+                person_dict["email"] = person.email
+            if person.orcid:
+                person_dict["@id"] = str(person.orcid)
+                person_dict["identifier"] = str(person.orcid)
+            if person.address:
+                person_dict["address"] = person.address
+            if person.affiliation:
+                person_dict["affiliation"] = person.affiliation
+            return person_dict
+        else:
+            entity_dict = {"@type": "Organization", "name": person.name}
+            if person.address:
+                entity_dict["address"] = person.address
+            if person.email:
+                entity_dict["email"] = person.email
+            if person.date_start:
+                entity_dict["startDate"] = person.date_start.isoformat()
+            if person.date_end:
+                entity_dict["endDate"] = person.date_end.isoformat()
+            if person.website:
+                entity_dict["@id"] = str(person.website)
+                entity_dict["identifier"] = str(person.website)
+            if person.rorid:
+                entity_dict["@id"] = str(person.rorid)
+                entity_dict["identifier"] = str(person.rorid)
+            return entity_dict
 
     @staticmethod
-    def _to_person(person) -> Person:
-        """Convert codemeta.json dict or str for person format to project metadata person object."""
-        person_obj = {}
-        if "givenName" in person:
-            person_obj["given_names"] = person["givenName"].strip()
-        if "familyName" in person:
-            person_obj["family_names"] = person["familyName"].strip()
-        if "email" in person:
-            person_obj["email"] = person["email"].strip()
-        if "@id" in person:
-            person_obj["orcid"] = person["@id"].strip()
-        if "address" in person:
-            person_obj["address"] = person["address"].strip()
+    def _to_person(person) -> Union[Person, Entity]:
+        """Convert codemeta.json dict or str for person/entity format to project metadata person object."""
+        if "name" in person:
+            entity_obj = {"name": person["name"]}
+            return Entity(**entity_obj)
+        else:
+            person_obj = {}
+            if "givenName" in person:
+                person_obj["given_names"] = person["givenName"].strip()
+            if "familyName" in person:
+                person_obj["family_names"] = person["familyName"].strip()
+            if "email" in person:
+                person_obj["email"] = person["email"].strip()
+            if "@id" in person:
+                person_obj["orcid"] = person["@id"].strip()
+            if "address" in person:
+                person_obj["address"] = person["address"].strip()
 
-        return Person(**person_obj)
+            return Person(**person_obj)
 
-    def _sync_person_list(self, old: List[Any], new: List[Person]) -> List[Any]:
+    def _sync_person_list(
+        self, old: List[Any], new: List[Union[Person, Entity]]
+    ) -> List[Any]:
         """Override the _sync_person_list function from ProjectMetadataWriter.
 
         This method wont care about existing persons in codemeta.json file.
@@ -169,6 +195,4 @@ class CodeMeta(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
-        self.contributors = self._sync_person_list(
-            self.contributors, metadata.contributors()
-        )
+        self.contributors = metadata.contributors()

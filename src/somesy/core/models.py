@@ -9,7 +9,13 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 from rich.pretty import pretty_repr
 from typing_extensions import Annotated
 
@@ -78,8 +84,9 @@ class SomesyBaseModel(BaseModel):
 
     @staticmethod
     def _patch_kwargs_defaults(kwargs):
-        for key in ["exclude_defaults", "exclude_none", "exclude_unset"]:
-            if not kwargs.get(key):
+        """Set some default arguments if they are not set by kwargs."""
+        for key in ["exclude_defaults", "exclude_none"]:
+            if kwargs.get(key, None) is None:
                 kwargs[key] = True
 
     def _reorder_dict(self, dct):
@@ -258,20 +265,11 @@ class SomesyConfig(SomesyBaseModel):
 # Project metadata model (modified from CITATION.cff)
 
 
-class Person(SomesyBaseModel):
-    """Metadata abount a person in the context of a software project.
+class ContributorBaseModel(SomesyBaseModel):
+    """Base model for Person and Entity models.
 
     This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
     """
-
-    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
-
-    orcid: Annotated[
-        Optional[HttpUrlStr],
-        Field(
-            description="The person's ORCID url **(not required, but highly suggested)**."
-        ),
-    ] = None
 
     email: Annotated[
         Optional[str],
@@ -281,47 +279,22 @@ class Person(SomesyBaseModel):
         ),
     ] = None
 
-    family_names: Annotated[
-        str, Field(alias="family-names", description="The person's family names.")
-    ]
-    given_names: Annotated[
-        str, Field(alias="given-names", description="The person's given names.")
-    ]
-
-    name_particle: Annotated[
-        Optional[str],
-        Field(
-            alias="name-particle",
-            description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from'"
-            " (for example 'von' in 'Alexander von Humboldt').",
-            examples=["von"],
-        ),
+    alias: Annotated[Optional[str], Field(description="The contributor's alias.")] = (
+        None
+    )
+    address: Annotated[
+        Optional[str], Field(description="The contributor's address.")
     ] = None
-    name_suffix: Annotated[
-        Optional[str],
-        Field(
-            alias="name-suffix",
-            description="The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.",
-            examples=["Jr.", "III"],
-        ),
-    ] = None
-    alias: Annotated[Optional[str], Field(description="The person's alias.")] = None
-
-    affiliation: Annotated[
-        Optional[str], Field(description="The person's affiliation.")
-    ] = None
-
-    address: Annotated[Optional[str], Field(description="The person's address.")] = None
-    city: Annotated[Optional[str], Field(description="The person's city.")] = None
+    city: Annotated[Optional[str], Field(description="The entity's city.")] = None
     country: Annotated[
-        Optional[Country], Field(description="The person's country.")
+        Optional[Country], Field(description="The entity's country.")
     ] = None
     fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
     post_code: Annotated[
-        Optional[str], Field(alias="post-code", description="The person's post-code.")
+        Optional[str], Field(alias="post-code", description="The entity's post-code.")
     ] = None
-    region: Annotated[Optional[str], Field(description="The person's region.")] = None
-    tel: Annotated[Optional[str], Field(description="The person's phone number.")] = (
+    region: Annotated[Optional[str], Field(description="The entity's region.")] = None
+    tel: Annotated[Optional[str], Field(description="The entity's phone number.")] = (
         None
     )
 
@@ -330,26 +303,26 @@ class Person(SomesyBaseModel):
     author: Annotated[
         bool,
         Field(
-            description="Indicates whether the person is an author of the project (i.e. significant contributor)."
+            description="Indicates whether the entity is an author of the project (i.e. significant contributor)."
         ),
     ] = False
     publication_author: Annotated[
         Optional[bool],
         Field(
-            description="Indicates whether the person is to be listed as an author in academic citations."
+            description="Indicates whether the entity is to be listed as an author in academic citations."
         ),
     ] = None
     maintainer: Annotated[
         bool,
         Field(
-            description="Indicates whether the person is a maintainer of the project (i.e. for contact)."
+            description="Indicates whether the entity is a maintainer of the project (i.e. for contact)."
         ),
     ] = False
 
     # NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.
     contribution: Annotated[
         Optional[str],
-        Field(description="Summary of how the person contributed to the project."),
+        Field(description="Summary of how the entity contributed to the project."),
     ] = None
     contribution_types: Annotated[
         Optional[List[ContributionTypeEnum]],
@@ -378,6 +351,163 @@ class Person(SomesyBaseModel):
         return values
 
     # helper methods
+    @property
+    def full_name(self) -> str:
+        """Return the name of the contributor."""
+        pass
+
+    def to_name_email_string(self) -> str:
+        """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
+        if self.email:
+            return f"{self.full_name} <{self.email}>"
+        else:
+            return self.full_name
+
+    @classmethod
+    def from_name_email_string(cls, person: str):
+        """Return the type of class based on an name/e-mail string like `full name <x@y.z>`.
+
+        If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
+        """
+        pass
+
+
+class Entity(ContributorBaseModel):
+    """Metadata about an entity in the context of a software project ownership.
+
+    An entity, i.e., an institution, team, research group, company, conference, etc., as opposed to a single natural person.
+    This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
+    """
+
+    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
+
+    date_end: Annotated[
+        Optional[date],
+        Field(
+            alias="date-end",
+            description="The entity's ending date, e.g., when the entity is a conference.",
+        ),
+    ] = None
+    date_start: Annotated[
+        Optional[date],
+        Field(
+            alias="date-start",
+            description="The entity's starting date, e.g., when the entity is a conference.",
+        ),
+    ] = None
+    location: Annotated[
+        Optional[str],
+        Field(
+            description="The entity's location, e.g., when the entity is a conference."
+        ),
+    ] = None
+    name: Annotated[str, Field(description="The entity's name.")]
+    website: Annotated[
+        Optional[HttpUrlStr], Field(description="The entity's website.")
+    ] = None
+    rorid: Annotated[
+        Optional[HttpUrlStr],
+        Field(
+            description="The entity's ROR ID url **(not required, but highly suggested)**."
+        ),
+    ] = None
+
+    # helper methods
+    @property
+    def full_name(self) -> str:
+        """Use same property as Person for code integration."""
+        return self.name
+
+    @classmethod
+    def from_name_email_string(cls, entity: str) -> Entity:
+        """Return an `Entity` based on an name/e-mail string like `name <x@y.z>`."""
+        m = re.match(r"\s*([^<]+)<([^>]+)>", entity)
+        if m is None:
+            return Entity(**{"name": entity})
+
+        name, mail = (
+            m.group(1).strip(),
+            m.group(2).strip(),
+        )
+        return Entity(
+            **{
+                "name": name,
+                "email": mail,
+            }
+        )
+
+    def same_person(self, other: Entity) -> bool:
+        """Return whether two Entity metadata records are about the same real person.
+
+        Uses heuristic match based on email and name (whichever are provided).
+        """
+        if not isinstance(other, Entity):
+            return False
+        if self.rorid is not None and other.rorid is not None:
+            if self.rorid == other.rorid:
+                return True
+        if self.website is not None and other.website is not None:
+            if self.website == other.website:
+                return True
+        if self.email is not None and other.email is not None:
+            if self.email == other.email:
+                return True
+        return self.name == other.name
+
+    def model_dump_json(self, *args, **kwargs):
+        """Patched json method (to preserve custom key order), remove rorid and set it as website if it is not None."""
+        ret = super().model_dump_json(*args, **kwargs)
+        # convert ret to dict
+        ret = json.loads(ret)
+        if self.rorid is not None and "website" not in ret:
+            ret["website"] = str(self.rorid)
+            ret.pop("rorid")
+        # convert ret back to json string
+        return json.dumps(ret)
+
+
+class Person(ContributorBaseModel):
+    """Metadata about a person in the context of a software project.
+
+    This schema is based on CITATION.cff 1.2, modified and extended for the needs of somesy.
+    """
+
+    # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
+
+    orcid: Annotated[
+        Optional[HttpUrlStr],
+        Field(
+            description="The person's ORCID url **(not required, but highly suggested)**."
+        ),
+    ] = None
+    family_names: Annotated[
+        str, Field(alias="family-names", description="The person's family names.")
+    ]
+    given_names: Annotated[
+        str, Field(alias="given-names", description="The person's given names.")
+    ]
+    name_particle: Annotated[
+        Optional[str],
+        Field(
+            alias="name-particle",
+            description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from'"
+            " (for example 'von' in 'Alexander von Humboldt').",
+            examples=["von"],
+        ),
+    ] = None
+    name_suffix: Annotated[
+        Optional[str],
+        Field(
+            alias="name-suffix",
+            description="The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.",
+            examples=["Jr.", "III"],
+        ),
+    ] = None
+    affiliation: Annotated[
+        Optional[str], Field(description="The person's affiliation.")
+    ] = None
+
+    # helper methods
 
     @property
     def full_name(self) -> str:
@@ -398,13 +528,6 @@ class Person(SomesyBaseModel):
 
         return " ".join(names) if names else ""
 
-    def to_name_email_string(self) -> str:
-        """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
-        if self.email:
-            return f"{self.full_name} <{self.email}>"
-        else:
-            return self.full_name
-
     @classmethod
     def from_name_email_string(cls, person: str) -> Person:
         """Return a `Person` based on an name/e-mail string like `full name <x@y.z>`.
@@ -412,6 +535,14 @@ class Person(SomesyBaseModel):
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
+        if m is None:
+            names = list(map(lambda s: s.strip(), person.split()))
+            return Person(
+                **{
+                    "given-names": " ".join(names[:-1]),
+                    "family-names": names[-1],
+                }
+            )
         if m is None:
             names = list(map(lambda s: s.strip(), person.split()))
             return Person(
@@ -439,6 +570,8 @@ class Person(SomesyBaseModel):
 
         Uses heuristic match based on orcid, email and name (whichever are provided).
         """
+        if not isinstance(other, Person):
+            return False
         if self.orcid is not None and other.orcid is not None:
             # having orcids is the best case, a real identifier
             # NOTE: converting to str from pydantic-internal Url object for == !
@@ -467,7 +600,7 @@ class ProjectMetadata(SomesyBaseModel):
     @field_validator("people")
     @classmethod
     def ensure_distinct_people(cls, people):
-        """Make sure that no person is listed twice in the same person list."""
+        """Make sure that no person is listed twice in the same list."""
         for i in range(len(people)):
             for j in range(i + 1, len(people)):
                 if people[i].same_person(people[j]):
@@ -477,13 +610,31 @@ class ProjectMetadata(SomesyBaseModel):
                     raise ValueError(msg)
         return people
 
-    @field_validator("people")
+    @field_validator("entities")
     @classmethod
-    def at_least_one_author(cls, people):
+    def ensure_distinct_entities(cls, entities):
+        """Make sure that no entity is listed twice in the same list."""
+        for i in range(len(entities)):
+            for j in range(i + 1, len(entities)):
+                if entities[i].same_person(entities[j]):
+                    e1 = pretty_repr(json.loads(entities[i].model_dump_json()))
+                    e2 = pretty_repr(json.loads(entities[j].model_dump_json()))
+                    msg = f"Same entity is listed twice:\n{e1}\n{e2}"
+                    raise ValueError(msg)
+        return entities
+
+    @model_validator(mode="after")
+    def at_least_one_author(self) -> ProjectMetadata:
         """Make sure there is at least one author."""
-        if not any(map(lambda p: p.author, people)):
+        if not self.people and not self.entities:
+            raise ValueError(
+                "There have to be at least a person or an organization in the input"
+            )
+        if not any(map(lambda p: p.author, self.people)) and not any(
+            map(lambda e: e.author, self.entities)
+        ):
             raise ValueError("At least one person must be an author of this project.")
-        return people
+        return self
 
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
@@ -507,15 +658,26 @@ class ProjectMetadata(SomesyBaseModel):
     ] = None
 
     people: Annotated[
-        List[Person],
+        Optional[List[Person]],
         Field(
-            min_length=1, description="Project authors, maintainers and contributors."
+            description="Project authors, maintainers and contributors.",
+            default_factory=list,
+        ),
+    ]
+
+    entities: Annotated[
+        Optional[List[Entity]],
+        Field(
+            description="Project authors, maintainers and contributors as entities (organizations).",
+            default_factory=list,
         ),
     ]
 
     def authors(self):
-        """Return people explicitly marked as authors."""
-        return [p for p in self.people if p.author]
+        """Return people and entities explicitly marked as authors."""
+        authors = [p for p in self.people if p.author]
+        authors.extend([e for e in self.entities if e.author])
+        return authors
 
     def publication_authors(self):
         """Return people marked as publication authors.
@@ -523,17 +685,25 @@ class ProjectMetadata(SomesyBaseModel):
         This always includes people marked as authors.
         """
         # return an empty list if no publication authors are specified
-        if not any(map(lambda p: p.publication_author, self.people)):
+        if not any(map(lambda p: p.publication_author, self.people)) and not any(
+            map(lambda p: p.publication_author, self.entities)
+        ):
             return []
-        return [p for p in self.people if p.publication_author]
+        publication_authors = [p for p in self.people if p.publication_author]
+        publication_authors.extend([e for e in self.entities if e.publication_author])
+        return publication_authors
 
     def maintainers(self):
-        """Return people marked as maintainers."""
-        return [p for p in self.people if p.maintainer]
+        """Return people and entities marked as maintainers."""
+        maintainers = [p for p in self.people if p.maintainer]
+        maintainers.extend([e for e in self.entities if e.maintainer])
+        return maintainers
 
     def contributors(self):
-        """Return only people not marked as authors."""
-        return [p for p in self.people if not p.author]
+        """Return only people and entities not marked as authors."""
+        contributors = [p for p in self.people if not p.author]
+        contributors.extend([e for e in self.entities if not e.author])
+        return contributors
 
 
 class SomesyInput(SomesyBaseModel):

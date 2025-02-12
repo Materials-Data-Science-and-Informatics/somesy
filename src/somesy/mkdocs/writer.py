@@ -2,12 +2,12 @@
 
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from rich.pretty import pretty_repr
 from ruamel.yaml import YAML
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.mkdocs.models import MkDocsConfig
 
@@ -69,23 +69,28 @@ class MkDocs(ProjectMetadataWriter):
             return [authors]
 
     @authors.setter
-    def authors(self, authors: List[Person]) -> None:
+    def authors(self, authors: List[Union[Entity, Person]]) -> None:
         """Set the authors of the project."""
         authors = self._from_person(authors[0])
         self._set_property(self._get_key("authors"), authors)
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Union[Entity, Person]):
         """MkDocs Person is a string with full name."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Optional[Person]:
+    def _to_person(person: str) -> Optional[Union[Entity, Person]]:
         """MkDocs Person is a string with full name."""
         try:
             return Person.from_name_email_string(person)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Person object.")
+            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+
+        try:
+            return Entity.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Entity.")
             return None
 
     def sync(self, metadata: ProjectMetadata) -> None:

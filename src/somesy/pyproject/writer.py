@@ -9,7 +9,7 @@ import wrapt
 from rich.pretty import pretty_repr
 from tomlkit import load
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
 
 from .models import PoetryConfig, SetuptoolsConfig
@@ -97,17 +97,22 @@ class Poetry(PyprojectCommon):
         super().__init__(path, section=["tool", "poetry"], model_cls=PoetryConfig)
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Union[Person, Entity]):
         """Convert project metadata person object to poetry string for person format "full name <email>."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Optional[Person]:
-        """Parse poetry person string to a Person."""
+    def _to_person(person: str) -> Optional[Union[Person, Entity]]:
+        """Convert from free string to person or entity object."""
         try:
-            return Person.from_name_email_string(person_obj)
+            return Person.from_name_email_string(person)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+
+        try:
+            return Entity.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Entity.")
             return None
 
 
@@ -133,21 +138,32 @@ class SetupTools(PyprojectCommon):
     @staticmethod
     def _from_person(person: Person):
         """Convert project metadata person object to setuptools dict for person format."""
-        return {"name": person.full_name, "email": person.email}
+        response = {"name": person.full_name}
+        if person.email:
+            response["email"] = person.email
+        return response
 
     @staticmethod
-    def _to_person(person_obj) -> Person:
-        """Parse setuptools person string to a Person."""
+    def _to_person(person: Union[str, dict]) -> Optional[Union[Entity, Person]]:
+        """Parse setuptools person string to a Person/Entity."""
         # NOTE: for our purposes, does not matter what are given or family names,
         # we only compare on full_name anyway.
-        names = list(map(lambda s: s.strip(), person_obj["name"].split()))
-        return Person(
-            **{
-                "given-names": " ".join(names[:-1]),
-                "family-names": names[-1],
-                "email": person_obj["email"].strip(),
-            }
-        )
+        if isinstance(person, dict):
+            temp = str(person["name"])
+            if "email" in person:
+                temp = f"{temp} <{person['email']}>"
+            person = temp
+
+        try:
+            return Person.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+
+        try:
+            return Entity.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Entity.")
+            return None
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file and fix license field."""

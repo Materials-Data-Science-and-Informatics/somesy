@@ -6,7 +6,7 @@ import pytest
 
 from somesy.cff import CFF
 from somesy.core.log import SomesyLogLevel, set_log_level
-from somesy.core.models import Person, SomesyInput
+from somesy.core.models import Entity, Person, SomesyInput
 from somesy.package_json.writer import PackageJSON
 from somesy.pyproject import Pyproject
 from somesy.julia import Julia
@@ -170,6 +170,15 @@ def person() -> Person:
     }
     ret = Person.model_validate(p)
     ret.set_key_order(list(p.keys()))  # custom order!
+    return ret
+
+
+@pytest.fixture
+def entity() -> Entity:
+    """Return example entity."""
+    e = {"name": "Entity", "email": "entity@example.com"}
+    ret = Entity.model_validate(e)
+    ret.set_key_order(list(e.keys()))
     return ret
 
 

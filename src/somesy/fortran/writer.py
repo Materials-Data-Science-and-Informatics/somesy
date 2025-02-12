@@ -2,12 +2,12 @@
 
 import logging
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import List, Optional, Union
 
 import tomlkit
 from rich.pretty import pretty_repr
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 from .models import FortranConfig
@@ -42,10 +42,9 @@ class Fortran(ProjectMetadataWriter):
         return authors
 
     @authors.setter
-    def authors(self, authors: List[Person]) -> None:
+    def authors(self, authors: List[Union[Person, Entity]]) -> None:
         """Set the authors of the project."""
-        authors = self._from_person(authors[0])
-        self._set_property(self._get_key("authors"), authors)
+        self._set_property(self._get_key("authors"), self._from_person(authors[0]))
 
     @property
     def maintainers(self):
@@ -56,7 +55,7 @@ class Fortran(ProjectMetadataWriter):
         return []
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
+    def maintainers(self, maintainers: List[Union[Person, Entity]]) -> None:
         """Set the maintainers of the project."""
         maintainers = self._from_person(maintainers[0])
         self._set_property(self._get_key("maintainers"), maintainers)
@@ -85,17 +84,22 @@ class Fortran(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     @staticmethod
-    def _from_person(person: Person):
-        """Convert project metadata person object to poetry string for person format "full name <email>."""
+    def _from_person(person: Union[Person, Entity]):
+        """Convert project metadata person/entity object to poetry string for person format "full name <email>."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: Any) -> Optional[Person]:
-        """Cannot convert from free string to person object."""
+    def _to_person(person: str) -> Optional[Union[Person, Entity]]:
+        """Convert from free string to person or entity object."""
         try:
-            return Person.from_name_email_string(person_obj)
+            return Person.from_name_email_string(person)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+
+        try:
+            return Entity.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Entity.")
             return None
 
     def sync(self, metadata: ProjectMetadata) -> None:

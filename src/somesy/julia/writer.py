@@ -2,12 +2,12 @@
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 import tomlkit
 from rich.pretty import pretty_repr
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
 
 from .models import JuliaConfig
@@ -49,17 +49,22 @@ class Julia(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Union[Person, Entity]):
         """Convert project metadata person object to a name+email string."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj) -> Optional[Person]:
-        """Parse name+email string to a Person."""
+    def _to_person(person: str) -> Optional[Person]:
+        """Convert from free string to person or entity object."""
         try:
-            return Person.from_name_email_string(person_obj)
+            return Person.from_name_email_string(person)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Person object.")
+            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+
+        try:
+            return Entity.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Entity.")
             return None
 
     def sync(self, metadata: ProjectMetadata) -> None:

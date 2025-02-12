@@ -7,7 +7,7 @@ from typing import Any, List, Optional, Union
 from rich.pretty import pretty_repr
 from tomlkit import dump, load, table
 
-from somesy.core.models import Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 from .models import RustConfig, check_keyword
@@ -84,14 +84,26 @@ class Rust(ProjectMetadataWriter):
         curr[key_path[-1]] = value
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Union[Person, Entity]):
         """Convert project metadata person object to rust string for person format "full name <email>."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person_obj: str) -> Optional[Person]:
-        """Parse rust person string to a Person. It has format "full name <email>." but email is optional."""
-        return Person.from_name_email_string(person_obj)
+    def _to_person(person: str) -> Optional[Union[Person, Entity]]:
+        """Parse rust person string to a Person. It has format "full name <email>." but email is optional.
+
+        Since there is no way to know whether this entry is a person or an entity, we will directly convert to Person.
+        """
+        try:
+            return Person.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+
+        try:
+            return Entity.from_name_email_string(person)
+        except (ValueError, AttributeError):
+            logger.warning(f"Cannot convert {person} to Entity.")
+            return None
 
     @classmethod
     def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:

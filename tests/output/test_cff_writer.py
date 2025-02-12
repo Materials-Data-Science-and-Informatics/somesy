@@ -1,7 +1,7 @@
 import pytest
 
 from somesy.cff.writer import CFF
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import LicenseEnum, Person, ProjectMetadata, Entity
 
 
 @pytest.fixture
@@ -36,16 +36,24 @@ def test_save(tmp_path):
     assert custom_path.is_file()
 
 
-def test_from_to_person(person: Person):
+def test_from_to_person(person: Person, entity: Entity):
     assert CFF._from_person(person) == person.model_dump(by_alias=True)
 
     p = CFF._to_person(CFF._from_person(person))
     assert p.full_name == person.full_name
     assert p.email == person.email
     assert p.orcid == str(person.orcid)
+    assert isinstance(p, Person)
+
+    assert CFF._from_person(entity) == entity.model_dump(by_alias=True)
+
+    e = CFF._to_person(CFF._from_person(entity))
+    assert e.name == entity.name
+    assert e.email == entity.email
+    assert isinstance(e, Entity)
 
 
-def test_person_merge(tmp_path, person: Person):
+def test_person_merge(tmp_path, person: Person, entity: Entity):
     def to_cff_keys(lst):
         return list(map(lambda s: s.replace("_", "-"), lst))
 
@@ -134,3 +142,30 @@ def test_person_merge(tmp_path, person: Person):
     )
     dct = cff._yaml.load(open(cff_path, "r"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1c._key_order)
+
+    # add an entity to people list
+    entity1 = entity.model_copy(update={"author": True, "publication_author": True})
+    pm.people.append(entity1)
+    # sync
+    cff.sync(pm)
+    cff.save()
+
+    assert len(cff.authors) == 3
+    assert len(cff.maintainers) == 1
+    assert cff.authors[2] == entity1.model_dump(
+        by_alias=True, exclude={"author", "publication_author"}
+    )
+
+    # updated entity, since email is same, existing one in cff should be updated
+    entity1b = entity1.model_copy(update={"name": "Entity 1b"})
+    pm.people.pop()
+    pm.people.append(entity1b)
+    # sync
+    cff.sync(pm)
+    cff.save()
+
+    assert len(cff.authors) == 3
+    assert len(cff.maintainers) == 1
+    assert cff.authors[2] == entity1b.model_dump(
+        by_alias=True, exclude={"author", "publication_author"}
+    )

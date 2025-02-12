@@ -77,7 +77,7 @@ class PackageJsonConfig(BaseModel):
 
     # convert package author to dict if it is a string
     @classmethod
-    def convert_author(cls, author: str) -> Optional[PackageAuthor]:
+    def convert_author(cls, author: str) -> PackageAuthor:
         """Convert author string to PackageAuthor model."""
         # parse author string to "name <email> (url)" format with regex
         author_match = re.match(NPM_PKG_AUTHOR, author)
@@ -87,8 +87,6 @@ class PackageJsonConfig(BaseModel):
         author_email = author_match[2]
         author_url = author_match[3]
 
-        if author_email is None:
-            return None
         return PackageAuthor(name=author_name, email=author_email, url=author_url)
 
     @field_validator("name")
