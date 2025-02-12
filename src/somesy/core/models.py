@@ -279,22 +279,6 @@ class ContributorBaseModel(SomesyBaseModel):
         ),
     ] = None
 
-    family_names: Annotated[
-        str, Field(alias="family-names", description="The person's family names.")
-    ]
-    given_names: Annotated[
-        str, Field(alias="given-names", description="The person's given names.")
-    ]
-
-    name_particle: Annotated[
-        Optional[str],
-        Field(
-            alias="name-particle",
-            description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from'"
-            " (for example 'von' in 'Alexander von Humboldt').",
-            examples=["von"],
-        ),
-    ] = None
     alias: Annotated[Optional[str], Field(description="The contributor's alias.")] = (
         None
     )
