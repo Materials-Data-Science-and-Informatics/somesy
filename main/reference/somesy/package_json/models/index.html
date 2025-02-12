@@ -2632,9 +2632,7 @@
 <span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PackageJsonConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">PackageJsonConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Package.json config model.&quot;&quot;&quot;</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">populate_by_name</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2670,7 +2668,7 @@
 
     <span class="c1"># convert package author to dict if it is a string</span>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">convert_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PackageAuthor</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">convert_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PackageAuthor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert author string to PackageAuthor model.&quot;&quot;&quot;</span>
         <span class="c1"># parse author string to &quot;name &lt;email&gt; (url)&quot; format with regex</span>
         <span class="n">author_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">NPM_PKG_AUTHOR</span><span class="p">,</span> <span class="n">author</span><span class="p">)</span>
@@ -2680,8 +2678,6 @@
         <span class="n">author_email</span> <span class="o">=</span> <span class="n">author_match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">author_url</span> <span class="o">=</span> <span class="n">author_match</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="n">author_email</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">PackageAuthor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">author_name</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">author_email</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">author_url</span><span class="p">)</span>
 
     <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
@@ -2755,7 +2751,7 @@
   </span>
 
 <a href="#somesy.package_json.models.PackageJsonConfig.convert_author" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">convert_author</span><span class="p">(</span><span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PackageAuthor</span><span class="p">]</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">convert_author</span><span class="p">(</span><span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PackageAuthor</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2775,10 +2771,8 @@
 <span class="normal">87</span>
 <span class="normal">88</span>
 <span class="normal">89</span>
-<span class="normal">90</span>
-<span class="normal">91</span>
-<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
-<span class="k">def</span> <span class="nf">convert_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">PackageAuthor</span><span class="p">]:</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="k">def</span> <span class="nf">convert_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">author</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PackageAuthor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert author string to PackageAuthor model.&quot;&quot;&quot;</span>
     <span class="c1"># parse author string to &quot;name &lt;email&gt; (url)&quot; format with regex</span>
     <span class="n">author_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">NPM_PKG_AUTHOR</span><span class="p">,</span> <span class="n">author</span><span class="p">)</span>
@@ -2788,8 +2782,6 @@
     <span class="n">author_email</span> <span class="o">=</span> <span class="n">author_match</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
     <span class="n">author_url</span> <span class="o">=</span> <span class="n">author_match</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">author_email</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">PackageAuthor</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">author_name</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">author_email</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">author_url</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2818,14 +2810,14 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/package_json/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span>
+<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate package name.&quot;&quot;&quot;</span>
@@ -2860,13 +2852,13 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/package_json/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
+<span class="normal">107</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate package version.&quot;&quot;&quot;</span>
@@ -2900,11 +2892,11 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/package_json/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
 <span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">)</span>
+<span class="normal">113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_author</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate package author.&quot;&quot;&quot;</span>
@@ -2936,7 +2928,9 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/package_json/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">117</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
@@ -2954,9 +2948,7 @@
 <span class="normal">132</span>
 <span class="normal">133</span>
 <span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;maintainers&quot;</span><span class="p">,</span> <span class="s2">&quot;contributors&quot;</span><span class="p">)</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;maintainers&quot;</span><span class="p">,</span> <span class="s2">&quot;contributors&quot;</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">validate_people</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate package maintainers and contributors.&quot;&quot;&quot;</span>

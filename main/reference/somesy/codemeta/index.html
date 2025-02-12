@@ -2377,7 +2377,31 @@
 <span class="normal">171</span>
 <span class="normal">172</span>
 <span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CodeMeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">CodeMeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Codemeta.json parser and saver.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -2409,10 +2433,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;publication_authors&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="nd">@authors</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the authors of the project.&quot;&quot;&quot;</span>
-        <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">),</span> <span class="n">authors</span><span class="p">)</span>
+        <span class="n">authors_dict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">),</span> <span class="n">authors_dict</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2420,10 +2444,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;contributors&quot;</span><span class="p">))</span>
 
     <span class="nd">@contributors</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the contributors of the project.&quot;&quot;&quot;</span>
-        <span class="n">contributors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">contributors</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;contributors&quot;</span><span class="p">),</span> <span class="n">contributors</span><span class="p">)</span>
+        <span class="n">contributors_dict</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">contributors</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;contributors&quot;</span><span class="p">),</span> <span class="n">contributors_dict</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load codemeta.json file.&quot;&quot;&quot;</span>
@@ -2439,6 +2463,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init_new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new codemeta.json file with bare minimum generic data.&quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;@context&quot;</span><span class="p">:</span> <span class="p">[</span>
                 <span class="s2">&quot;https://doi.org/10.5063/schema/codemeta-2.0&quot;</span><span class="p">,</span>
@@ -2475,43 +2500,68 @@
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert project metadata person object to codemeta.json dict for person format.&quot;&quot;&quot;</span>
-        <span class="n">person_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span><span class="p">:</span>
-            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span><span class="p">:</span>
-            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;familyName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
-            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">:</span>
-            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span><span class="p">:</span>
-            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">affiliation</span><span class="p">:</span>
-            <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;affiliation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">affiliation</span>
-        <span class="k">return</span> <span class="n">person_dict</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">person</span><span class="p">,</span> <span class="n">Person</span><span class="p">):</span>
+            <span class="n">person_dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Person&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span><span class="p">:</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">given_names</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span><span class="p">:</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;familyName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">family_names</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">:</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span><span class="p">:</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">affiliation</span><span class="p">:</span>
+                <span class="n">person_dict</span><span class="p">[</span><span class="s2">&quot;affiliation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">affiliation</span>
+            <span class="k">return</span> <span class="n">person_dict</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">entity_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;@type&quot;</span><span class="p">:</span> <span class="s2">&quot;Organization&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">person</span><span class="o">.</span><span class="n">name</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span><span class="p">:</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">address</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">date_start</span><span class="p">:</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;startDate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">date_start</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">date_end</span><span class="p">:</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;endDate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">date_end</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">website</span><span class="p">:</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">website</span><span class="p">)</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">website</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">rorid</span><span class="p">:</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">rorid</span><span class="p">)</span>
+                <span class="n">entity_dict</span><span class="p">[</span><span class="s2">&quot;identifier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">rorid</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">entity_dict</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Person</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert codemeta.json dict or str for person format to project metadata person object.&quot;&quot;&quot;</span>
-        <span class="n">person_obj</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="s2">&quot;givenName&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
-            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;given_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;familyName&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
-            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;family_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;familyName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;email&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
-            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;@id&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
-            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;orcid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">if</span> <span class="s2">&quot;address&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
-            <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert codemeta.json dict or str for person/entity format to project metadata person object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+            <span class="n">entity_obj</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]}</span>
+            <span class="k">return</span> <span class="n">Entity</span><span class="p">(</span><span class="o">**</span><span class="n">entity_obj</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">person_obj</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="s2">&quot;givenName&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+                <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;given_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;givenName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;familyName&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+                <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;family_names&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;familyName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;email&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+                <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;@id&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+                <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;orcid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;@id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;address&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+                <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">Person</span><span class="p">(</span><span class="o">**</span><span class="n">person_obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Person</span><span class="p">(</span><span class="o">**</span><span class="n">person_obj</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">_sync_person_list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">old</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">new</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override the _sync_person_list function from ProjectMetadataWriter.</span>
 
 <span class="sd">        This method wont care about existing persons in codemeta.json file.</span>
@@ -2532,9 +2582,7 @@
 <span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -2682,8 +2730,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 94</span>
-<span class="normal"> 95</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 95</span>
 <span class="normal"> 96</span>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
@@ -2700,7 +2747,8 @@
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">112</span>
+<span class="normal">113</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the codemeta.json file.&quot;&quot;&quot;</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving codemeta.json to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -2743,23 +2791,19 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync codemeta.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
-    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

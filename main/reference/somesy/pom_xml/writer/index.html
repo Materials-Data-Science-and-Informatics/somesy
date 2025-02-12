@@ -2615,7 +2615,31 @@
 <span class="normal">214</span>
 <span class="normal">215</span>
 <span class="normal">216</span>
-<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">POM</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">POM</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Java Maven pom.xml parser and saver.&quot;&quot;&quot;</span>
 
     <span class="c1"># TODO: write a wrapper for ElementTree that behaves like a dict</span>
@@ -2670,6 +2694,7 @@
         <span class="n">only_first</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">remove</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get (a) property by key.&quot;&quot;&quot;</span>
         <span class="n">elem</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">only_first</span><span class="o">=</span><span class="n">only_first</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="n">remove</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
@@ -2679,41 +2704,64 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Person</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Entity</span><span class="p">,</span> <span class="n">Person</span><span class="p">]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert person object to dict for POM XML person format.&quot;&quot;&quot;</span>
         <span class="n">ret</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">person_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span> <span class="ow">or</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">person</span><span class="p">,</span> <span class="n">Person</span><span class="p">):</span>
+            <span class="n">person_id</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">:</span>
+                <span class="n">person_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
+                <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">person_id</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">website</span><span class="p">:</span>
+                <span class="n">person_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">website</span><span class="p">)</span>
+                <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">website</span>
         <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person_id</span>
         <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">full_name</span>
-        <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
-        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">:</span>
-            <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="o">.</span><span class="n">orcid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+            <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
         <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">contribution_types</span><span class="p">:</span>
             <span class="n">ret</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">role</span><span class="o">=</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">person</span><span class="o">.</span><span class="n">contribution_types</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Person</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Entity</span><span class="p">,</span> <span class="n">Person</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse POM XML person to a somesy Person.&quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="n">gnames</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">email</span> <span class="o">=</span> <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
-        <span class="n">maybe_orcid</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;orcid.org&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">roles</span> <span class="o">:=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;roles&quot;</span><span class="p">):</span>
-            <span class="n">contr</span> <span class="o">=</span> <span class="n">roles</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">contr</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">gnames</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">names</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
+            <span class="n">maybe_orcid</span> <span class="o">=</span> <span class="n">url</span> <span class="k">if</span> <span class="n">url</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;orcid.org&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">roles</span> <span class="o">:=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;roles&quot;</span><span class="p">):</span>
+                <span class="n">contr</span> <span class="o">=</span> <span class="n">roles</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contr</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="k">return</span> <span class="n">Person</span><span class="p">(</span>
-            <span class="n">given_names</span><span class="o">=</span><span class="n">gnames</span><span class="p">,</span>
-            <span class="n">family_names</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
-            <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span>
-            <span class="n">orcid</span><span class="o">=</span><span class="n">maybe_orcid</span><span class="p">,</span>
-            <span class="n">contribution_types</span><span class="o">=</span><span class="n">contr</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="k">return</span> <span class="n">Person</span><span class="p">(</span>
+                <span class="n">given_names</span><span class="o">=</span><span class="n">gnames</span><span class="p">,</span>
+                <span class="n">family_names</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span>
+                <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span>
+                <span class="n">orcid</span><span class="o">=</span><span class="n">maybe_orcid</span><span class="p">,</span>
+                <span class="n">contribution_types</span><span class="o">=</span><span class="n">contr</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">person_obj</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+            <span class="n">email</span> <span class="o">=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">roles</span> <span class="o">:=</span> <span class="n">person_obj</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;roles&quot;</span><span class="p">):</span>
+                <span class="n">contr</span> <span class="o">=</span> <span class="n">roles</span><span class="p">[</span><span class="s2">&quot;role&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">contr</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="n">Entity</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span>
+                <span class="n">website</span><span class="o">=</span><span class="n">url</span><span class="p">,</span>
+                <span class="n">contribution_types</span><span class="o">=</span><span class="n">contr</span><span class="p">,</span>
+            <span class="p">)</span>
 
     <span class="c1"># no search keywords supported in POM</span>
     <span class="nd">@property</span>
@@ -2734,7 +2782,7 @@
         <span class="k">return</span> <span class="n">authors</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">authors</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">authors</span><span class="p">]</span>
 
     <span class="nd">@authors</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">authors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Entity</span><span class="p">,</span> <span class="n">Person</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the authors of the project.&quot;&quot;&quot;</span>
         <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">authors</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;authors&quot;</span><span class="p">),</span> <span class="n">authors</span><span class="p">)</span>
@@ -2749,7 +2797,7 @@
         <span class="k">return</span> <span class="n">contr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contr</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">contr</span><span class="p">]</span>
 
     <span class="nd">@contributors</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contributors</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Entity</span><span class="p">,</span> <span class="n">Person</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the contributors of the project.&quot;&quot;&quot;</span>
         <span class="n">contr</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">contributors</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">&quot;contributors&quot;</span><span class="p">),</span> <span class="n">contr</span><span class="p">)</span>
@@ -3112,13 +3160,13 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/pom_xml/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync codemeta.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>

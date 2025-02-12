@@ -2324,6 +2324,13 @@ have to think about, <code>somesy</code> will take care of the others for you!</
 <span class="c1"># ... but for scientific publications, this contributor should be listed as author:</span>
 <span class="n">publication_author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span>
 
+<span class="c1"># add an organization as a maintainer</span>
+<span class="k">[[project.entities]]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;My Super Organization&quot;</span>
+<span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;info@my-super-org.com&quot;</span>
+<span class="n">website</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://my-super-org.com&quot;</span>
+<span class="n">rorid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;https://ror.org/02nv7yv05&quot;</span><span class="w"> </span><span class="c1"># highly recommended set a ror id for your organization</span>
+
 <span class="k">[config]</span>
 <span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="w">     </span><span class="c1"># show detailed information about what somesy is doing</span>
 </code></pre></div>
@@ -2362,11 +2369,11 @@ metadata even before your changes can leave your computer.</p>
 <p>To add <code>somesy</code> as a pre-commit hook, add it to your <code>.pre-commit-config.yaml</code>
 file in the root folder of your repository:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
-<span class="w">  </span><span class="c1"># ... (your other hooks) ...</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
-<span class="w">    </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v0.5.0&quot;</span>
-<span class="w">    </span><span class="nt">hooks</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
+<span class="w">    </span><span class="c1"># ... (your other hooks) ...</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
+<span class="w">      </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v0.6.0&#39;</span>
+<span class="w">      </span><span class="nt">hooks</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
 </code></pre></div>
 <blockquote>
 <p><strong>Note</strong></p>
