@@ -134,6 +134,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
     |                  |               |                   |              |              |                |              |            |                |                 |                |
     | **name**  | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | givenName       | name(+email)     |
     | email     | name(+email)    | email             | email        | name(+email)   | name(+email)     | email        | name(+email) | name(+email)     | email           | name(+email)     |
+    | rorid   | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
     | website   | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
     | *(many others)*  | -             | -                 | -            | -            | -              | -            | -          | -              | *(same)*        | -              |
 
@@ -168,6 +169,9 @@ issue or consult the `somesy` code.
 **people** and **entities** are mapped to authors/maintainers/contributors depending
 on the output format. Both fields are marked as necessary but what `somesy` need is an
 author either in **people** or **entities**.
+
+When an **entity** has a `ror id` but no `website` set, url related fields will be
+filled with `ror id`.
 
 ## The somesy CLI tool
 
@@ -241,6 +245,7 @@ one of the supported input formats:
     name = "My Super Organization"
     email = "info@my-super-org.com"
     website = "https://my-super-org.com"
+    rorid = "https://ror.org/02nv7yv05" # highly recommended set a ror id for your organization
 
     [tool.somesy.config]
     verbose = true     # show detailed information about what somesy is doing
@@ -286,6 +291,7 @@ uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
     name = "My Super Organization"
     email = "info@my-super-org.com"
     website = "https://my-super-org.com"
+    rorid = "https://ror.org/02nv7yv05" # highly recommended set a ror id for your organization
 
     [tool.somesy.config]
     verbose = true     # show detailed information about what somesy is doing
@@ -326,6 +332,7 @@ version = "0.1.0"
     name = "My Super Organization"
     email = "info@my-super-org.com"
     website = "https://my-super-org.com"
+    rorid = "https://ror.org/02nv7yv05" # highly recommended set a ror id for your organization
 
     [tool.somesy.config]
     verbose = true     # show detailed information about what somesy is doing
@@ -368,7 +375,8 @@ version = "0.1.0"
             {
                 "name": "My Super Organization",
                 "email": "info@my-super-org.com",
-                "website": "https://my-super-org.com"
+                "website": "https://my-super-org.com",
+                "rorid": "https://ror.org/02nv7yv05"
             }
         ],
         "config": {
@@ -496,23 +504,43 @@ after running somesy (to remove the duplicate entries with the incorrect ORCID).
 
 When somesy compares two metadata records about an entity, it will proceed as follows:
 
-1. If both records contain a website URL, and it is the same URL, then they are the same entity.
-2. Otherwise, if both records have an attached email address, and it is the same email, then they are the same entity.
-3. Otherwise, the records are considered to be about the same entity if they agree on the name.
+1. If both records contain a ROR ID, then the entity is the same if the ROR IDs are equal, and different if they are not.
+2. Otherwise, if both records contain a website URL, and it is the same URL, then they are the same entity.
+3. Otherwise, if both records have an attached email address, and it is the same email, then they are the same entity.
+4. Otherwise, the records are considered to be about the same entity if they agree on the name.
 
 !!! tip
 
-    State website URLs for entities whenever possible to ensure reliable identification!
+    State ROR IDs for entities whenever possible to ensure reliable identification!
+
+!!! tip
+
+    If a ROR ID is not available, state website URLs for entities to help with identification!
 
 Somesy will usually correctly understand cases such as:
 
-1. A website URL being added to an entity (i.e. if it was not present before)
-2. A changed email address (if the name stays the same)
-3. A changed name (if the email address stays the same)
-4. Any other relevant metadata attached to the entity
+1. A ROR ID being added to an entity (i.e. if it was not present before)
+2. A website URL being added to an entity (if no ROR ID is present)
+3. A changed email address (if the name stays the same)
+4. A changed name (if the email address stays the same)
+5. Any other relevant metadata attached to the entity
 
 Nevertheless, you should **check the changes somesy does** before committing them to your repository,
 especially **after you significantly modified your project metadata**.
+
+!!! warning
+
+    Note that changing the ROR ID will not be recognized,
+    because ROR IDs are assumed to be unique per entity.
+
+If you initially have stated an incorrect ROR ID for an entity and then change it, **somesy will think that this is a new entity**.
+Therefore, **in such a case you will need to fix the ROR ID in all configured somesy targets** either
+before running somesy (so somesy will not create new entity entries), or
+after running somesy (to remove the duplicate entries with the incorrect ROR ID).
+
+!!! warning
+
+    Entity identification and merging is not applied to standards with free text fields for entities, such as `fpm.toml`.
 
 ### Codemeta
 

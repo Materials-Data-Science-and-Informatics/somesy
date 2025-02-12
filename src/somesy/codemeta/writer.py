@@ -146,6 +146,9 @@ class CodeMeta(ProjectMetadataWriter):
             if person.website:
                 entity_dict["@id"] = str(person.website)
                 entity_dict["identifier"] = str(person.website)
+            if person.rorid:
+                entity_dict["@id"] = str(person.rorid)
+                entity_dict["identifier"] = str(person.rorid)
             return entity_dict
 
     @staticmethod

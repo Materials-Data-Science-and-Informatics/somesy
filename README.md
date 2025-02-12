@@ -112,6 +112,7 @@ publication_author = true
 name = "My Super Organization"
 email = "info@my-super-org.com"
 website = "https://my-super-org.com"
+rorid = "https://ror.org/02nv7yv05" # highly recommended set a ror id for your organization
 
 [config]
 verbose = true     # show detailed information about what somesy is doing

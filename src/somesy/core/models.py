@@ -405,6 +405,12 @@ class Entity(ContributorBaseModel):
     website: Annotated[
         Optional[HttpUrlStr], Field(description="The entity's website.")
     ] = None
+    rorid: Annotated[
+        Optional[HttpUrlStr],
+        Field(
+            description="The entity's ROR ID url **(not required, but highly suggested)**."
+        ),
+    ] = None
 
     # helper methods
     @property
@@ -437,6 +443,9 @@ class Entity(ContributorBaseModel):
         """
         if not isinstance(other, Entity):
             return False
+        if self.rorid is not None and other.rorid is not None:
+            if self.rorid == other.rorid:
+                return True
         if self.website is not None and other.website is not None:
             if self.website == other.website:
                 return True
@@ -444,6 +453,17 @@ class Entity(ContributorBaseModel):
             if self.email == other.email:
                 return True
         return self.name == other.name
+
+    def model_dump_json(self, *args, **kwargs):
+        """Patched json method (to preserve custom key order), remove rorid and set it as website if it is not None."""
+        ret = super().model_dump_json(*args, **kwargs)
+        # convert ret to dict
+        ret = json.loads(ret)
+        if self.rorid is not None and "website" not in ret:
+            ret["website"] = str(self.rorid)
+            ret.pop("rorid")
+        # convert ret back to json string
+        return json.dumps(ret)
 
 
 class Person(ContributorBaseModel):

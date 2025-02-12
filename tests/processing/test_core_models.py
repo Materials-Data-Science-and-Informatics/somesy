@@ -26,6 +26,9 @@ e1 = {"name": "Test Org 1"}
 e2 = {"name": "Test Org 2", "email": "org2@example.com"}
 e3 = {"name": "Test Org 1", "email": "org1@example.com"}
 e4 = {"name": "Test Org 3", "email": "org1@example.com"}
+e5 = {**e2, "rorid": "https://ror.org/12345678"}
+e6 = {**e3, "rorid": "https://ror.org/87654321"}
+e7 = {**e3, "rorid": e5["rorid"]}  # same rorid as e5
 
 
 def test_same_person():
@@ -52,6 +55,10 @@ def test_same_entity():
     assert Entity(**e3).same_person(Entity(**e4))
     # no email, same name -> same
     assert Entity(**e1).same_person(Entity(**e3))
+    # different rorid -> different
+    assert not Entity(**e5).same_person(Entity(**e6))
+    # same rorid -> same
+    assert Entity(**e5).same_person(Entity(**e7))
 
 
 def test_detect_duplicate_person(somesy_input):
@@ -112,6 +119,17 @@ def test_detect_duplicate_entity(somesy_input):
     meta.entities = [Entity(**e2), Entity(**e3)]
     dump = meta.model_dump()
     ProjectMetadata(**dump)
+
+    # E5 /= E6 (different RORIDs)
+    meta.entities = [Entity(**e5), Entity(**e6)]
+    dump = meta.model_dump()
+    ProjectMetadata(**dump)
+
+    # E5 ~= E7 (same RORID)
+    with pytest.raises(ValueError):
+        meta.entities = [Entity(**e5), Entity(**e7)]
+        dump = meta.model_dump()
+        ProjectMetadata(**dump)
 
 
 def test_custom_key_order():
