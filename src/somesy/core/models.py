@@ -437,6 +437,9 @@ class Entity(ContributorBaseModel):
         """
         if not isinstance(other, Entity):
             return False
+        if self.website is not None and other.website is not None:
+            if self.website == other.website:
+                return True
         if self.email is not None and other.email is not None:
             if self.email == other.email:
                 return True
