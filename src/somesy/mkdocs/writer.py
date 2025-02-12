@@ -67,11 +67,6 @@ class MkDocs(ProjectMetadataWriter):
             return []
         else:
             return [authors]
-        authors = self._get_property(self._get_key("authors"))
-        if authors is None or self._to_person(authors) is None:
-            return []
-        else:
-            return [authors]
 
     @authors.setter
     def authors(self, authors: List[Union[Entity, Person]]) -> None:
