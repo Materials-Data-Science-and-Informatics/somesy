@@ -1,5 +1,5 @@
 from pydantic import Field
-import pytest
+from typing import Optional
 
 from somesy.core.models import SomesyBaseModel
 
@@ -9,7 +9,7 @@ class TestModel(SomesyBaseModel):
 
     name: str = Field(alias="full_name")
     age: int
-    email: str | None = None
+    email: Optional[str] = None
 
 
 def test_key_order():
