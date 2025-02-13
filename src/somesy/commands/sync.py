@@ -78,5 +78,5 @@ def sync(somesy_input: SomesyInput):
             metadata,
             conf.codemeta_file,
             CodeMeta,
-            merge_codemeta=metadata.merge_codemeta,
+            merge_codemeta=conf.merge_codemeta,
         )
