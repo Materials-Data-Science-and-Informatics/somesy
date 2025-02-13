@@ -26,6 +26,13 @@ class CodeMeta(ProjectMetadataWriter):
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self.merge = merge
+        self._default_context = [
+            "https://doi.org/10.5063/schema/codemeta-2.0",
+            "https://w3id.org/software-iodata",
+            "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+            "https://schema.org",
+            "https://w3id.org/software-types",
+        ]
         mappings: FieldKeyMapping = {
             "repository": ["codeRepository"],
             "homepage": ["softwareHelp"],
@@ -43,18 +50,11 @@ class CodeMeta(ProjectMetadataWriter):
 
         # if merge is True, add necessary keys to the codemeta.json file
         if self.merge:
-            context = [
-                "https://doi.org/10.5063/schema/codemeta-2.0",
-                "https://w3id.org/software-iodata",
-                "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
-                "https://schema.org",
-                "https://w3id.org/software-types",
-            ]
             # check if the context exists but is not a list
             if isinstance(self._data["@context"], str):
                 self._data["@context"] = [self._data["@context"]]
             # finally add each item in the context to the codemeta.json file if it does not exist in the list
-            for item in context:
+            for item in self._default_context:
                 if item not in self._data["@context"]:
                     self._data["@context"].append(item)
 
@@ -222,3 +222,8 @@ class CodeMeta(ProjectMetadataWriter):
         """
         super().sync(metadata)
         self.contributors = metadata.contributors()
+
+        # add the default context items if they are not already in the codemeta.json file
+        for item in self._default_context:
+            if item not in self._data["@context"]:
+                self._data["@context"].append(item)
