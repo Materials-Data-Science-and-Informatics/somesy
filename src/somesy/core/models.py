@@ -236,6 +236,12 @@ class SomesyConfig(SomesyBaseModel):
     codemeta_file: Annotated[Path, Field(description="codemeta.json file path.")] = (
         Path("codemeta.json")
     )
+    merge_codemeta: Annotated[
+        bool,
+        Field(
+            description="Merge codemeta.json with with an existing codemeta.json file."
+        ),
+    ] = False
 
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""

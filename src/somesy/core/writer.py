@@ -36,6 +36,7 @@ class ProjectMetadataWriter(ABC):
         *,
         create_if_not_exists: Optional[bool] = False,
         direct_mappings: FieldKeyMapping = None,
+        merge: Optional[bool] = False,
     ) -> None:
         """Initialize the Project Metadata Output Wrapper.
 
@@ -48,13 +49,14 @@ class ProjectMetadataWriter(ABC):
             path: Path to target output file.
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
+            merge: Merge the output file with an existing file. Defaults to False.
 
         """
         self._data: DictLike = {}
         self.path = path if isinstance(path, Path) else Path(path)
         self.create_if_not_exists = create_if_not_exists
         self.direct_mappings = direct_mappings or {}
-
+        self.merge = merge
         if self.path.is_file():
             self._load()
             self._validate()
