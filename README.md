@@ -213,7 +213,7 @@ Here is an overview of all the currently supported files and formats.
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses (somesy only supports one main project license)
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration
-6. unlike other targets, `somesy` has an option to whether to merge or overwrite _codemeta.json_. See the [user manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta) for details about CodeMeta handling.
+6. For handling `codemeta.json` different options exists: Either (A) `somesy` removes any prior existing `codemata.json` files and re-creates it anew, or (B) `somesy` merges an existing `codemeta.json` with the information handled by `somesy`. See the [user manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta) for additional details about CodeMeta handling.
 
 <!-- --8<-- [end:quickstart] -->
 
