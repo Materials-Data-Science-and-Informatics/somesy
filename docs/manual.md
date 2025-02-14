@@ -556,8 +556,9 @@ when handling CodeMeta files is controlled by the `codemeta_merge` configuration
 When `codemeta_merge = true`, `somesy` will:
 
 1. Read and parse any existing `codemeta.json` file
-2. Update only the fields that `somesy` manages
-3. Preserve any additional fields or metadata present in the file
+2. Update only the fields that `somesy` manages. Values that are already present will be overwritten.
+3. Preserve any additional fields or metadata present in the file and append it to the record.
+
 
 When `codemeta_merge = false` (default), `somesy` will:
 
