@@ -572,14 +572,14 @@ When `codemeta_merge = false` (default), `somesy` will:
 
 !!! warning
 
-    Unlike other formats, person and entity merging heuristics are not 
-    implemented for CodeMeta. The author, maintainer, and contributor 
-    fields are directly created from your somesy project metadata, 
+    Unlike other formats, person and entity merging heuristics are not
+    implemented for CodeMeta. The author, maintainer, and contributor
+    fields are directly created from your somesy project metadata,
     overwriting any existing entries in these fields.
-    
-    Please note that due to the above behavior and the linked-data nature of values in 
-    `codemeta.json` records using the option `codemeta_merge = true` can create 
-    conflicts within the CodeMeta record, i.e. if values in `somesy.toml` and those 
+
+    Please note that due to the above behavior and the linked-data nature of values in
+    `codemeta.json` records using the option `codemeta_merge = true` can create
+    conflicts within the CodeMeta record, i.e. if values in `somesy.toml` and those
     that get appended to the CodeMeta record show inconsistencies.
 
 As `codemeta.json` is considered a technical "backend-format" derived from other

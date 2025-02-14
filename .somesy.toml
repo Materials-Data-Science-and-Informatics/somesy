@@ -1,6 +1,6 @@
 [project]
 name = "somesy"
-version = "0.5.0"
+version = "0.6.0"
 description = "A CLI tool for synchronizing software project metadata."
 keywords = ["metadata", "FAIR"]
 license = "MIT"
@@ -54,7 +54,7 @@ orcid = "https://orcid.org/0000-0002-5149-603X"
 contribution = "Discussions and suggestions concerning tool scope and usability."
 contribution_begin = "2023-06-01"
 contribution_end = "2023-06-30"
-contribution_types = ["ideas"]
+contribution_types = ["ideas", "doc"]
 
 publication_author = true
 
@@ -67,17 +67,3 @@ orcid = "https://orcid.org/0000-0001-9560-4728"
 contribution_types = ["fundingFinding"]
 
 publication_author = true
-
-[config]
-no_sync_cff = false
-cff_file = "CITATION.cff"
-no_sync_pyproject = false
-pyproject_file = "pyproject.toml"
-no_sync_codemeta = false
-codemeta_file = "codemeta.json"
-no_sync_package_json = true
-no_sync_julia = true
-no_sync_fortran = true
-show_info = false
-verbose = false
-debug = true
