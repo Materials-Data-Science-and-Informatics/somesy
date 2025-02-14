@@ -2,7 +2,7 @@
   "note":"This file is an internal implementation detail to speed up HTML report generation. Its format can change at any time. You might be looking for the JSON report: https://coverage.rtfd.io/cmd.html#cmd-json",
   "format":5,
   "version":"7.6.0",
-  "globals":"0a8c51eb60d07aa4c0ad3358177d75a8",
+  "globals":"b4452c6771ee47899c90da0a8bc2df17",
   "files":{
     "z_97b113e3d51588b3___init___py":{
       "hash":"0b7442e339cccfa336b6852807e46823",
@@ -113,7 +113,7 @@
       }
     },
     "z_1772db955a685d28_sync_py":{
-      "hash":"3a0a4d8c41514b8b22ea9946aac80152",
+      "hash":"7d500181d264789e3288f7bebccbf020",
       "index":{
         "url":"z_1772db955a685d28_sync_py.html",
         "file":"src/somesy/cli/sync.py",
@@ -166,8 +166,26 @@
         }
       }
     },
+    "z_3187dccd59625139_utils_py":{
+      "hash":"693bace7d6670ffa25df26b2a90fa2ff",
+      "index":{
+        "url":"z_3187dccd59625139_utils_py.html",
+        "file":"src/somesy/codemeta/utils.py",
+        "description":"",
+        "nums":{
+          "precision":0,
+          "n_files":1,
+          "n_statements":47,
+          "n_excluded":0,
+          "n_missing":7,
+          "n_branches":0,
+          "n_partial_branches":0,
+          "n_missing_branches":0
+        }
+      }
+    },
     "z_3187dccd59625139_writer_py":{
-      "hash":"74a35718b0e204166c922b5ff36d5d62",
+      "hash":"49bf0a394e1a8bdb20961b1f743f53bd",
       "index":{
         "url":"z_3187dccd59625139_writer_py.html",
         "file":"src/somesy/codemeta/writer.py",
@@ -175,9 +193,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":106,
+          "n_statements":122,
           "n_excluded":0,
-          "n_missing":26,
+          "n_missing":34,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -221,7 +239,7 @@
       }
     },
     "z_52da451127691ee7_sync_py":{
-      "hash":"ad07cbe94327e2a876e5c5b0e0a093fc",
+      "hash":"98a745a4950732812bdc95bc7388852a",
       "index":{
         "url":"z_52da451127691ee7_sync_py.html",
         "file":"src/somesy/commands/sync.py",
@@ -229,9 +247,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":45,
+          "n_statements":47,
           "n_excluded":0,
-          "n_missing":27,
+          "n_missing":29,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -293,7 +311,7 @@
       }
     },
     "z_596ffba9215ba05d_models_py":{
-      "hash":"429595e8f2ba6b06803b5eb8b40dd641",
+      "hash":"9f57808363035399f3bef570e3ef8a76",
       "index":{
         "url":"z_596ffba9215ba05d_models_py.html",
         "file":"src/somesy/core/models.py",
@@ -301,7 +319,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":289,
+          "n_statements":290,
           "n_excluded":0,
           "n_missing":21,
           "n_branches":0,
@@ -329,7 +347,7 @@
       }
     },
     "z_596ffba9215ba05d_writer_py":{
-      "hash":"6459ebea060de7abb24632333806be33",
+      "hash":"9c1dc64baca954ec7b79556bbd5964a6",
       "index":{
         "url":"z_596ffba9215ba05d_writer_py.html",
         "file":"src/somesy/core/writer.py",
@@ -337,7 +355,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":189,
+          "n_statements":190,
           "n_excluded":33,
           "n_missing":9,
           "n_branches":0,
@@ -383,7 +401,7 @@
       }
     },
     "z_6be38e8f492515f5_writer_py":{
-      "hash":"bd513ead63d4bcd310a7d09fc91849e8",
+      "hash":"e4630e0ccc957f4f313665029338104b",
       "index":{
         "url":"z_6be38e8f492515f5_writer_py.html",
         "file":"src/somesy/fortran/writer.py",
@@ -455,7 +473,7 @@
       }
     },
     "z_55871f16c47673c2_writer_py":{
-      "hash":"c49c400c82c7edf98ef71d7f5a932fa2",
+      "hash":"d627bf231deb696686d295918058cceb",
       "index":{
         "url":"z_55871f16c47673c2_writer_py.html",
         "file":"src/somesy/julia/writer.py",
@@ -527,7 +545,7 @@
       }
     },
     "z_6c09ba444e4cc07f_writer_py":{
-      "hash":"2c5c7220314b12a01d2a719edc3c6a6b",
+      "hash":"b230043f897a9f6272fa68e7fa3c0293",
       "index":{
         "url":"z_6c09ba444e4cc07f_writer_py.html",
         "file":"src/somesy/mkdocs/writer.py",
@@ -689,7 +707,7 @@
       }
     },
     "z_22470fc7858cbfa7_writer_py":{
-      "hash":"685e26a4e5ceb4ada5a0488ca399f16a",
+      "hash":"7cb27b98c146761124f7f320b8b6abe9",
       "index":{
         "url":"z_22470fc7858cbfa7_writer_py.html",
         "file":"src/somesy/pyproject/writer.py",
@@ -743,7 +761,7 @@
       }
     },
     "z_3ca2b73183ed41f7_writer_py":{
-      "hash":"b5b0142226364e62b92e54b3f8af58d8",
+      "hash":"2fea989655ef243c978f08c5be4b0ac3",
       "index":{
         "url":"z_3ca2b73183ed41f7_writer_py.html",
         "file":"src/somesy/rust/writer.py",

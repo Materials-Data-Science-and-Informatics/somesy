@@ -909,6 +909,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../codemeta/utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../codemeta/writer/" class="md-nav__link">
         
   
@@ -2415,7 +2436,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Person</span><span class="o">.</span><span class="n">from_name_email_string</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert </span><span class="si">{</span><span class="n">person</span><span class="si">}</span><span class="s2"> to Person object, trying Entity.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert </span><span class="si">{</span><span class="n">person</span><span class="si">}</span><span class="s2"> to Person object, trying Entity.&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Entity</span><span class="o">.</span><span class="n">from_name_email_string</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>

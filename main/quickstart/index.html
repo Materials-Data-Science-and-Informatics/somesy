@@ -1010,6 +1010,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/somesy/codemeta/utils/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    utils
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/somesy/codemeta/writer/" class="md-nav__link">
         
   
@@ -2477,7 +2498,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <li><code>fpm.toml</code> only supports one author and maintainer, so <code>somesy</code> will pick the <em>first</em> listed author and maintainer</li>
 <li><code>pom.xml</code> has no concept of <code>maintainers</code>, but it can have multiple licenses (somesy only supports one main project license)</li>
 <li><code>mkdocs.yml</code> is a bit special, as it is not a project file, but a documentation file. <code>somesy</code> will only update it if it exists and is enabled in the configuration</li>
-<li>unlike other targets, <code>somesy</code> will <em>re-create</em> the <code>codemeta.json</code> (i.e. do not edit it by hand!)</li>
+<li>For handling <code>codemeta.json</code> different options exists: Either (A) <code>somesy</code> removes any prior existing <code>codemata.json</code> files and re-creates it anew, or (B) <code>somesy</code> merges an existing <code>codemeta.json</code> with the information handled by <code>somesy</code>. See the <a href="https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta">user manual</a> for additional details about CodeMeta handling.</li>
 </ol>
 
 
