@@ -118,9 +118,9 @@ rorid = "https://ror.org/02nv7yv05" # highly recommended set a ror id for your o
 verbose = true     # show detailed information about what somesy is doing
 ```
 
-As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in `somesy.toml` are set as required fields. This is to increase rigour and completeness of metadata recorded with `somesy` .
-
 <!-- --8<-- [end:somesytoml] -->
+
+As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of metadata and improve metadata quality. Therefore, some fields in `somesy.toml` are set as required fields. This is to increase rigour and completeness of metadata recorded with `somesy` .
 
 Alternatively, you can also add the somesy configuration to an existing
 `pyproject.toml`, `package.json`, `Project.toml`, or `fpm.toml` file. The somesy [manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file) contains examples showing how to do that.
@@ -213,7 +213,7 @@ Here is an overview of all the currently supported files and formats.
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses (somesy only supports one main project license)
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration
-6. unlike other targets, `somesy` will _re-create_ the `codemeta.json` (i.e. do not edit it by hand!)
+6. For handling `codemeta.json` different options exists: Either (A) `somesy` removes any prior existing `codemata.json` files and re-creates it anew, or (B) `somesy` merges an existing `codemeta.json` with the information handled by `somesy`. See the [user manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta) for additional details about CodeMeta handling.
 
 <!-- --8<-- [end:quickstart] -->
 

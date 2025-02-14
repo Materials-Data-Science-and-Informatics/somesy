@@ -94,7 +94,7 @@ class Fortran(ProjectMetadataWriter):
         try:
             return Person.from_name_email_string(person)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Person object, trying Entity.")
+            logger.info(f"Cannot convert {person} to Person object, trying Entity.")
 
         try:
             return Entity.from_name_email_string(person)

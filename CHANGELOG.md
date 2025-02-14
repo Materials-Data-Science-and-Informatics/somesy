@@ -6,12 +6,13 @@ Please consult the changelog to inform yourself about breaking changes and secur
 
 ## [v0.6.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.6.0) <small>(2025-xx-xx)</small> { id="0.6.0" }
 
-- implement CFF Entity model for author/maintainer/contributor
+- implement CFF Entity (Organization) model for author/maintainer/contributor
+- add a new config option to use existing codemeta.json when syncing
 - fix SomesyBaseModel kwargs being overwritten
 
 ## [v0.5.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.5.0) <small>(2025-01-15)</small> { id="0.5.0" }
 
-- make person argument email optional
+- make person (and entity) argument email optional
 
 ## [v0.4.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.4.3) <small>(2024-07-29)</small> { id="0.4.3" }
 

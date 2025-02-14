@@ -1,15 +1,14 @@
 """codemeta.json creation module."""
 
+import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
-from rich.pretty import pretty_repr
-
+from somesy.codemeta.utils import validate_codemeta
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
-from somesy.json_wrapper import json
 
 logger = logging.getLogger("somesy")
 
@@ -20,11 +19,20 @@ class CodeMeta(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
+        merge: Optional[bool] = False,
     ):
         """Codemeta.json parser.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
+        self.merge = merge
+        self._default_context = [
+            "https://doi.org/10.5063/schema/codemeta-2.0",
+            "https://w3id.org/software-iodata",
+            "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+            "https://schema.org",
+            "https://w3id.org/software-types",
+        ]
         mappings: FieldKeyMapping = {
             "repository": ["codeRepository"],
             "homepage": ["softwareHelp"],
@@ -35,10 +43,28 @@ class CodeMeta(ProjectMetadataWriter):
             "contributors": ["contributor"],
         }
         # delete the file if it exists
-        if path.is_file():
+        if path.is_file() and not self.merge:
             logger.verbose("Deleting existing codemeta.json file.")
             path.unlink()
         super().__init__(path, create_if_not_exists=True, direct_mappings=mappings)
+
+        # if merge is True, add necessary keys to the codemeta.json file
+        if self.merge:
+            # check if the context exists but is not a list
+            if isinstance(self._data["@context"], str):
+                self._data["@context"] = [self._data["@context"]]
+            # finally add each item in the context to the codemeta.json file if it does not exist in the list
+            for item in self._default_context:
+                if item not in self._data["@context"]:
+                    self._data["@context"].append(item)
+
+            # add (or overwrite) the type
+            self._data["@type"] = "SoftwareSourceCode"
+
+            # overwrite authors, maintainers, contributors
+            self._data["author"] = []
+            self._data["maintainer"] = []
+            self._data["contributor"] = []
 
     @property
     def authors(self):
@@ -69,11 +95,11 @@ class CodeMeta(ProjectMetadataWriter):
 
     def _validate(self) -> None:
         """Validate codemeta.json content using pydantic class."""
-        config = dict(self._get_property([]))
-
-        logger.debug(
-            f"No validation for codemeta.json files {CodeMeta.__name__}: {pretty_repr(config)}"
-        )
+        invalid_fields = validate_codemeta(self._data)
+        if invalid_fields and self.merge:
+            raise ValueError(
+                f"Invalid fields in codemeta.json: {invalid_fields}. Cannot merge with invalid fields."
+            )
 
     def _init_new_file(self) -> None:
         """Create a new codemeta.json file with bare minimum generic data."""
@@ -180,11 +206,11 @@ class CodeMeta(ProjectMetadataWriter):
         This method wont care about existing persons in codemeta.json file.
 
         Args:
-            old (List[Any]): _description_
-            new (List[Person]): _description_
+            old (List[Any]): existing persons in codemeta.json file, in this case ignored in the output. However, it is necessary to make the function compatible with the parent class.
+            new (List[Person]): new persons to add to codemeta.json file
 
         Returns:
-            List[Any]: _description_
+            List[Any]: list of new persons to add to codemeta.json file
 
         """
         return new
@@ -196,3 +222,8 @@ class CodeMeta(ProjectMetadataWriter):
         """
         super().sync(metadata)
         self.contributors = metadata.contributors()
+
+        # add the default context items if they are not already in the codemeta.json file
+        for item in self._default_context:
+            if item not in self._data["@context"]:
+                self._data["@context"].append(item)

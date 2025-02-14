@@ -147,6 +147,11 @@ def sync(
         help="Custom codemeta.json file path (default: codemeta.json)",
         **file_arg_config,
     ),
+    merge_codemeta: bool = typer.Option(
+        False,
+        "--merge/--overwrite",
+        help="Merge codemeta.json with with an existing codemeta.json file (default: False)",
+    ),
 ):
     """Sync project metadata input with metadata files."""
     somesy_input = resolved_somesy_input(
@@ -169,6 +174,7 @@ def sync(
         mkdocs_file=mkdocs_file,
         no_sync_rust=no_sync_rust,
         rust_file=rust_file,
+        merge_codemeta=merge_codemeta,
     )
     run_sync(somesy_input)
 

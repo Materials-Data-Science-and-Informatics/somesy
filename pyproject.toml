@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "somesy"
-version = "0.5.0"
+version = "0.6.0"
 description = "A CLI tool for synchronizing software project metadata."
 authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>", "Anton Pirogov <a.pirogov@fz-juelich.de>"]
 maintainers = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
@@ -45,6 +45,7 @@ wrapt = "^1.16.0"
 packaging = "^24.1"
 jinja2 = "^3.1.4"
 defusedxml = "^0.7.1"
+pyld = "^2.0.4"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.27.0"

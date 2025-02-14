@@ -253,10 +253,10 @@ one of the supported input formats:
 
 === "Project.toml"
 
-````toml
-name = "my-amazing-project"
-version = "0.1.0"
-uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
+    ```toml
+    name = "my-amazing-project"
+    version = "0.1.0"
+    uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
 
     [deps]
     ...
@@ -298,9 +298,10 @@ uuid = "c7e460c6-3f3e-11ec-8d3d-0242ac130003"
     ```
 
 === "fpm.toml"
-```toml
-name = "my-amazing-project"
-version = "0.1.0"
+
+    ```toml
+    name = "my-amazing-project"
+    version = "0.1.0"
 
     [tool.somesy.project]
     name = "my-amazing-project"
@@ -342,34 +343,34 @@ version = "0.1.0"
 
     ```json
     {
-      "name": "my-amazing-project",
-      "version": "0.1.0",
-      ...
+        "name": "my-amazing-project",
+        "version": "0.1.0",
+        ...
 
-      "somesy": {
+        "somesy": {
         "project": {
-          "name": "my-amazing-project",
-          "version": "0.1.0",
-          "description": "Brief description of my amazing software.",
-          "keywords": ["some", "descriptive", "keywords"],
-          "license": "MIT",
-          "repository": "https://github.com/username/my-amazing-project",
-          "people": [
+            "name": "my-amazing-project",
+            "version": "0.1.0",
+            "description": "Brief description of my amazing software.",
+            "keywords": ["some", "descriptive", "keywords"],
+            "license": "MIT",
+            "repository": "https://github.com/username/my-amazing-project",
+            "people": [
             {
-              "given-names": "Jane",
-              "family-names": "Doe",
-              "email": "j.doe@example.com",
-              "orcid": "https://orcid.org/0000-0000-0000-0001",
-              "author": true,
-              "maintainer": true
+                "given-names": "Jane",
+                "family-names": "Doe",
+                "email": "j.doe@example.com",
+                "orcid": "https://orcid.org/0000-0000-0000-0001",
+                "author": true,
+                "maintainer": true
             },
             {
-              "given-names": "Another",
-              "family-names": "Contributor",
-              "email": "a.contributor@example.com",
-              "orcid": "https://orcid.org/0000-0000-0000-0002"
+                "given-names": "Another",
+                "family-names": "Contributor",
+                "email": "a.contributor@example.com",
+                "orcid": "https://orcid.org/0000-0000-0000-0002"
             }
-          ]
+            ]
         },
         "entities":[
             {
@@ -380,9 +381,9 @@ version = "0.1.0"
             }
         ],
         "config": {
-          "verbose": true
+            "verbose": true
         }
-      }
+        }
     }
     ```
 
@@ -545,26 +546,47 @@ after running somesy (to remove the duplicate entries with the incorrect ROR ID)
 ### Codemeta
 
 While `somesy` is modifying existing files for most supported formats and implements
-features such as person identification and merging,
-[CodeMeta](https://codemeta.github.io/) is implemented differently.
+features such as person identification and merging, [CodeMeta](https://codemeta.github.io/)
+requires special handling.
 
-As that `codemeta.json` is a [**JSON-LD**](https://json-ld.org/) file, it actually represents a graph,
-has various equally valid representations in a JSON file.
-Thus, supporting the same features as for other formats is technically much more
-challenging, if at all feasible. Therefore, for the time being, we regenerate the
-`codemeta.json` file directly from the source file, in order to avoid data inconsistency
-due to many pitfalls hiding in the details of the format.
+As `codemeta.json` is a [**JSON-LD**](https://json-ld.org/) file, it represents a graph and
+can have various equally valid representations in JSON format. The behavior of `somesy`
+when handling CodeMeta files is controlled by the `codemeta_merge` configuration option:
+
+When `codemeta_merge = true`, `somesy` will:
+
+1. Read and parse any existing `codemeta.json` file
+2. Update only the fields that `somesy` manages. Values that are already present will be overwritten.
+3. Preserve any additional fields or metadata present in the file and append it to the record.
+
+
+When `codemeta_merge = false` (default), `somesy` will:
+
+1. Delete any existing `codemeta.json` file
+2. Create a new file containing only the metadata from your somesy project configuration
+
+!!! note
+
+    If you have additional CodeMeta fields you want to preserve, make sure to set
+    `codemeta_merge = true` in your somesy configuration.
 
 !!! warning
 
-    The `codemeta.json` is overwritten and regenerated from scratch every time you `sync`,
-    so **do not edit it** if you have the codemeta target enabled in `somesy`!
+    Unlike other formats, person and entity merging heuristics are not
+    implemented for CodeMeta. The author, maintainer, and contributor
+    fields are directly created from your somesy project metadata,
+    overwriting any existing entries in these fields.
+
+    Please note that due to the above behavior and the linked-data nature of values in
+    `codemeta.json` records using the option `codemeta_merge = true` can create
+    conflicts within the CodeMeta record, i.e. if values in `somesy.toml` and those
+    that get appended to the CodeMeta record show inconsistencies.
 
 As `codemeta.json` is considered a technical "backend-format" derived from other
-inputs, in most cases you probably do not need or should edit it by hand anyway.
+inputs, in most cases you probably do not need to edit it by hand anyway.
 
-Of course, you are welcome to contribute an improved CodeMeta writer for somesy that can correctly
-understand and update the linked data graph which the `codemeta.json` file represents!
+Of course, you are welcome to contribute improvements to the CodeMeta handling in somesy
+to make it even more robust and feature-complete!
 
 ## Using somesy to insert metadata into project documentation
 

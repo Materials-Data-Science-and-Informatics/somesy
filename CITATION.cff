@@ -3,7 +3,7 @@ type: software
 message: If you use this software, please cite it using this metadata.
 
 title: somesy
-version: 0.5.0
+version: 0.6.0
 abstract: A CLI tool for synchronizing software project metadata.
 url: https://materials-data-science-and-informatics.github.io/somesy
 repository-code: https://github.com/Materials-Data-Science-and-Informatics/somesy
