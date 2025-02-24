@@ -243,6 +243,12 @@ class SomesyConfig(SomesyBaseModel):
         ),
     ] = False
 
+    # property to pass validation for all inputs/outputs
+    pass_validation: Annotated[
+        Optional[bool],
+        Field(description="Pass validation for all output files."),
+    ] = False
+
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
         return SomesyLogLevel.from_flags(

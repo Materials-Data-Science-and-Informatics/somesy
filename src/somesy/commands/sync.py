@@ -26,13 +26,14 @@ def _sync_file(
     file: Path,
     writer_cls: Type[ProjectMetadataWriter],
     merge_codemeta: Optional[bool] = False,
+    pass_validation: Optional[bool] = False,
 ):
     """Sync metadata to a file using the provided writer."""
     logger.verbose(f"Loading '{file.name}' ...")
     if writer_cls == CodeMeta:
-        writer = writer_cls(file, merge=merge_codemeta)
+        writer = writer_cls(file, merge=merge_codemeta, pass_validation=pass_validation)
     else:
-        writer = writer_cls(file)
+        writer = writer_cls(file, pass_validation=pass_validation)
     logger.verbose(f"Syncing '{file.name}' ...")
     writer.sync(metadata)
     writer.save(file)
@@ -49,29 +50,69 @@ def sync(somesy_input: SomesyInput):
     # update these only if they exist:
 
     if conf.pyproject_file.is_file() and not conf.no_sync_pyproject:
-        _sync_file(metadata, conf.pyproject_file, Pyproject)
+        _sync_file(
+            metadata,
+            conf.pyproject_file,
+            Pyproject,
+            pass_validation=conf.pass_validation,
+        )
 
     if conf.package_json_file.is_file() and not conf.no_sync_package_json:
-        _sync_file(metadata, conf.package_json_file, PackageJSON)
+        _sync_file(
+            metadata,
+            conf.package_json_file,
+            PackageJSON,
+            pass_validation=conf.pass_validation,
+        )
 
     if conf.julia_file.is_file() and not conf.no_sync_julia:
-        _sync_file(metadata, conf.julia_file, Julia)
+        _sync_file(
+            metadata,
+            conf.julia_file,
+            Julia,
+            pass_validation=conf.pass_validation,
+        )
 
     if conf.fortran_file.is_file() and not conf.no_sync_fortran:
-        _sync_file(metadata, conf.fortran_file, Fortran)
+        _sync_file(
+            metadata,
+            conf.fortran_file,
+            Fortran,
+            pass_validation=conf.pass_validation,
+        )
 
     if conf.pom_xml_file.is_file() and not conf.no_sync_pom_xml:
-        _sync_file(metadata, conf.pom_xml_file, POM)
+        _sync_file(
+            metadata,
+            conf.pom_xml_file,
+            POM,
+            pass_validation=conf.pass_validation,
+        )
 
     if conf.mkdocs_file.is_file() and not conf.no_sync_mkdocs:
-        _sync_file(metadata, conf.mkdocs_file, MkDocs)
+        _sync_file(
+            metadata,
+            conf.mkdocs_file,
+            MkDocs,
+            pass_validation=conf.pass_validation,
+        )
 
     if conf.rust_file.is_file() and not conf.no_sync_rust:
-        _sync_file(metadata, conf.rust_file, Rust)
+        _sync_file(
+            metadata,
+            conf.rust_file,
+            Rust,
+            pass_validation=conf.pass_validation,
+        )
 
     # create these by default if they are missing:
     if not conf.no_sync_cff:
-        _sync_file(metadata, conf.cff_file, CFF)
+        _sync_file(
+            metadata,
+            conf.cff_file,
+            CFF,
+            pass_validation=conf.pass_validation,
+        )
 
     if not conf.no_sync_codemeta:
         _sync_file(
@@ -79,4 +120,5 @@ def sync(somesy_input: SomesyInput):
             conf.codemeta_file,
             CodeMeta,
             merge_codemeta=conf.merge_codemeta,
+            pass_validation=conf.pass_validation,
         )
