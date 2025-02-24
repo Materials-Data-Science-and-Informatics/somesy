@@ -99,3 +99,41 @@ def test_somesy_input(somesy_input):
 
     # check publication author
     assert authors[1].publication_author is True
+
+
+def test_multiple_inputs(create_files, file_types):
+    """Test handling of multiple input files for the same format."""
+    # Create test files in multiple locations
+    tmp_path = create_files(
+        [
+            (file_types.POETRY, "pyproject.toml"),
+            (file_types.POETRY, "subproject/pyproject.toml"),
+            (file_types.PACKAGE_JSON, "package.json"),
+            (file_types.PACKAGE_JSON, "subproject/package.json"),
+        ]
+    )
+
+    # Test configuration with multiple file paths
+    config = SomesyConfig(
+        pyproject_file=[
+            tmp_path / "pyproject.toml",
+            tmp_path / "subproject/pyproject.toml",
+        ],
+        package_json_file=[
+            tmp_path / "package.json",
+            tmp_path / "subproject/package.json",
+        ],
+    )
+
+    # Verify the paths are correctly set
+    assert isinstance(config.pyproject_file, list)
+    assert len(config.pyproject_file) == 2
+    assert all(isinstance(p, Path) for p in config.pyproject_file)
+    assert config.pyproject_file[0] == tmp_path / "pyproject.toml"
+    assert config.pyproject_file[1] == tmp_path / "subproject/pyproject.toml"
+
+    assert isinstance(config.package_json_file, list)
+    assert len(config.package_json_file) == 2
+    assert all(isinstance(p, Path) for p in config.package_json_file)
+    assert config.package_json_file[0] == tmp_path / "package.json"
+    assert config.package_json_file[1] == tmp_path / "subproject/package.json"

@@ -40,6 +40,14 @@ def _sync_file(
     logger.verbose(f"Saved synced '{file.name}'.\n")
 
 
+def _sync_files(metadata, files, writer_class, **kwargs):
+    if isinstance(files, Path):
+        files = [files]
+    for file in files:
+        if file.is_file():
+            _sync_file(metadata, file, writer_class, **kwargs)
+
+
 def sync(somesy_input: SomesyInput):
     """Sync selected metadata files with given input file."""
     conf, metadata = somesy_input.config, somesy_input.project
@@ -49,56 +57,56 @@ def sync(somesy_input: SomesyInput):
 
     # update these only if they exist:
 
-    if conf.pyproject_file.is_file() and not conf.no_sync_pyproject:
-        _sync_file(
+    if conf.pyproject_file and not conf.no_sync_pyproject:
+        _sync_files(
             metadata,
             conf.pyproject_file,
             Pyproject,
             pass_validation=conf.pass_validation,
         )
 
-    if conf.package_json_file.is_file() and not conf.no_sync_package_json:
-        _sync_file(
+    if conf.package_json_file and not conf.no_sync_package_json:
+        _sync_files(
             metadata,
             conf.package_json_file,
             PackageJSON,
             pass_validation=conf.pass_validation,
         )
 
-    if conf.julia_file.is_file() and not conf.no_sync_julia:
-        _sync_file(
+    if conf.julia_file and not conf.no_sync_julia:
+        _sync_files(
             metadata,
             conf.julia_file,
             Julia,
             pass_validation=conf.pass_validation,
         )
 
-    if conf.fortran_file.is_file() and not conf.no_sync_fortran:
-        _sync_file(
+    if conf.fortran_file and not conf.no_sync_fortran:
+        _sync_files(
             metadata,
             conf.fortran_file,
             Fortran,
             pass_validation=conf.pass_validation,
         )
 
-    if conf.pom_xml_file.is_file() and not conf.no_sync_pom_xml:
-        _sync_file(
+    if conf.pom_xml_file and not conf.no_sync_pom_xml:
+        _sync_files(
             metadata,
             conf.pom_xml_file,
             POM,
             pass_validation=conf.pass_validation,
         )
 
-    if conf.mkdocs_file.is_file() and not conf.no_sync_mkdocs:
-        _sync_file(
+    if conf.mkdocs_file and not conf.no_sync_mkdocs:
+        _sync_files(
             metadata,
             conf.mkdocs_file,
             MkDocs,
             pass_validation=conf.pass_validation,
         )
 
-    if conf.rust_file.is_file() and not conf.no_sync_rust:
-        _sync_file(
+    if conf.rust_file and not conf.no_sync_rust:
+        _sync_files(
             metadata,
             conf.rust_file,
             Rust,
@@ -107,7 +115,7 @@ def sync(somesy_input: SomesyInput):
 
     # create these by default if they are missing:
     if not conf.no_sync_cff:
-        _sync_file(
+        _sync_files(
             metadata,
             conf.cff_file,
             CFF,
@@ -115,7 +123,7 @@ def sync(somesy_input: SomesyInput):
         )
 
     if not conf.no_sync_codemeta:
-        _sync_file(
+        _sync_files(
             metadata,
             conf.codemeta_file,
             CodeMeta,
