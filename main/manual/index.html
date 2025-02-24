@@ -2612,7 +2612,7 @@ Furthermore, <code>somesy</code> might support the
 <tr>
 <td>version</td>
 <td>str</td>
-<td><strong>yes</strong></td>
+<td>no</td>
 <td></td>
 <td>Project version.</td>
 </tr>
@@ -3187,6 +3187,13 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>false</td>
 <td>Merge codemeta.json with with an existing codemeta.json file.</td>
 </tr>
+<tr>
+<td>pass_validation</td>
+<td>bool</td>
+<td>no</td>
+<td>false</td>
+<td>Pass validation for all output files.</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -3467,7 +3474,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>license</td>
 </tr>
 <tr>
-<td><strong>version</strong></td>
+<td>version</td>
 <td>version</td>
 <td>version</td>
 <td>version</td>
@@ -3698,6 +3705,8 @@ filled with <code>ror id</code>.</p>
 <span class=" -Color -Color-Faint">│</span>                                                  codemeta.json file          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                  (default: False)            <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                  <span class=" -Color -Color-Faint">[default: overwrite]       </span> <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Pass validation of metadata <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                  files (default: False)      <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                                     <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Show this message and exit. <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">╰──────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre></div>
