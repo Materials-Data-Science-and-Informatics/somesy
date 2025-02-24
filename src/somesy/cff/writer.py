@@ -18,6 +18,7 @@ class CFF(ProjectMetadataWriter):
         self,
         path: Path,
         create_if_not_exists: bool = True,
+        pass_validation: bool = False,
     ):
         """Citation File Format (CFF) parser.
 
@@ -35,7 +36,10 @@ class CFF(ProjectMetadataWriter):
             "maintainers": ["contact"],
         }
         super().__init__(
-            path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings
+            path,
+            create_if_not_exists=create_if_not_exists,
+            direct_mappings=mappings,
+            pass_validation=pass_validation,
         )
 
     def _init_new_file(self):
@@ -53,8 +57,10 @@ class CFF(ProjectMetadataWriter):
         with open(self.path) as f:
             self._data = self._yaml.load(f)
 
-    def _validate(self):
+    def _validate(self) -> None:
         """Validate the CFF file."""
+        if self.pass_validation:
+            return
         try:
             citation = create_citation(self.path, None)
             citation.validate()

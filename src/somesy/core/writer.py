@@ -37,6 +37,7 @@ class ProjectMetadataWriter(ABC):
         create_if_not_exists: Optional[bool] = False,
         direct_mappings: FieldKeyMapping = None,
         merge: Optional[bool] = False,
+        pass_validation: Optional[bool] = False,
     ) -> None:
         """Initialize the Project Metadata Output Wrapper.
 
@@ -50,6 +51,7 @@ class ProjectMetadataWriter(ABC):
             create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
             direct_mappings: Dict with direct mappings of keys between somesy and target
             merge: Merge the output file with an existing file. Defaults to False.
+            pass_validation: Pass validation for all output files. Defaults to False.
 
         """
         self._data: DictLike = {}
@@ -57,9 +59,11 @@ class ProjectMetadataWriter(ABC):
         self.create_if_not_exists = create_if_not_exists
         self.direct_mappings = direct_mappings or {}
         self.merge = merge
+        self.pass_validation = pass_validation
         if self.path.is_file():
             self._load()
-            self._validate()
+            if not self.pass_validation:
+                self._validate()
         else:
             if self.create_if_not_exists:
                 self._init_new_file()
@@ -86,7 +90,7 @@ class ProjectMetadataWriter(ABC):
         """
 
     @abstractmethod
-    def _validate(self):
+    def _validate(self) -> None:
         """Validate the target file data.
 
         Implement this method so that it checks

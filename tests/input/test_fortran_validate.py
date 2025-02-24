@@ -25,3 +25,6 @@ def test_fortran_validate(tmp_path):
 
     with pytest.raises(ValueError):
         Fortran(invalid_fortran_path)
+
+    # if we pass validation, it should not raise an error
+    Fortran(invalid_fortran_path, pass_validation=True)

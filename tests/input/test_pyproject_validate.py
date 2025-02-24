@@ -26,6 +26,9 @@ def test_poetry_validate(tmp_path):
     with pytest.raises(ValueError):
         Pyproject(invalid_poetry_path)
 
+    # if we pass validation, it should not raise an error
+    Pyproject(invalid_poetry_path, pass_validation=True)
+
     # create a pyproject file in setuptools format but with a invalid values
     reject_setuptools_object = {
         "project": {"name": "somesy", "version": "abc", "authors": ["John Doe <"]}
@@ -34,3 +37,6 @@ def test_poetry_validate(tmp_path):
         dump(reject_setuptools_object, f)
     with pytest.raises(ValueError):
         Pyproject(invalid_poetry_path)
+
+    # if we pass validation, it should not raise an error
+    Pyproject(invalid_poetry_path, pass_validation=True)

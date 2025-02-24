@@ -152,6 +152,12 @@ def sync(
         "--merge/--overwrite",
         help="Merge codemeta.json with with an existing codemeta.json file (default: False)",
     ),
+    pass_validation: bool = typer.Option(
+        False,
+        "--pass-validation",
+        "-P",
+        help="Pass validation of metadata files (default: False)",
+    ),
 ):
     """Sync project metadata input with metadata files."""
     somesy_input = resolved_somesy_input(
@@ -175,6 +181,7 @@ def sync(
         no_sync_rust=no_sync_rust,
         rust_file=rust_file,
         merge_codemeta=merge_codemeta,
+        pass_validation=pass_validation,
     )
     run_sync(somesy_input)
 
@@ -218,6 +225,8 @@ def run_sync(somesy_input: SomesyInput):
             f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
         )
     # ----
+    if conf.pass_validation:
+        logger.info("[bold yellow]Passing validation of metadata files.[/bold yellow]")
     sync_command(somesy_input)
     # ----
     logger.info("[bold green]Metadata synchronization completed.[/bold green]")
