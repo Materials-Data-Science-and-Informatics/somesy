@@ -650,7 +650,7 @@ class ProjectMetadata(SomesyBaseModel):
 
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
-    version: Annotated[str, Field(description="Project version.")]
+    version: Annotated[Optional[str], Field(description="Project version.")] = None
     license: Annotated[LicenseEnum, Field(description="SPDX License string.")]
 
     homepage: Annotated[
