@@ -69,6 +69,8 @@ def create_files(tmp_path):
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
             write_file_name = tmp_path / Path(file_name)
+            # create the subfolder (if file name is a path with folders)
+            write_file_name.parent.mkdir(parents=True, exist_ok=True)
 
             read_file_path = Path("tests/data")
             read_file_name: Path = None
@@ -96,8 +98,8 @@ def create_files(tmp_path):
 
             with open(read_file_name, "r") as f:
                 content = f.read()
-                with open(write_file_name, "w+") as f2:
-                    f2.write(content)
+            with open(write_file_name, "w+") as f:
+                f.write(content)
 
         return tmp_path
 
