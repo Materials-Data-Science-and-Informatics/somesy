@@ -24,6 +24,7 @@ class POM(ProjectMetadataWriter):
         self,
         path: Path,
         create_if_not_exists: bool = True,
+        pass_validation: Optional[bool] = False,
     ):
         """Java Maven pom.xml parser.
 
@@ -40,7 +41,10 @@ class POM(ProjectMetadataWriter):
             "contributors": ["contributors", "contributor"],
         }
         super().__init__(
-            path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings
+            path,
+            create_if_not_exists=create_if_not_exists,
+            direct_mappings=mappings,
+            pass_validation=pass_validation,
         )
 
     def _init_new_file(self):
@@ -54,7 +58,7 @@ class POM(ProjectMetadataWriter):
         ET.register_namespace("", POM_URL)  # register POM as default xml namespace
         self._data = XMLProxy.parse(self.path, default_namespace=POM_URL)
 
-    def _validate(self):
+    def _validate(self) -> None:
         """Validate the POM file."""
         logger.info("Cannot validate POM file, skipping validation.")
 

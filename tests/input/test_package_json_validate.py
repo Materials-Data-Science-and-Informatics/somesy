@@ -25,3 +25,6 @@ def test_package_json_validate(tmp_path):
 
     with pytest.raises(ValueError):
         PackageJSON(invalid_package_json_path)
+
+    # if we pass validation, it should not raise an error
+    PackageJSON(invalid_package_json_path, pass_validation=True)

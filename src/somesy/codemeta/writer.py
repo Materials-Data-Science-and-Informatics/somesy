@@ -20,6 +20,7 @@ class CodeMeta(ProjectMetadataWriter):
         self,
         path: Path,
         merge: Optional[bool] = False,
+        pass_validation: Optional[bool] = False,
     ):
         """Codemeta.json parser.
 
@@ -46,7 +47,12 @@ class CodeMeta(ProjectMetadataWriter):
         if path.is_file() and not self.merge:
             logger.verbose("Deleting existing codemeta.json file.")
             path.unlink()
-        super().__init__(path, create_if_not_exists=True, direct_mappings=mappings)
+        super().__init__(
+            path,
+            create_if_not_exists=True,
+            direct_mappings=mappings,
+            pass_validation=pass_validation,
+        )
 
         # if merge is True, add necessary keys to the codemeta.json file
         if self.merge:
@@ -95,6 +101,8 @@ class CodeMeta(ProjectMetadataWriter):
 
     def _validate(self) -> None:
         """Validate codemeta.json content using pydantic class."""
+        if self.pass_validation:
+            return
         invalid_fields = validate_codemeta(self._data)
         if invalid_fields and self.merge:
             raise ValueError(

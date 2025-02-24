@@ -39,6 +39,9 @@ def test_rust_validate(tmp_path):
     )
     _reject_with(tmp_path, "license_file", "LICENSE")
 
+    # if we pass validation, it should not raise an error
+    Rust(invalid_rust_path, pass_validation=True)
+
 
 def _reject_with(tmp_path, key, value):
     """Helper function to reject invalid values."""

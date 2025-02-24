@@ -18,7 +18,11 @@ logger = logging.getLogger("somesy")
 class Fortran(ProjectMetadataWriter):
     """Fortran config file handler parsed from fpm.toml."""
 
-    def __init__(self, path: Path):
+    def __init__(
+        self,
+        path: Path,
+        pass_validation: Optional[bool] = False,
+    ):
         """Fortran config file handler parsed from fpm.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
@@ -28,7 +32,12 @@ class Fortran(ProjectMetadataWriter):
             "maintainers": ["maintainer"],
             "documentation": IgnoreKey(),
         }
-        super().__init__(path, create_if_not_exists=False, direct_mappings=mappings)
+        super().__init__(
+            path,
+            create_if_not_exists=False,
+            direct_mappings=mappings,
+            pass_validation=pass_validation,
+        )
 
     @property
     def authors(self):
@@ -71,6 +80,8 @@ class Fortran(ProjectMetadataWriter):
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
+        if self.pass_validation:
+            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {FortranConfig.__name__}: {pretty_repr(config)}"

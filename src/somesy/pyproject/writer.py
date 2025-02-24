@@ -21,7 +21,13 @@ class PyprojectCommon(ProjectMetadataWriter):
     """Poetry config file handler parsed from pyproject.toml."""
 
     def __init__(
-        self, path: Path, *, section: List[str], model_cls, direct_mappings=None
+        self,
+        path: Path,
+        *,
+        section: List[str],
+        model_cls,
+        direct_mappings=None,
+        pass_validation: Optional[bool] = False,
     ):
         """Poetry config file handler parsed from pyproject.toml.
 
@@ -30,7 +36,10 @@ class PyprojectCommon(ProjectMetadataWriter):
         self._model_cls = model_cls
         self._section = section
         super().__init__(
-            path, create_if_not_exists=False, direct_mappings=direct_mappings or {}
+            path,
+            create_if_not_exists=False,
+            direct_mappings=direct_mappings or {},
+            pass_validation=pass_validation,
         )
 
     def _load(self) -> None:
@@ -44,6 +53,8 @@ class PyprojectCommon(ProjectMetadataWriter):
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
+        if self.pass_validation:
+            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {self._model_cls.__name__}: {pretty_repr(config)}"
@@ -89,12 +100,21 @@ class PyprojectCommon(ProjectMetadataWriter):
 class Poetry(PyprojectCommon):
     """Poetry config file handler parsed from pyproject.toml."""
 
-    def __init__(self, path: Path):
+    def __init__(
+        self,
+        path: Path,
+        pass_validation: Optional[bool] = False,
+    ):
         """Poetry config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        super().__init__(path, section=["tool", "poetry"], model_cls=PoetryConfig)
+        super().__init__(
+            path,
+            section=["tool", "poetry"],
+            model_cls=PoetryConfig,
+            pass_validation=pass_validation,
+        )
 
     @staticmethod
     def _from_person(person: Union[Person, Entity]):
@@ -119,7 +139,7 @@ class Poetry(PyprojectCommon):
 class SetupTools(PyprojectCommon):
     """Setuptools config file handler parsed from setup.cfg."""
 
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, pass_validation: Optional[bool] = False):
         """Setuptools config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
@@ -132,7 +152,11 @@ class SetupTools(PyprojectCommon):
             "license": ["license", "text"],
         }
         super().__init__(
-            path, section=section, direct_mappings=mappings, model_cls=SetuptoolsConfig
+            path,
+            section=section,
+            direct_mappings=mappings,
+            model_cls=SetuptoolsConfig,
+            pass_validation=pass_validation,
         )
 
     @staticmethod
@@ -186,11 +210,12 @@ class Pyproject(wrapt.ObjectProxy):
 
     __wrapped__: Union[SetupTools, Poetry]
 
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, pass_validation: Optional[bool] = False):
         """Pyproject wrapper class. Wraps either setuptools or poetry.
 
         Args:
             path (Path): Path to pyproject.toml file.
+            pass_validation (bool, optional): Whether to pass validation. Defaults to False.
 
         Raises:
             FileNotFoundError: Raised when pyproject.toml file is not found.
@@ -207,10 +232,10 @@ class Pyproject(wrapt.ObjectProxy):
         # inspect file to pick suitable project metadata writer
         if "project" in data:
             logger.verbose("Found setuptools-based metadata in pyproject.toml")
-            self.__wrapped__ = SetupTools(path)
+            self.__wrapped__ = SetupTools(path, pass_validation=pass_validation)
         elif "tool" in data and "poetry" in data["tool"]:
             logger.verbose("Found poetry-based metadata in pyproject.toml")
-            self.__wrapped__ = Poetry(path)
+            self.__wrapped__ = Poetry(path, pass_validation=pass_validation)
         else:
             msg = "The pyproject.toml file is ambiguous, either add a [project] or [tool.poetry] section"
             raise ValueError(msg)

@@ -17,7 +17,12 @@ logger = logging.getLogger("somesy")
 class MkDocs(ProjectMetadataWriter):
     """Project documentation with Markdown (MkDocs) parser and saver."""
 
-    def __init__(self, path: Path, create_if_not_exists: bool = False):
+    def __init__(
+        self,
+        path: Path,
+        create_if_not_exists: bool = False,
+        pass_validation: Optional[bool] = False,
+    ):
         """Project documentation with Markdown (MkDocs) parser.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
@@ -38,7 +43,10 @@ class MkDocs(ProjectMetadataWriter):
             "keywords": IgnoreKey(),
         }
         super().__init__(
-            path, create_if_not_exists=create_if_not_exists, direct_mappings=mappings
+            path,
+            create_if_not_exists=create_if_not_exists,
+            direct_mappings=mappings,
+            pass_validation=pass_validation,
         )
 
     def _load(self):
@@ -46,8 +54,10 @@ class MkDocs(ProjectMetadataWriter):
         with open(self.path) as f:
             self._data = self._yaml.load(f)
 
-    def _validate(self):
+    def _validate(self) -> None:
         """Validate the MkDocs file."""
+        if self.pass_validation:
+            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {MkDocsConfig.__name__}: {pretty_repr(config)}"

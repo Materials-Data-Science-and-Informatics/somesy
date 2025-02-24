@@ -21,3 +21,6 @@ def test_mkdocs_validate_reject(tmp_path):
     # try to load the mkdocs file
     with pytest.raises(ValueError):
         MkDocs(mkdocs_path)
+
+    # if we pass validation, it should not raise an error
+    MkDocs(mkdocs_path, pass_validation=True)

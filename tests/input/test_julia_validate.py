@@ -25,3 +25,6 @@ def test_julia_validate(tmp_path):
 
     with pytest.raises(ValueError):
         Julia(invalid_julia_path)
+
+    # if we pass validation, it should not raise an error
+    Julia(invalid_julia_path, pass_validation=True)

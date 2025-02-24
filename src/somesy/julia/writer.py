@@ -18,12 +18,20 @@ logger = logging.getLogger("somesy")
 class Julia(ProjectMetadataWriter):
     """Julia config file handler parsed from Project.toml."""
 
-    def __init__(self, path: Path):
+    def __init__(
+        self,
+        path: Path,
+        pass_validation: Optional[bool] = False,
+    ):
         """Julia config file handler parsed from Project.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        super().__init__(path, create_if_not_exists=False)
+        super().__init__(
+            path,
+            create_if_not_exists=False,
+            pass_validation=pass_validation,
+        )
 
     def _load(self) -> None:
         """Load Project.toml file."""
@@ -36,6 +44,8 @@ class Julia(ProjectMetadataWriter):
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
+        if self.pass_validation:
+            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {JuliaConfig.__name__}: {pretty_repr(config)}"

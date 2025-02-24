@@ -21,6 +21,7 @@ class PackageJSON(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
+        pass_validation: Optional[bool] = False,
     ):
         """package.json parser.
 
@@ -30,7 +31,12 @@ class PackageJSON(ProjectMetadataWriter):
             "authors": ["author"],
             "documentation": IgnoreKey(),
         }
-        super().__init__(path, create_if_not_exists=False, direct_mappings=mappings)
+        super().__init__(
+            path,
+            create_if_not_exists=False,
+            direct_mappings=mappings,
+            pass_validation=pass_validation,
+        )
 
     @property
     def authors(self):
@@ -106,6 +112,8 @@ class PackageJSON(ProjectMetadataWriter):
 
     def _validate(self) -> None:
         """Validate package.json content using pydantic class."""
+        if self.pass_validation:
+            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {PackageJsonConfig.__name__}: {pretty_repr(config)}"

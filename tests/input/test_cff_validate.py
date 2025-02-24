@@ -25,3 +25,6 @@ def test_cff_validate_reject(tmp_path):
     # try to load the CFF file
     with pytest.raises(ValueError):
         CFF(cff_path)
+
+    # if we pass validation, it should not raise an error
+    CFF(cff_path, pass_validation=True)
