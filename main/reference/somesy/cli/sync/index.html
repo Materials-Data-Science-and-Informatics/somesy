@@ -2252,136 +2252,136 @@
 
 <a href="#somesy.cli.sync.sync" class="headerlink" title="Permanent link">&para;</a></h2>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">sync</span><span class="p">(</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--input-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Somesy input file path (default: .somesy.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-pyproject&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync pyproject.toml file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--pyproject-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path (default: pyproject.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path(s) (default: pyproject.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_package_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_package_json</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-package-json&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-J&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync package.json file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--package-json-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-j&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing package.json file path (default: package.json)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing package.json file path(s) (default: package.json)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_julia</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_julia</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-julia&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-L&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync Project.toml (Julia) file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">julia_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">julia_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--julia-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-l&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Project.toml (Julia) file path (default: Project.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Project.toml (Julia) file path(s) (default: Project.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_fortran</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_fortran</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-fortran&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-F&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync fpm.toml (Fortran) file (default: False)&quot;</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">fortran_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">fortran_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--fortran-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom fpm.toml (Fortran) file path (default: fpm.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom fpm.toml (Fortran) file path(s) (default: fpm.toml)&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_pom_xml</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_pom_xml</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-pomxml&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-X&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync pom.xml (Java Maven) file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">pom_xml_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">pom_xml_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--pomxml-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-x&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom pom.xml (Java Maven) file path (default: pom.xml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom pom.xml (Java Maven) file path(s) (default: pom.xml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_mkdocs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_mkdocs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-mkdocs&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-D&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync mkdocs.yml file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">mkdocs_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">mkdocs_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--mkdocs-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom mkdocs.yml file path (default: mkdocs.yml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom mkdocs.yml file path(s) (default: mkdocs.yml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_rust</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_rust</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-rust&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-R&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync Cargo.toml file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">rust_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">rust_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--rust-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Cargo.toml file path (default: Cargo.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Cargo.toml file path(s) (default: Cargo.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-cff&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-C&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync CITATION.cff file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--cff-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;CITATION.cff file path (default: CITATION.cff)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;CITATION.cff file path(s) (default: CITATION.cff)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-codemeta&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-M&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync codemeta.json file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--codemeta-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path (default: codemeta.json)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path(s) (default: codemeta.json)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">file_arg_config</span>
     <span class="p">),</span>
-    <span class="n">merge_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">merge_codemeta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
         <span class="s2">&quot;--merge/--overwrite&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Merge codemeta.json with with an existing codemeta.json file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">pass_validation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
         <span class="s2">&quot;--pass-validation&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
@@ -2396,8 +2396,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 23</span>
-<span class="normal"> 24</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 24</span>
 <span class="normal"> 25</span>
 <span class="normal"> 26</span>
 <span class="normal"> 27</span>
@@ -2559,139 +2558,140 @@
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
-<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">186</span>
+<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
-    <span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--input-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Somesy input file path (default: .somesy.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_pyproject</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-pyproject&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync pyproject.toml file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">pyproject_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--pyproject-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-p&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path (default: pyproject.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing pyproject.toml file path(s) (default: pyproject.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_package_json</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_package_json</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-package-json&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-J&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync package.json file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">package_json_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--package-json-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-j&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing package.json file path (default: package.json)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Existing package.json file path(s) (default: package.json)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_julia</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_julia</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-julia&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-L&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync Project.toml (Julia) file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">julia_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">julia_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--julia-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-l&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Project.toml (Julia) file path (default: Project.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Project.toml (Julia) file path(s) (default: Project.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_fortran</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_fortran</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-fortran&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-F&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync fpm.toml (Fortran) file (default: False)&quot;</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">fortran_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">fortran_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--fortran-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom fpm.toml (Fortran) file path (default: fpm.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom fpm.toml (Fortran) file path(s) (default: fpm.toml)&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_pom_xml</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_pom_xml</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-pomxml&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-X&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync pom.xml (Java Maven) file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">pom_xml_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">pom_xml_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--pomxml-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-x&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom pom.xml (Java Maven) file path (default: pom.xml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom pom.xml (Java Maven) file path(s) (default: pom.xml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_mkdocs</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_mkdocs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-mkdocs&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-D&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync mkdocs.yml file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">mkdocs_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">mkdocs_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--mkdocs-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-d&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom mkdocs.yml file path (default: mkdocs.yml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom mkdocs.yml file path(s) (default: mkdocs.yml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_rust</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_rust</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-rust&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-R&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync Cargo.toml file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">rust_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">rust_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--rust-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-r&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Cargo.toml file path (default: Cargo.toml)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom Cargo.toml file path(s) (default: Cargo.toml)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_cff</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-cff&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-C&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync CITATION.cff file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">cff_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--cff-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;CITATION.cff file path (default: CITATION.cff)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;CITATION.cff file path(s) (default: CITATION.cff)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">no_sync_codemeta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--no-sync-codemeta&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-M&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Do not sync codemeta.json file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">codemeta_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="s2">&quot;--codemeta-file&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-m&quot;</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path (default: codemeta.json)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Custom codemeta.json file path(s) (default: codemeta.json)&quot;</span><span class="p">,</span>
         <span class="o">**</span><span class="n">file_arg_config</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">merge_codemeta</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">merge_codemeta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
         <span class="s2">&quot;--merge/--overwrite&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Merge codemeta.json with with an existing codemeta.json file (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">pass_validation</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+    <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
         <span class="s2">&quot;--pass-validation&quot;</span><span class="p">,</span>
         <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
@@ -2746,8 +2746,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">189</span>
-<span class="normal">190</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
 <span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
@@ -2789,7 +2788,8 @@
 <span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
-<span class="normal">232</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
+<span class="normal">232</span>
+<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write log messages and run synchronization based on passed config.&quot;&quot;&quot;</span>
     <span class="n">conf</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Synchronizing project metadata...[/bold green]&quot;</span><span class="p">)</span>

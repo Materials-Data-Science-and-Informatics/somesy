@@ -2242,15 +2242,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/commands/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 51</span>
 <span class="normal"> 52</span>
 <span class="normal"> 53</span>
 <span class="normal"> 54</span>
@@ -2323,7 +2315,15 @@
 <span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
-<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.&quot;&quot;&quot;</span>
     <span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">project</span>
 
@@ -2332,56 +2332,56 @@
 
     <span class="c1"># update these only if they exist:</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="p">,</span>
             <span class="n">Pyproject</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_package_json</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_package_json</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="p">,</span>
             <span class="n">PackageJSON</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">julia_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_julia</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">julia_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_julia</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">julia_file</span><span class="p">,</span>
             <span class="n">Julia</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">fortran_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_fortran</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">fortran_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_fortran</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">fortran_file</span><span class="p">,</span>
             <span class="n">Fortran</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pom_xml_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pom_xml</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pom_xml_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pom_xml</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">pom_xml_file</span><span class="p">,</span>
             <span class="n">POM</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_mkdocs</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_mkdocs</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span><span class="p">,</span>
             <span class="n">MkDocs</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_rust</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_rust</span><span class="p">:</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span><span class="p">,</span>
             <span class="n">Rust</span><span class="p">,</span>
@@ -2390,7 +2390,7 @@
 
     <span class="c1"># create these by default if they are missing:</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="p">,</span>
             <span class="n">CFF</span><span class="p">,</span>
@@ -2398,7 +2398,7 @@
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
-        <span class="n">_sync_file</span><span class="p">(</span>
+        <span class="n">_sync_files</span><span class="p">(</span>
             <span class="n">metadata</span><span class="p">,</span>
             <span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="p">,</span>
             <span class="n">CodeMeta</span><span class="p">,</span>
