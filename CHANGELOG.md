@@ -8,6 +8,7 @@ Please consult the changelog to inform yourself about breaking changes and secur
 
 - make validation of output files, such as pyproject.toml, optional
 - make somesy project metadata input `version` optional
+- multiple output file support
 
 ## [v0.6.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.6.0) <small>(2025-02-14)</small> { id="0.6.0" }
 
