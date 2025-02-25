@@ -7,7 +7,7 @@ import json
 import re
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import (
     BaseModel,
@@ -179,56 +179,56 @@ class SomesyConfig(SomesyBaseModel):
     no_sync_pyproject: Annotated[
         bool, Field(description="Do not sync with pyproject.toml.")
     ] = False
-    pyproject_file: Annotated[Path, Field(description="pyproject.toml file path.")] = (
-        Path("pyproject.toml")
-    )
+    pyproject_file: Annotated[
+        Union[Path, List[Path]], Field(description="pyproject.toml file path.")
+    ] = Path("pyproject.toml")
 
     no_sync_package_json: Annotated[
         bool, Field(description="Do not sync with package.json.")
     ] = False
-    package_json_file: Annotated[Path, Field(description="package.json file path.")] = (
-        Path("package.json")
-    )
+    package_json_file: Annotated[
+        Union[Path, List[Path]], Field(description="package.json file path.")
+    ] = Path("package.json")
 
     no_sync_julia: Annotated[
         bool, Field(description="Do not sync with Project.toml.")
     ] = False
-    julia_file: Annotated[Path, Field(description="Project.toml file path.")] = Path(
-        "Project.toml"
-    )
+    julia_file: Annotated[
+        Union[Path, List[Path]], Field(description="Project.toml file path.")
+    ] = Path("Project.toml")
 
     no_sync_fortran: Annotated[
         bool, Field(description="Do not sync with fpm.toml.")
     ] = False
-    fortran_file: Annotated[Path, Field(description="fpm.toml file path.")] = Path(
-        "fpm.toml"
-    )
+    fortran_file: Annotated[
+        Union[Path, List[Path]], Field(description="fpm.toml file path.")
+    ] = Path("fpm.toml")
 
     no_sync_pom_xml: Annotated[bool, Field(description="Do not sync with pom.xml.")] = (
         False
     )
-    pom_xml_file: Annotated[Path, Field(description="pom.xml file path.")] = Path(
-        "pom.xml"
-    )
+    pom_xml_file: Annotated[
+        Union[Path, List[Path]], Field(description="pom.xml file path.")
+    ] = Path("pom.xml")
 
     no_sync_mkdocs: Annotated[
         bool, Field(description="Do not sync with mkdocs.yml.")
     ] = False
-    mkdocs_file: Annotated[Path, Field(description="mkdocs.yml file path.")] = Path(
-        "mkdocs.yml"
-    )
+    mkdocs_file: Annotated[
+        Union[Path, List[Path]], Field(description="mkdocs.yml file path.")
+    ] = Path("mkdocs.yml")
 
     no_sync_rust: Annotated[bool, Field(description="Do not sync with Cargo.toml.")] = (
         False
     )
-    rust_file: Annotated[Path, Field(description="Cargo.toml file path.")] = Path(
-        "Cargo.toml"
-    )
+    rust_file: Annotated[
+        Union[Path, List[Path]], Field(description="Cargo.toml file path.")
+    ] = Path("Cargo.toml")
 
     no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
-    cff_file: Annotated[Path, Field(description="CFF file path.")] = Path(
-        "CITATION.cff"
-    )
+    cff_file: Annotated[
+        Union[Path, List[Path]], Field(description="CFF file path.")
+    ] = Path("CITATION.cff")
 
     no_sync_codemeta: Annotated[
         bool, Field(description="Do not sync with codemeta.json.")

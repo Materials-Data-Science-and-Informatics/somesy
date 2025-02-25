@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+from typing import List, Optional
 
 import typer
 
@@ -23,136 +24,136 @@ app = typer.Typer()
 @app.callback(invoke_without_command=True)
 @wrap_exceptions
 def sync(
-    input_file: Path = typer.Option(
+    input_file: Optional[Path] = typer.Option(
         None,
         "--input-file",
         "-i",
         help="Somesy input file path (default: .somesy.toml)",
         **file_arg_config,
     ),
-    no_sync_pyproject: bool = typer.Option(
+    no_sync_pyproject: Optional[bool] = typer.Option(
         None,
         "--no-sync-pyproject",
         "-P",
         help="Do not sync pyproject.toml file (default: False)",
     ),
-    pyproject_file: Path = typer.Option(
+    pyproject_file: Optional[List[Path]] = typer.Option(
         None,
         "--pyproject-file",
         "-p",
-        help="Existing pyproject.toml file path (default: pyproject.toml)",
+        help="Existing pyproject.toml file path(s) (default: pyproject.toml)",
         **existing_file_arg_config,
     ),
-    no_sync_package_json: bool = typer.Option(
+    no_sync_package_json: Optional[bool] = typer.Option(
         None,
         "--no-sync-package-json",
         "-J",
         help="Do not sync package.json file (default: False)",
     ),
-    package_json_file: Path = typer.Option(
+    package_json_file: Optional[List[Path]] = typer.Option(
         None,
         "--package-json-file",
         "-j",
-        help="Existing package.json file path (default: package.json)",
+        help="Existing package.json file path(s) (default: package.json)",
         **existing_file_arg_config,
     ),
-    no_sync_julia: bool = typer.Option(
+    no_sync_julia: Optional[bool] = typer.Option(
         None,
         "--no-sync-julia",
         "-L",
         help="Do not sync Project.toml (Julia) file (default: False)",
     ),
-    julia_file: Path = typer.Option(
+    julia_file: Optional[List[Path]] = typer.Option(
         None,
         "--julia-file",
         "-l",
-        help="Custom Project.toml (Julia) file path (default: Project.toml)",
+        help="Custom Project.toml (Julia) file path(s) (default: Project.toml)",
         **existing_file_arg_config,
     ),
-    no_sync_fortran: bool = typer.Option(
+    no_sync_fortran: Optional[bool] = typer.Option(
         None,
         "--no-sync-fortran",
         "-F",
         help="Do not sync fpm.toml (Fortran) file (default: False)",
-        **existing_file_arg_config,
     ),
-    fortran_file: Path = typer.Option(
+    fortran_file: Optional[List[Path]] = typer.Option(
         None,
         "--fortran-file",
         "-f",
-        help="Custom fpm.toml (Fortran) file path (default: fpm.toml)",
+        help="Custom fpm.toml (Fortran) file path(s) (default: fpm.toml)",
+        **existing_file_arg_config,
     ),
-    no_sync_pom_xml: bool = typer.Option(
+    no_sync_pom_xml: Optional[bool] = typer.Option(
         None,
         "--no-sync-pomxml",
         "-X",
         help="Do not sync pom.xml (Java Maven) file (default: False)",
     ),
-    pom_xml_file: Path = typer.Option(
+    pom_xml_file: Optional[List[Path]] = typer.Option(
         None,
         "--pomxml-file",
         "-x",
-        help="Custom pom.xml (Java Maven) file path (default: pom.xml)",
+        help="Custom pom.xml (Java Maven) file path(s) (default: pom.xml)",
         **existing_file_arg_config,
     ),
-    no_sync_mkdocs: bool = typer.Option(
+    no_sync_mkdocs: Optional[bool] = typer.Option(
         None,
         "--no-sync-mkdocs",
         "-D",
         help="Do not sync mkdocs.yml file (default: False)",
     ),
-    mkdocs_file: Path = typer.Option(
+    mkdocs_file: Optional[List[Path]] = typer.Option(
         None,
         "--mkdocs-file",
         "-d",
-        help="Custom mkdocs.yml file path (default: mkdocs.yml)",
+        help="Custom mkdocs.yml file path(s) (default: mkdocs.yml)",
         **existing_file_arg_config,
     ),
-    no_sync_rust: bool = typer.Option(
+    no_sync_rust: Optional[bool] = typer.Option(
         None,
         "--no-sync-rust",
         "-R",
         help="Do not sync Cargo.toml file (default: False)",
     ),
-    rust_file: Path = typer.Option(
+    rust_file: Optional[List[Path]] = typer.Option(
         None,
         "--rust-file",
         "-r",
-        help="Custom Cargo.toml file path (default: Cargo.toml)",
+        help="Custom Cargo.toml file path(s) (default: Cargo.toml)",
         **existing_file_arg_config,
     ),
-    no_sync_cff: bool = typer.Option(
+    no_sync_cff: Optional[bool] = typer.Option(
         None,
         "--no-sync-cff",
         "-C",
         help="Do not sync CITATION.cff file (default: False)",
     ),
-    cff_file: Path = typer.Option(
+    cff_file: Optional[List[Path]] = typer.Option(
         None,
         "--cff-file",
         "-c",
-        help="CITATION.cff file path (default: CITATION.cff)",
+        help="CITATION.cff file path(s) (default: CITATION.cff)",
         **file_arg_config,
     ),
-    no_sync_codemeta: bool = typer.Option(
+    no_sync_codemeta: Optional[bool] = typer.Option(
         None,
         "--no-sync-codemeta",
         "-M",
         help="Do not sync codemeta.json file (default: False)",
     ),
-    codemeta_file: Path = typer.Option(
+    codemeta_file: Optional[List[Path]] = typer.Option(
         None,
         "--codemeta-file",
         "-m",
-        help="Custom codemeta.json file path (default: codemeta.json)",
+        help="Custom codemeta.json file path(s) (default: codemeta.json)",
         **file_arg_config,
     ),
-    merge_codemeta: bool = typer.Option(
+    merge_codemeta: Optional[bool] = typer.Option(
         False,
         "--merge/--overwrite",
         help="Merge codemeta.json with with an existing codemeta.json file (default: False)",
     ),
-    pass_validation: bool = typer.Option(
+    pass_validation: Optional[bool] = typer.Option(
         False,
         "--pass-validation",
         "-P",
