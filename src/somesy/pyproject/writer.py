@@ -104,14 +104,19 @@ class Poetry(PyprojectCommon):
         self,
         path: Path,
         pass_validation: Optional[bool] = False,
+        version: Optional[int] = 1,
     ):
         """Poetry config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
+        if version == 1:
+            section = ["tool", "poetry"]
+        else:
+            section = ["project"]
         super().__init__(
             path,
-            section=["tool", "poetry"],
+            section=section,
             model_cls=PoetryConfig,
             pass_validation=pass_validation,
         )
@@ -230,14 +235,24 @@ class Pyproject(wrapt.ObjectProxy):
             data = load(f)
 
         # inspect file to pick suitable project metadata writer
-        if "project" in data:
+        is_poetry = "tool" in data and "poetry" in data["tool"]
+        has_project = "project" in data
+
+        if is_poetry:
+            if has_project:
+                logger.verbose(
+                    "Found Poetry 2.x metadata with project section in pyproject.toml"
+                )
+            else:
+                logger.verbose("Found Poetry 1.x metadata in pyproject.toml")
+            self.__wrapped__ = Poetry(
+                path, pass_validation=pass_validation, version=2 if has_project else 1
+            )
+        elif has_project and not is_poetry:
             logger.verbose("Found setuptools-based metadata in pyproject.toml")
             self.__wrapped__ = SetupTools(path, pass_validation=pass_validation)
-        elif "tool" in data and "poetry" in data["tool"]:
-            logger.verbose("Found poetry-based metadata in pyproject.toml")
-            self.__wrapped__ = Poetry(path, pass_validation=pass_validation)
         else:
-            msg = "The pyproject.toml file is ambiguous, either add a [project] or [tool.poetry] section"
+            msg = "The pyproject.toml file is ambiguous. For Poetry projects, ensure [tool.poetry] section exists. For setuptools, ensure [project] section exists without [tool.poetry]"
             raise ValueError(msg)
 
         super().__init__(self.__wrapped__)
