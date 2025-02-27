@@ -225,7 +225,7 @@ one of the supported input formats:
 === "pyproject.toml"
 
     ```toml
-    [tool.poetry]
+    [tool.poetry] # [project] in case of poetry version 2
     name = "my-amazing-project"
     version = "0.1.0"
     ...

@@ -56,6 +56,10 @@ Starting with version **0.3.0**, `somesy` supports Linux, MacOS and Windows.
 
 Make sure that you use the latest version in order to avoid any problems.
 
+! info
+
+    Poetry changed location of its project metadata with its version 2. Starting with version **0.7.0**, `somesy` supports both major versions of `poetry`, version 1 and 2.
+
 ### Installing somesy
 
 Somesy requires Python `>=3.8`. To get a first impression, you can install the
@@ -172,7 +176,7 @@ file in the root folder of your repository:
 repos:
     # ... (your other hooks) ...
     - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-      rev: 'v0.6.0'
+      rev: 'v0.7.0'
       hooks:
           - id: somesy
 ```
@@ -193,18 +197,18 @@ so when using `somesy` with pre-commit, keep in mind that
 
 Here is an overview of all the currently supported files and formats.
 
-| Input Formats  | Status |     | Target Formats                | Status |
-| -------------- | ------ | --- | ----------------------------- | ------ |
-| (.)somesy.toml | ✓      |     | pyproject.toml _(poetry)_     | ✓      |
-| pyproject.toml | ✓      |     | pyproject.toml _(setuptools)_ | ✓(1.)  |
-| package.json   | ✓      |     | package.json _(JavaScript)_   | ✓(2.)  |
-| Project.toml   | ✓      |     | Project.toml _(Julia)_        | ✓      |
-| fpm.toml       | ✓      |     | fpm.toml _(Fortran)_          | ✓(3.)  |
-|                | ✓      |     | pom.toml _(Java)_             | ✓(4.)  |
-| Cargo.toml     | ✓      |     | Cargo.toml _(Rust)_           | ✓      |
-|                |        |     | mkdocs.yml                    | ✓(5.)  |
-|                |        |     | CITATION.cff                  | ✓      |
-|                |        |     | codemeta.json                 | ✓(6.)  |
+| Input Formats  | Status |     | Target Formats                      | Status |
+| -------------- | ------ | --- | ----------------------------------- | ------ |
+| (.)somesy.toml | ✓      |     | pyproject.toml _(poetry v1 and v2)_ | ✓      |
+| pyproject.toml | ✓      |     | pyproject.toml _(setuptools)_       | ✓(1.)  |
+| package.json   | ✓      |     | package.json _(JavaScript)_         | ✓(2.)  |
+| Project.toml   | ✓      |     | Project.toml _(Julia)_              | ✓      |
+| fpm.toml       | ✓      |     | fpm.toml _(Fortran)_                | ✓(3.)  |
+|                | ✓      |     | pom.toml _(Java)_                   | ✓(4.)  |
+| Cargo.toml     | ✓      |     | Cargo.toml _(Rust)_                 | ✓      |
+|                |        |     | mkdocs.yml                          | ✓(5.)  |
+|                |        |     | CITATION.cff                        | ✓      |
+|                |        |     | codemeta.json                       | ✓(6.)  |
 
 **Notes:**
 

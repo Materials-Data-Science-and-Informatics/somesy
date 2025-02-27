@@ -1,6 +1,6 @@
-[tool.poetry]
+[project]
 name = "somesy"
-version = "0.6.0"
+version = "0.7.0"
 description = "A CLI tool for synchronizing software project metadata."
 authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>", "Anton Pirogov <a.pirogov@fz-juelich.de>"]
 maintainers = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
@@ -20,6 +20,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
+[tool.poetry]
 # the Python packages that will be included in a built distribution:
 packages = [{include = "somesy", from = "src"}]
 
