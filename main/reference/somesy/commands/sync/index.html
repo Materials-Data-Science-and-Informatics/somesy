@@ -2233,29 +2233,59 @@
 
 
 <a href="#somesy.commands.sync.sync" class="headerlink" title="Permanent link">&para;</a></h2>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">,</span> <span class="n">is_package</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
       <p>Sync selected metadata files with given input file.</p>
 
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code>somesy_input</code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="somesy.core.models.SomesyInput" href="../../core/models/#somesy.core.models.SomesyInput">SomesyInput</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The input configuration and metadata to sync</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code>is_package</code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether this is a package (subfolder) being synced</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
             <details class="quote">
               <summary>Source code in <code>src/somesy/commands/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 64</span>
 <span class="normal"> 65</span>
 <span class="normal"> 66</span>
 <span class="normal"> 67</span>
@@ -2323,88 +2353,103 @@
 <span class="normal">129</span>
 <span class="normal">130</span>
 <span class="normal">131</span>
-<span class="normal">132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.&quot;&quot;&quot;</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">,</span> <span class="n">is_package</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync selected metadata files with given input file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        somesy_input: The input configuration and metadata to sync</span>
+<span class="sd">        is_package: Whether this is a package (subfolder) being synced</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">project</span>
+
+    <span class="c1"># Get the base directory from the input file&#39;s location</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">_origin</span><span class="o">.</span><span class="n">parent</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;No origin found for somesy input, using current working directory.&quot;</span>
+        <span class="p">)</span>
+        <span class="n">base_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span>
+
+    <span class="c1"># Resolve all paths in the config relative to the base directory</span>
+    <span class="n">conf</span><span class="o">.</span><span class="n">resolve_paths</span><span class="p">(</span><span class="n">base_dir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_package</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[bold green]Synchronizing package metadata...[/bold green]&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[bold green]Synchronizing root project metadata...[/bold green]&quot;</span><span class="p">)</span>
 
     <span class="n">pp_metadata</span> <span class="o">=</span> <span class="n">pretty_repr</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Project metadata: </span><span class="si">{</span><span class="n">pp_metadata</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="c1"># update these only if they exist:</span>
+    <span class="c1"># First sync the current project</span>
+    <span class="n">_sync_root_project</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">pyproject_file</span><span class="p">,</span>
-            <span class="n">Pyproject</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="c1"># Then sync each package if defined</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>
+        <span class="n">packages</span> <span class="o">=</span> <span class="p">[</span><span class="n">conf</span><span class="o">.</span><span class="n">packages</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">packages</span><span class="p">,</span> <span class="n">Path</span><span class="p">)</span> <span class="k">else</span> <span class="n">conf</span><span class="o">.</span><span class="n">packages</span>
+        <span class="k">for</span> <span class="n">package</span> <span class="ow">in</span> <span class="n">packages</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[bold blue]Processing package </span><span class="si">{</span><span class="n">package</span><span class="si">}</span><span class="s2">...[/bold blue]&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_package_json</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">package_json_file</span><span class="p">,</span>
-            <span class="n">PackageJSON</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="c1"># Try all possible input files in order of priority</span>
+            <span class="n">config_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">package</span> <span class="o">/</span> <span class="n">file</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">INPUT_FILES_ORDERED</span><span class="p">]</span>
+            <span class="n">package_input</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">julia_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_julia</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">julia_file</span><span class="p">,</span>
-            <span class="n">Julia</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="k">for</span> <span class="n">config_file</span> <span class="ow">in</span> <span class="n">config_files</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">package_input</span> <span class="o">=</span> <span class="n">SomesyInput</span><span class="o">.</span><span class="n">from_input_file</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found config file: </span><span class="si">{</span><span class="n">config_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">break</span>
+                <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">RuntimeError</span><span class="p">):</span>
+                    <span class="k">continue</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">fortran_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_fortran</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">fortran_file</span><span class="p">,</span>
-            <span class="n">Fortran</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="k">if</span> <span class="n">package_input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;No valid somesy config found in package </span><span class="si">{</span><span class="n">package</span><span class="si">}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;(tried: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">config_files</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">pom_xml_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pom_xml</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">pom_xml_file</span><span class="p">,</span>
-            <span class="n">POM</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="c1"># Create new config with CLI options and package&#39;s input file</span>
+            <span class="n">cli_options</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;no_sync_pyproject&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pyproject</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_package_json&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_package_json</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_julia&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_julia</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_fortran&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_fortran</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_pom_xml&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_pom_xml</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_mkdocs&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_mkdocs</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_rust&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_rust</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_cff&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">,</span>
+                <span class="s2">&quot;no_sync_codemeta&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">,</span>
+                <span class="s2">&quot;merge_codemeta&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">merge_codemeta</span><span class="p">,</span>
+                <span class="s2">&quot;pass_validation&quot;</span><span class="p">:</span> <span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
+                <span class="s2">&quot;packages&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Don&#39;t pass packages to avoid recursive package handling</span>
+            <span class="p">}</span>
+            <span class="n">package_input</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">SomesyConfig</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="n">config_file</span><span class="p">,</span> <span class="o">**</span><span class="n">cli_options</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_mkdocs</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">mkdocs_file</span><span class="p">,</span>
-            <span class="n">MkDocs</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="c1"># Set default CFF and CodeMeta paths in package directory if not specified</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">package_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
+                <span class="n">package_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">cff_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;CITATION.cff&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">package_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
+                <span class="n">package_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">codemeta_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;codemeta.json&quot;</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_rust</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">rust_file</span><span class="p">,</span>
-            <span class="n">Rust</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="c1"># create these by default if they are missing:</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_cff</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">cff_file</span><span class="p">,</span>
-            <span class="n">CFF</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">conf</span><span class="o">.</span><span class="n">no_sync_codemeta</span><span class="p">:</span>
-        <span class="n">_sync_files</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span>
-            <span class="n">conf</span><span class="o">.</span><span class="n">codemeta_file</span><span class="p">,</span>
-            <span class="n">CodeMeta</span><span class="p">,</span>
-            <span class="n">merge_codemeta</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">merge_codemeta</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="c1"># Recursively call sync on the package</span>
+            <span class="n">sync</span><span class="p">(</span><span class="n">package_input</span><span class="p">,</span> <span class="n">is_package</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

@@ -2387,6 +2387,13 @@
         <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Pass validation of metadata files (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">packages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--packages&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-k&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Packages (subfolders) for monorepos with their own somesy config.&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">existing_file_arg_config</span>
+    <span class="p">),</span>
 <span class="p">)</span>
 </code></pre></div>
 
@@ -2559,7 +2566,16 @@
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
-<span class="normal">187</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span>
     <span class="n">input_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
@@ -2697,6 +2713,13 @@
         <span class="s2">&quot;-P&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Pass validation of metadata files (default: False)&quot;</span><span class="p">,</span>
     <span class="p">),</span>
+    <span class="n">packages</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]]</span> <span class="o">=</span> <span class="n">typer</span><span class="o">.</span><span class="n">Option</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="s2">&quot;--packages&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-k&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Packages (subfolders) for monorepos with their own somesy config.&quot;</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">existing_file_arg_config</span><span class="p">,</span>
+    <span class="p">),</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync project metadata input with metadata files.&quot;&quot;&quot;</span>
     <span class="n">somesy_input</span> <span class="o">=</span> <span class="n">resolved_somesy_input</span><span class="p">(</span>
@@ -2721,7 +2744,9 @@
         <span class="n">rust_file</span><span class="o">=</span><span class="n">rust_file</span><span class="p">,</span>
         <span class="n">merge_codemeta</span><span class="o">=</span><span class="n">merge_codemeta</span><span class="p">,</span>
         <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
+        <span class="n">packages</span><span class="o">=</span><span class="n">packages</span><span class="p">,</span>
     <span class="p">)</span>
+
     <span class="n">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -2746,16 +2771,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/cli/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
 <span class="normal">202</span>
@@ -2789,7 +2805,16 @@
 <span class="normal">230</span>
 <span class="normal">231</span>
 <span class="normal">232</span>
-<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">run_sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write log messages and run synchronization based on passed config.&quot;&quot;&quot;</span>
     <span class="n">conf</span> <span class="o">=</span> <span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;[bold green]Synchronizing project metadata...[/bold green]&quot;</span><span class="p">)</span>

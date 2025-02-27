@@ -657,6 +657,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#packages-sub-modules-with-their-own-somesy-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Packages (sub-modules) with their own somesy file
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2287,6 +2296,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#packages-sub-modules-with-their-own-somesy-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Packages (sub-modules) with their own somesy file
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -3001,7 +3019,7 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 </tr>
 <tr>
 <td>codemeta_file</td>
-<td>Path</td>
+<td>Path / List[Path]</td>
 <td>no</td>
 <td>"codemeta.json"</td>
 <td>codemeta.json file path.</td>
@@ -3019,6 +3037,13 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>no</td>
 <td>false</td>
 <td>Pass validation for all output files.</td>
+</tr>
+<tr>
+<td>packages</td>
+<td>Path / List[Path]</td>
+<td>no</td>
+<td></td>
+<td>Packages (sub-folders) for monorepos with their own somesy config.</td>
 </tr>
 </tbody>
 </table>
@@ -3535,6 +3560,10 @@ filled with <code>ror id</code>.</p>
 <span class=" -Color -Color-Faint">│</span>                                                  <span class=" -Color -Color-Faint">[default: overwrite]       </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Pass validation of metadata <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                  files (default: False)      <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--packages</span>              <span class=" -Color -Color-Bold -Color-Bold-Green">-k</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">FILE</span>  Packages (subfolders) for   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                  monorepos with their own    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                  somesy config.              <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                  <span class=" -Color -Color-Faint">[default: None]            </span> <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                                     <span class=" -Color -Color-Bold -Color-Bold-Yellow">    </span>  Show this message and exit. <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">╰──────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre></div>
@@ -3662,6 +3691,15 @@ one of the supported input formats:</p>
 <p class="admonition-title">Note</p>
 <p>Let's remember <code>somesy</code> will create a <code>CITATION.CFF</code> and <code>codemeta.json</code> file in the root folder if it is set otherwise either by cli or by config.</p>
 </div>
+<h4 id="packages-sub-modules-with-their-own-somesy-file">Packages (sub-modules) with their own somesy file<a class="headerlink" href="#packages-sub-modules-with-their-own-somesy-file" title="Permanent link">&para;</a></h4>
+<p>A project with multiple packages inside can have completely different metadata such version and authors. Therefore, each package should have a separate metadata, in other words, separate <code>somesy</code> config and project metadata.</p>
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<span class="p">...</span>
+
+<span class="k">[config]</span>
+<span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s1">&#39;package1&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;package2&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;package3&#39;</span><span class="p">]</span>
+</code></pre></div>
+<p>Each of these packages (sub-folders) are assumed to have separate somesy metadata in the folder. These packages could be a <code>somesy</code> supported language/framework or it could be any other language. <code>somesy</code> will create at least <code>CITATION.CFF</code> and <code>codemeta.json</code> regardless if not instructed otherwise.</p>
 
 
 

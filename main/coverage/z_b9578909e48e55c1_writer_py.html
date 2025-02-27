@@ -54,8 +54,8 @@
             </div>
         </aside>
         <h2>
-            <span class="text">120 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">104<span class="text"> run</span></button>
+            <span class="text">122 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">106<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">16<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_9ea766248af4aff5___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.6.0">coverage.py v7.6.0</a>,
-            created at 2025-02-25 09:33 +0000
+            created at 2025-02-27 12:48 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -284,7 +284,10 @@
     <p class="run"><span class="n"><a id="t202" href="#t202">202</a></span><span class="t">    <span class="op">@</span><span class="nam">repository</span><span class="op">.</span><span class="nam">setter</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t203" href="#t203">203</a></span><span class="t">    <span class="key">def</span> <span class="nam">repository</span><span class="op">(</span><span class="nam">self</span><span class="op">,</span> <span class="nam">value</span><span class="op">:</span> <span class="nam">Optional</span><span class="op">[</span><span class="nam">Union</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">Dict</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t204" href="#t204">204</a></span><span class="t">        <span class="str">"""Set the repository url of the project."""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t205" href="#t205">205</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_set_property</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_get_key</span><span class="op">(</span><span class="str">"repository"</span><span class="op">)</span><span class="op">,</span> <span class="nam">dict</span><span class="op">(</span><span class="nam">type</span><span class="op">=</span><span class="str">"git"</span><span class="op">,</span> <span class="nam">url</span><span class="op">=</span><span class="nam">value</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t205" href="#t205">205</a></span><span class="t">        <span class="key">if</span> <span class="nam">value</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t206" href="#t206">206</a></span><span class="t">            <span class="nam">self</span><span class="op">.</span><span class="nam">_set_property</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_get_key</span><span class="op">(</span><span class="str">"repository"</span><span class="op">)</span><span class="op">,</span> <span class="key">None</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t207" href="#t207">207</a></span><span class="t">        <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t208" href="#t208">208</a></span><span class="t">            <span class="nam">self</span><span class="op">.</span><span class="nam">_set_property</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_get_key</span><span class="op">(</span><span class="str">"repository"</span><span class="op">)</span><span class="op">,</span> <span class="nam">dict</span><span class="op">(</span><span class="nam">type</span><span class="op">=</span><span class="str">"git"</span><span class="op">,</span> <span class="nam">url</span><span class="op">=</span><span class="nam">value</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -294,7 +297,7 @@
             <a class="nav" href="z_9ea766248af4aff5___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.6.0">coverage.py v7.6.0</a>,
-            created at 2025-02-25 09:33 +0000
+            created at 2025-02-27 12:48 +0000
         </p>
     </div>
 </footer>
