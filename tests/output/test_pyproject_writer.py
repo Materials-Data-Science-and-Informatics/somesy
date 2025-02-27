@@ -13,9 +13,21 @@ def pyproject_poetry(load_files, file_types):
 
 
 @pytest.fixture
+def pyproject_poetry2(load_files, file_types):
+    files = load_files([file_types.POETRY2])
+    return files[file_types.POETRY2]
+
+
+@pytest.fixture
 def pyproject_poetry_file(create_files, file_types):
     folder = create_files([(file_types.POETRY, "pyproject.toml")])
     return folder / Path("pyproject.toml")
+
+
+@pytest.fixture
+def pyproject_poetry2_file(create_files, file_types):
+    folder = create_files([(file_types.POETRY2, "pyproject2.toml")])
+    return folder / Path("pyproject2.toml")
 
 
 @pytest.fixture
@@ -30,7 +42,7 @@ def pyproject_setuptools_file(create_files, file_types):
     return folder / Path("pyproject.toml")
 
 
-def test_content_match(pyproject_poetry, pyproject_setuptools):
+def test_content_match(pyproject_poetry, pyproject_poetry2, pyproject_setuptools):
     # create a function to check both file formats
     def assert_content_match(pyproject_file):
         assert pyproject_file.name == "test-package"
@@ -43,22 +55,24 @@ def test_content_match(pyproject_poetry, pyproject_setuptools):
         )
         assert len(pyproject_file.authors) == 1
 
-    # assert for both formats
+    # assert for all formats
     assert_content_match(pyproject_poetry)
+    assert_content_match(pyproject_poetry2)
     assert_content_match(pyproject_setuptools)
 
 
-def test_sync(pyproject_poetry, pyproject_setuptools, somesy_input):
+def test_sync(pyproject_poetry, pyproject_poetry2, pyproject_setuptools, somesy_input):
     def assert_sync(pyproject):
         pyproject.sync(somesy_input.project)
         assert pyproject.name == "testproject"
         assert pyproject.version == "1.0.0"
 
     assert_sync(pyproject_poetry)
+    assert_sync(pyproject_poetry2)
     assert_sync(pyproject_setuptools)
 
 
-def test_save(tmp_path, pyproject_poetry, pyproject_setuptools):
+def test_save(tmp_path, pyproject_poetry, pyproject_poetry2, pyproject_setuptools):
     def assert_save(pyproject):
         custom_path = tmp_path / Path("pyproject.toml")
         pyproject.save(custom_path)
@@ -66,6 +80,7 @@ def test_save(tmp_path, pyproject_poetry, pyproject_setuptools):
         custom_path.unlink()
 
     assert_save(pyproject_poetry)
+    assert_save(pyproject_poetry2)
     assert_save(pyproject_setuptools)
 
 
@@ -97,13 +112,25 @@ def test_from_to_person(person):
 
 
 @pytest.mark.parametrize(
-    "writer_class, writer_file_fixture",
-    [(Poetry, "pyproject_poetry_file"), (SetupTools, "pyproject_setuptools_file")],
+    "writer_class, writer_file_fixture, version",
+    [
+        (Poetry, "pyproject_poetry_file", 1),
+        (Poetry, "pyproject_poetry2_file", 2),
+        (SetupTools, "pyproject_setuptools_file", None),
+    ],
 )
-def test_person_merge_pyproject(request, writer_class, writer_file_fixture, person):
+def test_person_merge_pyproject(
+    request, writer_class, writer_file_fixture, version, person
+):
     # get suitable project file
     writer_file = request.getfixturevalue(writer_file_fixture)
-    pj = writer_class(writer_file)
+
+    # Initialize with correct version for Poetry
+    if writer_class == Poetry:
+        pj = writer_class(writer_file, version=version)
+    else:
+        pj = writer_class(writer_file)
+
     # update project file with known data
     pm = ProjectMetadata(
         name="My awesome project",
@@ -176,7 +203,8 @@ def test_person_merge_pyproject(request, writer_class, writer_file_fixture, pers
 
 
 def test_without_email(tmp_path, person):
-    pyproject_str = """
+    # Test Poetry v1
+    pyproject_v1_str = """
     [tool.poetry]
     name = "ttt"
     version = "0.1.0"
@@ -187,33 +215,58 @@ def test_without_email(tmp_path, person):
     [tool.poetry.dependencies]
     python = "^3.10"
 
+    [build-system]
+    requires = ["poetry-core"]
+    build-backend = "poetry.core.masonry.api"
+    """
+
+    # Test Poetry v2
+    pyproject_v2_str = """
+    [tool.poetry]
+    name = "ttt"
+    version = "0.1.0"
+    description = "asd"
+    authors = ["John Doe"]
+    license = "MIT"
+
+    [project]
+    name = "ttt"
+    version = "0.1.0"
+    description = "asd"
+    authors = ["John Doe"]
+    license = "MIT"
+
+    [tool.poetry.dependencies]
+    python = "^3.10"
 
     [build-system]
     requires = ["poetry-core"]
     build-backend = "poetry.core.masonry.api"
     """
 
-    # save to file
-    pyproject_file = tmp_path / Path("pyproject.toml")
-    pyproject_file.write_text(pyproject_str)
+    # Test both versions
+    for pyproject_str, version in [(pyproject_v1_str, 1), (pyproject_v2_str, 2)]:
+        # save to file
+        pyproject_file = tmp_path / Path(f"pyproject_v{version}.toml")
+        pyproject_file.write_text(pyproject_str)
 
-    # load and sync
-    p = Poetry(pyproject_file)
-    assert len(p.authors) == 1
+        # load and sync
+        p = Poetry(pyproject_file, version=version)
+        assert len(p.authors) == 1
 
-    pm = ProjectMetadata(
-        name="My awesome project",
-        description="Project description",
-        license=LicenseEnum.MIT,
-        version="0.1.0",
-        people=[
-            person.model_copy(
-                update=dict(author=True, publication_author=True, maintainer=True)
-            )
-        ],
-    )
+        pm = ProjectMetadata(
+            name="My awesome project",
+            description="Project description",
+            license=LicenseEnum.MIT,
+            version="0.1.0",
+            people=[
+                person.model_copy(
+                    update=dict(author=True, publication_author=True, maintainer=True)
+                )
+            ],
+        )
 
-    p.sync(pm)
+        p.sync(pm)
 
-    assert len(p.authors) == 1
-    assert len(p.maintainers) == 1
+        assert len(p.authors) == 1
+        assert len(p.maintainers) == 1
