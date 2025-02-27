@@ -159,6 +159,13 @@ def sync(
         "-P",
         help="Pass validation of metadata files (default: False)",
     ),
+    packages: Optional[List[Path]] = typer.Option(
+        None,
+        "--packages",
+        "-k",
+        help="Packages (subfolders) for monorepos with their own somesy config.",
+        **existing_file_arg_config,
+    ),
 ):
     """Sync project metadata input with metadata files."""
     somesy_input = resolved_somesy_input(
@@ -183,7 +190,9 @@ def sync(
         rust_file=rust_file,
         merge_codemeta=merge_codemeta,
         pass_validation=pass_validation,
+        packages=packages,
     )
+
     run_sync(somesy_input)
 
 
