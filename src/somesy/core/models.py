@@ -173,7 +173,7 @@ class SomesyConfig(SomesyBaseModel):
     ] = False
 
     input_file: Annotated[
-        Path, Field(description="Project metadata input file path.")
+        Optional[Path], Field(description="Project metadata input file path.")
     ] = Path("somesy.toml")
 
     no_sync_pyproject: Annotated[
@@ -249,6 +249,14 @@ class SomesyConfig(SomesyBaseModel):
         Field(description="Pass validation for all output files."),
     ] = False
 
+    # packages (sub-folders) for monorepos with their own somesy config
+    packages: Annotated[
+        Optional[Union[Path, List[Path]]],
+        Field(
+            description="Packages (sub-folders) for monorepos with their own somesy config."
+        ),
+    ] = None
+
     def log_level(self) -> SomesyLogLevel:
         """Return log level derived from this configuration."""
         return SomesyLogLevel.from_flags(
@@ -271,6 +279,37 @@ class SomesyConfig(SomesyBaseModel):
         dct.update(self.model_dump())
         somesy_input.config = SomesyConfig(**dct)
         return somesy_input
+
+    def resolve_paths(self, base_dir: Path) -> None:
+        """Resolve all paths in the config relative to the given base directory.
+
+        Args:
+            base_dir: The base directory to resolve paths against.
+
+        """
+
+        def resolve_path(
+            paths: Optional[Union[Path, List[Path]]],
+        ) -> Optional[Union[Path, List[Path]]]:
+            if paths is None:
+                return None
+            if isinstance(paths, list):
+                return [base_dir / p for p in paths]
+            return base_dir / paths
+
+        # Resolve all file paths
+        resolved_input = resolve_path(self.input_file)
+        self.input_file = resolved_input if isinstance(resolved_input, Path) else None
+        self.pyproject_file = resolve_path(self.pyproject_file)
+        self.package_json_file = resolve_path(self.package_json_file)
+        self.julia_file = resolve_path(self.julia_file)
+        self.fortran_file = resolve_path(self.fortran_file)
+        self.pom_xml_file = resolve_path(self.pom_xml_file)
+        self.mkdocs_file = resolve_path(self.mkdocs_file)
+        self.rust_file = resolve_path(self.rust_file)
+        self.cff_file = resolve_path(self.cff_file)
+        self.codemeta_file = resolve_path(self.codemeta_file)
+        self.packages = resolve_path(self.packages)
 
 
 # --------
@@ -734,6 +773,13 @@ class SomesyInput(SomesyBaseModel):
             default_factory=lambda: SomesyConfig(),
         ),
     ]
+
+    # if config.input_file is set, use it as origin
+    @model_validator(mode="after")
+    def set_origin(self):
+        """Set the origin of the input file."""
+        if self.config and self.config.input_file:
+            self._origin = self.config.input_file
 
     def is_somesy_file(self) -> bool:
         """Return whether this somesy input is from a somesy config file.
