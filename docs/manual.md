@@ -293,3 +293,17 @@ The example above shows a project with a `package.json` file in the root folder 
 !!! note
 
     Let's remember `somesy` will create a `CITATION.CFF` and `codemeta.json` file in the root folder if it is set otherwise either by cli or by config.
+
+#### Packages (sub-modules) with their own somesy file
+
+A project with multiple packages inside can have completely different metadata such version and authors. Therefore, each package should have a separate metadata, in other words, separate `somesy` config and project metadata.
+
+```toml
+[project]
+...
+
+[config]
+packages = ['package1', 'package2', 'package3']
+```
+
+Each of these packages (sub-folders) are assumed to have separate somesy metadata in the folder. These packages could be a `somesy` supported language/framework or it could be any other language. `somesy` will create at least `CITATION.CFF` and `codemeta.json` regardless if not instructed otherwise.

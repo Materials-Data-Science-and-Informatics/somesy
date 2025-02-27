@@ -202,4 +202,7 @@ class PackageJSON(ProjectMetadataWriter):
     @repository.setter
     def repository(self, value: Optional[Union[str, Dict]]) -> None:
         """Set the repository url of the project."""
-        self._set_property(self._get_key("repository"), dict(type="git", url=value))
+        if value is None:
+            self._set_property(self._get_key("repository"), None)
+        else:
+            self._set_property(self._get_key("repository"), dict(type="git", url=value))
