@@ -2304,6 +2304,9 @@
 <h3 id="platform-support">Platform Support<a class="headerlink" href="#platform-support" title="Permanent link">&para;</a></h3>
 <p>Starting with version <strong>0.3.0</strong>, <code>somesy</code> supports Linux, MacOS and Windows.</p>
 <p>Make sure that you use the latest version in order to avoid any problems.</p>
+<p>! info</p>
+<pre><code>Poetry changed location of its project metadata with its version 2. Starting with version **0.7.0**, `somesy` supports both major versions of `poetry`, version 1 and 2.
+</code></pre>
 <h3 id="installing-somesy">Installing somesy<a class="headerlink" href="#installing-somesy" title="Permanent link">&para;</a></h3>
 <p>Somesy requires Python <code>&gt;=3.8</code>. To get a first impression, you can install the
 latest stable version of somesy from PyPI using <code>pip</code>:</p>
@@ -2392,7 +2395,7 @@ file in the root folder of your repository:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
 <span class="w">    </span><span class="c1"># ... (your other hooks) ...</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
-<span class="w">      </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v0.6.0&#39;</span>
+<span class="w">      </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v0.7.0&#39;</span>
 <span class="w">      </span><span class="nt">hooks</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
 </code></pre></div>
@@ -2423,7 +2426,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td>(.)somesy.toml</td>
 <td>✓</td>
 <td></td>
-<td>pyproject.toml <em>(poetry)</em></td>
+<td>pyproject.toml <em>(poetry v1 and v2)</em></td>
 <td>✓</td>
 </tr>
 <tr>

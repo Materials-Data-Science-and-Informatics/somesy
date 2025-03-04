@@ -2,7 +2,7 @@
   "note":"This file is an internal implementation detail to speed up HTML report generation. Its format can change at any time. You might be looking for the JSON report: https://coverage.rtfd.io/cmd.html#cmd-json",
   "format":5,
   "version":"7.6.0",
-  "globals":"b4452c6771ee47899c90da0a8bc2df17",
+  "globals":"c70126811da546da8883bb69f56dac38",
   "files":{
     "z_97b113e3d51588b3___init___py":{
       "hash":"0b7442e339cccfa336b6852807e46823",
@@ -347,7 +347,7 @@
       }
     },
     "z_596ffba9215ba05d_writer_py":{
-      "hash":"87977b0d4827801e787ac22f55e6fc5f",
+      "hash":"5ec61111e0722d261bff241a6f39ea00",
       "index":{
         "url":"z_596ffba9215ba05d_writer_py.html",
         "file":"src/somesy/core/writer.py",
@@ -355,7 +355,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":192,
+          "n_statements":198,
           "n_excluded":33,
           "n_missing":9,
           "n_branches":0,
@@ -689,7 +689,7 @@
       }
     },
     "z_22470fc7858cbfa7_models_py":{
-      "hash":"f695277707dc7b28b7ba3689af58fa4e",
+      "hash":"9c3d0c9bbc788c30b6a5005670e5ec7f",
       "index":{
         "url":"z_22470fc7858cbfa7_models_py.html",
         "file":"src/somesy/pyproject/models.py",
@@ -697,9 +697,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":120,
+          "n_statements":125,
           "n_excluded":0,
-          "n_missing":21,
+          "n_missing":22,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -707,7 +707,7 @@
       }
     },
     "z_22470fc7858cbfa7_writer_py":{
-      "hash":"4ef3e456f53d0bf03cfcfc344ea67b6f",
+      "hash":"c2c1aea728b35753c2e64a664b8d097b",
       "index":{
         "url":"z_22470fc7858cbfa7_writer_py.html",
         "file":"src/somesy/pyproject/writer.py",
@@ -715,7 +715,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":112,
+          "n_statements":147,
           "n_excluded":0,
           "n_missing":17,
           "n_branches":0,

@@ -2127,6 +2127,15 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#somesy.pyproject.Poetry.sync" class="md-nav__link">
+    <span class="md-ellipsis">
+      sync
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2298,33 +2307,126 @@
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
-<span class="normal">136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Poetry</span><span class="p">(</span><span class="n">PyprojectCommon</span><span class="p">):</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Poetry</span><span class="p">(</span><span class="n">PyprojectCommon</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Poetry config file handler parsed from pyproject.toml.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
         <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Poetry config file handler parsed from pyproject.toml.</span>
 
 <span class="sd">        See [somesy.core.writer.ProjectMetadataWriter.__init__][].</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="n">path</span><span class="p">,</span>
-            <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">],</span>
-            <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">,</span>
-            <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_poetry_version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="n">v2_mappings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;homepage&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;homepage&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;repository&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;repository&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;documentation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;documentation&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">],</span>
+                <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">,</span>
+                <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="n">path</span><span class="p">,</span>
+                <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
+                <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">,</span>
+                <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
+                <span class="n">direct_mappings</span><span class="o">=</span><span class="n">v2_mappings</span><span class="p">,</span>
+            <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">],</span> <span class="n">poetry_version</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert project metadata person object to poetry string for person format &quot;full name &lt;email&gt;.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">poetry_version</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">person</span><span class="o">.</span><span class="n">to_name_email_string</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">person</span><span class="o">.</span><span class="n">full_name</span><span class="p">}</span>
+            <span class="k">if</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
+                <span class="n">response</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">email</span>
+            <span class="k">return</span> <span class="n">response</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span><span class="n">person</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">_to_person</span><span class="p">(</span>
+        <span class="n">person</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Person</span><span class="p">,</span> <span class="n">Entity</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert from free string to person or entity object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">person</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">person</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s2">&quot;email&quot;</span> <span class="ow">in</span> <span class="n">person</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2"> &lt;</span><span class="si">{</span><span class="n">person</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+            <span class="n">person</span> <span class="o">=</span> <span class="n">temp</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Person</span><span class="o">.</span><span class="n">from_name_email_string</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
@@ -2335,6 +2437,41 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot convert </span><span class="si">{</span><span class="n">person</span><span class="si">}</span><span class="s2"> to Entity.&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync metadata with pyproject.toml file.&quot;&quot;&quot;</span>
+        <span class="c1"># Store original _from_person method</span>
+        <span class="n">original_from_person</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span>
+
+        <span class="c1"># Override _from_person to include poetry_version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">person</span><span class="p">:</span> <span class="n">original_from_person</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+            <span class="n">person</span><span class="p">,</span> <span class="n">poetry_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_poetry_version</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Call parent sync method</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
+        <span class="c1"># Restore original _from_person method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span> <span class="o">=</span> <span class="n">original_from_person</span>  <span class="c1"># type: ignore</span>
+
+        <span class="c1"># For Poetry v2, convert authors and maintainers from array of tables to inline tables</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poetry_version</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;authors&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainers&quot;</span><span class="p">]:</span>
+                <span class="n">field_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">([</span><span class="n">field</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">field_value</span><span class="p">:</span>
+                    <span class="c1"># Create an inline array of tables</span>
+                    <span class="n">inline_array</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+                    <span class="n">inline_array</span><span class="o">.</span><span class="n">multiline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+                    <span class="c1"># Convert each table to an inline table and add to array</span>
+                    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">field_value</span><span class="p">:</span>
+                        <span class="n">inline_table</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">inline_table</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                            <span class="n">inline_table</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                        <span class="n">inline_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inline_table</span><span class="p">)</span>
+
+                    <span class="c1"># Replace the array of tables with the inline array</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">inline_array</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -2359,7 +2496,9 @@
 
 <a href="#somesy.pyproject.Poetry.__init__" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="fm">__init__</span><span class="p">(</span>
-    <span class="nf">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nf">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+    <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
 
@@ -2384,21 +2523,143 @@
 <span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
-<span class="normal">117</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">version</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Poetry config file handler parsed from pyproject.toml.</span>
 
 <span class="sd">    See [somesy.core.writer.ProjectMetadataWriter.__init__][].</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-        <span class="n">path</span><span class="p">,</span>
-        <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">],</span>
-        <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">,</span>
-        <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_poetry_version</span> <span class="o">=</span> <span class="n">version</span>
+    <span class="n">v2_mappings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;homepage&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;homepage&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;repository&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;repository&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;documentation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;urls&quot;</span><span class="p">,</span> <span class="s2">&quot;documentation&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">,</span> <span class="s2">&quot;poetry&quot;</span><span class="p">],</span>
+            <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">,</span>
+            <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">section</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;project&quot;</span><span class="p">],</span>
+            <span class="n">model_cls</span><span class="o">=</span><span class="n">PoetryConfig</span><span class="p">,</span>
+            <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
+            <span class="n">direct_mappings</span><span class="o">=</span><span class="n">v2_mappings</span><span class="p">,</span>
+        <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="somesy.pyproject.Poetry.sync" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">sync</span>
+
+
+<a href="#somesy.pyproject.Poetry.sync" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+      <p>Sync metadata with pyproject.toml file.</p>
+
+            <details class="quote">
+              <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync metadata with pyproject.toml file.&quot;&quot;&quot;</span>
+    <span class="c1"># Store original _from_person method</span>
+    <span class="n">original_from_person</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span>
+
+    <span class="c1"># Override _from_person to include poetry_version</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">person</span><span class="p">:</span> <span class="n">original_from_person</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+        <span class="n">person</span><span class="p">,</span> <span class="n">poetry_version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_poetry_version</span>
     <span class="p">)</span>
+
+    <span class="c1"># Call parent sync method</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
+    <span class="c1"># Restore original _from_person method</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span> <span class="o">=</span> <span class="n">original_from_person</span>  <span class="c1"># type: ignore</span>
+
+    <span class="c1"># For Poetry v2, convert authors and maintainers from array of tables to inline tables</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poetry_version</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;authors&quot;</span><span class="p">,</span> <span class="s2">&quot;maintainers&quot;</span><span class="p">]:</span>
+            <span class="n">field_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">([</span><span class="n">field</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">field_value</span><span class="p">:</span>
+                <span class="c1"># Create an inline array of tables</span>
+                <span class="n">inline_array</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+                <span class="n">inline_array</span><span class="o">.</span><span class="n">multiline</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+                <span class="c1"># Convert each table to an inline table and add to array</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">field_value</span><span class="p">:</span>
+                    <span class="n">inline_table</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">inline_table</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="n">inline_table</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+                    <span class="n">inline_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inline_table</span><span class="p">)</span>
+
+                <span class="c1"># Replace the array of tables with the inline array</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">inline_array</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2433,42 +2694,52 @@
 
               <details class="quote">
                 <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Pyproject</span><span class="p">(</span><span class="n">wrapt</span><span class="o">.</span><span class="n">ObjectProxy</span><span class="p">):</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Pyproject</span><span class="p">(</span><span class="n">wrapt</span><span class="o">.</span><span class="n">ObjectProxy</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for syncing pyproject file with other metadata files.&quot;&quot;&quot;</span>
 
     <span class="n">__wrapped__</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SetupTools</span><span class="p">,</span> <span class="n">Poetry</span><span class="p">]</span>
@@ -2493,14 +2764,24 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
         <span class="c1"># inspect file to pick suitable project metadata writer</span>
-        <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">is_poetry</span> <span class="o">=</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;poetry&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]</span>
+        <span class="n">has_project</span> <span class="o">=</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">data</span>
+
+        <span class="k">if</span> <span class="n">is_poetry</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">has_project</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span>
+                    <span class="s2">&quot;Found Poetry 2.x metadata with project section in pyproject.toml&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found Poetry 1.x metadata in pyproject.toml&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">Poetry</span><span class="p">(</span>
+                <span class="n">path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span> <span class="k">if</span> <span class="n">has_project</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">has_project</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_poetry</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found setuptools-based metadata in pyproject.toml&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">SetupTools</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;poetry&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found poetry-based metadata in pyproject.toml&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">Poetry</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The pyproject.toml file is ambiguous, either add a [project] or [tool.poetry] section&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The pyproject.toml file is ambiguous. For Poetry projects, ensure [tool.poetry] section exists. For setuptools, ensure [project] section exists without [tool.poetry]&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
@@ -2614,37 +2895,47 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pyproject wrapper class. Wraps either setuptools or poetry.</span>
 
 <span class="sd">    Args:</span>
@@ -2664,14 +2955,24 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
     <span class="c1"># inspect file to pick suitable project metadata writer</span>
-    <span class="k">if</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+    <span class="n">is_poetry</span> <span class="o">=</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;poetry&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]</span>
+    <span class="n">has_project</span> <span class="o">=</span> <span class="s2">&quot;project&quot;</span> <span class="ow">in</span> <span class="n">data</span>
+
+    <span class="k">if</span> <span class="n">is_poetry</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">has_project</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span>
+                <span class="s2">&quot;Found Poetry 2.x metadata with project section in pyproject.toml&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found Poetry 1.x metadata in pyproject.toml&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">Poetry</span><span class="p">(</span>
+            <span class="n">path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">2</span> <span class="k">if</span> <span class="n">has_project</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">has_project</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">is_poetry</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found setuptools-based metadata in pyproject.toml&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">SetupTools</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="s2">&quot;tool&quot;</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">and</span> <span class="s2">&quot;poetry&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;tool&quot;</span><span class="p">]:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">verbose</span><span class="p">(</span><span class="s2">&quot;Found poetry-based metadata in pyproject.toml&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span> <span class="o">=</span> <span class="n">Poetry</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The pyproject.toml file is ambiguous, either add a [project] or [tool.poetry] section&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;The pyproject.toml file is ambiguous. For Poetry projects, ensure [tool.poetry] section exists. For setuptools, ensure [project] section exists without [tool.poetry]&quot;</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__wrapped__</span><span class="p">)</span>
@@ -2709,70 +3010,70 @@
 
               <details class="quote">
                 <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span>
-<span class="normal">172</span>
-<span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupTools</span><span class="p">(</span><span class="n">PyprojectCommon</span><span class="p">):</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">SetupTools</span><span class="p">(</span><span class="n">PyprojectCommon</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Setuptools config file handler parsed from setup.cfg.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -2871,25 +3172,25 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">pass_validation</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Setuptools config file handler parsed from pyproject.toml.</span>
 
 <span class="sd">    See [somesy.core.writer.ProjectMetadataWriter.__init__][].</span>
@@ -2931,17 +3232,17 @@
 
             <details class="quote">
               <summary>Source code in <code>src/somesy/pyproject/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span>
-<span class="normal">198</span>
-<span class="normal">199</span>
-<span class="normal">200</span>
-<span class="normal">201</span>
-<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sync metadata with pyproject.toml file and fix license field.&quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
 
