@@ -23,6 +23,7 @@ TEST_DATA_DIR = TEST_DIR / "data"
 
 class FileTypes(Enum):
     POETRY = "poetry"
+    POETRY2 = "poetry2"
     SETUPTOOLS = "setuptools"
     CITATION = "citation"
     SOMESY = "somesy"
@@ -81,6 +82,8 @@ def create_files(tmp_path):
                 read_file_name = read_file_path / Path("pyproject.setuptools.toml")
             elif file_type == FileTypes.POETRY:
                 read_file_name = read_file_path / Path("pyproject.toml")
+            elif file_type == FileTypes.POETRY2:
+                read_file_name = read_file_path / Path("pyproject2.toml")
             elif file_type == FileTypes.SOMESY:
                 read_file_name = read_file_path / Path("somesy.toml")
             elif file_type == FileTypes.PACKAGE_JSON:
@@ -133,6 +136,9 @@ def load_files():
                 file_instances[file_type] = Pyproject(read_file_name)
             elif file_type == FileTypes.POETRY:
                 read_file_name = read_file_name / Path("pyproject.toml")
+                file_instances[file_type] = Pyproject(read_file_name)
+            elif file_type == FileTypes.POETRY2:
+                read_file_name = read_file_name / Path("pyproject2.toml")
                 file_instances[file_type] = Pyproject(read_file_name)
             elif file_type == FileTypes.SOMESY:
                 read_file_name = read_file_name / Path("somesy.toml")

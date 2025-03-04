@@ -251,6 +251,10 @@ class ProjectMetadataWriter(ABC):
 
         """
         old_people: List[Union[Person, Entity]] = self._parse_people(old)
+        if old_people is None or len(old_people) == 0:
+            return new
+        if new is None or len(new) == 0:
+            return old_people
         return self._merge_person_metadata(old_people, new)
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
@@ -259,7 +263,10 @@ class ProjectMetadataWriter(ABC):
         This method is existing for the publication_author special case
         when synchronizing to CITATION.cff.
         """
-        self.authors = self._sync_person_list(self.authors, metadata.authors())
+        if self.authors is None or len(self.authors) == 0:
+            self.authors = metadata.authors()
+        else:
+            self.authors = self._sync_person_list(self.authors, metadata.authors())
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
@@ -301,7 +308,7 @@ class ProjectMetadataWriter(ABC):
         # remove None values
         people = [p for p in people if p is not None]
 
-        people = list(map(cls._to_person, people or []))
+        people = list(map(lambda p: cls._to_person(p), people or []))
         return people
 
     # ----
@@ -345,7 +352,7 @@ class ProjectMetadataWriter(ABC):
     def authors(self):
         """Return the authors of the project."""
         authors = self._get_property(self._get_key("authors"))
-        if authors is None:
+        if authors is None or len(authors) == 0:
             return []
 
         # only return authors that can be converted to Person

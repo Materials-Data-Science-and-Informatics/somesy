@@ -24,6 +24,13 @@ EMailAddress = TypeAdapter(EmailStr)
 logger = getLogger("somesy")
 
 
+class STPerson(BaseModel):
+    """Person model for setuptools."""
+
+    name: Annotated[str, Field(min_length=1)]
+    email: Annotated[Optional[str], Field(min_length=1)] = None
+
+
 class PoetryConfig(BaseModel):
     """Poetry configuration model."""
 
@@ -45,10 +52,13 @@ class PoetryConfig(BaseModel):
         Optional[Union[LicenseEnum, List[LicenseEnum]]],
         Field(description="An SPDX license identifier."),
     ]
-    authors: Annotated[Set[str], Field(description="Package authors")]
+
+    # v1 has str, v2 has STPerson
+    authors: Annotated[List[Union[str, STPerson]], Field(description="Package authors")]
     maintainers: Annotated[
-        Optional[Set[str]], Field(description="Package maintainers")
+        Optional[List[Union[str, STPerson]]], Field(description="Package maintainers")
     ] = None
+
     readme: Annotated[
         Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
     ] = None
@@ -90,10 +100,17 @@ class PoetryConfig(BaseModel):
         validated = []
         for author in v:
             try:
-                if not (
-                    not isinstance(author, str)
-                    or " " not in author
-                    or not EMailAddress.validate_python(author.split(" ")[-1][1:-1])
+                if isinstance(author, STPerson) and author.email:
+                    if not EMailAddress.validate_python(author.email):
+                        logger.warning(
+                            f"Invalid email format for author/maintainer {author}, omitting."
+                        )
+                    else:
+                        validated.append(author)
+                        continue
+
+                if " " in author and EMailAddress.validate_python(
+                    author.split(" ")[-1][1:-1]
                 ):
                     validated.append(author)
                 else:
@@ -148,13 +165,6 @@ class License(BaseModel):
         if sum([bool(v) for v in values.values()]) != 1:
             raise ValueError("Either file or text must be set.")
         return values
-
-
-class STPerson(BaseModel):
-    """Person model for setuptools."""
-
-    name: Annotated[str, Field(min_length=1)]
-    email: Annotated[Optional[str], Field(min_length=1)] = None
 
 
 class URLs(BaseModel):
