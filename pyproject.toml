@@ -2,23 +2,26 @@
 name = "somesy"
 version = "0.7.0"
 description = "A CLI tool for synchronizing software project metadata."
-authors = ["Mustafa Soylu <m.soylu@fz-juelich.de>", "Anton Pirogov <a.pirogov@fz-juelich.de>"]
-maintainers = ["Mustafa Soylu <m.soylu@fz-juelich.de>"]
 license = "MIT"
-
 readme = "README.md"
-repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
-homepage = "https://materials-data-science-and-informatics.github.io/somesy"
-documentation = "https://materials-data-science-and-informatics.github.io/somesy"
-
 keywords = ["metadata", "FAIR"]
 classifiers = [
     "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Natural Language :: English",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "License :: OSI Approved :: MIT License",
 ]
+
+authors = [{name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"}, {name = "Anton Pirogov", email = "a.pirogov@fz-juelich.de"}]
+maintainers = [{name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"}]
+[project.urls]
+homepage = "https://materials-data-science-and-informatics.github.io/somesy"
+repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
+documentation = "https://materials-data-science-and-informatics.github.io/somesy"
 
 [tool.poetry]
 # the Python packages that will be included in a built distribution:
