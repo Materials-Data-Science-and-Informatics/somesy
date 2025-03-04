@@ -4,7 +4,7 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
-## [v0.7.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.0) <small>(2025-02-27)</small> { id="0.7.0" }
+## [v0.7.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.0) <small>(2025-03-04)</small> { id="0.7.0" }
 
 - make validation of output files, such as pyproject.toml, optional
 - make somesy project metadata input `version` optional
