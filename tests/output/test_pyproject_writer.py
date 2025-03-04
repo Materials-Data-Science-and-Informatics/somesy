@@ -166,8 +166,12 @@ def test_person_merge_pyproject(
     pj.save()
 
     # existing author info preserved, order not preserved because no orcid
-    person1b_rep = writer_class._from_person(person1b)
-    person2_rep = writer_class._from_person(person2)
+    if version is not None:
+        person1b_rep = writer_class._from_person(person1b, poetry_version=version)
+        person2_rep = writer_class._from_person(person2, poetry_version=version)
+    else:
+        person1b_rep = writer_class._from_person(person1b)
+        person2_rep = writer_class._from_person(person2)
     assert (pj.authors[0] == person1b_rep) or (pj.authors[1] == person1b_rep)
     assert (pj.authors[0] == person2_rep) or (pj.authors[1] == person2_rep)
 
@@ -181,11 +185,17 @@ def test_person_merge_pyproject(
             "publication_author": True,
         }
     )
-    person3_rep = writer_class._from_person(person3)
+    if version is not None:
+        person3_rep = writer_class._from_person(person3, poetry_version=version)
+    else:
+        person3_rep = writer_class._from_person(person3)
 
     # john has a new email address
     person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})
-    person1c_rep = writer_class._from_person(person1c)
+    if version is not None:
+        person1c_rep = writer_class._from_person(person1c, poetry_version=version)
+    else:
+        person1c_rep = writer_class._from_person(person1c)
 
     # jane 2 is removed from authors, but added to maintainers
     person2.author = False
