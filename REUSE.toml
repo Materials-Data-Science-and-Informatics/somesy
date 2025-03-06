@@ -1,0 +1,16 @@
+version = 1
+SPDX-PackageName = "somesy"
+SPDX-PackageSupplier = "Mustafa Soylu <m.soylu@fz-juelich.de>"
+SPDX-PackageDownloadLocation = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
+
+[[annotations]]
+path = [".gitignore", "pyproject.toml", "poetry.lock", ".pre-commit-config.yaml", ".pre-commit-hooks.yaml", ".sourcery.yaml", ".somesy.toml", "codemeta.json", "CITATION.cff", "README.md", "RELEASE_NOTES.md", "CHANGELOG.md", "CODE_OF_CONDUCT.md", "AUTHORS.md", "CONTRIBUTING.md", ".gitlab-ci.yml", ".gitlab/**", ".github/**", "mkdocs.yml", "docs/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["src/somesy/**", "tests/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)"
+SPDX-License-Identifier = "MIT"
