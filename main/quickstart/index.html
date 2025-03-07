@@ -2395,7 +2395,7 @@ file in the root folder of your repository:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">repos</span><span class="p">:</span>
 <span class="w">    </span><span class="c1"># ... (your other hooks) ...</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">repo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://github.com/Materials-Data-Science-and-Informatics/somesy</span>
-<span class="w">      </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v0.7.0&#39;</span>
+<span class="w">      </span><span class="nt">rev</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;v0.7.1&#39;</span>
 <span class="w">      </span><span class="nt">hooks</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">somesy</span>
 </code></pre></div>
@@ -2426,14 +2426,14 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td>(.)somesy.toml</td>
 <td>✓</td>
 <td></td>
-<td>pyproject.toml <em>(poetry v1 and v2)</em></td>
+<td>-</td>
 <td>✓</td>
 </tr>
 <tr>
 <td>pyproject.toml</td>
 <td>✓</td>
 <td></td>
-<td>pyproject.toml <em>(setuptools)</em></td>
+<td>pyproject.toml <em>(setuptools and poetry)</em></td>
 <td>✓(1.)</td>
 </tr>
 <tr>
@@ -2496,7 +2496,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 </table>
 <p><strong>Notes:</strong></p>
 <ol>
-<li>note that <code>somesy</code> does not support setuptools <em>dynamic fields</em></li>
+<li>note that <code>somesy</code> does not support setuptools or poetry <em>dynamic fields</em></li>
 <li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
 <li><code>fpm.toml</code> only supports one author and maintainer, so <code>somesy</code> will pick the <em>first</em> listed author and maintainer</li>
 <li><code>pom.xml</code> has no concept of <code>maintainers</code>, but it can have multiple licenses (somesy only supports one main project license)</li>

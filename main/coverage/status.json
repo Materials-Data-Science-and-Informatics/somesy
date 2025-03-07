@@ -2,7 +2,7 @@
   "note":"This file is an internal implementation detail to speed up HTML report generation. Its format can change at any time. You might be looking for the JSON report: https://coverage.rtfd.io/cmd.html#cmd-json",
   "format":5,
   "version":"7.6.0",
-  "globals":"c70126811da546da8883bb69f56dac38",
+  "globals":"9dccae465e3b9b3f5c1c43dcbf3946f9",
   "files":{
     "z_97b113e3d51588b3___init___py":{
       "hash":"0b7442e339cccfa336b6852807e46823",
@@ -689,7 +689,7 @@
       }
     },
     "z_22470fc7858cbfa7_models_py":{
-      "hash":"9c3d0c9bbc788c30b6a5005670e5ec7f",
+      "hash":"0498c10b197eaa5632a37acb78d29e6b",
       "index":{
         "url":"z_22470fc7858cbfa7_models_py.html",
         "file":"src/somesy/pyproject/models.py",
@@ -697,9 +697,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":125,
+          "n_statements":136,
           "n_excluded":0,
-          "n_missing":22,
+          "n_missing":29,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -707,7 +707,7 @@
       }
     },
     "z_22470fc7858cbfa7_writer_py":{
-      "hash":"c2c1aea728b35753c2e64a664b8d097b",
+      "hash":"62a60184fb11438aad89f075feae74b2",
       "index":{
         "url":"z_22470fc7858cbfa7_writer_py.html",
         "file":"src/somesy/pyproject/writer.py",
@@ -715,9 +715,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":147,
+          "n_statements":194,
           "n_excluded":0,
-          "n_missing":17,
+          "n_missing":27,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0

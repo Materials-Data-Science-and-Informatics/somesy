@@ -2148,19 +2148,23 @@ SOFTWARE.
 <p>This project is <a href="https://reuse.software/">REUSE</a> compliant.
 The following detailed license and copyright information in
 <a href="https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/">DEP5</a>
-format can also be found in the <code>.reuse/dep5</code> file in the project source directory:</p>
-<div class="highlight"><pre><span></span><code>Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: somesy
-Upstream-Contact: Mustafa Soylu &lt;m.soylu@fz-juelich.de&gt;
-Source: https://github.com/Materials-Data-Science-and-Informatics/somesy
+format can also be found in the <code>REUSE.toml</code> file in the project source directory:</p>
+<div class="highlight"><pre><span></span><code>version = 1
+SPDX-PackageName = &quot;somesy&quot;
+SPDX-PackageSupplier = &quot;Mustafa Soylu &lt;m.soylu@fz-juelich.de&gt;&quot;
+SPDX-PackageDownloadLocation = &quot;https://github.com/Materials-Data-Science-and-Informatics/somesy&quot;
 
-Files: .gitignore pyproject.toml poetry.lock .pre-commit-config.yaml .pre-commit-hooks.yaml .sourcery.yaml .somesy.toml codemeta.json CITATION.cff README.md RELEASE_NOTES.md CHANGELOG.md CODE_OF_CONDUCT.md AUTHORS.md CONTRIBUTING.md .gitlab-ci.yml .gitlab/* .github/* mkdocs.yml docs/*
-Copyright: 2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)
-License: CC0-1.0
+[[annotations]]
+path = [&quot;.gitignore&quot;, &quot;pyproject.toml&quot;, &quot;poetry.lock&quot;, &quot;.pre-commit-config.yaml&quot;, &quot;.pre-commit-hooks.yaml&quot;, &quot;.sourcery.yaml&quot;, &quot;.somesy.toml&quot;, &quot;codemeta.json&quot;, &quot;CITATION.cff&quot;, &quot;README.md&quot;, &quot;RELEASE_NOTES.md&quot;, &quot;CHANGELOG.md&quot;, &quot;CODE_OF_CONDUCT.md&quot;, &quot;AUTHORS.md&quot;, &quot;CONTRIBUTING.md&quot;, &quot;.gitlab-ci.yml&quot;, &quot;.gitlab/**&quot;, &quot;.github/**&quot;, &quot;mkdocs.yml&quot;, &quot;docs/**&quot;]
+precedence = &quot;aggregate&quot;
+SPDX-FileCopyrightText = &quot;2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)&quot;
+SPDX-License-Identifier = &quot;CC0-1.0&quot;
 
-Files: src/somesy/* tests/*
-Copyright: 2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)
-License: MIT
+[[annotations]]
+path = [&quot;src/somesy/**&quot;, &quot;tests/**&quot;]
+precedence = &quot;aggregate&quot;
+SPDX-FileCopyrightText = &quot;2023 Forschungszentrum Jülich GmbH - Institute Materials Data Science and Informatics (IAS9) - Stefan Sandfeld (s.sandfeld@fz-juelich.de)&quot;
+SPDX-License-Identifier = &quot;MIT&quot;
 </code></pre></div>
 
 
