@@ -64,8 +64,22 @@ class PyprojectCommon(ProjectMetadataWriter):
     def save(self, path: Optional[Path] = None) -> None:
         """Save the pyproject file."""
         path = path or self.path
-        with open(path, "w") as f:
-            tomlkit.dump(self._data, f)
+
+        with open(path, "r") as f:
+            # tomlkit formatting sometimes creates empty lines, dont change if context is not changed
+            existing_data = f.read()
+
+            # remove empty lines
+            existing_data = existing_data.replace("\n", "")
+
+            new_data = tomlkit.dumps(self._data)
+            new_data = new_data.replace("\n", "")
+
+        if existing_data != new_data:
+            with open(path, "w") as f:
+                tomlkit.dump(self._data, f)
+        else:
+            logger.debug("No changes to pyproject.toml file")
 
     def _get_property(
         self, key: Union[str, List[str]], *, remove: bool = False, **kwargs
@@ -216,24 +230,6 @@ class Poetry(PyprojectCommon):
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
-            # convert authors and maintainers from array of tables to inline tables
-            for field in ["authors", "maintainers"]:
-                field_value = self._get_property([field])
-                if field_value:
-                    # Create an inline array of tables
-                    inline_array = tomlkit.array()
-                    inline_array.multiline(True)
-
-                    # Convert each table to an inline table and add to array
-                    for item in field_value:
-                        inline_table = tomlkit.inline_table()
-                        for k, v in item.items():
-                            inline_table[k] = v
-                        inline_array.append(inline_table)
-
-                    # Replace the array of tables with the inline array
-                    self._set_property(field, inline_array)
-
             # if license field has text, or file, make it inline table of tomlkit
             if self._get_property(["license"]) is not None:
                 license_value = self._get_property(["license"])
