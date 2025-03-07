@@ -4,6 +4,10 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## [v0.7.1](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.1) <small>(2025-03-07)</small> { id="0.7.1" }
+
+- fix poetry v2 license format and urls format problem
+
 ## [v0.7.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.0) <small>(2025-03-04)</small> { id="0.7.0" }
 
 - make validation of output files, such as pyproject.toml, optional
