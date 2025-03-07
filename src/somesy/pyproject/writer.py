@@ -12,7 +12,7 @@ from tomlkit import load
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
 
-from .models import PoetryConfig, SetuptoolsConfig
+from .models import License, PoetryConfig, SetuptoolsConfig
 
 logger = logging.getLogger("somesy")
 
@@ -115,6 +115,7 @@ class Poetry(PyprojectCommon):
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
             "documentation": ["urls", "documentation"],
+            "license": ["license", "text"],
         }
         if version == 1:
             super().__init__(
@@ -164,6 +165,31 @@ class Poetry(PyprojectCommon):
             logger.warning(f"Cannot convert {person} to Entity.")
             return None
 
+    @property
+    def license(self) -> Optional[Union[License, str]]:
+        """Get license from pyproject.toml file."""
+        raw_license = self._get_property(["license"])
+        if self._poetry_version == 1:
+            return raw_license
+        if raw_license is None:
+            return None
+        if isinstance(raw_license, str):
+            return License(text=raw_license)
+        return raw_license
+
+    @license.setter
+    def license(self, value: Union[License, str]) -> None:
+        """Set license in pyproject.toml file."""
+        # if version is 1, set license as str
+        if self._poetry_version == 1:
+            self._set_property(["license"], value)
+        else:
+            # if version is 2 and str, set as text
+            if isinstance(value, str):
+                self._set_property(["license"], {"text": value})
+            else:
+                self._set_property(["license"], value)
+
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file."""
         # Store original _from_person method
@@ -182,6 +208,7 @@ class Poetry(PyprojectCommon):
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
+            # convert authors and maintainers from array of tables to inline tables
             for field in ["authors", "maintainers"]:
                 field_value = self._get_property([field])
                 if field_value:
@@ -198,6 +225,27 @@ class Poetry(PyprojectCommon):
 
                     # Replace the array of tables with the inline array
                     self._set_property(field, inline_array)
+
+            # if license field has text, or file, make it inline table of tomlkit
+            if self._get_property(["license"]) is not None:
+                license_value = self._get_property(["license"])
+                inline_table = tomlkit.inline_table()
+                if isinstance(license_value, str):
+                    inline_table["text"] = license_value
+                elif isinstance(license_value, dict):
+                    if "text" in license_value:
+                        inline_table["text"] = license_value["text"]
+                    elif "file" in license_value:
+                        inline_table["file"] = license_value["file"]
+                elif hasattr(license_value, "text"):
+                    inline_table["text"] = license_value.text
+                elif hasattr(license_value, "file"):
+                    inline_table["file"] = license_value.file
+                self._set_property(["license"], inline_table)
+            # Move urls section to the end if it exists
+            if "urls" in self._data["project"]:
+                urls = self._data["project"].pop("urls")
+                self._data["project"]["urls"] = urls
 
 
 class SetupTools(PyprojectCommon):
