@@ -94,7 +94,15 @@ class PyprojectCommon(ProjectMetadataWriter):
             if key not in curr:
                 curr.add(key, tomlkit.table())
             curr = curr[key]
-        curr[key_path[-1]] = value
+
+        # Handle arrays with proper formatting
+        if isinstance(value, list):
+            array = tomlkit.array()
+            array.extend(value)
+            array.multiline(True)  # Ensure consistent multiline formatting
+            curr[key_path[-1]] = array
+        else:
+            curr[key_path[-1]] = value
 
 
 class Poetry(PyprojectCommon):
