@@ -99,7 +99,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         if isinstance(value, list):
             array = tomlkit.array()
             array.extend(value)
-            array.multiline(True)  # Ensure consistent multiline formatting
+            array.multiline(True)
             curr[key_path[-1]] = array
         else:
             curr[key_path[-1]] = value
@@ -222,7 +222,7 @@ class Poetry(PyprojectCommon):
                 if field_value:
                     # Create an inline array of tables
                     inline_array = tomlkit.array()
-                    inline_array.multiline(False)
+                    inline_array.multiline(True)
 
                     # Convert each table to an inline table and add to array
                     for item in field_value:
@@ -237,6 +237,7 @@ class Poetry(PyprojectCommon):
             # if license field has text, or file, make it inline table of tomlkit
             if self._get_property(["license"]) is not None:
                 license_value = self._get_property(["license"])
+                # Create and populate inline table
                 inline_table = tomlkit.inline_table()
                 if isinstance(license_value, str):
                     inline_table["text"] = license_value
@@ -249,7 +250,23 @@ class Poetry(PyprojectCommon):
                     inline_table["text"] = license_value.text
                 elif hasattr(license_value, "file"):
                     inline_table["file"] = license_value.file
-                self._set_property(["license"], inline_table)
+
+                # Create a new table with the same structure
+                table = tomlkit.table()
+                table.add("license", inline_table)
+                if "license" in self._data["project"]:
+                    # Copy the whitespace/formatting from the existing table
+                    table.trivia.indent = self._data["project"]["license"].trivia.indent
+                    table.trivia.comment_ws = self._data["project"][
+                        "license"
+                    ].trivia.comment_ws
+                    table.trivia.comment = self._data["project"][
+                        "license"
+                    ].trivia.comment
+                    table.trivia.trail = self._data["project"]["license"].trivia.trail
+
+                self._data["project"]["license"] = table["license"]
+
             # Move urls section to the end if it exists
             if "urls" in self._data["project"]:
                 urls = self._data["project"].pop("urls")
