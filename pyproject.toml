@@ -1,10 +1,12 @@
 [project]
 name = "somesy"
-version = "0.7.0"
+version = "0.7.1"
 description = "A CLI tool for synchronizing software project metadata."
-license = "MIT"
 readme = "README.md"
-keywords = ["metadata", "FAIR"]
+keywords = [
+    "metadata",
+    "FAIR",
+]
 classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
@@ -29,8 +31,17 @@ dependencies = [
     "defusedxml>=0.7.1",
     "pyld>=2.0.4"
 ]
-authors = [{name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"}, {name = "Anton Pirogov", email = "a.pirogov@fz-juelich.de"}]
-maintainers = [{name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"}]
+
+authors = [
+    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
+    {name = "Anton Pirogov",email = "a.pirogov@fz-juelich.de"},
+]
+maintainers = [
+    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
+]
+
+license = {text = "MIT"}
+
 [project.urls]
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
