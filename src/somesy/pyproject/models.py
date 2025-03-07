@@ -31,6 +31,37 @@ class STPerson(BaseModel):
     email: Annotated[Optional[str], Field(min_length=1)] = None
 
 
+class License(BaseModel):
+    """License model for setuptools."""
+
+    model_config = dict(validate_assignment=True)
+
+    file: Optional[Path] = None
+    text: Optional[LicenseEnum] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_xor(cls, values):
+        """Validate that only one of file or text is set."""
+        # check if this has just str or list of str
+        if isinstance(values, str):
+            if values in LicenseEnum.__members__:
+                return {"text": values}
+            else:
+                raise ValueError("Invalid license.")
+        if isinstance(values, list):
+            # check if all elements are valid string for LicenseEnum
+            for v in values:
+                if not isinstance(v, str):
+                    raise ValueError("All elements must be strings.")
+                if v not in LicenseEnum.__members__:
+                    raise ValueError("Invalid license.")
+            return values
+        if sum([bool(v) for v in values.values()]) != 1:
+            raise ValueError("Either file or text must be set.")
+        return values
+
+
 class PoetryConfig(BaseModel):
     """Poetry configuration model."""
 
@@ -49,7 +80,7 @@ class PoetryConfig(BaseModel):
     ]
     description: Annotated[str, Field(description="Package description")]
     license: Annotated[
-        Optional[Union[LicenseEnum, List[LicenseEnum]]],
+        Optional[Union[LicenseEnum, List[LicenseEnum], License]],
         Field(description="An SPDX license identifier."),
     ]
 
@@ -148,23 +179,6 @@ class File(BaseModel):
 
     file: Path
     content_type: Optional[ContentTypeEnum] = Field(alias="content-type")
-
-
-class License(BaseModel):
-    """License model for setuptools."""
-
-    model_config = dict(validate_assignment=True)
-
-    file: Optional[Path] = None
-    text: Optional[LicenseEnum] = None
-
-    @model_validator(mode="before")
-    @classmethod
-    def validate_xor(cls, values):
-        """Validate that only one of file or text is set."""
-        if sum([bool(v) for v in values.values()]) != 1:
-            raise ValueError("Either file or text must be set.")
-        return values
 
 
 class URLs(BaseModel):

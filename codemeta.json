@@ -27,7 +27,7 @@
   ],
   "name": "somesy",
   "description": "A CLI tool for synchronizing software project metadata.",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "keywords": [
     "metadata",
     "FAIR"

@@ -1,10 +1,12 @@
 [project]
 name = "somesy"
-version = "0.7.0"
+version = "0.7.1"
 description = "A CLI tool for synchronizing software project metadata."
-license = "MIT"
 readme = "README.md"
-keywords = ["metadata", "FAIR"]
+keywords = [
+    "metadata",
+    "FAIR",
+]
 classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: MacOS :: MacOS X",
@@ -15,9 +17,31 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "License :: OSI Approved :: MIT License",
 ]
+requires-python = ">=3.8"
+dependencies = [
+    "pydantic[email]>=2.8.2",
+    "ruamel-yaml>=0.18.6",
+    "tomlkit>=0.13.0",
+    "importlib-metadata>=8.0.0",
+    "typer[all]>=0.12.3",
+    "cffconvert>=2.0.0",
+    "wrapt>=1.16.0",
+    "packaging>=24.1",
+    "jinja2>=3.1.4",
+    "defusedxml>=0.7.1",
+    "pyld>=2.0.4"
+]
 
-authors = [{name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"}, {name = "Anton Pirogov", email = "a.pirogov@fz-juelich.de"}]
-maintainers = [{name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"}]
+authors = [
+    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
+    {name = "Anton Pirogov",email = "a.pirogov@fz-juelich.de"},
+]
+maintainers = [
+    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
+]
+
+license = {text = "MIT"}
+
 [project.urls]
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
 repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
@@ -30,7 +54,7 @@ packages = [{include = "somesy", from = "src"}]
 # always include basic info for humans and core metadata in the distribution,
 # include files related to test and documentation only in sdist:
 include = [
-  "*.md", "LICENSE", "LICENSES", ".reuse/dep5", "CITATION.cff", "codemeta.json",
+  "*.md", "LICENSE", "LICENSES", "REUSE.toml", "CITATION.cff", "codemeta.json",
   "mkdocs.yml", "docs", "tests",
   { path = "mkdocs.yml", format = "sdist" },
   { path = "docs", format = "sdist" },
@@ -38,18 +62,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-pydantic = {extras = ["email"], version = "^2.8.2"}
-ruamel-yaml = "^0.18.6"
-tomlkit = "^0.13.0"
-importlib-metadata = "^8.0.0"
-typer = {extras = ["all"], version = "^0.12.3"}
-cffconvert = "^2.0.0"
-wrapt = "^1.16.0"
-packaging = "^24.1"
-jinja2 = "^3.1.4"
-defusedxml = "^0.7.1"
-pyld = "^2.0.4"
+python = ">=3.8,<4.0"
 
 [tool.poetry.group.dev.dependencies]
 poethepoet = "^0.27.0"
@@ -81,7 +94,7 @@ interrogate = "^1.7.0"
 black = "^24.4.2"
 mkdocs-exclude = "^1.0.2"
 
-[tool.poetry.scripts]
+[project.scripts]
 somesy = "somesy.main:app"
 
 [build-system]
