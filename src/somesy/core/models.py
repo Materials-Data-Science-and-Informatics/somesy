@@ -780,6 +780,7 @@ class SomesyInput(SomesyBaseModel):
         """Set the origin of the input file."""
         if self.config and self.config.input_file:
             self._origin = self.config.input_file
+        return self
 
     def is_somesy_file(self) -> bool:
         """Return whether this somesy input is from a somesy config file.
