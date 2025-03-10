@@ -84,6 +84,17 @@ class CodeMeta(ProjectMetadataWriter):
         self._set_property(self._get_key("authors"), authors_dict)
 
     @property
+    def maintainers(self):
+        """Return the maintainers of the codemeta.json file."""
+        return self._get_property(self._get_key("maintainers"))
+
+    @maintainers.setter
+    def maintainers(self, maintainers: List[Union[Person, Entity]]) -> None:
+        """Set the maintainers of the project."""
+        maintainers_dict = [self._from_person(m) for m in maintainers]
+        self._set_property(self._get_key("maintainers"), maintainers_dict)
+
+    @property
     def contributors(self):
         """Return the contributors of the codemeta.json file."""
         return self._get_property(self._get_key("contributors"))
