@@ -55,6 +55,11 @@ class Julia(ProjectMetadataWriter):
     def save(self, path: Optional[Path] = None) -> None:
         """Save the julia file."""
         path = path or self.path
+        if "description" in self._data:
+            if "\n" in self._data["description"]:
+                self._data["description"] = tomlkit.string(
+                    self._data["description"], multiline=True
+                )
         with open(path, "w") as f:
             tomlkit.dump(self._data, f)
 

@@ -70,21 +70,8 @@ class PyprojectCommon(ProjectMetadataWriter):
                 tomlkit.dump(self._data, f)
             return
 
-        with open(path, "r") as f:
-            # tomlkit formatting sometimes creates empty lines, dont change if context is not changed
-            existing_data = f.read()
-
-            # remove empty lines
-            existing_data = existing_data.replace("\n", "")
-
-            new_data = tomlkit.dumps(self._data)
-            new_data = new_data.replace("\n", "")
-
-        if existing_data != new_data:
-            with open(path, "w") as f:
-                tomlkit.dump(self._data, f)
-        else:
-            logger.debug("No changes to pyproject.toml file")
+        with open(path, "w") as f:
+            tomlkit.dump(self._data, f)
 
     def _get_property(
         self, key: Union[str, List[str]], *, remove: bool = False, **kwargs
@@ -235,39 +222,11 @@ class Poetry(PyprojectCommon):
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
-            # if license field has text, or file, make it inline table of tomlkit
-            if self._get_property(["license"]) is not None:
-                license_value = self._get_property(["license"])
-                # Create and populate inline table
-                inline_table = tomlkit.inline_table()
-                if isinstance(license_value, str):
-                    inline_table["text"] = license_value
-                elif isinstance(license_value, dict):
-                    if "text" in license_value:
-                        inline_table["text"] = license_value["text"]
-                    elif "file" in license_value:
-                        inline_table["file"] = license_value["file"]
-                elif hasattr(license_value, "text"):
-                    inline_table["text"] = license_value.text
-                elif hasattr(license_value, "file"):
-                    inline_table["file"] = license_value.file
-
-                # Create a new table with the same structure
-                table = tomlkit.table()
-                table.add("license", inline_table)
-                if "license" in self._data["project"]:
-                    # Copy the whitespace/formatting from the existing table
-                    table.trivia.indent = self._data["project"]["license"].trivia.indent
-                    table.trivia.comment_ws = self._data["project"][
-                        "license"
-                    ].trivia.comment_ws
-                    table.trivia.comment = self._data["project"][
-                        "license"
-                    ].trivia.comment
-                    table.trivia.trail = self._data["project"]["license"].trivia.trail
-
-                self._data["project"]["license"] = table["license"]
-
+            if "description" in self._data["project"]:
+                if "\n" in self._data["project"]["description"]:
+                    self._data["project"]["description"] = tomlkit.string(
+                        self._data["project"]["description"], multiline=True
+                    )
             # Move urls section to the end if it exists
             if "urls" in self._data["project"]:
                 urls = self._data["project"].pop("urls")

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any, List, Optional, Union
 
 from rich.pretty import pretty_repr
-from tomlkit import dump, load, table
+from tomlkit import dump, load, string, table
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
@@ -60,6 +60,13 @@ class Rust(ProjectMetadataWriter):
     def save(self, path: Optional[Path] = None) -> None:
         """Save the Cargo.toml file."""
         path = path or self.path
+
+        if "description" in self._data["package"]:
+            if "\n" in self._data["package"]["description"]:
+                self._data["package"]["description"] = string(
+                    self._data["package"]["description"], multiline=True
+                )
+
         with open(path, "w") as f:
             dump(self._data, f)
 

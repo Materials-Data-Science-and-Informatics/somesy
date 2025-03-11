@@ -6,6 +6,7 @@ from typing import List, Optional, Union
 
 from rich.pretty import pretty_repr
 from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import LiteralScalarString
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
@@ -67,6 +68,16 @@ class MkDocs(ProjectMetadataWriter):
     def save(self, path: Optional[Path] = None) -> None:
         """Save the MkDocs object to a file."""
         path = path or self.path
+
+        # if description have new line characters, it should be saved as multiline string
+        if self._data is not None and "site_description" in self._data:
+            if "\n" in self._data["site_description"]:
+                self._data["site_description"] = LiteralScalarString(
+                    self._data["site_description"]
+                )
+            else:
+                self._data["site_description"] = str(self.description)
+
         self._yaml.dump(self._data, path)
 
     @property
