@@ -251,11 +251,27 @@ class ProjectMetadataWriter(ABC):
 
         """
         old_people: List[Union[Person, Entity]] = self._parse_people(old)
-        if old_people is None or len(old_people) == 0:
-            return new
-        if new is None or len(new) == 0:
-            return old_people
-        return self._merge_person_metadata(old_people, new)
+
+        # check if people are unique
+        def filter_unique(
+            people: List[Union[Person, Entity]],
+        ) -> List[Union[Person, Entity]]:
+            """Filter out duplicate people from a list."""
+            if people is None or len(people) == 0:
+                return []
+
+            unique_people: List[Union[Person, Entity]] = []
+            # use same_person method to check if people are unique
+            for person in people:
+                if not any(person.same_person(p) for p in unique_people):
+                    unique_people.append(person)
+
+            return unique_people
+
+        old_people_unique = filter_unique(old_people)
+        new_people_unique = filter_unique(new)
+
+        return self._merge_person_metadata(old_people_unique, new_people_unique)
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Sync output file authors with authors from metadata.
