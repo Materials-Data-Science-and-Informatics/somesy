@@ -101,6 +101,15 @@ class PyprojectCommon(ProjectMetadataWriter):
             array = tomlkit.array()
             array.extend(value)
             array.multiline(True)
+            # Ensure whitespace after commas in inline tables
+            for item in array:
+                if isinstance(item, tomlkit.items.InlineTable):
+                    # Rebuild the inline table with desired formatting
+                    formatted_item = tomlkit.inline_table()
+                    for k, v in item.value.items():
+                        formatted_item[k] = v
+                    formatted_item.trivia.trail = " "  # Add space after each comma
+                    array[array.index(item)] = formatted_item
             curr[key_path[-1]] = array
         else:
             curr[key_path[-1]] = value

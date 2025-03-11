@@ -33,11 +33,11 @@ dependencies = [
 ]
 
 authors = [
-    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
-    {name = "Anton Pirogov",email = "a.pirogov@fz-juelich.de"},
+    {name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"},
+    {name = "Anton Pirogov", email = "a.pirogov@fz-juelich.de"},
 ]
 maintainers = [
-    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
+    {name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"},
 ]
 
 [project.license]
