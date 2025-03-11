@@ -40,8 +40,8 @@ maintainers = [
     {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
 ]
 
-
-license = {text = "MIT"}
+[project.license]
+text = "MIT"
 
 [project.urls]
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"
