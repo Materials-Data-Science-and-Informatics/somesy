@@ -65,11 +65,6 @@ class PyprojectCommon(ProjectMetadataWriter):
         """Save the pyproject file."""
         path = path or self.path
 
-        if not path.is_file():
-            with open(path, "w") as f:
-                tomlkit.dump(self._data, f)
-            return
-
         with open(path, "w") as f:
             tomlkit.dump(self._data, f)
 
