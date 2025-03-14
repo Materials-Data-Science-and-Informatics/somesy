@@ -165,3 +165,20 @@ def test_custom_key_order():
 
     # key order also preserved by copy
     assert p.model_copy()._key_order == p._key_order
+
+
+def test_orcid_from_string():
+    person_dict = {
+        "given-names": "Jane",
+        "family-names": "Doe",
+        "email": "mail@example.com",
+        "orcid": "0000-0003-2637-0432",
+    }
+    orcid_url = "https://orcid.org/0000-0003-2637-0432"
+    p = Person(**person_dict)
+    assert str(p.orcid) == orcid_url
+
+    # with http:// prefix
+    person_dict["orcid"] = orcid_url
+    p = Person(**person_dict)
+    assert str(p.orcid) == orcid_url

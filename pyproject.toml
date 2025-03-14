@@ -1,6 +1,6 @@
 [project]
 name = "somesy"
-version = "0.7.2"
+version = "0.7.3"
 description = "A CLI tool for synchronizing software project metadata."
 readme = "README.md"
 keywords = [
@@ -33,15 +33,15 @@ dependencies = [
 ]
 
 authors = [
-    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
-    {name = "Anton Pirogov",email = "a.pirogov@fz-juelich.de"},
+    {name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"},
+    {name = "Anton Pirogov", email = "a.pirogov@fz-juelich.de"},
 ]
 maintainers = [
-    {name = "Mustafa Soylu",email = "m.soylu@fz-juelich.de"},
+    {name = "Mustafa Soylu", email = "m.soylu@fz-juelich.de"},
 ]
 
-
-license = {text = "MIT"}
+[project.license]
+text = "MIT"
 
 [project.urls]
 homepage = "https://materials-data-science-and-informatics.github.io/somesy"

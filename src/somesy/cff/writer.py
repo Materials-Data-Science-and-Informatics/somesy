@@ -6,6 +6,7 @@ from typing import Optional, Union
 
 from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import LiteralScalarString
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
@@ -71,6 +72,14 @@ class CFF(ProjectMetadataWriter):
     def save(self, path: Optional[Path] = None) -> None:
         """Save the CFF object to a file."""
         path = path or self.path
+
+        # if description have new line characters, it should be saved as multiline string
+        if "abstract" in self._data:
+            if "\n" in self._data["abstract"]:
+                self._data["abstract"] = LiteralScalarString(self._data["abstract"])
+        else:
+            self._data["abstract"] = str(self.description)
+
         self._yaml.dump(self._data, path)
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:

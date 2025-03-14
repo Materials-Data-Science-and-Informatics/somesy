@@ -1,6 +1,6 @@
 [project]
 name = "somesy"
-version = "0.7.2"
+version = "0.7.3"
 description = "A CLI tool for synchronizing software project metadata."
 keywords = ["metadata", "FAIR"]
 license = "MIT"
@@ -12,7 +12,7 @@ documentation = "https://materials-data-science-and-informatics.github.io/somesy
 family-names = "Soylu"
 given-names = "Mustafa"
 email = "m.soylu@fz-juelich.de"
-orcid = "https://orcid.org/0000-0003-2637-0432"
+orcid = "0000-0003-2637-0432"
 
 contribution = "Main developer, maintainer and tester."
 contribution_begin = "2023-03-01"
@@ -25,7 +25,7 @@ maintainer = true
 family-names = "Pirogov"
 given-names = "Anton"
 email = "a.pirogov@fz-juelich.de"
-orcid = "https://orcid.org/0000-0002-5077-7497"
+orcid = "0000-0002-5077-7497"
 
 contribution = "Concepts, tool development and enhancement, documentation."
 contribution_begin = "2023-03-01"
@@ -38,7 +38,7 @@ author = true
 family-names = "Bröder"
 given-names = "Jens"
 email = "j.broeder@fz-juelich.de"
-orcid = "https://orcid.org/0000-0001-7939-226X"
+orcid = "0000-0001-7939-226X"
 
 contribution = "Discussions and suggestions concerning metadata standards and usability."
 contribution_begin = "2023-03-01"
@@ -49,7 +49,7 @@ contribution_types = ["ideas"]
 family-names = "Hofmann"
 given-names = "Volker"
 email = "v.hofmann@fz-juelich.de"
-orcid = "https://orcid.org/0000-0002-5149-603X"
+orcid = "0000-0002-5149-603X"
 
 contribution = "Discussions and suggestions concerning tool scope and usability."
 contribution_begin = "2023-06-01"
@@ -62,7 +62,7 @@ publication_author = true
 family-names = "Sandfeld"
 given-names = "Stefan"
 email = "s.sandfeld@fz-juelich.de"
-orcid = "https://orcid.org/0000-0001-9560-4728"
+orcid = "0000-0001-9560-4728"
 
 contribution_types = ["fundingFinding"]
 

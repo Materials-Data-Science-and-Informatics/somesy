@@ -11,7 +11,6 @@ from pydantic import (
     EmailStr,
     Field,
     TypeAdapter,
-    ValidationError,
     field_validator,
     model_validator,
 )
@@ -29,6 +28,13 @@ class STPerson(BaseModel):
 
     name: Annotated[str, Field(min_length=1)]
     email: Annotated[Optional[str], Field(min_length=1)] = None
+
+    def __str__(self):
+        """Return string representation of STPerson."""
+        if self.email:
+            return f"{self.name} <{self.email}>"
+        else:
+            return self.name
 
 
 class License(BaseModel):
@@ -129,29 +135,32 @@ class PoetryConfig(BaseModel):
         if v is None:
             return []
         validated = []
+        seen = set()
         for author in v:
-            try:
-                if isinstance(author, STPerson) and author.email:
-                    if not EMailAddress.validate_python(author.email):
-                        logger.warning(
-                            f"Invalid email format for author/maintainer {author}, omitting."
-                        )
-                    else:
+            if isinstance(author, STPerson) and author.email:
+                if not EMailAddress.validate_python(author.email):
+                    logger.warning(
+                        f"Invalid email format for author/maintainer {author}."
+                    )
+                else:
+                    author_str = str(author)
+                    if author_str not in seen:
+                        seen.add(author_str)
                         validated.append(author)
-                        continue
-
-                if " " in author and EMailAddress.validate_python(
-                    author.split(" ")[-1][1:-1]
-                ):
+                    else:
+                        logger.warning(f"Same person {author} is added multiple times.")
+            elif "@" in author and EMailAddress.validate_python(
+                author.split(" ")[-1][1:-1]
+            ):
+                validated.append(author)
+            else:
+                author_str = str(author)
+                if author_str not in seen:
+                    seen.add(author_str)
                     validated.append(author)
                 else:
-                    logger.warning(
-                        f"Invalid email format for author/maintainer {author}, omitting."
-                    )
-            except ValidationError:
-                logger.warning(
-                    f"Invalid email format for author/maintainer {author}, omitting."
-                )
+                    logger.warning(f"Same person {author} is added multiple times.")
+
         return validated
 
     @field_validator("readme")
