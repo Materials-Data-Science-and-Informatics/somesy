@@ -4,6 +4,14 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## [v0.7.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3) <small>(2025-03-14)</small> { id="0.7.3" }
+
+- accept orcid id as string without url
+- support multiline description in somesy input and outputs that enables multiline strings
+- dont save same person in available output formats
+- better toml inline table formatting
+- support only orcid id string (without the url)
+
 ## [v0.7.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.2) <small>(2025-03-10)</small> { id="0.7.2" }
 
 - fix CITATION.CFF formatting
