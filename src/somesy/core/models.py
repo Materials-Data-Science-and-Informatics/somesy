@@ -560,6 +560,17 @@ class Person(ContributorBaseModel):
 
     # helper methods
 
+    @field_validator("orcid", mode="before")
+    @classmethod
+    def orcid_from_string(cls, orcid: str) -> Optional[HttpUrlStr]:
+        """Convert orcid id string to HttpUrlStr."""
+        # orcid regex without https://orcid.org/ prefix
+        orcid_regex = r"^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
+        if orcid is not None and isinstance(orcid, str):
+            if re.match(orcid_regex, orcid):
+                return f"https://orcid.org/{orcid}"
+        return orcid
+
     @property
     def full_name(self) -> str:
         """Return the full name of the person."""
