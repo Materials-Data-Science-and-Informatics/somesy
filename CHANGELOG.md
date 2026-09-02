@@ -4,6 +4,14 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## [v0.8.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0) <small>(2026-09-03)</small> { id="0.8.0" }
+
+- raise the minimum supported Python version to 3.10
+- update project dependencies and pre-commit hooks
+- fix dependency vulnerabilities and replace Safety with pip-audit
+- modernize CI workflows and publish releases directly from CI
+- remove obsolete GitLab configuration and release workflows
+
 ## [v0.7.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3) <small>(2025-03-14)</small> { id="0.7.3" }
 
 - accept orcid id as string without url
