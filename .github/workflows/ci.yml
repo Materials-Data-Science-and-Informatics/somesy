@@ -140,14 +140,30 @@ jobs:
 
   publish:
     # if a version tag is pushed + tests + docs completed -> do release
+    # (publish to PyPI via "trusted publishing", i.e. no credentials needed)
     needs: docs
     if: startswith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
     permissions:
       contents: write # for GitHub release
-      id-token: write # for PyPI release
+      id-token: write # for PyPI release (trusted publishing)
 
-    uses: "./.github/workflows/release.yml"
-    with:
-      to_github: true
-      to_test_pypi: false
-      to_pypi: true
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: "poetry"
+
+      - name: Check project metadata and build the distribution package
+        run: |
+          poetry check --lock
+          poetry build
+
+      - name: Create a Github Release (repository snapshot)
+        uses: softprops/action-gh-release@v3
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@v1.14.2
