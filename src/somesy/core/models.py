@@ -704,7 +704,18 @@ class ProjectMetadata(SomesyBaseModel):
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
     version: Annotated[str | None, Field(description="Project version.")] = None
-    license: Annotated[LicenseEnum, Field(description="SPDX License string.")]
+    license: Annotated[
+        LicenseEnum | list[LicenseEnum],
+        Field(description="SPDX License string(s)."),
+    ]
+
+    @field_validator("license")
+    @classmethod
+    def validate_license_list(cls, license):
+        """Require at least one license when licenses are provided as a list."""
+        if isinstance(license, list) and not license:
+            raise ValueError("At least one license must be provided.")
+        return license
 
     homepage: Annotated[
         HttpUrlStr | None, Field(description="URL of the project homepage.")

@@ -302,7 +302,10 @@ class ProjectMetadataWriter(ABC):
             self.maintainers, metadata.maintainers()
         )
 
-        self.license = metadata.license.value
+        licenses = metadata.license
+        self.license = (
+            licenses[0].value if isinstance(licenses, list) else licenses.value
+        )
 
         self.homepage = str(metadata.homepage) if metadata.homepage else None
         self.repository = str(metadata.repository) if metadata.repository else None

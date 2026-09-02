@@ -189,18 +189,23 @@ class POM(ProjectMetadataWriter):
     def maintainers(self, maintainers: list[Person]) -> None:
         """Set the maintainers of the project."""
 
-    # only one project license supported in somesy (POM can have many)
     @property
-    def license(self) -> str | None:
+    def license(self) -> str | list[str] | None:
         """Return the license of the project."""
-        lic = self._get_property(self._get_key("license"), only_first=True)
-        return lic.get("name") if lic is not None else None
+        licenses = self._get_property(self._get_key("license"))
+        if licenses is None:
+            return None
+        licenses = licenses if isinstance(licenses, list) else [licenses]
+        names = [license["name"] for license in licenses]
+        return names[0] if len(names) == 1 else names
 
     @license.setter
-    def license(self, license: str | None) -> None:
+    def license(self, license: str | list[str] | None) -> None:
         """Set the license of the project."""
+        licenses = license if isinstance(license, list) else [license]
         self._set_property(
-            self._get_key("license"), {"name": license, "distribution": "repo"}
+            self._get_key("license"),
+            [{"name": license, "distribution": "repo"} for license in licenses],
         )
 
     @property
@@ -239,4 +244,10 @@ class POM(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
+        licenses = metadata.license
+        self.license = (
+            [license.value for license in licenses]
+            if isinstance(licenses, list)
+            else licenses.value
+        )
         self.contributors = self._sync_person_list(self.contributors, metadata.people)
