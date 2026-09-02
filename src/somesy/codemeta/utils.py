@@ -67,8 +67,7 @@ def validate_codemeta(codemeta: dict) -> list:
         compacted_keys = set(compacted.keys())
 
         # Remove @type from comparison as it might be handled differently in compaction
-        if "@type" in original_keys:
-            original_keys.remove("@type")
+        original_keys.discard("@type")
         if "@type" in compacted_keys:
             compacted_keys.remove("@type")
 
@@ -77,7 +76,7 @@ def validate_codemeta(codemeta: dict) -> list:
             logger.warning(f"Unsupported terms found: {sorted(unsupported_terms)}")
             invalid_fields.extend(unsupported_terms)
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - validation must report all JSON-LD failures
         logger.error(f"Codemeta validation failed: {e}")
         return ["Validation error"]
 

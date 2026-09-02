@@ -2,7 +2,6 @@
 
 import json
 from pathlib import Path
-from typing import Optional, Union
 
 from cffconvert.cli.create_citation import create_citation
 from ruamel.yaml import YAML
@@ -69,7 +68,7 @@ class CFF(ProjectMetadataWriter):
         except ValueError as e:
             raise ValueError(f"CITATION.cff file is not valid!\n{e}") from e
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the CFF object to a file."""
         path = path or self.path
 
@@ -89,7 +88,7 @@ class CFF(ProjectMetadataWriter):
         )
 
     @staticmethod
-    def _from_person(person: Union[Person, Entity]):
+    def _from_person(person: Person | Entity):
         """Convert project metadata person or entity object to cff dict for person format."""
         json_str = person.model_dump_json(
             exclude={
@@ -106,7 +105,7 @@ class CFF(ProjectMetadataWriter):
         return json.loads(json_str)
 
     @staticmethod
-    def _to_person(person_obj) -> Union[Person, Entity]:
+    def _to_person(person_obj) -> Person | Entity:
         """Parse CFF Person to a somesy Person or entity."""
         # if the object has key name, it is an entity
         if "name" in person_obj:

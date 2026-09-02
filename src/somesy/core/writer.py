@@ -3,7 +3,7 @@
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 
@@ -14,7 +14,7 @@ class IgnoreKey:
     """Special marker to be passed for dropping a key from serialization."""
 
 
-FieldKeyMapping = Dict[str, Union[List[str], IgnoreKey]]
+FieldKeyMapping = dict[str, list[str] | IgnoreKey]
 """Type to be used for the dict passed as `direct_mappings`."""
 
 DictLike = Any
@@ -34,10 +34,10 @@ class ProjectMetadataWriter(ABC):
         self,
         path: Path,
         *,
-        create_if_not_exists: Optional[bool] = False,
+        create_if_not_exists: bool | None = False,
         direct_mappings: FieldKeyMapping = None,
-        merge: Optional[bool] = False,
-        pass_validation: Optional[bool] = False,
+        merge: bool | None = False,
+        pass_validation: bool | None = False,
     ) -> None:
         """Initialize the Project Metadata Output Wrapper.
 
@@ -99,7 +99,7 @@ class ProjectMetadataWriter(ABC):
         """
 
     @abstractmethod
-    def save(self, path: Optional[Path]) -> None:
+    def save(self, path: Path | None) -> None:
         """Save the output file to the given path.
 
         Implement this in a way that will carefully
@@ -109,11 +109,11 @@ class ProjectMetadataWriter(ABC):
 
     def _get_property(
         self,
-        key: Union[str, List[str]],
+        key: str | list[str],
         *,
         only_first: bool = False,
         remove: bool = False,
-    ) -> Optional[Any]:
+    ) -> Any | None:
         """Get a property from the data.
 
         Override this to e.g. rewrite the retrieved key
@@ -140,15 +140,17 @@ class ProjectMetadataWriter(ABC):
             seq.pop()
             del seq[-1][key_path[-1]]  # remove leaf value
             # clean up the tree
-            for key, dct in reversed(list(zip(key_path[:-1], seq[:-1], strict=False))):
-                if not dct.get(key):
-                    del dct[key]
+            for path_key, dct in reversed(
+                list(zip(key_path[:-1], seq[:-1], strict=False))
+            ):
+                if not dct.get(path_key):
+                    del dct[path_key]
 
         if isinstance(curr, list) and only_first:
             return curr[0]
         return curr
 
-    def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
+    def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:
         """Set a property in the data.
 
         Note if there are lists along the path, they are cleared out.
@@ -166,10 +168,10 @@ class ProjectMetadataWriter(ABC):
 
         # create path on the fly if needed
         curr = self._data
-        for key in key_path[:-1]:
-            if key not in curr:
-                curr[key] = {}
-            curr = curr[key]
+        for path_key in key_path[:-1]:
+            if path_key not in curr:
+                curr[path_key] = {}
+            curr = curr[path_key]
 
         curr[key_path[-1]] = value
 
@@ -177,8 +179,8 @@ class ProjectMetadataWriter(ABC):
     # special handling for person metadata
 
     def _merge_person_metadata(
-        self, old: List[Union[Person, Entity]], new: List[Union[Person, Entity]]
-    ) -> List[Union[Person, Entity]]:
+        self, old: list[Person | Entity], new: list[Person | Entity]
+    ) -> list[Person | Entity]:
         """Update metadata of a list of persons.
 
         Will identify people based on orcid, email or full name.
@@ -238,8 +240,8 @@ class ProjectMetadataWriter(ABC):
         return existing_modified + new_people
 
     def _sync_person_list(
-        self, old: List[Any], new: List[Union[Person, Entity]]
-    ) -> List[Any]:
+        self, old: list[Any], new: list[Person | Entity]
+    ) -> list[Any]:
         """Sync a list of persons with new metadata.
 
         Args:
@@ -250,17 +252,17 @@ class ProjectMetadataWriter(ABC):
             List[Any]: updated list of persons in format-specific representation
 
         """
-        old_people: List[Union[Person, Entity]] = self._parse_people(old)
+        old_people: list[Person | Entity] = self._parse_people(old)
 
         # check if people are unique
         def filter_unique(
-            people: List[Union[Person, Entity]],
-        ) -> List[Union[Person, Entity]]:
+            people: list[Person | Entity],
+        ) -> list[Person | Entity]:
             """Filter out duplicate people from a list."""
             if people is None or len(people) == 0:
                 return []
 
-            unique_people: List[Union[Person, Entity]] = []
+            unique_people: list[Person | Entity] = []
             # use same_person method to check if people are unique
             for person in people:
                 if not any(person.same_person(p) for p in unique_people):
@@ -310,21 +312,21 @@ class ProjectMetadataWriter(ABC):
 
     @staticmethod
     @abstractmethod
-    def _from_person(person: Union[Person, Entity]) -> Any:
+    def _from_person(person: Person | Entity) -> Any:
         """Convert a `Person` or `Entity` object into suitable target format."""
 
     @staticmethod
     @abstractmethod
-    def _to_person(person_obj: Any) -> Union[Person, Entity]:
+    def _to_person(person_obj: Any) -> Person | Entity:
         """Convert an object representing a person into a `Person` or `Entity` object."""
 
     @classmethod
-    def _parse_people(cls, people: Optional[List[Any]]) -> List[Union[Person, Entity]]:
+    def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
         """Return a list of Persons and Entities parsed from list of format-specific people representations."""
         # remove None values
         people = [p for p in people if p is not None]
 
-        people = list(map(lambda p: cls._to_person(p), people or []))
+        people = [cls._to_person(p) for p in people or []]
         return people
 
     # ----
@@ -345,7 +347,7 @@ class ProjectMetadataWriter(ABC):
         self._set_property(self._get_key("name"), name)
 
     @property
-    def version(self) -> Optional[str]:
+    def version(self) -> str | None:
         """Return the version of the project."""
         return self._get_property(self._get_key("version"))
 
@@ -355,7 +357,7 @@ class ProjectMetadataWriter(ABC):
         self._set_property(self._get_key("version"), version)
 
     @property
-    def description(self) -> Optional[str]:
+    def description(self) -> str | None:
         """Return the description of the project."""
         return self._get_property(self._get_key("description"))
 
@@ -378,7 +380,7 @@ class ProjectMetadataWriter(ABC):
         return authors_validated
 
     @authors.setter
-    def authors(self, authors: List[Union[Person, Entity]]) -> None:
+    def authors(self, authors: list[Person | Entity]) -> None:
         """Set the authors of the project."""
         authors = [self._from_person(c) for c in authors]
         self._set_property(self._get_key("authors"), authors)
@@ -399,7 +401,7 @@ class ProjectMetadataWriter(ABC):
         return maintainers_validated
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Union[Person, Entity]]) -> None:
+    def maintainers(self, maintainers: list[Person | Entity]) -> None:
         """Set the maintainers of the project."""
         maintainers = [self._from_person(c) for c in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers)
@@ -410,57 +412,57 @@ class ProjectMetadataWriter(ABC):
         return self._get_property(self._get_key("contributors"))
 
     @contributors.setter
-    def contributors(self, contributors: List[Union[Person, Entity]]) -> None:
+    def contributors(self, contributors: list[Person | Entity]) -> None:
         """Set the contributors of the project."""
         contributors = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contributors)
 
     @property
-    def keywords(self) -> Optional[List[str]]:
+    def keywords(self) -> list[str] | None:
         """Return the keywords of the project."""
         return self._get_property(self._get_key("keywords"))
 
     @keywords.setter
-    def keywords(self, keywords: List[str]) -> None:
+    def keywords(self, keywords: list[str]) -> None:
         """Set the keywords of the project."""
         self._set_property(self._get_key("keywords"), keywords)
 
     @property
-    def license(self) -> Optional[str]:
+    def license(self) -> str | None:
         """Return the license of the project."""
         return self._get_property(self._get_key("license"))
 
     @license.setter
-    def license(self, license: Optional[str]) -> None:
+    def license(self, license: str | None) -> None:
         """Set the license of the project."""
         self._set_property(self._get_key("license"), license)
 
     @property
-    def homepage(self) -> Optional[str]:
+    def homepage(self) -> str | None:
         """Return the homepage url of the project."""
         return self._get_property(self._get_key("homepage"))
 
     @homepage.setter
-    def homepage(self, value: Optional[str]) -> None:
+    def homepage(self, value: str | None) -> None:
         """Set the homepage url of the project."""
         self._set_property(self._get_key("homepage"), value)
 
     @property
-    def repository(self) -> Optional[Union[str, dict]]:
+    def repository(self) -> str | dict | None:
         """Return the repository url of the project."""
         return self._get_property(self._get_key("repository"))
 
     @repository.setter
-    def repository(self, value: Optional[Union[str, dict]]) -> None:
+    def repository(self, value: str | dict | None) -> None:
         """Set the repository url of the project."""
         self._set_property(self._get_key("repository"), value)
 
     @property
-    def documentation(self) -> Optional[Union[str, dict]]:
+    def documentation(self) -> str | dict | None:
         """Return the documentation url of the project."""
         return self._get_property(self._get_key("documentation"))
 
     @documentation.setter
-    def documentation(self, value: Optional[Union[str, dict]]) -> None:
+    def documentation(self, value: str | dict | None) -> None:
         """Set the documentation url of the project."""
         self._set_property(self._get_key("documentation"), value)

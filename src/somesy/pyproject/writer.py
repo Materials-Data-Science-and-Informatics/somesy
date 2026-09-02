@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import tomlkit
 import wrapt
@@ -24,10 +24,10 @@ class PyprojectCommon(ProjectMetadataWriter):
         self,
         path: Path,
         *,
-        section: List[str],
+        section: list[str],
         model_cls,
         direct_mappings=None,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """Poetry config file handler parsed from pyproject.toml.
 
@@ -61,7 +61,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         )
         self._model_cls(**config)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the pyproject file."""
         path = path or self.path
 
@@ -69,14 +69,14 @@ class PyprojectCommon(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     def _get_property(
-        self, key: Union[str, List[str]], *, remove: bool = False, **kwargs
-    ) -> Optional[Any]:
+        self, key: str | list[str], *, remove: bool = False, **kwargs
+    ) -> Any | None:
         """Get a property from the pyproject.toml file."""
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
         return super()._get_property(full_path, remove=remove, **kwargs)
 
-    def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
+    def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:
         """Set a property in the pyproject.toml file."""
         if isinstance(key, IgnoreKey):
             return
@@ -91,10 +91,10 @@ class PyprojectCommon(ProjectMetadataWriter):
 
         # dig down, create missing nested objects on the fly
         curr = dat
-        for key in key_path[:-1]:
-            if key not in curr:
-                curr.add(key, tomlkit.table())
-            curr = curr[key]
+        for path_key in key_path[:-1]:
+            if path_key not in curr:
+                curr.add(path_key, tomlkit.table())
+            curr = curr[path_key]
 
         # Handle arrays with proper formatting
         if isinstance(value, list):
@@ -121,8 +121,8 @@ class Poetry(PyprojectCommon):
     def __init__(
         self,
         path: Path,
-        pass_validation: Optional[bool] = False,
-        version: Optional[int] = 1,
+        pass_validation: bool | None = False,
+        version: int | None = 1,
     ):
         """Poetry config file handler parsed from pyproject.toml.
 
@@ -152,7 +152,7 @@ class Poetry(PyprojectCommon):
             )
 
     @staticmethod
-    def _from_person(person: Union[Person, Entity], poetry_version: int = 1):
+    def _from_person(person: Person | Entity, poetry_version: int = 1):
         """Convert project metadata person object to poetry string for person format "full name <email>."""
         if poetry_version == 1:
             return person.to_name_email_string()
@@ -164,8 +164,8 @@ class Poetry(PyprojectCommon):
 
     @staticmethod
     def _to_person(
-        person: Union[str, Dict[str, str]],
-    ) -> Optional[Union[Person, Entity]]:
+        person: str | dict[str, str],
+    ) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
         if isinstance(person, dict):
             temp = str(person["name"])
@@ -184,7 +184,7 @@ class Poetry(PyprojectCommon):
             return None
 
     @property
-    def license(self) -> Optional[Union[License, str]]:
+    def license(self) -> License | str | None:
         """Get license from pyproject.toml file."""
         raw_license = self._get_property(["license"])
         if self._poetry_version == 1:
@@ -196,7 +196,7 @@ class Poetry(PyprojectCommon):
         return raw_license
 
     @license.setter
-    def license(self, value: Union[License, str]) -> None:
+    def license(self, value: License | str) -> None:
         """Set license in pyproject.toml file."""
         # if version is 1, set license as str
         if self._poetry_version == 1:
@@ -226,11 +226,13 @@ class Poetry(PyprojectCommon):
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
-            if "description" in self._data["project"]:
-                if "\n" in self._data["project"]["description"]:
-                    self._data["project"]["description"] = tomlkit.string(
-                        self._data["project"]["description"], multiline=True
-                    )
+            if (
+                "description" in self._data["project"]
+                and "\n" in self._data["project"]["description"]
+            ):
+                self._data["project"]["description"] = tomlkit.string(
+                    self._data["project"]["description"], multiline=True
+                )
             # Move urls section to the end if it exists
             if "urls" in self._data["project"]:
                 urls = self._data["project"].pop("urls")
@@ -240,7 +242,7 @@ class Poetry(PyprojectCommon):
 class SetupTools(PyprojectCommon):
     """Setuptools config file handler parsed from setup.cfg."""
 
-    def __init__(self, path: Path, pass_validation: Optional[bool] = False):
+    def __init__(self, path: Path, pass_validation: bool | None = False):
         """Setuptools config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
@@ -269,7 +271,7 @@ class SetupTools(PyprojectCommon):
         return response
 
     @staticmethod
-    def _to_person(person: Union[str, dict]) -> Optional[Union[Entity, Person]]:
+    def _to_person(person: str | dict) -> Entity | Person | None:
         """Parse setuptools person string to a Person/Entity."""
         # NOTE: for our purposes, does not matter what are given or family names,
         # we only compare on full_name anyway.
@@ -309,9 +311,9 @@ class SetupTools(PyprojectCommon):
 class Pyproject(wrapt.ObjectProxy):
     """Class for syncing pyproject file with other metadata files."""
 
-    __wrapped__: Union[SetupTools, Poetry]
+    __wrapped__: SetupTools | Poetry
 
-    def __init__(self, path: Path, pass_validation: Optional[bool] = False):
+    def __init__(self, path: Path, pass_validation: bool | None = False):
         """Pyproject wrapper class. Wraps either setuptools or poetry.
 
         Args:

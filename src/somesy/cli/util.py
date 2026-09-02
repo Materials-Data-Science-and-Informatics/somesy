@@ -2,7 +2,6 @@
 
 import logging
 import traceback
-from typing import Optional
 
 import typer
 import wrapt
@@ -17,15 +16,15 @@ logger = logging.getLogger("somesy")
 
 
 # configuration dicts for CLI file arguments
-file_arg_config = dict(
-    file_okay=True,
-    dir_okay=False,
-    writable=True,
-    readable=True,
-    resolve_path=True,
-)
+file_arg_config = {
+    "file_okay": True,
+    "dir_okay": False,
+    "writable": True,
+    "readable": True,
+    "resolve_path": True,
+}
 existing_file_arg_config = dict(file_arg_config)
-existing_file_arg_config.update(dict(exists=True))
+existing_file_arg_config.update({"exists": True})
 
 
 @wrapt.decorator
@@ -57,7 +56,7 @@ def resolved_somesy_input(**cli_args) -> SomesyInput:
     somesy_conf = SomesyConfig(input_file=input_file, **passed_args)
 
     # cli_log_level is None if the user did not pass a log level (-> "default")
-    cli_log_level: Optional[SomesyLogLevel] = get_log_level()
+    cli_log_level: SomesyLogLevel | None = get_log_level()
 
     if cli_log_level is not None:
         # update log level flags if cli log level was set

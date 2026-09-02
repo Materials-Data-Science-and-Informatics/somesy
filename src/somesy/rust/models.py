@@ -2,11 +2,10 @@
 
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Union
+from typing import Annotated
 
 from packaging.version import parse as parse_version
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing_extensions import Annotated
 
 from somesy.core.types import HttpUrlStr
 
@@ -14,7 +13,7 @@ from somesy.core.types import HttpUrlStr
 class RustConfig(BaseModel):
     """Rust configuration model."""
 
-    model_config = dict(use_enum_values=True)
+    model_config = {"use_enum_values": True}
 
     name: Annotated[
         str,
@@ -31,43 +30,39 @@ class RustConfig(BaseModel):
             description="Package version",
         ),
     ]
-    description: Annotated[Optional[str], Field(description="Package description")] = (
-        None
-    )
+    description: Annotated[str | None, Field(description="Package description")] = None
     license: Annotated[
-        Optional[str],
+        str | None,
         Field(
             description="A combination SPDX license identifiers with AND, OR and so on."
         ),
     ] = None
-    authors: Annotated[Set[str], Field(description="Package authors")]
+    authors: Annotated[set[str], Field(description="Package authors")]
     maintainers: Annotated[
-        Optional[Set[str]], Field(description="Package maintainers")
+        set[str] | None, Field(description="Package maintainers")
     ] = None
     readme: Annotated[
-        Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
+        Path | list[Path] | None, Field(description="Package readme file(s)")
     ] = None
-    license_file: Annotated[
-        Optional[Path], Field(description="Package license file")
-    ] = None
-    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
+    license_file: Annotated[Path | None, Field(description="Package license file")] = (
         None
     )
+    homepage: Annotated[HttpUrlStr | None, Field(description="Package homepage")] = None
     repository: Annotated[
-        Optional[HttpUrlStr], Field(description="Package repository")
+        HttpUrlStr | None, Field(description="Package repository")
     ] = None
     documentation: Annotated[
-        Optional[HttpUrlStr], Field(description="Package documentation page")
+        HttpUrlStr | None, Field(description="Package documentation page")
     ] = None
     keywords: Annotated[
-        Optional[Set[str]], Field(description="Keywords that describe the package")
+        set[str] | None, Field(description="Keywords that describe the package")
     ] = None
-    classifiers: Annotated[
-        Optional[List[str]], Field(description="pypi classifiers")
-    ] = None
-    urls: Annotated[
-        Optional[Dict[str, HttpUrlStr]], Field(description="Package URLs")
-    ] = None
+    classifiers: Annotated[list[str] | None, Field(description="pypi classifiers")] = (
+        None
+    )
+    urls: Annotated[dict[str, HttpUrlStr] | None, Field(description="Package URLs")] = (
+        None
+    )
 
     @model_validator(mode="before")
     @classmethod

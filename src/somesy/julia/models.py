@@ -2,7 +2,7 @@
 
 import uuid
 from logging import getLogger
-from typing import Optional, Set
+from typing import Annotated
 
 from packaging.version import parse as parse_version
 from pydantic import (
@@ -13,7 +13,6 @@ from pydantic import (
     ValidationError,
     field_validator,
 )
-from typing_extensions import Annotated
 
 EMailAddress = TypeAdapter(EmailStr)
 logger = getLogger("somesy")
@@ -22,7 +21,7 @@ logger = getLogger("somesy")
 class JuliaConfig(BaseModel):
     """Julia configuration model."""
 
-    model_config = dict(use_enum_values=True)
+    model_config = {"use_enum_values": True}
 
     name: Annotated[
         str,
@@ -36,7 +35,7 @@ class JuliaConfig(BaseModel):
         ),
     ]
     uuid: Annotated[str, Field(description="Package UUID")]
-    authors: Annotated[Optional[Set[str]], Field(description="Package authors")] = None
+    authors: Annotated[set[str] | None, Field(description="Package authors")] = None
 
     @field_validator("version")
     @classmethod

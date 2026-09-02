@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-from typing import List, Optional, Union
 
 from rich.pretty import pretty_repr
 from ruamel.yaml import YAML
@@ -22,7 +21,7 @@ class MkDocs(ProjectMetadataWriter):
         self,
         path: Path,
         create_if_not_exists: bool = False,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """Project documentation with Markdown (MkDocs) parser.
 
@@ -65,7 +64,7 @@ class MkDocs(ProjectMetadataWriter):
         )
         MkDocsConfig(**config)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the MkDocs object to a file."""
         path = path or self.path
 
@@ -90,18 +89,18 @@ class MkDocs(ProjectMetadataWriter):
             return [authors]
 
     @authors.setter
-    def authors(self, authors: List[Union[Entity, Person]]) -> None:
+    def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
         authors = self._from_person(authors[0])
         self._set_property(self._get_key("authors"), authors)
 
     @staticmethod
-    def _from_person(person: Union[Entity, Person]):
+    def _from_person(person: Entity | Person):
         """MkDocs Person is a string with full name."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Optional[Union[Entity, Person]]:
+    def _to_person(person: str) -> Entity | Person | None:
         """MkDocs Person is a string with full name."""
         try:
             return Person.from_name_email_string(person)

@@ -7,7 +7,7 @@ import json
 import re
 from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Annotated, Any
 
 from pydantic import (
     BaseModel,
@@ -17,7 +17,6 @@ from pydantic import (
     model_validator,
 )
 from rich.pretty import pretty_repr
-from typing_extensions import Annotated
 
 from .core import get_input_content
 from .log import SomesyLogLevel
@@ -41,23 +40,23 @@ class SomesyBaseModel(BaseModel):
     custom order will not work correctly across nesting layers.
     """
 
-    model_config = dict(
-        extra="forbid",
-        validate_assignment=True,
-        populate_by_name=True,
-        str_strip_whitespace=True,
-        str_min_length=1,
-    )
+    model_config = {
+        "extra": "forbid",
+        "validate_assignment": True,
+        "populate_by_name": True,
+        "str_strip_whitespace": True,
+        "str_min_length": 1,
+    }
 
     # ----
     # Key order magic
 
-    _key_order: List[str] = PrivateAttr([])
+    _key_order: list[str] = PrivateAttr([])
     """List of field names (NOT aliases!) in the order they should be written in."""
 
     @classmethod
-    @functools.lru_cache()  # compute once per class
-    def _aliases(cls) -> Dict[str, str]:
+    @functools.lru_cache  # compute once per class
+    def _aliases(cls) -> dict[str, str]:
         """Map back from alias field names to internal field names."""
         return {v.alias or k: k for k, v in cls.model_fields.items()}
 
@@ -70,11 +69,11 @@ class SomesyBaseModel(BaseModel):
         un_alias = cls._aliases()
         return cls.model_construct(**{un_alias.get(k) or k: v for k, v in dct.items()})
 
-    def set_key_order(self, keys: List[str]):
+    def set_key_order(self, keys: list[str]):
         """Setter for custom key order used in serialization."""
         un_alias = self._aliases()
         # make sure we use the _actual_ field names
-        self._key_order = list(map(lambda k: un_alias.get(k) or k, keys))
+        self._key_order = [un_alias.get(k) or k for k in keys]
 
     def model_copy(self, *args, **kwargs):
         """Patched copy method (to preserve custom key order)."""
@@ -152,7 +151,7 @@ class SomesyConfig(SomesyBaseModel):
     @classmethod
     def at_least_one_target(cls, values):
         """Check that at least one output file is enabled."""
-        if all(map(lambda x: values.get(f"no_sync_{x}"), _SOMESY_TARGETS)):
+        if all(values.get(f"no_sync_{x}") for x in _SOMESY_TARGETS):
             msg = "No sync target enabled, nothing to do. Probably this is a mistake?"
             raise ValueError(msg)
 
@@ -173,68 +172,68 @@ class SomesyConfig(SomesyBaseModel):
     ] = False
 
     input_file: Annotated[
-        Optional[Path], Field(description="Project metadata input file path.")
+        Path | None, Field(description="Project metadata input file path.")
     ] = Path("somesy.toml")
 
     no_sync_pyproject: Annotated[
         bool, Field(description="Do not sync with pyproject.toml.")
     ] = False
     pyproject_file: Annotated[
-        Union[Path, List[Path]], Field(description="pyproject.toml file path.")
+        Path | list[Path], Field(description="pyproject.toml file path.")
     ] = Path("pyproject.toml")
 
     no_sync_package_json: Annotated[
         bool, Field(description="Do not sync with package.json.")
     ] = False
     package_json_file: Annotated[
-        Union[Path, List[Path]], Field(description="package.json file path.")
+        Path | list[Path], Field(description="package.json file path.")
     ] = Path("package.json")
 
     no_sync_julia: Annotated[
         bool, Field(description="Do not sync with Project.toml.")
     ] = False
     julia_file: Annotated[
-        Union[Path, List[Path]], Field(description="Project.toml file path.")
+        Path | list[Path], Field(description="Project.toml file path.")
     ] = Path("Project.toml")
 
     no_sync_fortran: Annotated[
         bool, Field(description="Do not sync with fpm.toml.")
     ] = False
     fortran_file: Annotated[
-        Union[Path, List[Path]], Field(description="fpm.toml file path.")
+        Path | list[Path], Field(description="fpm.toml file path.")
     ] = Path("fpm.toml")
 
     no_sync_pom_xml: Annotated[bool, Field(description="Do not sync with pom.xml.")] = (
         False
     )
     pom_xml_file: Annotated[
-        Union[Path, List[Path]], Field(description="pom.xml file path.")
+        Path | list[Path], Field(description="pom.xml file path.")
     ] = Path("pom.xml")
 
     no_sync_mkdocs: Annotated[
         bool, Field(description="Do not sync with mkdocs.yml.")
     ] = False
     mkdocs_file: Annotated[
-        Union[Path, List[Path]], Field(description="mkdocs.yml file path.")
+        Path | list[Path], Field(description="mkdocs.yml file path.")
     ] = Path("mkdocs.yml")
 
     no_sync_rust: Annotated[bool, Field(description="Do not sync with Cargo.toml.")] = (
         False
     )
     rust_file: Annotated[
-        Union[Path, List[Path]], Field(description="Cargo.toml file path.")
+        Path | list[Path], Field(description="Cargo.toml file path.")
     ] = Path("Cargo.toml")
 
     no_sync_cff: Annotated[bool, Field(description="Do not sync with CFF.")] = False
-    cff_file: Annotated[
-        Union[Path, List[Path]], Field(description="CFF file path.")
-    ] = Path("CITATION.cff")
+    cff_file: Annotated[Path | list[Path], Field(description="CFF file path.")] = Path(
+        "CITATION.cff"
+    )
 
     no_sync_codemeta: Annotated[
         bool, Field(description="Do not sync with codemeta.json.")
     ] = False
     codemeta_file: Annotated[
-        Union[Path, List[Path]], Field(description="codemeta.json file path.")
+        Path | list[Path], Field(description="codemeta.json file path.")
     ] = Path("codemeta.json")
     merge_codemeta: Annotated[
         bool,
@@ -245,13 +244,13 @@ class SomesyConfig(SomesyBaseModel):
 
     # property to pass validation for all inputs/outputs
     pass_validation: Annotated[
-        Optional[bool],
+        bool | None,
         Field(description="Pass validation for all output files."),
     ] = False
 
     # packages (sub-folders) for monorepos with their own somesy config
     packages: Annotated[
-        Optional[Union[Path, List[Path]]],
+        Path | list[Path] | None,
         Field(
             description="Packages (sub-folders) for monorepos with their own somesy config."
         ),
@@ -274,7 +273,7 @@ class SomesyConfig(SomesyBaseModel):
         # get metadata+config from specified input file
         somesy_input = SomesyInput.from_input_file(self.input_file)
         # update input with merged config settings (cli overrides config file)
-        dct: Dict[str, Any] = {}
+        dct: dict[str, Any] = {}
         dct.update(somesy_input.config or {})
         dct.update(self.model_dump())
         somesy_input.config = SomesyConfig(**dct)
@@ -289,8 +288,8 @@ class SomesyConfig(SomesyBaseModel):
         """
 
         def resolve_path(
-            paths: Optional[Union[Path, List[Path]]],
-        ) -> Optional[Union[Path, List[Path]]]:
+            paths: Path | list[Path] | None,
+        ) -> Path | list[Path] | None:
             if paths is None:
                 return None
             if isinstance(paths, list):
@@ -323,31 +322,27 @@ class ContributorBaseModel(SomesyBaseModel):
     """
 
     email: Annotated[
-        Optional[str],
+        str | None,
         Field(
             pattern=r"^[\S]+@[\S]+\.[\S]{2,}$",
             description="The person's email address.",
         ),
     ] = None
 
-    alias: Annotated[Optional[str], Field(description="The contributor's alias.")] = (
+    alias: Annotated[str | None, Field(description="The contributor's alias.")] = None
+    address: Annotated[str | None, Field(description="The contributor's address.")] = (
         None
     )
-    address: Annotated[
-        Optional[str], Field(description="The contributor's address.")
-    ] = None
-    city: Annotated[Optional[str], Field(description="The entity's city.")] = None
-    country: Annotated[
-        Optional[Country], Field(description="The entity's country.")
-    ] = None
-    fax: Annotated[Optional[str], Field(description="The person's fax number.")] = None
+    city: Annotated[str | None, Field(description="The entity's city.")] = None
+    country: Annotated[Country | None, Field(description="The entity's country.")] = (
+        None
+    )
+    fax: Annotated[str | None, Field(description="The person's fax number.")] = None
     post_code: Annotated[
-        Optional[str], Field(alias="post-code", description="The entity's post-code.")
+        str | None, Field(alias="post-code", description="The entity's post-code.")
     ] = None
-    region: Annotated[Optional[str], Field(description="The entity's region.")] = None
-    tel: Annotated[Optional[str], Field(description="The entity's phone number.")] = (
-        None
-    )
+    region: Annotated[str | None, Field(description="The entity's region.")] = None
+    tel: Annotated[str | None, Field(description="The entity's phone number.")] = None
 
     # ----
     # somesy-specific extensions
@@ -358,7 +353,7 @@ class ContributorBaseModel(SomesyBaseModel):
         ),
     ] = False
     publication_author: Annotated[
-        Optional[bool],
+        bool | None,
         Field(
             description="Indicates whether the entity is to be listed as an author in academic citations."
         ),
@@ -372,21 +367,21 @@ class ContributorBaseModel(SomesyBaseModel):
 
     # NOTE: CFF 1.3 (once done) might provide ways for refined contributor description. That should be implemented here.
     contribution: Annotated[
-        Optional[str],
+        str | None,
         Field(description="Summary of how the entity contributed to the project."),
     ] = None
     contribution_types: Annotated[
-        Optional[List[ContributionTypeEnum]],
+        list[ContributionTypeEnum] | None,
         Field(
             description="Relevant types of contributions (see https://allcontributors.org/docs/de/emoji-key).",
             min_length=1,
         ),
     ] = None
     contribution_begin: Annotated[
-        Optional[date], Field(description="Beginning date of the contribution.")
+        date | None, Field(description="Beginning date of the contribution.")
     ] = None
     contribution_end: Annotated[
-        Optional[date], Field(description="Ending date of the contribution.")
+        date | None, Field(description="Ending date of the contribution.")
     ] = None
 
     @model_validator(mode="before")
@@ -405,7 +400,6 @@ class ContributorBaseModel(SomesyBaseModel):
     @property
     def full_name(self) -> str:
         """Return the name of the contributor."""
-        pass
 
     def to_name_email_string(self) -> str:
         """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
@@ -420,7 +414,6 @@ class ContributorBaseModel(SomesyBaseModel):
 
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
-        pass
 
 
 class Entity(ContributorBaseModel):
@@ -433,31 +426,31 @@ class Entity(ContributorBaseModel):
     # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
 
     date_end: Annotated[
-        Optional[date],
+        date | None,
         Field(
             alias="date-end",
             description="The entity's ending date, e.g., when the entity is a conference.",
         ),
     ] = None
     date_start: Annotated[
-        Optional[date],
+        date | None,
         Field(
             alias="date-start",
             description="The entity's starting date, e.g., when the entity is a conference.",
         ),
     ] = None
     location: Annotated[
-        Optional[str],
+        str | None,
         Field(
             description="The entity's location, e.g., when the entity is a conference."
         ),
     ] = None
     name: Annotated[str, Field(description="The entity's name.")]
     website: Annotated[
-        Optional[HttpUrlStr], Field(description="The entity's website.")
+        HttpUrlStr | None, Field(description="The entity's website.")
     ] = None
     rorid: Annotated[
-        Optional[HttpUrlStr],
+        HttpUrlStr | None,
         Field(
             description="The entity's ROR ID url **(not required, but highly suggested)**."
         ),
@@ -474,18 +467,13 @@ class Entity(ContributorBaseModel):
         """Return an `Entity` based on an name/e-mail string like `name <x@y.z>`."""
         m = re.match(r"\s*([^<]+)<([^>]+)>", entity)
         if m is None:
-            return Entity(**{"name": entity})
+            return Entity(name=entity)
 
         name, mail = (
             m.group(1).strip(),
             m.group(2).strip(),
         )
-        return Entity(
-            **{
-                "name": name,
-                "email": mail,
-            }
-        )
+        return Entity(name=name, email=mail)
 
     def same_person(self, other: Entity) -> bool:
         """Return whether two Entity metadata records are about the same real person.
@@ -494,15 +482,24 @@ class Entity(ContributorBaseModel):
         """
         if not isinstance(other, Entity):
             return False
-        if self.rorid is not None and other.rorid is not None:
-            if self.rorid == other.rorid:
-                return True
-        if self.website is not None and other.website is not None:
-            if self.website == other.website:
-                return True
-        if self.email is not None and other.email is not None:
-            if self.email == other.email:
-                return True
+        if (
+            self.rorid is not None
+            and other.rorid is not None
+            and self.rorid == other.rorid
+        ):
+            return True
+        if (
+            self.website is not None
+            and other.website is not None
+            and self.website == other.website
+        ):
+            return True
+        if (
+            self.email is not None
+            and other.email is not None
+            and self.email == other.email
+        ):
+            return True
         return self.name == other.name
 
     def model_dump_json(self, *args, **kwargs):
@@ -526,7 +523,7 @@ class Person(ContributorBaseModel):
     # NOTE: we rely on the defined aliases for direct CITATION.cff interoperability.
 
     orcid: Annotated[
-        Optional[HttpUrlStr],
+        HttpUrlStr | None,
         Field(
             description="The person's ORCID url **(not required, but highly suggested)**."
         ),
@@ -538,7 +535,7 @@ class Person(ContributorBaseModel):
         str, Field(alias="given-names", description="The person's given names.")
     ]
     name_particle: Annotated[
-        Optional[str],
+        str | None,
         Field(
             alias="name-particle",
             description="The person's name particle, e.g., a nobiliary particle or a preposition meaning 'of' or 'from'"
@@ -547,7 +544,7 @@ class Person(ContributorBaseModel):
         ),
     ] = None
     name_suffix: Annotated[
-        Optional[str],
+        str | None,
         Field(
             alias="name-suffix",
             description="The person's name-suffix, e.g. 'Jr.' for Sammy Davis Jr. or 'III' for Frank Edwin Wright III.",
@@ -555,20 +552,23 @@ class Person(ContributorBaseModel):
         ),
     ] = None
     affiliation: Annotated[
-        Optional[str], Field(description="The person's affiliation.")
+        str | None, Field(description="The person's affiliation.")
     ] = None
 
     # helper methods
 
     @field_validator("orcid", mode="before")
     @classmethod
-    def orcid_from_string(cls, orcid: str) -> Optional[HttpUrlStr]:
+    def orcid_from_string(cls, orcid: str) -> HttpUrlStr | None:
         """Convert orcid id string to HttpUrlStr."""
         # orcid regex without https://orcid.org/ prefix
         orcid_regex = r"^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
-        if orcid is not None and isinstance(orcid, str):
-            if re.match(orcid_regex, orcid):
-                return f"https://orcid.org/{orcid}"
+        if (
+            orcid is not None
+            and isinstance(orcid, str)
+            and re.match(orcid_regex, orcid)
+        ):
+            return f"https://orcid.org/{orcid}"
         return orcid
 
     @property
@@ -598,7 +598,7 @@ class Person(ContributorBaseModel):
         """
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
         if m is None:
-            names = list(map(lambda s: s.strip(), person.split()))
+            names = [s.strip() for s in person.split()]
             return Person(
                 **{
                     "given-names": " ".join(names[:-1]),
@@ -606,7 +606,7 @@ class Person(ContributorBaseModel):
                 }
             )
         if m is None:
-            names = list(map(lambda s: s.strip(), person.split()))
+            names = [s.strip() for s in person.split()]
             return Person(
                 **{
                     "given-names": " ".join(names[:-1]),
@@ -614,7 +614,7 @@ class Person(ContributorBaseModel):
                 }
             )
         names, mail = (
-            list(map(lambda s: s.strip(), m.group(1).split())),
+            [s.strip() for s in m.group(1).split()],
             m.group(2).strip(),
         )
         # NOTE: for our purposes, does not matter what are given or family names,
@@ -641,13 +641,16 @@ class Person(ContributorBaseModel):
 
         # otherwise, try to match according to mail/name
         # sourcery skip: merge-nested-ifs
-        if self.email is not None and other.email is not None:
-            if self.email == other.email:
-                # an email address belongs to exactly one person
-                # => same email -> same person
-                return True
-            # otherwise, need to check name
-            # (a person often has multiple email addresses)
+        if (
+            self.email is not None
+            and other.email is not None
+            and self.email == other.email
+        ):
+            # an email address belongs to exactly one person
+            # => same email -> same person
+            return True
+        # otherwise, need to check name
+        # (a person often has multiple email addresses)
 
         # no orcids, no/distinct email address
         # -> decide based on full_name (which is always present)
@@ -657,7 +660,7 @@ class Person(ContributorBaseModel):
 class ProjectMetadata(SomesyBaseModel):
     """Pydantic model for Project Metadata Input."""
 
-    model_config = dict(extra="ignore")
+    model_config = {"extra": "ignore"}
 
     @field_validator("people")
     @classmethod
@@ -692,35 +695,35 @@ class ProjectMetadata(SomesyBaseModel):
             raise ValueError(
                 "There have to be at least a person or an organization in the input"
             )
-        if not any(map(lambda p: p.author, self.people)) and not any(
-            map(lambda e: e.author, self.entities)
+        if not any(p.author for p in self.people) and not any(
+            e.author for e in self.entities
         ):
             raise ValueError("At least one person must be an author of this project.")
         return self
 
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
-    version: Annotated[Optional[str], Field(description="Project version.")] = None
+    version: Annotated[str | None, Field(description="Project version.")] = None
     license: Annotated[LicenseEnum, Field(description="SPDX License string.")]
 
     homepage: Annotated[
-        Optional[HttpUrlStr], Field(description="URL of the project homepage.")
+        HttpUrlStr | None, Field(description="URL of the project homepage.")
     ] = None
     repository: Annotated[
-        Optional[HttpUrlStr],
+        HttpUrlStr | None,
         Field(description="URL of the project source code repository."),
     ] = None
     documentation: Annotated[
-        Optional[HttpUrlStr], Field(description="URL of the project documentation.")
+        HttpUrlStr | None, Field(description="URL of the project documentation.")
     ] = None
 
     keywords: Annotated[
-        Optional[List[str]],
+        list[str] | None,
         Field(min_length=1, description="Keywords that describe the project."),
     ] = None
 
     people: Annotated[
-        Optional[List[Person]],
+        list[Person] | None,
         Field(
             description="Project authors, maintainers and contributors.",
             default_factory=list,
@@ -728,7 +731,7 @@ class ProjectMetadata(SomesyBaseModel):
     ]
 
     entities: Annotated[
-        Optional[List[Entity]],
+        list[Entity] | None,
         Field(
             description="Project authors, maintainers and contributors as entities (organizations).",
             default_factory=list,
@@ -747,8 +750,8 @@ class ProjectMetadata(SomesyBaseModel):
         This always includes people marked as authors.
         """
         # return an empty list if no publication authors are specified
-        if not any(map(lambda p: p.publication_author, self.people)) and not any(
-            map(lambda p: p.publication_author, self.entities)
+        if not any(p.publication_author for p in self.people) and not any(
+            p.publication_author for p in self.entities
         ):
             return []
         publication_authors = [p for p in self.people if p.publication_author]
@@ -771,14 +774,14 @@ class ProjectMetadata(SomesyBaseModel):
 class SomesyInput(SomesyBaseModel):
     """The complete somesy input file (`somesy.toml`) or section (`pyproject.toml`)."""
 
-    _origin: Optional[Path]
+    _origin: Path | None
 
     project: Annotated[
         ProjectMetadata,
         Field(description="Project metadata to be used and synchronized."),
     ]
     config: Annotated[
-        Optional[SomesyConfig],
+        SomesyConfig | None,
         Field(
             description="somesy tool configuration (matches CLI flags).",
             default_factory=lambda: SomesyConfig(),

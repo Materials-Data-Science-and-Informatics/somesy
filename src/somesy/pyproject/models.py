@@ -3,7 +3,7 @@
 from enum import Enum
 from logging import getLogger
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Union
+from typing import Annotated
 
 from packaging.version import parse as parse_version
 from pydantic import (
@@ -14,7 +14,6 @@ from pydantic import (
     field_validator,
     model_validator,
 )
-from typing_extensions import Annotated
 
 from somesy.core.models import LicenseEnum
 from somesy.core.types import HttpUrlStr
@@ -27,7 +26,7 @@ class STPerson(BaseModel):
     """Person model for setuptools."""
 
     name: Annotated[str, Field(min_length=1)]
-    email: Annotated[Optional[str], Field(min_length=1)] = None
+    email: Annotated[str | None, Field(min_length=1)] = None
 
     def __str__(self):
         """Return string representation of STPerson."""
@@ -40,10 +39,10 @@ class STPerson(BaseModel):
 class License(BaseModel):
     """License model for setuptools."""
 
-    model_config = dict(validate_assignment=True)
+    model_config = {"validate_assignment": True}
 
-    file: Optional[Path] = None
-    text: Optional[LicenseEnum] = None
+    file: Path | None = None
+    text: LicenseEnum | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -59,7 +58,7 @@ class License(BaseModel):
             # check if all elements are valid string for LicenseEnum
             for v in values:
                 if not isinstance(v, str):
-                    raise ValueError("All elements must be strings.")
+                    raise TypeError("All elements must be strings.")
                 if v not in LicenseEnum.__members__:
                     raise ValueError("Invalid license.")
             return values
@@ -71,7 +70,7 @@ class License(BaseModel):
 class PoetryConfig(BaseModel):
     """Poetry configuration model."""
 
-    model_config = dict(use_enum_values=True)
+    model_config = {"use_enum_values": True}
 
     name: Annotated[
         str,
@@ -86,37 +85,35 @@ class PoetryConfig(BaseModel):
     ]
     description: Annotated[str, Field(description="Package description")]
     license: Annotated[
-        Optional[Union[LicenseEnum, List[LicenseEnum], License]],
+        LicenseEnum | list[LicenseEnum] | License | None,
         Field(description="An SPDX license identifier."),
     ]
 
     # v1 has str, v2 has STPerson
-    authors: Annotated[List[Union[str, STPerson]], Field(description="Package authors")]
+    authors: Annotated[list[str | STPerson], Field(description="Package authors")]
     maintainers: Annotated[
-        Optional[List[Union[str, STPerson]]], Field(description="Package maintainers")
+        list[str | STPerson] | None, Field(description="Package maintainers")
     ] = None
 
     readme: Annotated[
-        Optional[Union[Path, List[Path]]], Field(description="Package readme file(s)")
+        Path | list[Path] | None, Field(description="Package readme file(s)")
     ] = None
-    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
-        None
-    )
+    homepage: Annotated[HttpUrlStr | None, Field(description="Package homepage")] = None
     repository: Annotated[
-        Optional[HttpUrlStr], Field(description="Package repository")
+        HttpUrlStr | None, Field(description="Package repository")
     ] = None
     documentation: Annotated[
-        Optional[HttpUrlStr], Field(description="Package documentation page")
+        HttpUrlStr | None, Field(description="Package documentation page")
     ] = None
     keywords: Annotated[
-        Optional[Set[str]], Field(description="Keywords that describe the package")
+        set[str] | None, Field(description="Keywords that describe the package")
     ] = None
-    classifiers: Annotated[
-        Optional[List[str]], Field(description="pypi classifiers")
-    ] = None
-    urls: Annotated[
-        Optional[Dict[str, HttpUrlStr]], Field(description="Package URLs")
-    ] = None
+    classifiers: Annotated[list[str] | None, Field(description="pypi classifiers")] = (
+        None
+    )
+    urls: Annotated[dict[str, HttpUrlStr] | None, Field(description="Package URLs")] = (
+        None
+    )
 
     @field_validator("version")
     @classmethod
@@ -187,35 +184,35 @@ class File(BaseModel):
     """File model for setuptools."""
 
     file: Path
-    content_type: Optional[ContentTypeEnum] = Field(alias="content-type")
+    content_type: ContentTypeEnum | None = Field(alias="content-type")
 
 
 class URLs(BaseModel):
     """URLs model for setuptools."""
 
-    homepage: Optional[HttpUrlStr] = None
-    repository: Optional[HttpUrlStr] = None
-    documentation: Optional[HttpUrlStr] = None
-    changelog: Optional[HttpUrlStr] = None
+    homepage: HttpUrlStr | None = None
+    repository: HttpUrlStr | None = None
+    documentation: HttpUrlStr | None = None
+    changelog: HttpUrlStr | None = None
 
 
 class SetuptoolsConfig(BaseModel):
     """Setuptools input model. Required fields are name, version, description, and requires_python."""
 
-    model_config = dict(use_enum_values=True)
+    model_config = {"use_enum_values": True}
 
     name: Annotated[str, Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
     version: Annotated[
         str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")
     ]
     description: str
-    readme: Optional[Union[Path, List[Path], File]] = None
-    license: Optional[License] = Field(None, description="An SPDX license identifier.")
-    authors: Optional[List[STPerson]] = None
-    maintainers: Optional[List[STPerson]] = None
-    keywords: Optional[Set[str]] = None
-    classifiers: Optional[List[str]] = None
-    urls: Optional[URLs] = None
+    readme: Path | list[Path] | File | None = None
+    license: License | None = Field(None, description="An SPDX license identifier.")
+    authors: list[STPerson] | None = None
+    maintainers: list[STPerson] | None = None
+    keywords: set[str] | None = None
+    classifiers: list[str] | None = None
+    urls: URLs | None = None
 
     @field_validator("version")
     @classmethod
@@ -246,7 +243,6 @@ class SetuptoolsConfig(BaseModel):
     def validate_email_format(cls, v):
         """Validate email format."""
         for person in v:
-            if person.email:
-                if not EMailAddress.validate_python(person.email):
-                    raise ValueError("Invalid email format")
+            if person.email and not EMailAddress.validate_python(person.email):
+                raise ValueError("Invalid email format")
         return v

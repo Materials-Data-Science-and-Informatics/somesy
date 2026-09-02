@@ -2,10 +2,9 @@
 
 import re
 from logging import getLogger
-from typing import List, Optional, Union
+from typing import Annotated
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing_extensions import Annotated
 
 from somesy.core.types import HttpUrlStr
 
@@ -15,64 +14,60 @@ logger = getLogger("somesy")
 class PackageAuthor(BaseModel):
     """Package author model."""
 
-    name: Annotated[Optional[str], Field(description="Author name")]
-    email: Annotated[Optional[EmailStr], Field(description="Author email")] = None
+    name: Annotated[str | None, Field(description="Author name")]
+    email: Annotated[EmailStr | None, Field(description="Author email")] = None
     url: Annotated[
-        Optional[HttpUrlStr], Field(description="Author website or orcid page")
+        HttpUrlStr | None, Field(description="Author website or orcid page")
     ] = None
 
 
 class PackageRepository(BaseModel):
     """Package repository model."""
 
-    type: Annotated[Optional[str], Field(description="Repository type")] = None
+    type: Annotated[str | None, Field(description="Repository type")] = None
     url: Annotated[str, Field(description="Repository url")]
 
 
 class PackageLicense(BaseModel):
     """Package license model."""
 
-    type: Annotated[Optional[str], Field(description="License type")] = None
+    type: Annotated[str | None, Field(description="License type")] = None
     url: Annotated[str, Field(description="License url")]
 
 
 NPM_PKG_AUTHOR = r"^(.*?)\s*(?:<([^>]+)>)?\s*(?:\(([^)]+)\))?$"
 NPM_PKG_NAME = r"^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$"
-NPM_PKG_VERSION = r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"  # noqa: E501
+NPM_PKG_VERSION = r"^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 
 
 class PackageJsonConfig(BaseModel):
     """Package.json config model."""
 
-    model_config = dict(populate_by_name=True)
+    model_config = {"populate_by_name": True}
 
     name: Annotated[str, Field(description="Package name")]
     version: Annotated[str, Field(description="Package version")]
-    description: Annotated[Optional[str], Field(description="Package description")] = (
-        None
-    )
+    description: Annotated[str | None, Field(description="Package description")] = None
     author: Annotated[
-        Optional[Union[str, PackageAuthor]], Field(description="Package author")
+        str | PackageAuthor | None, Field(description="Package author")
     ] = None
     maintainers: Annotated[
-        Optional[List[Union[str, PackageAuthor]]],
+        list[str | PackageAuthor] | None,
         Field(description="Package maintainers"),
     ] = None
     contributors: Annotated[
-        Optional[List[Union[str, PackageAuthor]]],
+        list[str | PackageAuthor] | None,
         Field(description="Package contributors"),
     ] = None
     license: Annotated[
-        Optional[Union[str, PackageLicense]], Field(description="Package license")
+        str | PackageLicense | None, Field(description="Package license")
     ] = None
     repository: Annotated[
-        Optional[Union[PackageRepository, str]], Field(description="Package repository")
+        PackageRepository | str | None, Field(description="Package repository")
     ] = None
-    homepage: Annotated[Optional[HttpUrlStr], Field(description="Package homepage")] = (
-        None
-    )
+    homepage: Annotated[HttpUrlStr | None, Field(description="Package homepage")] = None
     keywords: Annotated[
-        Optional[List[str]], Field(description="Keywords that describe the package")
+        list[str] | None, Field(description="Keywords that describe the package")
     ] = None
 
     # convert package author to dict if it is a string

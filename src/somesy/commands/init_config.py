@@ -30,8 +30,7 @@ def init_config(input_path: Path, options: dict) -> None:
 
     logger.debug(f"Input file content: {options}")
 
-    if "input_file" in options:
-        del options["input_file"]
+    options.pop("input_file", None)
     if is_somesy:
         content["config"] = options
     else:

@@ -3,7 +3,7 @@
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from rich.pretty import pretty_repr
 
@@ -21,7 +21,7 @@ class PackageJSON(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """package.json parser.
 
@@ -50,7 +50,7 @@ class PackageJSON(ProjectMetadataWriter):
         return [self._get_property(self._get_key("authors"))]
 
     @authors.setter
-    def authors(self, authors: List[Union[Entity, Person]]) -> None:
+    def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
         authors_dict = self._from_person(authors[0])
         self._set_property(self._get_key("authors"), authors_dict)
@@ -75,7 +75,7 @@ class PackageJSON(ProjectMetadataWriter):
         return maintainers_valid
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Union[Entity, Person]]) -> None:
+    def maintainers(self, maintainers: list[Entity | Person]) -> None:
         """Set the maintainers of the project."""
         maintainers_dict = [self._from_person(m) for m in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers_dict)
@@ -100,7 +100,7 @@ class PackageJSON(ProjectMetadataWriter):
         return contributors_valid
 
     @contributors.setter
-    def contributors(self, contributors: List[Union[Entity, Person]]) -> None:
+    def contributors(self, contributors: list[Entity | Person]) -> None:
         """Set the contributors of the project."""
         contributors_dict = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contributors_dict)
@@ -120,7 +120,7 @@ class PackageJSON(ProjectMetadataWriter):
         )
         PackageJsonConfig(**config)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the package.json file."""
         path = path or self.path
         logger.debug(f"Saving package.json to {path}")
@@ -130,7 +130,7 @@ class PackageJSON(ProjectMetadataWriter):
             json.dump(self._data, f)
 
     @staticmethod
-    def _from_person(person: Union[Entity, Person]) -> dict:
+    def _from_person(person: Entity | Person) -> dict:
         """Convert project metadata person/entity object to package.json dict for person format."""
         response = {}
         if isinstance(person, Person):
@@ -149,8 +149,8 @@ class PackageJSON(ProjectMetadataWriter):
 
     @staticmethod
     def _to_person(
-        person: Union[str, Dict[str, Any], PackageAuthor],
-    ) -> Union[Entity, Person]:
+        person: str | dict[str, Any] | PackageAuthor,
+    ) -> Entity | Person:
         """Convert package.json dict or str for person format to project metadata person object."""
         if isinstance(person, str):
             # parse from package.json format
@@ -162,7 +162,7 @@ class PackageJSON(ProjectMetadataWriter):
         person_dict: dict[str, Any] = person  # type: ignore
 
         if "name" in person_dict and " " in person_dict["name"]:
-            names = list(map(lambda s: s.strip(), person_dict["name"].split()))
+            names = [s.strip() for s in person_dict["name"].split()]
             person_obj = {
                 "given-names": " ".join(names[:-1]),
                 "family-names": names[-1],
@@ -189,7 +189,7 @@ class PackageJSON(ProjectMetadataWriter):
         self.contributors = self._sync_person_list(self.contributors, metadata.people)
 
     @property
-    def repository(self) -> Optional[Union[str, Dict]]:
+    def repository(self) -> str | dict | None:
         """Return the repository url of the project."""
         if repo := super().repository:
             if isinstance(repo, str):
@@ -200,9 +200,11 @@ class PackageJSON(ProjectMetadataWriter):
             return None
 
     @repository.setter
-    def repository(self, value: Optional[Union[str, Dict]]) -> None:
+    def repository(self, value: str | dict | None) -> None:
         """Set the repository url of the project."""
         if value is None:
             self._set_property(self._get_key("repository"), None)
         else:
-            self._set_property(self._get_key("repository"), dict(type="git", url=value))
+            self._set_property(
+                self._get_key("repository"), {"type": "git", "url": value}
+            )

@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-from typing import Optional, Type
 
 from rich.pretty import pretty_repr
 
@@ -25,14 +24,16 @@ logger = logging.getLogger("somesy")
 def _sync_file(
     metadata: ProjectMetadata,
     file: Path,
-    writer_cls: Type[ProjectMetadataWriter],
-    merge_codemeta: Optional[bool] = False,
-    pass_validation: Optional[bool] = False,
+    writer_cls: type[ProjectMetadataWriter],
+    merge_codemeta: bool | None = False,
+    pass_validation: bool | None = False,
 ):
     """Sync metadata to a file using the provided writer."""
     logger.verbose(f"Loading '{file.name}' ...")
     if writer_cls == CodeMeta:
-        writer = writer_cls(file, merge=merge_codemeta, pass_validation=pass_validation)
+        writer: ProjectMetadataWriter = writer_cls(
+            file, merge=merge_codemeta, pass_validation=pass_validation
+        )
     else:
         writer = writer_cls(file, pass_validation=pass_validation)
     logger.verbose(f"Syncing '{file.name}' ...")

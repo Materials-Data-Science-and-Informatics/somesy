@@ -1,10 +1,10 @@
 """Types and enums used in the somesy models."""
 
 from enum import Enum
+from typing import Annotated
 
 from pydantic import HttpUrl
 from pydantic.functional_serializers import PlainSerializer
-from typing_extensions import Annotated
 
 HttpUrlStr = Annotated[HttpUrl, PlainSerializer(lambda x: str(x), return_type=str)]
 
