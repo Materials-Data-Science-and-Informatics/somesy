@@ -1,6 +1,6 @@
 [project]
 name = "somesy"
-version = "0.8.0a0"
+version = "0.8.0a1"
 description = "A CLI tool for synchronizing software project metadata."
 readme = "README.md"
 keywords = [
