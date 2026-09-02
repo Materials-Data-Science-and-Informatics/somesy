@@ -45,7 +45,9 @@ jobs:
           poetry run poe lint --all-files
 
       - name: Scan dependencies for known vulnerabilities
-        run: safety check -r pyproject.toml
+        run: |
+          poetry run pip install pip-audit
+          poetry run pip-audit
 
   test-build-docs:
     # make sure that documentation is buildable
