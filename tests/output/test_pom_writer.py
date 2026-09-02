@@ -18,7 +18,7 @@ def pom_file(create_files, file_types):
 def test_content_match(pom: POM):
     assert pom.name == "test-package"
     assert pom.description == "This is a test package for demonstration purposes."
-    assert pom.license == "MIT"
+    assert pom.license == ["MIT", "Apache-2.0"]
     assert len(pom.authors) == 1
 
 
@@ -26,6 +26,12 @@ def test_sync(pom: POM, somesy_input: dict):
     pom.sync(somesy_input.project)
     assert pom.name == "testproject"
     assert pom.version == "1.0.0"
+
+
+def test_multiple_licenses(pom: POM, somesy_input):
+    somesy_input.project.license = [LicenseEnum.MIT, LicenseEnum.Apache_2_0]
+    pom.sync(somesy_input.project)
+    assert pom.license == ["MIT", "Apache-2.0"]
 
 
 def test_save(tmp_path):

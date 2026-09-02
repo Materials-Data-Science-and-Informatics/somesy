@@ -31,6 +31,12 @@ def test_sync(fortran, somesy_input):
     assert fortran.authors[0] == "John Doe <john.doe@example.com>"
 
 
+def test_multiple_licenses(fortran, somesy_input):
+    somesy_input.project.license = [LicenseEnum.MIT, LicenseEnum.Apache_2_0]
+    fortran.sync(somesy_input.project)
+    assert fortran.license == "MIT OR Apache-2.0"
+
+
 def test_sync_free_text(fortran_file, somesy_input):
     # update author to have a free text format
     content = fortran_file.read_text()

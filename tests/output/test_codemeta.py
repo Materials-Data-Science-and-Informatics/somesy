@@ -44,6 +44,23 @@ def test_update_codemeta(somesy_input, tmp_path):
     assert dat3 != dat4
 
 
+def test_multiple_licenses(somesy_input, tmp_path):
+    codemeta_file = tmp_path / "codemeta.json"
+    somesy_input.project.license = [
+        somesy_input.project.license,
+        "Apache-2.0",
+    ]
+    cm = CodeMeta(codemeta_file, merge=False)
+    cm.sync(somesy_input.project)
+    cm.save()
+
+    data = json.loads(codemeta_file.read_text())
+    assert data["license"] == [
+        "https://spdx.org/licenses/MIT",
+        "https://spdx.org/licenses/Apache-2.0",
+    ]
+
+
 def test_update_codemeta_with_merge(somesy_input, tmp_path):
     codemeta_file = tmp_path / "codemeta.json"
 
