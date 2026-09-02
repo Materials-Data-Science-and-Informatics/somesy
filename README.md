@@ -62,7 +62,7 @@ Make sure that you use the latest version in order to avoid any problems.
 
 ### Installing somesy
 
-Somesy requires Python `>=3.8`. To get a first impression, you can install the
+Somesy requires Python `>=3.10`. To get a first impression, you can install the
 latest stable version of somesy from PyPI using `pip`:
 
 ```bash

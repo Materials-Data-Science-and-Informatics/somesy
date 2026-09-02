@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, List, Optional, Union, cast
+from typing import Any, cast
 
 import defusedxml.ElementTree as DET
 
@@ -74,18 +74,18 @@ class XMLProxy:
 
     # ----
 
-    def __init__(self, el: ET.Element, *, default_namespace: Optional[str] = None):
+    def __init__(self, el: ET.Element, *, default_namespace: str | None = None):
         """Wrap an existing XML ElementTree Element."""
         self._node: ET.Element = el
         self._def_ns = default_namespace
 
     @classmethod
-    def parse(cls, path: Union[str, Path], **kwargs) -> XMLProxy:
+    def parse(cls, path: str | Path, **kwargs) -> XMLProxy:
         """Parse an XML file into a wrapped ElementTree, preserving comments."""
         path = path if isinstance(path, Path) else Path(path)
         return cls(load_xml(path).getroot(), **kwargs)
 
-    def write(self, path: Union[str, Path], *, header: bool = True, **kwargs):
+    def write(self, path: str | Path, *, header: bool = True, **kwargs):
         """Write the XML DOM to an UTF-8 encoded file."""
         path = path if isinstance(path, Path) else Path(path)
         et = ET.ElementTree(self._node)
@@ -110,7 +110,7 @@ class XMLProxy:
         return map(self._wrap, iter(self._node))
 
     @property
-    def namespace(self) -> Optional[str]:
+    def namespace(self) -> str | None:
         """Default namespace of this node."""
         return self._def_ns
 
@@ -120,7 +120,7 @@ class XMLProxy:
         return not isinstance(self._node.tag, str)
 
     @property
-    def tag(self) -> Optional[str]:
+    def tag(self) -> str | None:
         """Return tag name of this element (unless it is a comment)."""
         if self.is_comment:
             return None
@@ -176,8 +176,8 @@ class XMLProxy:
 
     @classmethod
     def _from_jsonlike_primitive(
-        cls, val, *, elem_name: Optional[str] = None, **kwargs
-    ) -> Union[str, XMLProxy]:
+        cls, val, *, elem_name: str | None = None, **kwargs
+    ) -> str | XMLProxy:
         """Convert a leaf node into a string value (i.e. return inner text).
 
         Returns a string (or an XML element, if elem_name is passed).
@@ -204,7 +204,7 @@ class XMLProxy:
 
     @classmethod
     def from_jsonlike(
-        cls, val: JSONLike, *, root_name: Optional[str] = None, **kwargs: Any
+        cls, val: JSONLike, *, root_name: str | None = None, **kwargs: Any
     ):
         """Convert a JSON-like primitive, array or dict into an XML element.
 
@@ -217,9 +217,7 @@ class XMLProxy:
 
         """
         if isinstance(val, list):
-            return list(
-                map(lambda x: cls.from_jsonlike(x, root_name=root_name, **kwargs), val)
-            )
+            return [cls.from_jsonlike(x, root_name=root_name, **kwargs) for x in val]
         if not isinstance(val, dict):  # primitive val
             return cls._from_jsonlike_primitive(val, elem_name=root_name, **kwargs)
 
@@ -270,7 +268,7 @@ class XMLProxy:
 
         # if not fully qualified + default NS is given, use it for query
         lst = self._node.findall(key)
-        ns: List[XMLProxy] = list(map(self._wrap, lst))
+        ns: list[XMLProxy] = list(map(self._wrap, lst))
         if as_nodes:  # return it as a list of xml nodes
             return ns
         if not ns:  # no element
@@ -294,7 +292,7 @@ class XMLProxy:
         """Acts like `dict.__contains__`, implemented with `get`."""
         return self.get(key) is not None
 
-    def __delitem__(self, key: Union[str, XMLProxy]):
+    def __delitem__(self, key: str | XMLProxy):
         """Delete a nested XML element with matching key name.
 
         Note that **all** XML elements with the given tag name are removed!
@@ -335,7 +333,7 @@ class XMLProxy:
         for child in children:
             self._node.remove(child)
 
-    def __setitem__(self, key: Union[str, XMLProxy], val: Union[JSONLike, XMLProxy]):
+    def __setitem__(self, key: str | XMLProxy, val: JSONLike | XMLProxy):
         """Add or overwrite an inner XML tag.
 
         If there is exactly one matching tag, the value is substituted in-place.
@@ -374,7 +372,7 @@ class XMLProxy:
                 nodes[0]._clear()
         else:  # an XMLProxy object was passed as key -> try to use that
             if isinstance(val, list):
-                raise ValueError(
+                raise TypeError(
                     "Cannot overwrite a single element with a list of values!"
                 )
             # ensure the target node is cleared out and use it as target
@@ -394,18 +392,18 @@ class XMLProxy:
 
         # normalize values no XML element nodes
         nvals = []
-        for val in vals:
+        for item in vals:
             # ensure value is represented as an XML node
-            if isinstance(val, XMLProxy):
+            if isinstance(item, XMLProxy):
                 obj = self._wrap(ET.Element("dummy"))
-                obj._node.append(val._node)
+                obj._node.append(item._node)
             else:
-                obj = self.from_jsonlike(val, root_name=key_name)
+                obj = self.from_jsonlike(item, root_name=key_name)
 
             nvals.append(obj)
 
-        for node, val in zip(nodes, nvals):
+        for node, item in zip(nodes, nvals, strict=False):
             # transplant node contents into existing element (so it is inserted in-place)
-            node._node.text = val._node.text
-            for child in iter(val):
+            node._node.text = item._node.text
+            for child in iter(item):
                 node._node.append(child._node)

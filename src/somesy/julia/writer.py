@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-from typing import Optional, Union
 
 import tomlkit
 from rich.pretty import pretty_repr
@@ -21,7 +20,7 @@ class Julia(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """Julia config file handler parsed from Project.toml.
 
@@ -52,14 +51,13 @@ class Julia(ProjectMetadataWriter):
         )
         JuliaConfig(**config)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the julia file."""
         path = path or self.path
-        if "description" in self._data:
-            if "\n" in self._data["description"]:
-                self._data["description"] = tomlkit.string(
-                    self._data["description"], multiline=True
-                )
+        if "description" in self._data and "\n" in self._data["description"]:
+            self._data["description"] = tomlkit.string(
+                self._data["description"], multiline=True
+            )
 
         # Handle arrays with proper formatting
         for key, value in self._data.items():
@@ -84,12 +82,12 @@ class Julia(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     @staticmethod
-    def _from_person(person: Union[Person, Entity]):
+    def _from_person(person: Person | Entity):
         """Convert project metadata person object to a name+email string."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Optional[Person]:
+    def _to_person(person: str) -> Person | None:
         """Convert from free string to person or entity object."""
         try:
             return Person.from_name_email_string(person)

@@ -3,7 +3,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 import tomlkit
 
@@ -21,7 +21,7 @@ INPUT_FILES_ORDERED = [
 """Input files ordered by priority for discovery."""
 
 
-def discover_input(input_file: Optional[Path] = None) -> Path:
+def discover_input(input_file: Path | None = None) -> Path:
     """Check given input file path. If not given, find somesy configuration file path from default list.
 
     Args:
@@ -57,7 +57,7 @@ def discover_input(input_file: Optional[Path] = None) -> Path:
     raise FileNotFoundError("No somesy input file found.")
 
 
-def get_input_content(path: Path, *, no_unwrap: bool = False) -> Dict[str, Any]:
+def get_input_content(path: Path, *, no_unwrap: bool = False) -> dict[str, Any]:
     """Read contents of a supported somesy input file.
 
     Given a path to a TOML file, this function reads the file and returns its content as a TOMLDocument object.

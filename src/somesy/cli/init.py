@@ -24,7 +24,7 @@ def config():
 
     # prompt for inputs
     input_file = typer.prompt("Input file path", default=input_file_default)
-    options = dict(input_file=Path(input_file))
+    options = {"input_file": Path(input_file)}
 
     # ----
 

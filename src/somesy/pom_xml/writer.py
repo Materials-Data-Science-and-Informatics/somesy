@@ -3,7 +3,7 @@
 import logging
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from somesy.core.models import Entity, Person
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
@@ -24,7 +24,7 @@ class POM(ProjectMetadataWriter):
         self,
         path: Path,
         create_if_not_exists: bool = True,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """Java Maven pom.xml parser.
 
@@ -62,17 +62,17 @@ class POM(ProjectMetadataWriter):
         """Validate the POM file."""
         logger.info("Cannot validate POM file, skipping validation.")
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the POM DOM to a file."""
         self._data.write(path or self.path, default_namespace=None)
 
     def _get_property(
         self,
-        key: Union[str, List[str]],
+        key: str | list[str],
         *,
         only_first: bool = False,
         remove: bool = False,
-    ) -> Optional[Any]:
+    ) -> Any | None:
         """Get (a) property by key."""
         elem = super()._get_property(key, only_first=only_first, remove=remove)
         if elem is not None:
@@ -83,9 +83,9 @@ class POM(ProjectMetadataWriter):
         return None
 
     @staticmethod
-    def _from_person(person: Union[Entity, Person]):
+    def _from_person(person: Entity | Person):
         """Convert person object to dict for POM XML person format."""
-        ret: Dict[str, Any] = {}
+        ret: dict[str, Any] = {}
         if isinstance(person, Person):
             person_id = person.to_name_email_string()
             if person.orcid:
@@ -101,11 +101,11 @@ class POM(ProjectMetadataWriter):
         if person.email:
             ret["email"] = person.email
         if person.contribution_types:
-            ret["roles"] = dict(role=[c.value for c in person.contribution_types])
+            ret["roles"] = {"role": [c.value for c in person.contribution_types]}
         return ret
 
     @staticmethod
-    def _to_person(person_obj: dict) -> Union[Entity, Person]:
+    def _to_person(person_obj: dict) -> Entity | Person:
         """Parse POM XML person to a somesy Person."""
         if " " in person_obj["name"]:
             names = person_obj["name"].split()
@@ -144,14 +144,12 @@ class POM(ProjectMetadataWriter):
 
     # no search keywords supported in POM
     @property
-    def keywords(self) -> Optional[List[str]]:
+    def keywords(self) -> list[str] | None:
         """Return the keywords of the project."""
-        pass
 
     @keywords.setter
-    def keywords(self, keywords: List[str]) -> None:
+    def keywords(self, keywords: list[str]) -> None:
         """Set the keywords of the project."""
-        pass
 
     # authors must be a list
     @property
@@ -161,7 +159,7 @@ class POM(ProjectMetadataWriter):
         return authors if isinstance(authors, list) else [authors]
 
     @authors.setter
-    def authors(self, authors: List[Union[Entity, Person]]) -> None:
+    def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
         authors = [self._from_person(c) for c in authors]
         self._set_property(self._get_key("authors"), authors)
@@ -176,7 +174,7 @@ class POM(ProjectMetadataWriter):
         return contr if isinstance(contr, list) else [contr]
 
     @contributors.setter
-    def contributors(self, contributors: List[Union[Entity, Person]]) -> None:
+    def contributors(self, contributors: list[Entity | Person]) -> None:
         """Set the contributors of the project."""
         contr = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contr)
@@ -188,26 +186,25 @@ class POM(ProjectMetadataWriter):
         return []
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Person]) -> None:
+    def maintainers(self, maintainers: list[Person]) -> None:
         """Set the maintainers of the project."""
-        pass
 
     # only one project license supported in somesy (POM can have many)
     @property
-    def license(self) -> Optional[str]:
+    def license(self) -> str | None:
         """Return the license of the project."""
         lic = self._get_property(self._get_key("license"), only_first=True)
         return lic.get("name") if lic is not None else None
 
     @license.setter
-    def license(self, license: Optional[str]) -> None:
+    def license(self, license: str | None) -> None:
         """Set the license of the project."""
         self._set_property(
-            self._get_key("license"), dict(name=license, distribution="repo")
+            self._get_key("license"), {"name": license, "distribution": "repo"}
         )
 
     @property
-    def repository(self) -> Optional[Union[str, dict]]:
+    def repository(self) -> str | dict | None:
         """Return the repository url of the project."""
         repo = super().repository
         if isinstance(repo, str):
@@ -215,14 +212,14 @@ class POM(ProjectMetadataWriter):
         return repo.get("url") if repo is not None else None
 
     @repository.setter
-    def repository(self, value: Optional[Union[str, dict]]) -> None:
+    def repository(self, value: str | dict | None) -> None:
         """Set the repository url of the project."""
         self._set_property(
-            self._get_key("repository"), dict(name="git repository", url=value)
+            self._get_key("repository"), {"name": "git repository", "url": value}
         )
 
     @property
-    def documentation(self) -> Optional[Union[str, dict]]:
+    def documentation(self) -> str | dict | None:
         """Return the documentation url of the project."""
         docs = super().documentation
         if isinstance(docs, str):
@@ -230,10 +227,10 @@ class POM(ProjectMetadataWriter):
         return docs.get("url") if docs is not None else None
 
     @documentation.setter
-    def documentation(self, value: Optional[Union[str, dict]]) -> None:
+    def documentation(self, value: str | dict | None) -> None:
         """Set the documentation url of the project."""
         self._set_property(
-            self._get_key("documentation"), dict(name="documentation site", url=value)
+            self._get_key("documentation"), {"name": "documentation site", "url": value}
         )
 
     def sync(self, metadata) -> None:

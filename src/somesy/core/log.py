@@ -2,7 +2,6 @@
 
 import logging
 from enum import Enum, auto
-from typing import Optional
 
 from rich.logging import RichHandler
 
@@ -23,9 +22,9 @@ class SomesyLogLevel(Enum):
     @staticmethod
     def from_flags(
         *,
-        info: Optional[bool] = None,
-        verbose: Optional[bool] = None,
-        debug: Optional[bool] = None,
+        info: bool | None = None,
+        verbose: bool | None = None,
+        debug: bool | None = None,
     ):
         """Convert CLI/config flags into a log level."""
         if debug:
@@ -49,10 +48,10 @@ class SomesyLogLevel(Enum):
             return logging.DEBUG
 
 
-_log_level: Optional[SomesyLogLevel] = None
+_log_level: SomesyLogLevel | None = None
 
 
-def get_log_level() -> Optional[SomesyLogLevel]:
+def get_log_level() -> SomesyLogLevel | None:
     """Return current user-defined log level."""
     return _log_level
 

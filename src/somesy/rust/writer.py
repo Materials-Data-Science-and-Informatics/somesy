@@ -2,7 +2,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Any
 
 from rich.pretty import pretty_repr
 from tomlkit import array, dump, inline_table, items, load, string, table
@@ -21,7 +21,7 @@ class Rust(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """Rust config file handler parsed from Cargo.toml.
 
@@ -57,22 +57,24 @@ class Rust(ProjectMetadataWriter):
         )
         RustConfig(**config)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the Cargo.toml file."""
         path = path or self.path
 
-        if "description" in self._data["package"]:
-            if "\n" in self._data["package"]["description"]:
-                self._data["package"]["description"] = string(
-                    self._data["package"]["description"], multiline=True
-                )
+        if (
+            "description" in self._data["package"]
+            and "\n" in self._data["package"]["description"]
+        ):
+            self._data["package"]["description"] = string(
+                self._data["package"]["description"], multiline=True
+            )
 
         with open(path, "w") as f:
             dump(self._data, f)
 
     def _get_property(
-        self, key: Union[str, List[str], IgnoreKey], *, remove: bool = False, **kwargs
-    ) -> Optional[Any]:
+        self, key: str | list[str] | IgnoreKey, *, remove: bool = False, **kwargs
+    ) -> Any | None:
         """Get a property from the Cargo.toml file."""
         if isinstance(key, IgnoreKey):
             return None
@@ -80,7 +82,7 @@ class Rust(ProjectMetadataWriter):
         full_path = self._section + key_path
         return super()._get_property(full_path, remove=remove, **kwargs)
 
-    def _set_property(self, key: Union[str, List[str], IgnoreKey], value: Any) -> None:
+    def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:
         """Set a property in the Cargo.toml file."""
         if isinstance(key, IgnoreKey):
             return
@@ -95,10 +97,10 @@ class Rust(ProjectMetadataWriter):
 
         # dig down, create missing nested objects on the fly
         curr = dat
-        for key in key_path[:-1]:
-            if key not in curr:
-                curr.add(key, table())
-            curr = curr[key]
+        for path_key in key_path[:-1]:
+            if path_key not in curr:
+                curr.add(path_key, table())
+            curr = curr[path_key]
 
         # Handle arrays with proper formatting
         if isinstance(value, list):
@@ -119,12 +121,12 @@ class Rust(ProjectMetadataWriter):
             curr[key_path[-1]] = value
 
     @staticmethod
-    def _from_person(person: Union[Person, Entity]):
+    def _from_person(person: Person | Entity):
         """Convert project metadata person object to rust string for person format "full name <email>."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Optional[Union[Person, Entity]]:
+    def _to_person(person: str) -> Person | Entity | None:
         """Parse rust person string to a Person. It has format "full name <email>." but email is optional.
 
         Since there is no way to know whether this entry is a person or an entity, we will directly convert to Person.
@@ -141,17 +143,17 @@ class Rust(ProjectMetadataWriter):
             return None
 
     @classmethod
-    def _parse_people(cls, people: Optional[List[Any]]) -> List[Person]:
+    def _parse_people(cls, people: list[Any] | None) -> list[Person]:
         """Return a list of Persons parsed from list of format-specific people representations. to_person can return None, so filter out None values."""
         return list(filter(None, map(cls._to_person, people or [])))
 
     @property
-    def keywords(self) -> Optional[List[str]]:
+    def keywords(self) -> list[str] | None:
         """Return the keywords of the project."""
         return self._get_property(self._get_key("keywords"))
 
     @keywords.setter
-    def keywords(self, keywords: List[str]) -> None:
+    def keywords(self, keywords: list[str]) -> None:
         """Set the keywords of the project."""
         validated_keywords = []
         for keyword in keywords:

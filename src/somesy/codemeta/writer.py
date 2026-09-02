@@ -4,7 +4,7 @@ import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import Any
 
 from somesy.codemeta.utils import validate_codemeta
 from somesy.core.models import Entity, Person, ProjectMetadata
@@ -19,8 +19,8 @@ class CodeMeta(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
-        merge: Optional[bool] = False,
-        pass_validation: Optional[bool] = False,
+        merge: bool | None = False,
+        pass_validation: bool | None = False,
     ):
         """Codemeta.json parser.
 
@@ -78,7 +78,7 @@ class CodeMeta(ProjectMetadataWriter):
         return self._get_property(self._get_key("publication_authors")) or []
 
     @authors.setter
-    def authors(self, authors: List[Union[Person, Entity]]) -> None:
+    def authors(self, authors: list[Person | Entity]) -> None:
         """Set the authors of the project."""
         authors_dict = [self._from_person(a) for a in authors]
         self._set_property(self._get_key("authors"), authors_dict)
@@ -89,7 +89,7 @@ class CodeMeta(ProjectMetadataWriter):
         return self._get_property(self._get_key("maintainers"))
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Union[Person, Entity]]) -> None:
+    def maintainers(self, maintainers: list[Person | Entity]) -> None:
         """Set the maintainers of the project."""
         maintainers_dict = [self._from_person(m) for m in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers_dict)
@@ -100,7 +100,7 @@ class CodeMeta(ProjectMetadataWriter):
         return self._get_property(self._get_key("contributors"))
 
     @contributors.setter
-    def contributors(self, contributors: List[Union[Person, Entity]]) -> None:
+    def contributors(self, contributors: list[Person | Entity]) -> None:
         """Set the contributors of the project."""
         contributors_dict = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contributors_dict)
@@ -137,7 +137,7 @@ class CodeMeta(ProjectMetadataWriter):
         with self.path.open("w+") as f:
             json.dump(data, f)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the codemeta.json file."""
         path = path or self.path
         logger.debug(f"Saving codemeta.json to {path}")
@@ -158,7 +158,7 @@ class CodeMeta(ProjectMetadataWriter):
             json.dump(data, f)
 
     @staticmethod
-    def _from_person(person: Union[Person, Entity]) -> dict:
+    def _from_person(person: Person | Entity) -> dict:
         """Convert project metadata person object to codemeta.json dict for person format."""
         if isinstance(person, Person):
             person_dict = {
@@ -197,7 +197,7 @@ class CodeMeta(ProjectMetadataWriter):
             return entity_dict
 
     @staticmethod
-    def _to_person(person) -> Union[Person, Entity]:
+    def _to_person(person) -> Person | Entity:
         """Convert codemeta.json dict or str for person/entity format to project metadata person object."""
         if "name" in person:
             entity_obj = {"name": person["name"]}
@@ -218,8 +218,8 @@ class CodeMeta(ProjectMetadataWriter):
             return Person(**person_obj)
 
     def _sync_person_list(
-        self, old: List[Any], new: List[Union[Person, Entity]]
-    ) -> List[Any]:
+        self, old: list[Any], new: list[Person | Entity]
+    ) -> list[Any]:
         """Override the _sync_person_list function from ProjectMetadataWriter.
 
         This method wont care about existing persons in codemeta.json file.

@@ -2,7 +2,6 @@
 
 import logging
 from pathlib import Path
-from typing import List, Optional, Union
 
 import tomlkit
 from rich.pretty import pretty_repr
@@ -21,7 +20,7 @@ class Fortran(ProjectMetadataWriter):
     def __init__(
         self,
         path: Path,
-        pass_validation: Optional[bool] = False,
+        pass_validation: bool | None = False,
     ):
         """Fortran config file handler parsed from fpm.toml.
 
@@ -51,7 +50,7 @@ class Fortran(ProjectMetadataWriter):
         return authors
 
     @authors.setter
-    def authors(self, authors: List[Union[Person, Entity]]) -> None:
+    def authors(self, authors: list[Person | Entity]) -> None:
         """Set the authors of the project."""
         self._set_property(self._get_key("authors"), self._from_person(authors[0]))
 
@@ -64,7 +63,7 @@ class Fortran(ProjectMetadataWriter):
         return []
 
     @maintainers.setter
-    def maintainers(self, maintainers: List[Union[Person, Entity]]) -> None:
+    def maintainers(self, maintainers: list[Person | Entity]) -> None:
         """Set the maintainers of the project."""
         maintainers = self._from_person(maintainers[0])
         self._set_property(self._get_key("maintainers"), maintainers)
@@ -88,14 +87,13 @@ class Fortran(ProjectMetadataWriter):
         )
         FortranConfig(**config)
 
-    def save(self, path: Optional[Path] = None) -> None:
+    def save(self, path: Path | None = None) -> None:
         """Save the fpm file."""
         path = path or self.path
-        if "description" in self._data:
-            if "\n" in self._data["description"]:
-                self._data["description"] = tomlkit.string(
-                    self._data["description"], multiline=True
-                )
+        if "description" in self._data and "\n" in self._data["description"]:
+            self._data["description"] = tomlkit.string(
+                self._data["description"], multiline=True
+            )
 
         # Handle arrays with proper formatting
         for key, value in self._data.items():
@@ -120,12 +118,12 @@ class Fortran(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     @staticmethod
-    def _from_person(person: Union[Person, Entity]):
+    def _from_person(person: Person | Entity):
         """Convert project metadata person/entity object to poetry string for person format "full name <email>."""
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Optional[Union[Person, Entity]]:
+    def _to_person(person: str) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
         try:
             return Person.from_name_email_string(person)
