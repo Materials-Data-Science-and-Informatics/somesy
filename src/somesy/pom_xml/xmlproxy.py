@@ -404,7 +404,7 @@ class XMLProxy:
 
             nvals.append(obj)
 
-        for node, val in zip(nodes, nvals):
+        for node, val in zip(nodes, nvals, strict=False):
             # transplant node contents into existing element (so it is inserted in-place)
             node._node.text = val._node.text
             for child in iter(val):

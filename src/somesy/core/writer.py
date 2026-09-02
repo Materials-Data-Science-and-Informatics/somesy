@@ -140,7 +140,7 @@ class ProjectMetadataWriter(ABC):
             seq.pop()
             del seq[-1][key_path[-1]]  # remove leaf value
             # clean up the tree
-            for key, dct in reversed(list(zip(key_path[:-1], seq[:-1]))):
+            for key, dct in reversed(list(zip(key_path[:-1], seq[:-1], strict=False))):
                 if not dct.get(key):
                     del dct[key]
 
