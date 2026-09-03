@@ -212,7 +212,7 @@ Here is an overview of all the currently supported files and formats.
 
 **Notes:**
 
-1. note that `somesy` does not support setuptools or poetry _dynamic fields_
+1. `somesy` supports PEP 621 `dynamic` fields — fields listed in `dynamic` (e.g. `version`) are not overwritten during sync
 2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses

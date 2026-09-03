@@ -181,6 +181,29 @@ than just move or rename fields**. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the `somesy` code.
 
+### PEP 621 `dynamic` fields
+
+For `pyproject.toml` targets (setuptools and Poetry v2), somesy respects the
+[PEP 621 `dynamic` field](https://peps.python.org/pep-0621/#dynamic). If
+`version` or `description` is listed in `dynamic`, it means the value is
+provided at build time rather than written statically in the file. In this case
+somesy will:
+
+- **skip validation** of that field (it is not required to be present in the file), and
+- **not overwrite** the field during sync, logging a warning instead.
+
+For example, if your `pyproject.toml` contains:
+
+```toml
+[project]
+name = "my-package"
+dynamic = ["version", "description"]
+```
+
+somesy will sync all other managed fields as usual but leave `version` and
+`description` untouched, because they are expected to be set dynamically at
+build time.
+
 **people** and **entities** are mapped to authors/maintainers/contributors depending
 on the output format. Both fields are marked as necessary but what `somesy` need is an
 author either in **people** or **entities**.
@@ -289,7 +312,7 @@ pyproject_toml_file = 'package2/pyproject.toml'
 
 !!! warning
 
-    Each output file, such as package.json file, have its required fields and these fields are enforced by `somesy`. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as `version`. Therefore, we suggest users to set `pass_validation` to `true` if this is the case. `somesy` will fail otherwise.
+    Each output file, such as package.json file, have its required fields and these fields are enforced by `somesy`. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as `version`. For `pyproject.toml` files, the preferred solution is to list those fields under `dynamic` (e.g. `dynamic = ["version"]`) — somesy will then skip validation and sync for those fields. For other formats, or as a last resort, you can set `pass_validation` to `true` in the somesy config to bypass validation entirely. `somesy` will fail otherwise.
 
 The example above shows a project with a `package.json` file in the root folder and 2 packages in it. Three files are set here so all of them will be updated according to ground truth of `somesy project metadata`.
 

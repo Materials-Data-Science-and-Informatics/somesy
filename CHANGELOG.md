@@ -6,6 +6,7 @@ Please consult the changelog to inform yourself about breaking changes and secur
 
 ## [v0.8.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0) <small>(2026-09-03)</small> { id="0.8.0" }
 
+- support PEP 621 `dynamic` fields in `pyproject.toml` — fields listed in `dynamic` (e.g. `version`, `description`) are no longer required to be present and will not be overwritten during sync
 - raise the minimum supported Python version to 3.10
 - update project dependencies and pre-commit hooks
 - fix dependency vulnerabilities and replace Safety with pip-audit
