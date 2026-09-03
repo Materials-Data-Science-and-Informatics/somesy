@@ -59,6 +59,30 @@ def test_from_to_person(person: Person):
     assert str(p.orcid) == str(person.orcid)
 
 
+def test_person_merge_without_email(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    person = Person(
+        given_names="Jane", family_names="Doe", author=True, maintainer=True
+    )
+    metadata = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[person],
+    )
+
+    pom = POM(pom_path, create_if_not_exists=True)
+    pom.sync(metadata)
+    pom.save()
+
+    person.maintainer = False
+    pom = POM(pom_path)
+    pom.sync(metadata)
+
+    assert pom.authors[0]["name"] == person.full_name
+
+
 def test_person_merge(pom_file, person: Person):
     pj = POM(pom_file)
 

@@ -13,6 +13,7 @@ Please consult the changelog to inform yourself about breaking changes and secur
 - remove obsolete GitLab configuration and release workflows
 - support multiple SPDX licenses and modernize pyproject license output
 - fix duplicate `-P` CLI shortcut warning in `somesy sync`
+- fix POM synchronization for people without email addresses
 
 ## [v0.7.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3) <small>(2025-03-14)</small> { id="0.7.3" }
 
