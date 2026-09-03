@@ -12,7 +12,9 @@ def json_dump_wrapper(wrapped, instance, args, kwargs):
     kwargs["ensure_ascii"] = False
     # set indent to 2 if not set
     kwargs["indent"] = kwargs.get("indent", 2)
-    return wrapped(*args, **kwargs)
+    result = wrapped(*args, **kwargs)
+    (args[1] if len(args) > 1 else kwargs["fp"]).write("\n")
+    return result
 
 
 # Apply the wrapper
