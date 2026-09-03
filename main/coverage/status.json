@@ -113,7 +113,7 @@
       }
     },
     "z_1772db955a685d28_sync_py":{
-      "hash":"576b60ca8010485a76c319098c91129e",
+      "hash":"2f21e20b351df7192baccbd38ec1332a",
       "index":{
         "url":"z_1772db955a685d28_sync_py.html",
         "file":"src/somesy/cli/sync.py",
@@ -491,7 +491,7 @@
       }
     },
     "z_97b113e3d51588b3_main_py":{
-      "hash":"425b8de81083d66cc33dc4e4bfae8d5e",
+      "hash":"070aa1792557079442336275c50b852c",
       "index":{
         "url":"z_97b113e3d51588b3_main_py.html",
         "file":"src/somesy/main.py",
@@ -501,7 +501,7 @@
           "n_files":1,
           "n_statements":24,
           "n_excluded":0,
-          "n_missing":6,
+          "n_missing":3,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0

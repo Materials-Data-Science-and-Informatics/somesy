@@ -4072,7 +4072,7 @@ filled with <code>ror id</code>.</p>
 <span class=" -Color -Color-Faint">│</span>                                                    codemeta.json file        <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    (default: False)          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    <span class=" -Color -Color-Faint">[default: overwrite]     </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">      </span>  Pass validation of        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-V</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">      </span>  Pass validation of        <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    metadata files (default:  <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    False)                    <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--packages</span>              <span class=" -Color -Color-Bold -Color-Bold-Green">-k</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span>  Packages (subfolders) for <span class=" -Color -Color-Faint">│</span>
@@ -4084,7 +4084,8 @@ filled with <code>ror id</code>.</p>
 </code></pre></div>
 <p>Everything that can be configured as a CLI flag can also be set in a <code>somesy.toml</code> file
 in the <code>[config]</code> section. CLI arguments set in an input file override the
-defaults, while options passed as CLI arguments override the configuration.</p>
+defaults, while options passed as CLI arguments override the configuration.
+The <code>-P</code> shortcut disables pyproject synchronization, while <code>-V</code> passes output validation.</p>
 <p>Without an input file specifically provided, somesy will check if it can find a valid</p>
 <ul>
 <li><code>.somesy.toml</code></li>
