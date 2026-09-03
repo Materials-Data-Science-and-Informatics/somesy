@@ -111,9 +111,9 @@ class POM(ProjectMetadataWriter):
             names = person_obj["name"].split()
             gnames = " ".join(names[:-1])
             fname = names[-1]
-            email = person_obj["email"]
+            email = person_obj.get("email")
             url = person_obj.get("url")
-            maybe_orcid = url if url.find("orcid.org") >= 0 else None
+            maybe_orcid = url if url and "orcid.org" in url else None
             if roles := person_obj.get("roles"):
                 contr = roles["role"]
             else:
