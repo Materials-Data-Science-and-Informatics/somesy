@@ -23,6 +23,17 @@ def test_sync(cff: CFF, somesy_input: dict):
     assert cff.version == "1.0.0"
 
 
+def test_save_does_not_write_trailing_whitespace(tmp_path):
+    file_path = tmp_path / "CITATION.cff"
+    cff = CFF(file_path, create_if_not_exists=True)
+    cff.repository = "https://github.com/Materials-Data-Science-and-Informatics/somesy"
+    cff.save()
+
+    assert all(
+        not line.endswith((" ", "\t")) for line in file_path.read_text().splitlines()
+    )
+
+
 def test_save(tmp_path):
     # test save with default path
     file_path = tmp_path / "CITATION.cff"

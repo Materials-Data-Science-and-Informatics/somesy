@@ -90,7 +90,7 @@ version = "0.1.0"
 description = "Brief description of my amazing software."
 
 keywords = ["some", "descriptive", "keywords"]
-license = "MIT"
+license = ["MIT", "Apache-2.0"]
 repository = "https://github.com/username/my-amazing-project"
 
 # This is you, the proud author of your project:
@@ -215,7 +215,7 @@ Here is an overview of all the currently supported files and formats.
 1. note that `somesy` does not support setuptools or poetry _dynamic fields_
 2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
-4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses (somesy only supports one main project license)
+4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration
 6. For handling `codemeta.json` different options exists: Either (A) `somesy` removes any prior existing `codemata.json` files and re-creates it anew, or (B) `somesy` merges an existing `codemeta.json` with the information handled by `somesy`. See the [user manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta) for additional details about CodeMeta handling.
 

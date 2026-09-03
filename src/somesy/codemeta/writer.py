@@ -147,7 +147,11 @@ class CodeMeta(ProjectMetadataWriter):
 
         # set license
         if "license" in data:
-            data["license"] = (f"https://spdx.org/licenses/{data['license']}",)
+            licenses = data["license"]
+            licenses = licenses if isinstance(licenses, list) else [licenses]
+            data["license"] = [
+                f"https://spdx.org/licenses/{license}" for license in licenses
+            ]
 
         # if softwareHelp is set, set url to softwareHelp
         if "softwareHelp" in data:
@@ -240,6 +244,12 @@ class CodeMeta(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
+        licenses = metadata.license
+        self.license = (
+            [license.value for license in licenses]
+            if isinstance(licenses, list)
+            else licenses.value
+        )
         self.contributors = metadata.contributors()
 
         # add the default context items if they are not already in the codemeta.json file

@@ -172,6 +172,9 @@ class Rust(ProjectMetadataWriter):
         """Sync the rust config with the project metadata."""
         super().sync(metadata)
 
+        if isinstance(metadata.license, list):
+            self.license = " OR ".join(license.value for license in metadata.license)
+
         # if there is a license file, remove the license field
-        if self._get_key("license_file"):
+        if self._get_property(self._get_key("license_file")):
             self.license = None

@@ -55,14 +55,14 @@ repos:
           # NOTE: copy from .pre-commit-hooks.yaml, for technical reasons
           - id: somesy-sync
             name: Run somesy sync
-            entry: somesy sync
-            language: python
+            entry: poetry run somesy sync
+            language: system
             files: '^\.somesy\.toml|pyproject\.toml$'
             pass_filenames: false
 
           - id: somesy-fill
             name: Update AUTHORS.md
-            entry: somesy fill -t docs/_template_authors.md -o AUTHORS.md
-            language: python
+            entry: poetry run somesy fill -t docs/_template_authors.md -o AUTHORS.md
+            language: system
             files: '^\.somesy\.toml|pyproject\.toml$'
             pass_filenames: false

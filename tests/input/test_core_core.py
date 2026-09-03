@@ -101,6 +101,11 @@ def test_somesy_input(somesy_input):
     assert authors[1].publication_author is True
 
 
+def test_multiple_licenses(somesy_input):
+    somesy_input.project.license = [LicenseEnum.MIT, LicenseEnum.Apache_2_0]
+    assert somesy_input.project.license == [LicenseEnum.MIT, LicenseEnum.Apache_2_0]
+
+
 def test_multiple_inputs(create_files, file_types):
     """Test handling of multiple input files for the same format."""
     # Create test files in multiple locations

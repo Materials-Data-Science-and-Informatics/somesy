@@ -17,6 +17,14 @@ from .models import License, PoetryConfig, SetuptoolsConfig
 logger = logging.getLogger("somesy")
 
 
+def license_expression(licenses) -> str:
+    """Convert one or more license identifiers to an SPDX expression."""
+    return " OR ".join(
+        str(license)
+        for license in (licenses if isinstance(licenses, list) else [licenses])
+    )
+
+
 class PyprojectCommon(ProjectMetadataWriter):
     """Poetry config file handler parsed from pyproject.toml."""
 
@@ -192,7 +200,7 @@ class Poetry(PyprojectCommon):
         if raw_license is None:
             return None
         if isinstance(raw_license, str):
-            return License(text=raw_license)
+            return raw_license
         return raw_license
 
     @license.setter
@@ -202,11 +210,7 @@ class Poetry(PyprojectCommon):
         if self._poetry_version == 1:
             self._set_property(["license"], value)
         else:
-            # if version is 2 and str, set as text
-            if isinstance(value, str):
-                self._set_property(["license"], {"text": value})
-            else:
-                self._set_property(["license"], value)
+            self._set_property(["license"], value)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file."""
@@ -223,6 +227,8 @@ class Poetry(PyprojectCommon):
 
         # Restore original _from_person method
         self._from_person = original_from_person  # type: ignore
+
+        self.license = license_expression(metadata.license)
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
@@ -252,7 +258,6 @@ class SetupTools(PyprojectCommon):
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
             "documentation": ["urls", "documentation"],
-            "license": ["license", "text"],
         }
         super().__init__(
             path,
@@ -295,14 +300,7 @@ class SetupTools(PyprojectCommon):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file and fix license field."""
         super().sync(metadata)
-
-        # if license field has both text and file, remove file
-        if (
-            self._get_property(["license", "file"]) is not None
-            and self._get_property(["license", "text"]) is not None
-        ):
-            # delete license file property
-            self._data["project"]["license"].pop("file")
+        self.license = license_expression(metadata.license)
 
 
 # ----

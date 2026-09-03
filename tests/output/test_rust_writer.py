@@ -32,6 +32,12 @@ def test_sync(rust, somesy_input):
     assert rust.version == "1.0.0"
 
 
+def test_multiple_licenses(rust, somesy_input):
+    somesy_input.project.license = [LicenseEnum.MIT, LicenseEnum.Apache_2_0]
+    rust.sync(somesy_input.project)
+    assert rust.license == "MIT OR Apache-2.0"
+
+
 def test_save(tmp_path, rust):
     custom_path = tmp_path / Path("Cargo.toml")
     rust.save(custom_path)

@@ -236,8 +236,10 @@ one of the supported input formats:
     description = "Brief description of my amazing software."
 
     keywords = ["some", "descriptive", "keywords"]
-    license = "MIT"
+    license = ["MIT", "Apache-2.0"]
     repository = "https://github.com/username/my-amazing-project"
+
+    # Multiple licenses are supported; single-value targets use the first one.
 
     # This is you, the proud author of your project
     [[tool.somesy.project.people]]

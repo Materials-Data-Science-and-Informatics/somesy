@@ -85,7 +85,7 @@ class PoetryConfig(BaseModel):
     ]
     description: Annotated[str, Field(description="Package description")]
     license: Annotated[
-        LicenseEnum | list[LicenseEnum] | License | None,
+        LicenseEnum | list[LicenseEnum] | License | str | None,
         Field(description="An SPDX license identifier."),
     ]
 
@@ -207,7 +207,9 @@ class SetuptoolsConfig(BaseModel):
     ]
     description: str
     readme: Path | list[Path] | File | None = None
-    license: License | None = Field(None, description="An SPDX license identifier.")
+    license: License | LicenseEnum | str | None = Field(
+        None, description="An SPDX license identifier."
+    )
     authors: list[STPerson] | None = None
     maintainers: list[STPerson] | None = None
     keywords: set[str] | None = None

@@ -155,6 +155,11 @@ class Fortran(ProjectMetadataWriter):
             # only one maintainer is allowed
             self.maintainers = maintainers
 
-        self.license = metadata.license.value
+        licenses = metadata.license
+        self.license = (
+            " OR ".join(license.value for license in licenses)
+            if isinstance(licenses, list)
+            else licenses.value
+        )
 
         self.homepage = str(metadata.homepage) if metadata.homepage else None

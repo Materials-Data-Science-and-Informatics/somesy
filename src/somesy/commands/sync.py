@@ -1,6 +1,7 @@
 """Sync selected metadata files with given input file."""
 
 import logging
+from copy import deepcopy
 from pathlib import Path
 
 from rich.pretty import pretty_repr
@@ -37,9 +38,11 @@ def _sync_file(
     else:
         writer = writer_cls(file, pass_validation=pass_validation)
     logger.verbose(f"Syncing '{file.name}' ...")
+    original_data = deepcopy(writer._data)
     writer.sync(metadata)
-    writer.save(file)
-    logger.verbose(f"Saved synced '{file.name}'.\n")
+    if writer._data != original_data:
+        writer.save(file)
+        logger.verbose(f"Saved synced '{file.name}'.\n")
 
 
 def _sync_files(

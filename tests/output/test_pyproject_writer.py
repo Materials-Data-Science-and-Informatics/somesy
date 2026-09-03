@@ -76,6 +76,39 @@ def test_sync(pyproject_poetry, pyproject_poetry2, pyproject_setuptools, somesy_
     assert_sync(pyproject_setuptools)
 
 
+@pytest.mark.parametrize(
+    "writer_fixture, writer_class, version",
+    [
+        ("pyproject_poetry2_file", Poetry, 2),
+        ("pyproject_setuptools_file", SetupTools, None),
+    ],
+)
+def test_issue_121_writes_modern_license_string(
+    request, writer_fixture, writer_class, version, somesy_input
+):
+    path = request.getfixturevalue(writer_fixture)
+    writer = writer_class(path, version=version) if version else writer_class(path)
+    writer.sync(somesy_input.project)
+    assert writer._data["project"]["license"] == "MIT"
+
+
+@pytest.mark.parametrize(
+    "writer_fixture, writer_class, version",
+    [
+        ("pyproject_poetry2_file", Poetry, 2),
+        ("pyproject_setuptools_file", SetupTools, None),
+    ],
+)
+def test_issue_121_writes_multiple_license_expression(
+    request, writer_fixture, writer_class, version, somesy_input
+):
+    path = request.getfixturevalue(writer_fixture)
+    writer = writer_class(path, version=version) if version else writer_class(path)
+    somesy_input.project.license = [LicenseEnum.MIT, LicenseEnum.Apache_2_0]
+    writer.sync(somesy_input.project)
+    assert writer._data["project"]["license"] == "MIT OR Apache-2.0"
+
+
 def test_save(tmp_path, pyproject_poetry, pyproject_poetry2, pyproject_setuptools):
     def assert_save(pyproject):
         custom_path = tmp_path / Path("pyproject.toml")
