@@ -134,7 +134,7 @@ class CodeMeta(ProjectMetadataWriter):
             "author": [],
         }
         # dump to file
-        with self.path.open("w+") as f:
+        with self.path.open("w+", newline="\n") as f:
             json.dump(data, f)
 
     def save(self, path: Path | None = None) -> None:
@@ -157,7 +157,7 @@ class CodeMeta(ProjectMetadataWriter):
         if "softwareHelp" in data:
             data["url"] = data["softwareHelp"]
 
-        with path.open("w") as f:
+        with path.open("w", newline="\n") as f:
             # codemeta.json indentation is 2 spaces
             json.dump(data, f)
 
