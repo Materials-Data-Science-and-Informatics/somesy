@@ -199,6 +199,7 @@ somesy sync --help
 Everything that can be configured as a CLI flag can also be set in a `somesy.toml` file
 in the `[config]` section. CLI arguments set in an input file override the
 defaults, while options passed as CLI arguments override the configuration.
+The `-P` shortcut disables pyproject synchronization, while `-V` passes output validation.
 
 Without an input file specifically provided, somesy will check if it can find a valid
 
