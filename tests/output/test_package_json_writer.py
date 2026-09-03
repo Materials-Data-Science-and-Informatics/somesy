@@ -35,6 +35,9 @@ def test_save(tmp_path, package_json: PackageJSON):
     custom_path = tmp_path / "package.json"
     package_json.save(custom_path)
     assert custom_path.is_file()
+    data = custom_path.read_bytes()
+    assert data.endswith(b"}\n")
+    assert not data.endswith(b"}\n\n")
 
 
 def test_from_to_person(person: Person):

@@ -13,6 +13,8 @@ def test_update_codemeta(somesy_input, tmp_path):
 
     assert codemeta_file.is_file()
     dat = open(codemeta_file, "rb").read()
+    assert dat.endswith(b"}\n")
+    assert not dat.endswith(b"}\n\n")
 
     # second time, no changes but codemeta.json exists -> codemeta.json is the same
     cm.sync(somesy_input.project)
