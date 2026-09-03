@@ -1,4 +1,5 @@
 import logging
+import re
 
 import pytest
 from typer.testing import CliRunner
@@ -18,10 +19,11 @@ def test_app_version():
 
 def test_sync_options_have_unique_shortcuts():
     result = runner.invoke(app, ["sync", "--help"])
+    output = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", result.stdout)
 
     assert result.exit_code == 0
-    assert "-P" in result.stdout and "--no-sync-pyproject" in result.stdout
-    assert "-V" in result.stdout and "--pass-validation" in result.stdout
+    assert "-P" in output and "--no-sync-pyproject" in output
+    assert "-V" in output and "--pass-validation" in output
     assert "parameter -P is used more than once" not in result.output
 
 
