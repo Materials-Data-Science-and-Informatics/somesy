@@ -3523,7 +3523,7 @@
     <span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Package description"</span><span class="p">)]</span>
     <span class="n">license</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
-        <span class="n">LicenseEnum</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">LicenseEnum</span><span class="p">]</span> <span class="o">|</span> <span class="n">License</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">LicenseEnum</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">LicenseEnum</span><span class="p">]</span> <span class="o">|</span> <span class="n">License</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"An SPDX license identifier."</span><span class="p">),</span>
     <span class="p">]</span>
 
@@ -4085,7 +4085,9 @@
 <span class="normal">245</span>
 <span class="normal">246</span>
 <span class="normal">247</span>
-<span class="normal">248</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetuptoolsConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetuptoolsConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Setuptools input model. Required fields are name, version, description, and requires_python."""</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"use_enum_values"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
@@ -4096,7 +4098,9 @@
     <span class="p">]</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">readme</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">|</span> <span class="n">File</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">license</span><span class="p">:</span> <span class="n">License</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"An SPDX license identifier."</span><span class="p">)</span>
+    <span class="n">license</span><span class="p">:</span> <span class="n">License</span> <span class="o">|</span> <span class="n">LicenseEnum</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"An SPDX license identifier."</span>
+    <span class="p">)</span>
     <span class="n">authors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">STPerson</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">maintainers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">STPerson</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">keywords</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -4173,15 +4177,15 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
 <span class="normal">220</span>
 <span class="normal">221</span>
 <span class="normal">222</span>
 <span class="normal">223</span>
 <span class="normal">224</span>
-<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"version"</span><span class="p">)</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"version"</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate version using PEP 440."""</span>
@@ -4218,9 +4222,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
 <span class="normal">232</span>
@@ -4230,7 +4232,9 @@
 <span class="normal">236</span>
 <span class="normal">237</span>
 <span class="normal">238</span>
-<span class="normal">239</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"readme"</span><span class="p">)</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"readme"</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_readme</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate readme file(s) by checking whether files exist."""</span>
@@ -4271,14 +4275,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span>
 <span class="normal">247</span>
-<span class="normal">248</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"authors"</span><span class="p">,</span> <span class="s2">"maintainers"</span><span class="p">)</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"authors"</span><span class="p">,</span> <span class="s2">"maintainers"</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_email_format</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate email format."""</span>

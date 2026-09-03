@@ -1816,6 +1816,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.validate_license_list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_license_list
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#somesy.core.models.ProjectMetadata.authors" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3494,6 +3505,17 @@
     <span class="md-ellipsis">
       
         at_least_one_author
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#somesy.core.models.ProjectMetadata.validate_license_list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        validate_license_list
       
     </span>
   </a>
@@ -6357,7 +6379,18 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 <span class="normal">768</span>
 <span class="normal">769</span>
 <span class="normal">770</span>
-<span class="normal">771</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ProjectMetadata</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
+<span class="normal">771</span>
+<span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ProjectMetadata</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Pydantic model for Project Metadata Input."""</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"extra"</span><span class="p">:</span> <span class="s2">"ignore"</span><span class="p">}</span>
@@ -6404,7 +6437,18 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
     <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Project name."</span><span class="p">)]</span>
     <span class="n">description</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Project description."</span><span class="p">)]</span>
     <span class="n">version</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Project version."</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">license</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="n">LicenseEnum</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"SPDX License string."</span><span class="p">)]</span>
+    <span class="n">license</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
+        <span class="n">LicenseEnum</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">LicenseEnum</span><span class="p">],</span>
+        <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"SPDX License string(s)."</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"license"</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_license_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">license</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Require at least one license when licenses are provided as a list."""</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">license</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">license</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one license must be provided."</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">license</span>
 
     <span class="n">homepage</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span>
         <span class="n">HttpUrlStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"URL of the project homepage."</span><span class="p">)</span>
@@ -6637,6 +6681,47 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 <div class="doc doc-object doc-function">
 
 
+<h3 id="somesy.core.models.ProjectMetadata.validate_license_list" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">validate_license_list</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#somesy.core.models.ProjectMetadata.validate_license_list" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">validate_license_list</span><span class="p">(</span><span class="n">license</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Require at least one license when licenses are provided as a list.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/somesy/core/models.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">712</span>
+<span class="normal">713</span>
+<span class="normal">714</span>
+<span class="normal">715</span>
+<span class="normal">716</span>
+<span class="normal">717</span>
+<span class="normal">718</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"license"</span><span class="p">)</span>
+<span class="nd">@classmethod</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_license_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">license</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Require at least one license when licenses are provided as a list."""</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">license</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">license</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"At least one license must be provided."</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">license</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
 <h3 id="somesy.core.models.ProjectMetadata.authors" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">authors</span>
 
@@ -6652,11 +6737,11 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">741</span>
-<span class="normal">742</span>
-<span class="normal">743</span>
-<span class="normal">744</span>
-<span class="normal">745</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">752</span>
+<span class="normal">753</span>
+<span class="normal">754</span>
+<span class="normal">755</span>
+<span class="normal">756</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Return people and entities explicitly marked as authors."""</span>
     <span class="n">authors</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">author</span><span class="p">]</span>
     <span class="n">authors</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">author</span><span class="p">])</span>
@@ -6686,19 +6771,19 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">747</span>
-<span class="normal">748</span>
-<span class="normal">749</span>
-<span class="normal">750</span>
-<span class="normal">751</span>
-<span class="normal">752</span>
-<span class="normal">753</span>
-<span class="normal">754</span>
-<span class="normal">755</span>
-<span class="normal">756</span>
-<span class="normal">757</span>
-<span class="normal">758</span>
-<span class="normal">759</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">publication_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">758</span>
+<span class="normal">759</span>
+<span class="normal">760</span>
+<span class="normal">761</span>
+<span class="normal">762</span>
+<span class="normal">763</span>
+<span class="normal">764</span>
+<span class="normal">765</span>
+<span class="normal">766</span>
+<span class="normal">767</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">publication_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Return people marked as publication authors.</span>
 
 <span class="sd">    This always includes people marked as authors.</span>
@@ -6735,11 +6820,11 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">761</span>
-<span class="normal">762</span>
-<span class="normal">763</span>
-<span class="normal">764</span>
-<span class="normal">765</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Return people and entities marked as maintainers."""</span>
     <span class="n">maintainers</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">maintainer</span><span class="p">]</span>
     <span class="n">maintainers</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">maintainer</span><span class="p">])</span>
@@ -6768,11 +6853,11 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">767</span>
-<span class="normal">768</span>
-<span class="normal">769</span>
-<span class="normal">770</span>
-<span class="normal">771</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">contributors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Return only people and entities not marked as authors."""</span>
     <span class="n">contributors</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">people</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="o">.</span><span class="n">author</span><span class="p">]</span>
     <span class="n">contributors</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entities</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">e</span><span class="o">.</span><span class="n">author</span><span class="p">])</span>
@@ -6819,18 +6904,7 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">774</span>
-<span class="normal">775</span>
-<span class="normal">776</span>
-<span class="normal">777</span>
-<span class="normal">778</span>
-<span class="normal">779</span>
-<span class="normal">780</span>
-<span class="normal">781</span>
-<span class="normal">782</span>
-<span class="normal">783</span>
-<span class="normal">784</span>
-<span class="normal">785</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">785</span>
 <span class="normal">786</span>
 <span class="normal">787</span>
 <span class="normal">788</span>
@@ -6865,7 +6939,18 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 <span class="normal">817</span>
 <span class="normal">818</span>
 <span class="normal">819</span>
-<span class="normal">820</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SomesyInput</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span>
+<span class="normal">824</span>
+<span class="normal">825</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SomesyInput</span><span class="p">(</span><span class="n">SomesyBaseModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""The complete somesy input file (`somesy.toml`) or section (`pyproject.toml`)."""</span>
 
     <span class="n">_origin</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span>
@@ -6946,12 +7031,12 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">792</span>
-<span class="normal">793</span>
-<span class="normal">794</span>
-<span class="normal">795</span>
-<span class="normal">796</span>
-<span class="normal">797</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">803</span>
+<span class="normal">804</span>
+<span class="normal">805</span>
+<span class="normal">806</span>
+<span class="normal">807</span>
+<span class="normal">808</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">set_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Set the origin of the input file."""</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">input_file</span><span class="p">:</span>
@@ -6982,12 +7067,12 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">799</span>
-<span class="normal">800</span>
-<span class="normal">801</span>
-<span class="normal">802</span>
-<span class="normal">803</span>
-<span class="normal">804</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_somesy_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">810</span>
+<span class="normal">811</span>
+<span class="normal">812</span>
+<span class="normal">813</span>
+<span class="normal">814</span>
+<span class="normal">815</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_somesy_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return whether this somesy input is from a somesy config file.</span>
 
 <span class="sd">    That means, returns False if it is from pyproject.toml or package.json.</span>
@@ -7022,13 +7107,13 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">806</span>
-<span class="normal">807</span>
-<span class="normal">808</span>
-<span class="normal">809</span>
-<span class="normal">810</span>
-<span class="normal">811</span>
-<span class="normal">812</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">817</span>
+<span class="normal">818</span>
+<span class="normal">819</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">is_somesy_file_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return whether the path looks like a somesy config file.</span>
 
@@ -7063,13 +7148,13 @@ This schema is based on CITATION.cff 1.2, modified and extended for the needs of
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">814</span>
-<span class="normal">815</span>
-<span class="normal">816</span>
-<span class="normal">817</span>
-<span class="normal">818</span>
-<span class="normal">819</span>
-<span class="normal">820</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">825</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">from_input_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SomesyInput</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Load somesy input from given file."""</span>
     <span class="n">content</span> <span class="o">=</span> <span class="n">get_input_content</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>

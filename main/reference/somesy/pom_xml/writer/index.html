@@ -3216,7 +3216,18 @@
 <span class="normal">239</span>
 <span class="normal">240</span>
 <span class="normal">241</span>
-<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">POM</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">POM</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Java Maven pom.xml parser and saver."""</span>
 
     <span class="c1"># TODO: write a wrapper for ElementTree that behaves like a dict</span>
@@ -3391,18 +3402,23 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">maintainers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maintainers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Person</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set the maintainers of the project."""</span>
 
-    <span class="c1"># only one project license supported in somesy (POM can have many)</span>
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the license of the project."""</span>
-        <span class="n">lic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span> <span class="n">only_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">)</span> <span class="k">if</span> <span class="n">lic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">licenses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"license"</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">licenses</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">licenses</span> <span class="o">=</span> <span class="n">licenses</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">licenses</span><span class="p">]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">license</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">names</span>
 
     <span class="nd">@license</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set the license of the project."""</span>
+        <span class="n">licenses</span> <span class="o">=</span> <span class="n">license</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">license</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">license</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">license</span><span class="p">,</span> <span class="s2">"distribution"</span><span class="p">:</span> <span class="s2">"repo"</span><span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span>
+            <span class="p">[{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">license</span><span class="p">,</span> <span class="s2">"distribution"</span><span class="p">:</span> <span class="s2">"repo"</span><span class="p">}</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">],</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -3441,6 +3457,12 @@
 <span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">people</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -3569,7 +3591,7 @@
   </span>
 
 <a href="#somesy.pom_xml.writer.POM.license" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -3761,18 +3783,30 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pom_xml/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
-<span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync codemeta.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">    """</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
+    <span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">people</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>

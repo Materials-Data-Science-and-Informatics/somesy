@@ -2985,10 +2985,10 @@ Furthermore, <code>somesy</code> might support the
 </tr>
 <tr>
 <td>license</td>
-<td>LicenseEnum</td>
+<td>LicenseEnum / List[LicenseEnum]</td>
 <td><strong>yes</strong></td>
 <td></td>
-<td>SPDX License string.</td>
+<td>SPDX License string(s).</td>
 </tr>
 <tr>
 <td>homepage</td>
@@ -4109,7 +4109,7 @@ one of the supported input formats:</p>
 <span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Brief description of my amazing software."</span>
 
 <span class="n">keywords</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"some"</span><span class="p">,</span><span class="w"> </span><span class="s2">"descriptive"</span><span class="p">,</span><span class="w"> </span><span class="s2">"keywords"</span><span class="p">]</span>
-<span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MIT"</span>
+<span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MIT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Apache-2.0"</span><span class="p">]</span>
 <span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://github.com/username/my-amazing-project"</span>
 
 <span class="c1"># This is you, the proud author of your project:</span>
@@ -4153,8 +4153,10 @@ one of the supported input formats:</p>
 <span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Brief description of my amazing software."</span>
 
 <span class="n">keywords</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"some"</span><span class="p">,</span><span class="w"> </span><span class="s2">"descriptive"</span><span class="p">,</span><span class="w"> </span><span class="s2">"keywords"</span><span class="p">]</span>
-<span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"MIT"</span>
+<span class="n">license</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"MIT"</span><span class="p">,</span><span class="w"> </span><span class="s2">"Apache-2.0"</span><span class="p">]</span>
 <span class="n">repository</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"https://github.com/username/my-amazing-project"</span>
+
+<span class="c1"># Multiple licenses are supported; single-value targets use the first one.</span>
 
 <span class="c1"># This is you, the proud author of your project</span>
 <span class="k">[[tool.somesy.project.people]]</span>

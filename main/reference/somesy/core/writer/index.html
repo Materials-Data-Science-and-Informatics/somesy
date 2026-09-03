@@ -3672,7 +3672,10 @@
 <span class="normal">465</span>
 <span class="normal">466</span>
 <span class="normal">467</span>
-<span class="normal">468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="normal">468</span>
+<span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Base class for Project Metadata Output Wrapper.</span>
 
 <span class="sd">    All supported output formats are implemented as subclasses.</span>
@@ -3950,7 +3953,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">maintainers</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">maintainers</span><span class="p">()</span>
         <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">licenses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">)</span> <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span> <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">repository</span> <span class="k">else</span> <span class="kc">None</span>
@@ -4076,12 +4082,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"keywords"</span><span class="p">),</span> <span class="n">keywords</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Return the license of the project."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"license"</span><span class="p">))</span>
 
     <span class="nd">@license</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">license</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Set the license of the project."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"license"</span><span class="p">),</span> <span class="n">license</span><span class="p">)</span>
 
@@ -4316,7 +4322,7 @@
   </span>
 
 <a href="#somesy.core.writer.ProjectMetadataWriter.license" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">license</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -4705,7 +4711,10 @@ without destroying its other contents or structure.</p>
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
-<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync output file with other metadata files."""</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">name</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">description</span>
@@ -4721,7 +4730,10 @@ without destroying its other contents or structure.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">maintainers</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">maintainers</span><span class="p">()</span>
     <span class="p">)</span>
 
-    <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">licenses</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
+    <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">homepage</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span><span class="p">)</span> <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">homepage</span> <span class="k">else</span> <span class="kc">None</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">repository</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">repository</span><span class="p">)</span> <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">repository</span> <span class="k">else</span> <span class="kc">None</span>

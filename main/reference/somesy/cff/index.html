@@ -2828,7 +2828,8 @@
 <span class="normal">117</span>
 <span class="normal">118</span>
 <span class="normal">119</span>
-<span class="normal">120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">120</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Citation File Format (CFF) parser and saver."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -2844,6 +2845,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">preserve_quotes</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">mapping</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">120</span>
 
         <span class="n">mappings</span><span class="p">:</span> <span class="n">FieldKeyMapping</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">"name"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"title"</span><span class="p">],</span>
@@ -3001,7 +3003,8 @@
 <span class="normal">41</span>
 <span class="normal">42</span>
 <span class="normal">43</span>
-<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">create_if_not_exists</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -3014,6 +3017,7 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">preserve_quotes</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">mapping</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_yaml</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">120</span>
 
     <span class="n">mappings</span><span class="p">:</span> <span class="n">FieldKeyMapping</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">"name"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"title"</span><span class="p">],</span>
@@ -3053,8 +3057,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/cff/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">71</span>
-<span class="normal">72</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">72</span>
 <span class="normal">73</span>
 <span class="normal">74</span>
 <span class="normal">75</span>
@@ -3064,7 +3067,8 @@
 <span class="normal">79</span>
 <span class="normal">80</span>
 <span class="normal">81</span>
-<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">82</span>
+<span class="normal">83</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Save the CFF object to a file."""</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
 
