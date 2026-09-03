@@ -77,13 +77,34 @@ class PoetryConfig(BaseModel):
         Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Package name"),
     ]
     version: Annotated[
-        str,
+        str | None,
         Field(
+            default=None,
             pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$",
             description="Package version",
         ),
     ]
-    description: Annotated[str, Field(description="Package description")]
+    description: Annotated[
+        str | None, Field(default=None, description="Package description")
+    ]
+    dynamic: Annotated[
+        list[str] | None, Field(default=None, description="PEP 621 dynamic fields")
+    ]
+
+    @model_validator(mode="after")
+    def validate_required_unless_dynamic(self):
+        """Validate that version and description are present unless listed in dynamic."""
+        dynamic = self.dynamic or []
+        if self.version is None and "version" not in dynamic:
+            raise ValueError(
+                "Field 'version' is required when not listed in 'dynamic'."
+            )
+        if self.description is None and "description" not in dynamic:
+            raise ValueError(
+                "Field 'description' is required when not listed in 'dynamic'."
+            )
+        return self
+
     license: Annotated[
         LicenseEnum | list[LicenseEnum] | License | str | None,
         Field(description="An SPDX license identifier."),
@@ -203,9 +224,31 @@ class SetuptoolsConfig(BaseModel):
 
     name: Annotated[str, Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
     version: Annotated[
-        str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")
+        str | None,
+        Field(
+            default=None,
+            pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$",
+        ),
     ]
-    description: str
+    description: str | None = None
+    dynamic: Annotated[
+        list[str] | None, Field(default=None, description="PEP 621 dynamic fields")
+    ]
+
+    @model_validator(mode="after")
+    def validate_required_unless_dynamic(self):
+        """Validate that version and description are present unless listed in dynamic."""
+        dynamic = self.dynamic or []
+        if self.version is None and "version" not in dynamic:
+            raise ValueError(
+                "Field 'version' is required when not listed in 'dynamic'."
+            )
+        if self.description is None and "description" not in dynamic:
+            raise ValueError(
+                "Field 'description' is required when not listed in 'dynamic'."
+            )
+        return self
+
     readme: Path | list[Path] | File | None = None
     license: License | LicenseEnum | str | None = Field(
         None, description="An SPDX license identifier."

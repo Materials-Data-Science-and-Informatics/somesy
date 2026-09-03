@@ -53,3 +53,75 @@ def test_poetry_validate(tmp_path):
 
     # if we pass validation, it should not raise an error
     Pyproject(invalid_poetry_path, pass_validation=True)
+
+
+def test_dynamic_version_setuptools_valid(tmp_path):
+    """Setuptools: dynamic = ['version'] without version field should pass validation."""
+    obj = {
+        "project": {
+            "name": "somesy",
+            "description": "A test package",
+            "dynamic": ["version"],
+        }
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+
+    p = Pyproject(path)
+    assert "version" in p._dynamic_fields
+
+
+def test_dynamic_version_poetry2_valid(tmp_path):
+    """Poetry v2: dynamic = ['version'] without version field should pass validation."""
+    obj = {
+        "tool": {"poetry": {}},
+        "project": {
+            "name": "somesy",
+            "description": "A test package",
+            "dynamic": ["version"],
+            "license": "MIT",
+            "authors": [{"name": "John Doe", "email": "john@example.com"}],
+        },
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+
+    p = Pyproject(path)
+    assert "version" in p._dynamic_fields
+
+
+def test_missing_version_not_dynamic_setuptools_fails(tmp_path):
+    """Setuptools: missing version without dynamic should fail validation."""
+    obj = {
+        "project": {
+            "name": "somesy",
+            "description": "A test package",
+        }
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+
+    with pytest.raises(ValueError, match="version"):
+        Pyproject(path)
+
+
+def test_missing_version_not_dynamic_poetry2_fails(tmp_path):
+    """Poetry v2: missing version without dynamic should fail validation."""
+    obj = {
+        "tool": {"poetry": {}},
+        "project": {
+            "name": "somesy",
+            "description": "A test package",
+            "license": "MIT",
+            "authors": [{"name": "John Doe", "email": "john@example.com"}],
+        },
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+
+    with pytest.raises(ValueError, match="version"):
+        Pyproject(path)

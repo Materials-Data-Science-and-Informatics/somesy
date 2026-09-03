@@ -50,6 +50,43 @@ class PyprojectCommon(ProjectMetadataWriter):
             pass_validation=pass_validation,
         )
 
+    @property
+    def _dynamic_fields(self) -> list[str]:
+        """Return the list of fields marked as dynamic in pyproject.toml."""
+        return self._get_property(["dynamic"]) or []
+
+    @property
+    def version(self) -> str | None:
+        """Return the version of the project."""
+        return self._get_property(self._get_key("version"))
+
+    @version.setter
+    def version(self, value: str) -> None:
+        """Set version, skipping if listed as dynamic."""
+        if "version" in self._dynamic_fields:
+            if value:
+                logger.warning(
+                    "Field 'version' is listed as dynamic — skipping sync from somesy."
+                )
+            return
+        self._set_property(self._get_key("version"), value)
+
+    @property
+    def description(self) -> str | None:
+        """Return the description of the project."""
+        return self._get_property(self._get_key("description"))
+
+    @description.setter
+    def description(self, value: str) -> None:
+        """Set description, skipping if listed as dynamic."""
+        if "description" in self._dynamic_fields:
+            if value:
+                logger.warning(
+                    "Field 'description' is listed as dynamic — skipping sync from somesy."
+                )
+            return
+        self._set_property(self._get_key("description"), value)
+
     def _load(self) -> None:
         """Load pyproject.toml file."""
         with open(self.path) as f:
