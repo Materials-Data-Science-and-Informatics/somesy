@@ -6,8 +6,7 @@ title: somesy
 version: 0.8.0a3
 abstract: A CLI tool for synchronizing software project metadata.
 url: https://materials-data-science-and-informatics.github.io/somesy
-repository-code: 
-  https://github.com/Materials-Data-Science-and-Informatics/somesy
+repository-code: https://github.com/Materials-Data-Science-and-Informatics/somesy
 license: MIT
 keywords:
   - metadata

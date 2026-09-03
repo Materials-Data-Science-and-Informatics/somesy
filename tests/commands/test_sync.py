@@ -2,9 +2,32 @@
 
 from pathlib import Path
 
-from somesy.commands.sync import sync
+from somesy.commands.sync import _sync_file, sync
 from somesy.core.models import SomesyInput, SomesyConfig, ProjectMetadata
 from somesy.core.models import Person, LicenseEnum
+
+
+def test_sync_file_does_not_rewrite_unchanged_data(tmp_path):
+    class NoopWriter:
+        def __init__(self, path, **kwargs):
+            self._data = {"formatted": True}
+
+        def sync(self, metadata):
+            pass
+
+        def save(self, path):
+            raise AssertionError("unchanged output should not be saved")
+
+    _sync_file(
+        ProjectMetadata(
+            name="project",
+            description="description",
+            license="MIT",
+            people=[Person(given_names="A", family_names="B", author=True)],
+        ),
+        tmp_path / "metadata",
+        NoopWriter,
+    )
 
 
 def test_basic_sync(create_files, file_types):

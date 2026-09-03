@@ -27,6 +27,7 @@ class CFF(ProjectMetadataWriter):
         self._yaml = YAML()
         self._yaml.preserve_quotes = True
         self._yaml.indent(mapping=2, sequence=4, offset=2)
+        self._yaml.width = 120
 
         mappings: FieldKeyMapping = {
             "name": ["title"],
