@@ -19,7 +19,10 @@ logger = logging.getLogger("somesy")
 
 def license_expression(licenses) -> str:
     """Convert one or more license identifiers to an SPDX expression."""
-    return " OR ".join(str(license) for license in (licenses if isinstance(licenses, list) else [licenses]))
+    return " OR ".join(
+        str(license)
+        for license in (licenses if isinstance(licenses, list) else [licenses])
+    )
 
 
 class PyprojectCommon(ProjectMetadataWriter):

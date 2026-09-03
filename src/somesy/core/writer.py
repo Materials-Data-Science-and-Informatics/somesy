@@ -431,12 +431,12 @@ class ProjectMetadataWriter(ABC):
         self._set_property(self._get_key("keywords"), keywords)
 
     @property
-    def license(self) -> str | None:
+    def license(self) -> str | list[str] | None:
         """Return the license of the project."""
         return self._get_property(self._get_key("license"))
 
     @license.setter
-    def license(self, license: str | None) -> None:
+    def license(self, license: str | list[str] | None) -> None:
         """Set the license of the project."""
         self._set_property(self._get_key("license"), license)
 
