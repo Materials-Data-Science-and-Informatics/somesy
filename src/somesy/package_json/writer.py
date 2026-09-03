@@ -125,7 +125,7 @@ class PackageJSON(ProjectMetadataWriter):
         path = path or self.path
         logger.debug(f"Saving package.json to {path}")
 
-        with path.open("w") as f:
+        with path.open("w", newline="\n") as f:
             # package.json indentation is 2 spaces
             json.dump(self._data, f)
 
