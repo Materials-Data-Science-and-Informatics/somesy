@@ -16,6 +16,15 @@ def test_app_version():
     assert "somesy version: " in result.stdout
 
 
+def test_sync_options_have_unique_shortcuts():
+    result = runner.invoke(app, ["sync", "--help"])
+
+    assert result.exit_code == 0
+    assert "-P" in result.stdout and "--no-sync-pyproject" in result.stdout
+    assert "-V" in result.stdout and "--pass-validation" in result.stdout
+    assert "parameter -P is used more than once" not in result.output
+
+
 @pytest.mark.parametrize("log_level", [lv for lv in SomesyLogLevel])
 def test_log_levels(log_level):
     set_log_level(log_level)
