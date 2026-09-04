@@ -129,6 +129,27 @@ As Helmholtz Metadata Collaboration (HMC), our goal is to increase usage of meta
 Alternatively, you can also add the somesy configuration to an existing
 `pyproject.toml`, `package.json`, `Project.toml`, or `fpm.toml` file. The somesy [manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#somesy-input-file) contains examples showing how to do that.
 
+### Initialize a project
+
+For an existing project, `somesy init` harvests metadata from supported project
+files and Git history, merges it, and creates `somesy.toml`:
+
+```bash
+somesy init
+```
+
+The command asks only for required metadata that could not be harvested: project
+name, description, SPDX license, and one author. An author can be a person or an
+organization. Existing project files are enabled as sync targets; absent files
+are disabled. Use `--output-file` to choose another path or `--overwrite` to
+replace an existing file.
+
+```bash
+somesy init --output-file somesy.toml --overwrite
+```
+
+For manual configuration of sync options, use `somesy init config`.
+
 ### Using somesy
 
 Once somesy is installed and configured, somesy can take over and manage your project metadata.
@@ -146,13 +167,13 @@ formats further below.
 By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository.
 If you happen to use
 
--   `pyproject.toml` (in Python projects),
--   `package.json` (in JavaScript projects),
--   `Project.toml` (in Julia projects),
--   `fpm.toml` (in Fortran projects),
--   `pom.xml` (in Java projects),
--   `mkdocs.yml` (in projects using MkDocs),
--   `Cargo.toml` (in Rust projects)
+- `pyproject.toml` (in Python projects),
+- `package.json` (in JavaScript projects),
+- `Project.toml` (in Julia projects),
+- `fpm.toml` (in Fortran projects),
+- `pom.xml` (in Java projects),
+- `mkdocs.yml` (in projects using MkDocs),
+- `Cargo.toml` (in Rust projects)
 
 then somesy would also update the respective information there.
 
@@ -176,7 +197,7 @@ file in the root folder of your repository:
 repos:
     # ... (your other hooks) ...
     - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-      rev: 'v0.7.2'
+      rev: 'v0.8.0'
       hooks:
           - id: somesy
 ```
@@ -188,8 +209,8 @@ repos:
 Note that `pre-commit` gives `somesy` the [staged](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F) version of files,
 so when using `somesy` with pre-commit, keep in mind that
 
--   if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
--   if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
+- if `somesy` changed some files, you need to `git add` them again (and rerun pre-commit)
+- if you explicitly run `pre-commit`, make sure to `git add` all changed files (just like before a commit)
 
 <!-- --8<-- [end:precommit] -->
 
