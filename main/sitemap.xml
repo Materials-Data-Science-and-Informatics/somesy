@@ -49,11 +49,19 @@
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>
+         <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/harvest/</loc>
+         <lastmod>2026-09-04</lastmod>
+    </url>
+    <url>
          <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/json_wrapper/</loc>
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>
          <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/main/</loc>
+         <lastmod>2026-09-04</lastmod>
+    </url>
+    <url>
+         <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/merge/</loc>
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>
@@ -142,6 +150,18 @@
     </url>
     <url>
          <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/fortran/writer/</loc>
+         <lastmod>2026-09-04</lastmod>
+    </url>
+    <url>
+         <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/git/</loc>
+         <lastmod>2026-09-04</lastmod>
+    </url>
+    <url>
+         <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/git/harvest/</loc>
+         <lastmod>2026-09-04</lastmod>
+    </url>
+    <url>
+         <loc>https://materials-data-science-and-informatics.github.io/somesy/main/reference/somesy/git/models/</loc>
          <lastmod>2026-09-04</lastmod>
     </url>
     <url>
