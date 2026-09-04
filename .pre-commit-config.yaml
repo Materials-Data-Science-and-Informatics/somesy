@@ -23,7 +23,7 @@ repos:
           - id: check-github-workflows
     - repo: https://github.com/astral-sh/ruff-pre-commit
       # Ruff version.
-      rev: v0.16.5
+      rev: v0.16.6
       hooks:
           # Run the linter.
           - id: ruff-check
@@ -36,9 +36,6 @@ repos:
       rev: 'v2.3.1'
       hooks:
           - id: mypy
-            args: [--no-strict-optional, --ignore-missing-imports]
-            # NOTE: you might need to add some deps here:
-            additional_dependencies: []
 
     # Metadata
     - repo: https://github.com/citation-file-format/cff-converter-python

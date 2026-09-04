@@ -3,8 +3,13 @@
 from pathlib import Path
 
 from somesy.commands.sync import _sync_file, sync
-from somesy.core.models import SomesyInput, SomesyConfig, ProjectMetadata
-from somesy.core.models import Person, LicenseEnum
+from somesy.core.models import (
+    LicenseEnum,
+    Person,
+    ProjectMetadata,
+    SomesyConfig,
+    SomesyInput,
+)
 
 
 def test_sync_file_does_not_rewrite_unchanged_data(tmp_path):

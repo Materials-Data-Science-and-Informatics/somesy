@@ -102,13 +102,11 @@ def test_person_merge(rust_file, person):
 
     # new person
     person3 = Person(
-        **{
-            "given_names": "Janice",
-            "family_names": "Doethan",
-            "email": "jane93@gmail.com",
-            "author": True,
-            "publication_author": True,
-        }
+        given_names="Janice",
+        family_names="Doethan",
+        email="jane93@gmail.com",
+        author=True,
+        publication_author=True,
     )
     person3_rep = Rust._from_person(person3)
 

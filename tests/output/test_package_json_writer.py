@@ -133,13 +133,11 @@ def test_person_merge(package_json_file, person: Person):
 
     # new person
     person3 = Person(
-        **{
-            "given_names": "Janice",
-            "family_names": "Doethan",
-            "email": "jane93@gmail.com",
-            "author": True,
-            "publication_author": True,
-        }
+        given_names="Janice",
+        family_names="Doethan",
+        email="jane93@gmail.com",
+        author=True,
+        publication_author=True,
     )
     # john has a new email address
     person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})

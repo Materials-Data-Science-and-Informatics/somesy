@@ -1,5 +1,5 @@
-from pydantic import ValidationError
 import pytest
+from pydantic import ValidationError
 from tomlkit import dump
 
 from somesy.rust import Rust

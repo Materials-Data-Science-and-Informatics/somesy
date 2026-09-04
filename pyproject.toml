@@ -148,7 +148,19 @@ extend-select = ["I", "D", "B", "S", "W"]
 ignore = ["D203", "D213", "D407", "B008"]
 
 [tool.ruff.lint.per-file-ignores]
-"**/{tests,docs}/*" = ["ALL"]
+"**/docs/*" = ["ALL"]
+"**/tests/*" = [
+    "C408",
+    "C417",
+    "D",
+    "DTZ007",
+    "S101",
+    "S603",
+    "S607",
+    "S108",
+    "SIM115",
+    "TRY004",
+]
 
 [tool.licensecheck]
 using = "poetry"
