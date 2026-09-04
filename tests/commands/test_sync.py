@@ -1,5 +1,6 @@
 """Tests for the sync functionality."""
 
+import json
 from pathlib import Path
 
 from somesy.commands.sync import _sync_file, sync
@@ -59,6 +60,45 @@ def test_basic_sync(create_files, file_types):
     assert (test_dir / "CITATION.cff").exists()
     assert (test_dir / "codemeta.json").exists()
     assert (test_dir / "pyproject.toml").exists()
+
+
+def test_sync_enriches_codemeta_from_configured_pyproject(tmp_path):
+    pyproject_file = tmp_path / "pyproject.toml"
+    pyproject_file.write_text(
+        "[project]\nname = 'example'\ndependencies = ['requests>=2']\n"
+        "requires-python = '>=3.10'\n\n[project.urls]\n"
+        "Issues = 'https://example.test/issues'\n"
+    )
+    codemeta_file = tmp_path / "codemeta.json"
+    input_data = SomesyInput(
+        config=SomesyConfig(
+            input_file=tmp_path / "somesy.toml",
+            pyproject_file=pyproject_file,
+            codemeta_file=codemeta_file,
+            no_sync_cff=True,
+            no_sync_package_json=True,
+            no_sync_julia=True,
+            no_sync_fortran=True,
+            no_sync_pom_xml=True,
+            no_sync_mkdocs=True,
+            no_sync_rust=True,
+            pass_validation=True,
+        ),
+        project=ProjectMetadata(
+            name="from somesy",
+            description="Canonical metadata",
+            license=LicenseEnum.MIT,
+            people=[Person(given_names="A", family_names="B", author=True)],
+        ),
+    )
+
+    sync(input_data)
+
+    codemeta = json.loads(codemeta_file.read_text())
+    assert codemeta["name"] == "from somesy"
+    assert codemeta["issueTracker"] == "https://example.test/issues"
+    assert codemeta["runtimePlatform"] == "Python >=3.10"
+    assert codemeta["softwareRequirements"][0]["name"] == "requests"
 
 
 def test_package_sync(tmp_path, create_files, file_types):
