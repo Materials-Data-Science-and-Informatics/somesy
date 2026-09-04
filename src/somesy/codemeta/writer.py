@@ -3,10 +3,12 @@
 import json
 import logging
 from collections import OrderedDict
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
 from somesy.codemeta.utils import validate_codemeta
+from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
@@ -45,7 +47,7 @@ class CodeMeta(ProjectMetadataWriter):
         }
         # delete the file if it exists
         if path.is_file() and not self.merge:
-            logger.verbose("Deleting existing codemeta.json file.")
+            logger.log(VERBOSE, "Deleting existing codemeta.json file.")
             path.unlink()
         super().__init__(
             path,
@@ -201,28 +203,28 @@ class CodeMeta(ProjectMetadataWriter):
             return entity_dict
 
     @staticmethod
-    def _to_person(person) -> Person | Entity:
+    def _to_person(person_obj) -> Person | Entity:
         """Convert codemeta.json dict or str for person/entity format to project metadata person object."""
-        if "name" in person:
-            entity_obj = {"name": person["name"]}
+        if "name" in person_obj:
+            entity_obj = {"name": person_obj["name"]}
             return Entity(**entity_obj)
         else:
-            person_obj = {}
-            if "givenName" in person:
-                person_obj["given_names"] = person["givenName"].strip()
-            if "familyName" in person:
-                person_obj["family_names"] = person["familyName"].strip()
-            if "email" in person:
-                person_obj["email"] = person["email"].strip()
-            if "@id" in person:
-                person_obj["orcid"] = person["@id"].strip()
-            if "address" in person:
-                person_obj["address"] = person["address"].strip()
+            person_data = {}
+            if "givenName" in person_obj:
+                person_data["given_names"] = person_obj["givenName"].strip()
+            if "familyName" in person_obj:
+                person_data["family_names"] = person_obj["familyName"].strip()
+            if "email" in person_obj:
+                person_data["email"] = person_obj["email"].strip()
+            if "@id" in person_obj:
+                person_data["orcid"] = person_obj["@id"].strip()
+            if "address" in person_obj:
+                person_data["address"] = person_obj["address"].strip()
 
-            return Person(**person_obj)
+            return Person(**person_data)
 
     def _sync_person_list(
-        self, old: list[Any], new: list[Person | Entity]
+        self, old: list[Any], new: Sequence[Person | Entity]
     ) -> list[Any]:
         """Override the _sync_person_list function from ProjectMetadataWriter.
 
@@ -236,7 +238,7 @@ class CodeMeta(ProjectMetadataWriter):
             List[Any]: list of new persons to add to codemeta.json file
 
         """
-        return new
+        return list(new)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync codemeta.json with project metadata.

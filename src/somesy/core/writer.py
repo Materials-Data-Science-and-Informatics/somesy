@@ -2,6 +2,7 @@
 
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +15,7 @@ class IgnoreKey:
     """Special marker to be passed for dropping a key from serialization."""
 
 
-FieldKeyMapping = dict[str, list[str] | IgnoreKey]
+FieldKeyMapping = dict[str, str | list[str] | IgnoreKey]
 """Type to be used for the dict passed as `direct_mappings`."""
 
 DictLike = Any
@@ -109,7 +110,7 @@ class ProjectMetadataWriter(ABC):
 
     def _get_property(
         self,
-        key: str | list[str],
+        key: str | list[str] | IgnoreKey,
         *,
         only_first: bool = False,
         remove: bool = False,
@@ -125,9 +126,11 @@ class ProjectMetadataWriter(ABC):
             remove: If True, will remove the retrieved value and clean up the dict.
 
         """
+        if isinstance(key, IgnoreKey):
+            return None
         key_path = [key] if isinstance(key, str) else key
 
-        curr = self._data
+        curr: Any = self._data
         seq = [curr]
         for k in key_path:
             curr = curr.get(k)
@@ -179,7 +182,9 @@ class ProjectMetadataWriter(ABC):
     # special handling for person metadata
 
     def _merge_person_metadata(
-        self, old: list[Person | Entity], new: list[Person | Entity]
+        self,
+        old: Sequence[Person | Entity],
+        new: Sequence[Person | Entity],
     ) -> list[Person | Entity]:
         """Update metadata of a list of persons.
 
@@ -240,7 +245,7 @@ class ProjectMetadataWriter(ABC):
         return existing_modified + new_people
 
     def _sync_person_list(
-        self, old: list[Any], new: list[Person | Entity]
+        self, old: list[Any], new: Sequence[Person | Entity]
     ) -> list[Any]:
         """Sync a list of persons with new metadata.
 
@@ -256,7 +261,7 @@ class ProjectMetadataWriter(ABC):
 
         # check if people are unique
         def filter_unique(
-            people: list[Person | Entity],
+            people: Sequence[Person | Entity],
         ) -> list[Person | Entity]:
             """Filter out duplicate people from a list."""
             if people is None or len(people) == 0:
@@ -340,7 +345,10 @@ class ProjectMetadataWriter(ABC):
                 updates = {"author": True} if role == "authors" else {}
                 updates.update({"maintainer": True} if role == "maintainers" else {})
                 person = person.model_copy(update=updates)
-                (entities if isinstance(person, Entity) else people).append(person)
+                if isinstance(person, Entity):
+                    entities.append(person)
+                else:
+                    people.append(person)
 
         if people:
             data["people"] = people
@@ -372,7 +380,7 @@ class ProjectMetadataWriter(ABC):
     # ----
     # individual magic getters and setters
 
-    def _get_key(self, key):
+    def _get_key(self, key: str) -> str | list[str] | IgnoreKey:
         """Get a key itself."""
         return self.direct_mappings.get(key) or key
 

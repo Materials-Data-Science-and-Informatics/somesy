@@ -8,7 +8,9 @@ import tomlkit
 import wrapt
 from rich.pretty import pretty_repr
 from tomlkit import load
+from tomlkit.items import InlineTable
 
+from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
 
@@ -61,15 +63,15 @@ class PyprojectCommon(ProjectMetadataWriter):
         return self._get_property(self._get_key("version"))
 
     @version.setter
-    def version(self, value: str | None) -> None:
+    def version(self, version: str | None) -> None:
         """Set version, skipping if listed as dynamic."""
         if "version" in self._dynamic_fields:
-            if value:
+            if version:
                 logger.warning(
                     "Field 'version' is listed as dynamic — skipping sync from somesy."
                 )
             return
-        self._set_property(self._get_key("version"), value)
+        self._set_property(self._get_key("version"), version)
 
     @property
     def description(self) -> str | None:
@@ -77,15 +79,15 @@ class PyprojectCommon(ProjectMetadataWriter):
         return self._get_property(self._get_key("description"))
 
     @description.setter
-    def description(self, value: str) -> None:
+    def description(self, description: str) -> None:
         """Set description, skipping if listed as dynamic."""
         if "description" in self._dynamic_fields:
-            if value:
+            if description:
                 logger.warning(
                     "Field 'description' is listed as dynamic — skipping sync from somesy."
                 )
             return
-        self._set_property(self._get_key("description"), value)
+        self._set_property(self._get_key("description"), description)
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
@@ -114,9 +116,11 @@ class PyprojectCommon(ProjectMetadataWriter):
             tomlkit.dump(self._data, f)
 
     def _get_property(
-        self, key: str | list[str], *, remove: bool = False, **kwargs
+        self, key: str | list[str] | IgnoreKey, *, remove: bool = False, **kwargs
     ) -> Any:
         """Get a property from the pyproject.toml file."""
+        if isinstance(key, IgnoreKey):
+            return None
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
         return super()._get_property(full_path, remove=remove, **kwargs)
@@ -148,7 +152,7 @@ class PyprojectCommon(ProjectMetadataWriter):
             array.multiline(True)
             # Ensure whitespace after commas in inline tables
             for item in array:
-                if isinstance(item, tomlkit.items.InlineTable):
+                if isinstance(item, InlineTable):
                     # Rebuild the inline table with desired formatting
                     formatted_item = tomlkit.inline_table()
                     for k, v in item.value.items():
@@ -209,23 +213,23 @@ class Poetry(PyprojectCommon):
 
     @staticmethod
     def _to_person(
-        person: str | dict[str, str],
+        person_obj: str | dict[str, str],
     ) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
-        if isinstance(person, dict):
-            temp = str(person["name"])
-            if "email" in person:
-                temp = f"{temp} <{person['email']}>"
-            person = temp
+        if isinstance(person_obj, dict):
+            temp = str(person_obj["name"])
+            if "email" in person_obj:
+                temp = f"{temp} <{person_obj['email']}>"
+            person_obj = temp
         try:
-            return Person.from_name_email_string(person)
+            return Person.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person} to Person object, trying Entity.")
+            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
 
         try:
-            return Entity.from_name_email_string(person)
+            return Entity.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Entity.")
+            logger.warning(f"Cannot convert {person_obj} to Entity.")
             return None
 
     @property
@@ -241,13 +245,13 @@ class Poetry(PyprojectCommon):
         return raw_license
 
     @license.setter
-    def license(self, value: License | str) -> None:
+    def license(self, license: License | str) -> None:
         """Set license in pyproject.toml file."""
         # if version is 1, set license as str
         if self._poetry_version == 1:
-            self._set_property(["license"], value)
+            self._set_property(["license"], license)
         else:
-            self._set_property(["license"], value)
+            self._set_property(["license"], license)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file."""
@@ -305,7 +309,7 @@ class SetupTools(PyprojectCommon):
         )
 
     @staticmethod
-    def _from_person(person: Person):
+    def _from_person(person: Person | Entity):
         """Convert project metadata person object to setuptools dict for person format."""
         response = {"name": person.full_name}
         if person.email:
@@ -313,25 +317,25 @@ class SetupTools(PyprojectCommon):
         return response
 
     @staticmethod
-    def _to_person(person: str | dict) -> Entity | Person | None:
+    def _to_person(person_obj: str | dict) -> Entity | Person | None:
         """Parse setuptools person string to a Person/Entity."""
         # NOTE: for our purposes, does not matter what are given or family names,
         # we only compare on full_name anyway.
-        if isinstance(person, dict):
-            temp = str(person["name"])
-            if "email" in person:
-                temp = f"{temp} <{person['email']}>"
-            person = temp
+        if isinstance(person_obj, dict):
+            temp = str(person_obj["name"])
+            if "email" in person_obj:
+                temp = f"{temp} <{person_obj['email']}>"
+            person_obj = temp
 
         try:
-            return Person.from_name_email_string(person)
+            return Person.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person} to Person object, trying Entity.")
+            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
 
         try:
-            return Entity.from_name_email_string(person)
+            return Entity.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Entity.")
+            logger.warning(f"Cannot convert {person_obj} to Entity.")
             return None
 
     def sync(self, metadata: ProjectMetadata) -> None:
@@ -373,16 +377,17 @@ class Pyproject(wrapt.ObjectProxy):
 
         if is_poetry:
             if has_project:
-                logger.verbose(
-                    "Found Poetry 2.x metadata with project section in pyproject.toml"
+                logger.log(
+                    VERBOSE,
+                    "Found Poetry 2.x metadata with project section in pyproject.toml",
                 )
             else:
-                logger.verbose("Found Poetry 1.x metadata in pyproject.toml")
+                logger.log(VERBOSE, "Found Poetry 1.x metadata in pyproject.toml")
             self.__wrapped__ = Poetry(
                 path, pass_validation=pass_validation, version=2 if has_project else 1
             )
         elif has_project and not is_poetry:
-            logger.verbose("Found setuptools-based metadata in pyproject.toml")
+            logger.log(VERBOSE, "Found setuptools-based metadata in pyproject.toml")
             self.__wrapped__ = SetupTools(path, pass_validation=pass_validation)
         else:
             msg = "The pyproject.toml file is ambiguous. For Poetry projects, ensure [tool.poetry] section exists. For setuptools, ensure [project] section exists without [tool.poetry]"

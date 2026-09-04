@@ -7,6 +7,8 @@ from typing import Any
 
 import tomlkit
 
+from .log import VERBOSE
+
 logger = logging.getLogger("somesy")
 
 INPUT_FILES_ORDERED = [
@@ -40,7 +42,7 @@ def discover_input(input_file: Path | None = None) -> Path:
             return input_file
         else:
             msg = f"Passed file '{input_file}' does not exist. Searching for usable somesy input file..."
-            logger.verbose(msg)
+            logger.log(VERBOSE, msg)
 
     for filename in INPUT_FILES_ORDERED:
         input_file = Path(filename)
@@ -51,7 +53,7 @@ def discover_input(input_file: Path | None = None) -> Path:
                 continue
 
             msg = f"Using '{input_file}' as somesy input file."
-            logger.verbose(msg)
+            logger.log(VERBOSE, msg)
             return input_file
 
     raise FileNotFoundError("No somesy input file found.")

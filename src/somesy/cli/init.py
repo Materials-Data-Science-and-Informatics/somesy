@@ -110,8 +110,8 @@ def initialize(
     source_names = {path.name for path, _ in sources}
     config = None
     if source_names:
-        config = SomesyConfig(
-            **{
+        config = SomesyConfig.model_validate(
+            {
                 f"no_sync_{key}": filename not in source_names
                 for key, filename in {
                     "pyproject": "pyproject.toml",

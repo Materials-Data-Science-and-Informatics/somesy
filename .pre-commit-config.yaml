@@ -36,6 +36,11 @@ repos:
       rev: 'v2.3.1'
       hooks:
           - id: mypy
+    - repo: https://github.com/RobertCraigie/pyright-python
+      rev: v1.1.411
+      hooks:
+          - id: pyright
+            pass_filenames: false
 
     # Metadata
     - repo: https://github.com/citation-file-format/cff-converter-python

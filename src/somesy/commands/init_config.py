@@ -7,6 +7,7 @@ import tomlkit
 from pydantic import BaseModel
 
 from somesy.core.core import get_input_content
+from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
 
 logger = logging.getLogger("somesy")
@@ -49,7 +50,7 @@ def init_config(input_path: Path, options: dict) -> None:
     is_somesy = SomesyInput.is_somesy_file_path(input_path)
     input_file_type = "somesy" if is_somesy else "pyproject"
     msg = f"Found input file with {input_file_type} format."
-    logger.verbose(msg)
+    logger.log(VERBOSE, msg)
 
     logger.debug(f"Input file content: {options}")
 

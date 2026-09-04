@@ -101,10 +101,10 @@ class RustConfig(BaseModel):
             return v
 
         # Check if number of keywords is at most 5
-        if v is not None and len(v) > 5:
+        if len(v) > 5:
             raise ValueError("A maximum of 5 keywords is allowed")
 
-        for keyword in v:
+        for keyword in v or []:
             check_keyword(keyword)
 
         return v

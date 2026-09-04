@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from somesy.core.models import Entity, Person
-from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
+from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 from . import POM_ROOT_ATRS, POM_URL
 from .xmlproxy import XMLProxy
@@ -68,12 +68,14 @@ class POM(ProjectMetadataWriter):
 
     def _get_property(
         self,
-        key: str | list[str],
+        key: str | list[str] | IgnoreKey,
         *,
         only_first: bool = False,
         remove: bool = False,
     ) -> Any | None:
         """Get (a) property by key."""
+        if isinstance(key, IgnoreKey):
+            return None
         elem = super()._get_property(key, only_first=only_first, remove=remove)
         if elem is not None:
             if isinstance(elem, list):
@@ -161,8 +163,8 @@ class POM(ProjectMetadataWriter):
     @authors.setter
     def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
-        authors = [self._from_person(c) for c in authors]
-        self._set_property(self._get_key("authors"), authors)
+        author_records = [self._from_person(c) for c in authors]
+        self._set_property(self._get_key("authors"), author_records)
 
     # contributors must be a list
     @property
@@ -186,7 +188,7 @@ class POM(ProjectMetadataWriter):
         return []
 
     @maintainers.setter
-    def maintainers(self, maintainers: list[Person]) -> None:
+    def maintainers(self, maintainers: list[Person | Entity]) -> None:
         """Set the maintainers of the project."""
 
     @property

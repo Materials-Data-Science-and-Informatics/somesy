@@ -82,7 +82,9 @@ class PackageJsonConfig(BaseModel):
         author_email = author_match[2]
         author_url = author_match[3]
 
-        return PackageAuthor(name=author_name, email=author_email, url=author_url)
+        return PackageAuthor.model_validate(
+            {"name": author_name, "email": author_email, "url": author_url}
+        )
 
     @field_validator("name")
     @classmethod

@@ -417,11 +417,12 @@ class ContributorBaseModel(SomesyBaseModel):
             return self.full_name
 
     @classmethod
-    def from_name_email_string(cls, person: str):
+    def from_name_email_string(cls, person: str) -> ContributorBaseModel:
         """Return the type of class based on an name/e-mail string like `full name <x@y.z>`.
 
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
+        raise NotImplementedError
 
 
 class Entity(ContributorBaseModel):
@@ -471,11 +472,11 @@ class Entity(ContributorBaseModel):
         return self.name
 
     @classmethod
-    def from_name_email_string(cls, entity: str) -> Entity:
+    def from_name_email_string(cls, person: str) -> Entity:
         """Return an `Entity` based on an name/e-mail string like `name <x@y.z>`."""
-        m = re.match(r"\s*([^<]+)<([^>]+)>", entity)
+        m = re.match(r"\s*([^<]+)<([^>]+)>", person)
         if m is None:
-            return Entity(name=entity)
+            return Entity(name=person)
 
         name, mail = (
             m.group(1).strip(),
@@ -483,7 +484,7 @@ class Entity(ContributorBaseModel):
         )
         return Entity(name=name, email=mail)
 
-    def same_person(self, other: Entity) -> bool:
+    def same_person(self, other: Person | Entity) -> bool:
         """Return whether two Entity metadata records are about the same real person.
 
         Uses heuristic match based on email and name (whichever are provided).
@@ -567,7 +568,7 @@ class Person(ContributorBaseModel):
 
     @field_validator("orcid", mode="before")
     @classmethod
-    def orcid_from_string(cls, orcid: str) -> HttpUrlStr | None:
+    def orcid_from_string(cls, orcid: Any) -> Any:
         """Convert orcid id string to HttpUrlStr."""
         # orcid regex without https://orcid.org/ prefix
         orcid_regex = r"^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
@@ -607,16 +608,8 @@ class Person(ContributorBaseModel):
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
         if m is None:
             names = [s.strip() for s in person.split()]
-            return Person(
-                **{
-                    "given-names": " ".join(names[:-1]),
-                    "family-names": names[-1],
-                }
-            )
-        if m is None:
-            names = [s.strip() for s in person.split()]
-            return Person(
-                **{
+            return Person.model_validate(
+                {
                     "given-names": " ".join(names[:-1]),
                     "family-names": names[-1],
                 }
@@ -627,8 +620,8 @@ class Person(ContributorBaseModel):
         )
         # NOTE: for our purposes, does not matter what are given or family names,
         # we only compare on full_name anyway.
-        return Person(
-            **{
+        return Person.model_validate(
+            {
                 "given-names": " ".join(names[:-1]),
                 "family-names": names[-1],
                 "email": mail,
@@ -751,13 +744,13 @@ class ProjectMetadata(SomesyBaseModel):
         description="Project authors, maintainers and contributors as entities (organizations).",
     )
 
-    def authors(self):
+    def authors(self) -> list[Person | Entity]:
         """Return people and entities explicitly marked as authors."""
-        authors = [p for p in self.people if p.author]
+        authors: list[Person | Entity] = [p for p in self.people if p.author]
         authors.extend([e for e in self.entities if e.author])
         return authors
 
-    def publication_authors(self):
+    def publication_authors(self) -> list[Person | Entity]:
         """Return people marked as publication authors.
 
         This always includes people marked as authors.
@@ -767,19 +760,21 @@ class ProjectMetadata(SomesyBaseModel):
             p.publication_author for p in self.entities
         ):
             return []
-        publication_authors = [p for p in self.people if p.publication_author]
+        publication_authors: list[Person | Entity] = [
+            p for p in self.people if p.publication_author
+        ]
         publication_authors.extend([e for e in self.entities if e.publication_author])
         return publication_authors
 
-    def maintainers(self):
+    def maintainers(self) -> list[Person | Entity]:
         """Return people and entities marked as maintainers."""
-        maintainers = [p for p in self.people if p.maintainer]
+        maintainers: list[Person | Entity] = [p for p in self.people if p.maintainer]
         maintainers.extend([e for e in self.entities if e.maintainer])
         return maintainers
 
-    def contributors(self):
+    def contributors(self) -> list[Person | Entity]:
         """Return only people and entities not marked as authors."""
-        contributors = [p for p in self.people if not p.author]
+        contributors: list[Person | Entity] = [p for p in self.people if not p.author]
         contributors.extend([e for e in self.entities if not e.author])
         return contributors
 

@@ -167,3 +167,9 @@ using = "poetry"
 
 [tool.mypy]
 disable_error_code = ["attr-defined"]
+
+[tool.pyright]
+include = ["src"]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "standard"

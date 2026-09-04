@@ -149,17 +149,17 @@ class PackageJSON(ProjectMetadataWriter):
 
     @staticmethod
     def _to_person(
-        person: str | dict[str, Any] | PackageAuthor,
+        person_obj: str | dict[str, Any] | PackageAuthor,
     ) -> Entity | Person:
         """Convert package.json dict or str for person format to project metadata person object."""
-        if isinstance(person, str):
+        if isinstance(person_obj, str):
             # parse from package.json format
-            person = PackageJsonConfig.convert_author(person)
+            person_obj = PackageJsonConfig.convert_author(person_obj)
 
-        if isinstance(person, PackageAuthor):
-            person = person.model_dump(exclude_none=True)
+        if isinstance(person_obj, PackageAuthor):
+            person_obj = person_obj.model_dump(exclude_none=True)
 
-        person_dict: dict[str, Any] = person  # type: ignore
+        person_dict: dict[str, Any] = person_obj  # type: ignore
 
         if "name" in person_dict and " " in person_dict["name"]:
             names = [s.strip() for s in person_dict["name"].split()]

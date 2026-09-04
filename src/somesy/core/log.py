@@ -46,6 +46,7 @@ class SomesyLogLevel(Enum):
             return VERBOSE
         if lv == SomesyLogLevel.DEBUG:
             return logging.DEBUG
+        raise ValueError(f"Unsupported log level: {lv}")
 
 
 _log_level: SomesyLogLevel | None = None
