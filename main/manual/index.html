@@ -744,6 +744,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#update-project-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update project metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#somesy-input-file" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1127,6 +1138,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../reference/somesy/cli/set_value/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    set_value
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../reference/somesy/cli/sync/" class="md-nav__link">
         
   
@@ -1377,6 +1416,34 @@
     
   
     init_config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/commands/set_value/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    set_value
   
 
     
@@ -3003,6 +3070,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#update-project-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Update project metadata
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#somesy-input-file" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4352,6 +4430,14 @@ somesy<span class="w"> </span>init<span class="w"> </span>--overwrite
 </code></pre></div>
 <p>Use <code>somesy init config</code> when you want to configure synchronization options
 manually instead of deriving them from the files in the project.</p>
+<h3 id="update-project-metadata">Update project metadata<a class="headerlink" href="#update-project-metadata" title="Permanent link">&para;</a></h3>
+<p>Use <code>somesy set</code> to update one scalar project-metadata value in an existing
+<code>somesy.toml</code> file:</p>
+<div class="highlight"><pre><span></span><code>somesy<span class="w"> </span><span class="nb">set</span><span class="w"> </span>version<span class="w"> </span><span class="m">1</span>.2.3
+</code></pre></div>
+<p>The command supports <code>name</code>, <code>description</code>, <code>version</code>, <code>license</code>, <code>homepage</code>,
+<code>repository</code>, and <code>documentation</code>. It does not update structured values such as
+keywords, people, or entities.</p>
 <p>Without an input file specifically provided, somesy will check if it can find a valid</p>
 <ul>
 <li><code>.somesy.toml</code></li>
