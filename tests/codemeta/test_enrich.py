@@ -1,8 +1,10 @@
 """Tests for optional CodeMeta enrichment from project files and Git."""
 
 import subprocess
+from datetime import date
 
 from somesy.codemeta.enrich import enrich
+from somesy.git.models import GitMetadata
 
 
 def test_enriches_python_metadata_and_uses_locked_direct_versions(tmp_path):
@@ -118,3 +120,18 @@ def test_enriches_missing_dates_and_repository_from_git(tmp_path):
     assert codemeta["issueTracker"] == "https://github.com/example/project/issues"
     assert codemeta["version"] == "v1.2.3"
     assert codemeta["dateCreated"] == codemeta["dateModified"]
+
+
+def test_enrichment_omits_unknown_git_creation_date(tmp_path, mocker):
+    path = tmp_path / "pyproject.toml"
+    path.write_text("[project]\nname = 'example'\n")
+    mocker.patch(
+        "somesy.codemeta.enrich.harvest_git",
+        return_value=GitMetadata(date_modified=date(2024, 1, 1)),
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": path})
+
+    assert "dateCreated" not in codemeta
+    assert codemeta["dateModified"] == "2024-01-01"

@@ -19,6 +19,7 @@ Please consult the changelog to inform yourself about breaking changes and secur
 - add `somesy set` to update scalar project metadata in `somesy.toml`
 - add pyright hook
 - enrich `codemeta.json` with runtime metadata, declared dependencies, project URLs, and Git history from configured project files
+- omit unreliable CodeMeta creation dates when Git history is shallow
 - support a project DOI in `CITATION.cff` and `codemeta.json`
 
 ## [v0.7.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3) <small>(2025-03-14)</small> { id="0.7.3" }

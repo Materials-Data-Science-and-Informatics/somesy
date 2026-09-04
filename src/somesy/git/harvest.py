@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import shutil
 import subprocess
 from collections import Counter
@@ -9,6 +10,8 @@ from datetime import date
 from pathlib import Path
 
 from .models import GitAuthor, GitMetadata
+
+logger = logging.getLogger("somesy")
 
 
 def _git(path: Path, *args: str) -> str:
@@ -69,6 +72,14 @@ def _date(path: Path, *args: str) -> date | None:
         return None
 
 
+def _is_shallow(path: Path) -> bool:
+    """Return whether Git history is incomplete."""
+    try:
+        return _git(path, "rev-parse", "--is-shallow-repository") == "true"
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+
+
 def harvest(path: Path = Path.cwd()) -> GitMetadata | None:
     """Harvest Somesy-relevant metadata from ``path`` if it is a Git repository."""
     try:
@@ -81,11 +92,19 @@ def harvest(path: Path = Path.cwd()) -> GitMetadata | None:
     except (subprocess.CalledProcessError, FileNotFoundError):
         version = None
 
+    shallow = _is_shallow(root)
+    if shallow:
+        logger.warning(
+            "Git history is shallow; omitting dateCreated. Fetch full history to enrich it."
+        )
+
     return GitMetadata(
         name=root.name,
         repository=_remote(root),
         version=version,
-        date_created=_date(root, "log", "--reverse", "--format=%cs"),
+        date_created=None
+        if shallow
+        else _date(root, "log", "--reverse", "--format=%cs"),
         date_modified=_date(root, "log", "-1", "--format=%cs"),
         authors=_authors(root),
     )

@@ -208,6 +208,11 @@ provides exact versions for dependencies declared by the project; transitive
 lock-file entries are not emitted. PyPI classifiers are kept in
 `pyproject.toml` because CodeMeta has no reliable equivalent.
 
+The first commit date requires complete Git history. In a shallow clone, Somesy
+omits `dateCreated` rather than reporting the shallow boundary as the project
+creation date. For reproducible generated metadata in CI, configure a full
+checkout (for GitHub Actions, `fetch-depth: 0`).
+
 ### PEP 621 `dynamic` fields
 
 For `pyproject.toml` targets (setuptools and Poetry v2), somesy respects the
