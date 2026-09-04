@@ -261,6 +261,19 @@ somesy init --overwrite
 Use `somesy init config` when you want to configure synchronization options
 manually instead of deriving them from the files in the project.
 
+### Update project metadata
+
+Use `somesy set` to update one scalar project-metadata value in an existing
+`somesy.toml` file:
+
+```bash
+somesy set version 1.2.3
+```
+
+The command supports `name`, `description`, `version`, `license`, `homepage`,
+`repository`, and `documentation`. It does not update structured values such as
+keywords, people, or entities.
+
 Without an input file specifically provided, somesy will check if it can find a valid
 
 -   `.somesy.toml`

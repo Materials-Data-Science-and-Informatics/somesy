@@ -6,7 +6,7 @@ import sys
 import typer
 
 from somesy import __version__
-from somesy.cli import fill, init, sync
+from somesy.cli import fill, init, set_value, sync
 from somesy.core.log import SomesyLogLevel, init_log, set_log_level
 
 app = typer.Typer()
@@ -69,3 +69,4 @@ def common(
 app.add_typer(sync.app, name="sync")
 app.add_typer(init.app, name="init")
 app.add_typer(fill.app, name="fill")
+app.command("set")(set_value.set_value)
