@@ -705,10 +705,25 @@ class ProjectMetadata(SomesyBaseModel):
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
     version: Annotated[str | None, Field(description="Project version.")] = None
+    doi: Annotated[str | None, Field(description="Project DOI.")] = None
     license: Annotated[
         LicenseEnum | list[LicenseEnum],
         Field(description="SPDX License string(s)."),
     ]
+
+    @field_validator("doi", mode="before")
+    @classmethod
+    def normalize_doi(cls, doi: Any) -> str | None:
+        """Normalize DOI URLs to the DOI value accepted by CITATION.cff."""
+        if doi is None:
+            return None
+        if isinstance(doi, str):
+            doi = re.sub(
+                r"^https?://(?:dx\.)?doi\.org/", "", doi.strip(), flags=re.IGNORECASE
+            )
+            if re.fullmatch(r"10\.\d{4,9}/[-._;()/:A-Z0-9]+", doi, flags=re.IGNORECASE):
+                return doi
+        raise ValueError("DOI must be a DOI or a doi.org URL.")
 
     @field_validator("license")
     @classmethod
