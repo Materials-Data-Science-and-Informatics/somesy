@@ -741,21 +741,15 @@ class ProjectMetadata(SomesyBaseModel):
         Field(min_length=1, description="Keywords that describe the project."),
     ] = None
 
-    people: Annotated[
-        list[Person],
-        Field(
-            description="Project authors, maintainers and contributors.",
-            default_factory=list,
-        ),
-    ]
+    people: list[Person] = Field(
+        default_factory=list,
+        description="Project authors, maintainers and contributors.",
+    )
 
-    entities: Annotated[
-        list[Entity],
-        Field(
-            description="Project authors, maintainers and contributors as entities (organizations).",
-            default_factory=list,
-        ),
-    ]
+    entities: list[Entity] = Field(
+        default_factory=list,
+        description="Project authors, maintainers and contributors as entities (organizations).",
+    )
 
     def authors(self):
         """Return people and entities explicitly marked as authors."""

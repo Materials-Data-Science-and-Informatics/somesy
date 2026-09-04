@@ -6,9 +6,24 @@ from pathlib import Path
 import tomlkit
 
 from somesy.core.core import get_input_content
-from somesy.core.models import SomesyInput
+from somesy.core.models import ProjectMetadata, SomesyInput
 
 logger = logging.getLogger("somesy")
+
+
+def write_somesy_file(
+    metadata: ProjectMetadata,
+    path: Path = Path("somesy.toml"),
+    *,
+    overwrite: bool = False,
+) -> None:
+    """Write project metadata to a standalone ``somesy.toml`` file."""
+    if path.exists() and not overwrite:
+        raise FileExistsError(f"Output file already exists: {path}")
+
+    content = {"project": metadata.model_dump(mode="json", by_alias=True)}
+    with open(path, "w" if overwrite else "x") as file:
+        tomlkit.dump(content, file)
 
 
 def init_config(input_path: Path, options: dict) -> None:
