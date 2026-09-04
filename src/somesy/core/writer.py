@@ -313,6 +313,41 @@ class ProjectMetadataWriter(ABC):
             str(metadata.documentation) if metadata.documentation else None
         )
 
+    def harvest_metadata(self) -> dict[str, Any]:
+        """Return metadata read from this endpoint in Somesy model terms."""
+        data: dict[str, Any] = {}
+        for field in (
+            "name",
+            "version",
+            "description",
+            "license",
+            "homepage",
+            "repository",
+            "documentation",
+            "keywords",
+        ):
+            try:
+                value = getattr(self, field)
+            except (KeyError, TypeError):
+                continue
+            if value not in (None, [], ""):
+                data[field] = value
+
+        people: list[Person] = []
+        entities: list[Entity] = []
+        for role in ("authors", "maintainers", "contributors"):
+            for person in self._parse_people(getattr(self, role) or []):
+                updates = {"author": True} if role == "authors" else {}
+                updates.update({"maintainer": True} if role == "maintainers" else {})
+                person = person.model_copy(update=updates)
+                (entities if isinstance(person, Entity) else people).append(person)
+
+        if people:
+            data["people"] = people
+        if entities:
+            data["entities"] = entities
+        return data
+
     @staticmethod
     @abstractmethod
     def _from_person(person: Person | Entity) -> Any:
