@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import pytest
@@ -317,3 +318,93 @@ def test_without_email(tmp_path, person):
 
         assert len(p.authors) == 1
         assert len(p.maintainers) == 1
+
+
+def test_dynamic_version_not_synced_setuptools(tmp_path, caplog):
+    """Setuptools: version listed as dynamic should not be written during sync."""
+    pyproject_str = """\
+[project]
+name = "test-pkg"
+description = "A test"
+dynamic = ["version"]
+authors = [{ name = "John Doe", email = "john@example.com" }]
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+"""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(pyproject_str)
+
+    st = SetupTools(path)
+    assert "version" in st._dynamic_fields
+
+    pm = ProjectMetadata(
+        name="test-pkg",
+        description="A test",
+        license=LicenseEnum.MIT,
+        version="1.0.0",
+        people=[
+            Person(
+                given_names="John",
+                family_names="Doe",
+                email="john@example.com",
+                author=True,
+            )
+        ],
+    )
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        st.sync(pm)
+
+    assert (
+        "version" not in st._data["project"]
+        or st._data["project"].get("version") is None
+    )
+    assert "dynamic" in caplog.text
+
+
+def test_dynamic_version_not_synced_poetry2(tmp_path, caplog):
+    """Poetry v2: version listed as dynamic should not be written during sync."""
+    pyproject_str = """\
+[project]
+name = "test-pkg"
+description = "A test"
+dynamic = ["version"]
+authors = [{ name = "John Doe", email = "john@example.com" }]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+"""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(pyproject_str)
+
+    p = Poetry(path, version=2)
+    assert "version" in p._dynamic_fields
+
+    pm = ProjectMetadata(
+        name="test-pkg",
+        description="A test",
+        license=LicenseEnum.MIT,
+        version="1.0.0",
+        people=[
+            Person(
+                given_names="John",
+                family_names="Doe",
+                email="john@example.com",
+                author=True,
+            )
+        ],
+    )
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        p.sync(pm)
+
+    assert (
+        "version" not in p._data["project"] or p._data["project"].get("version") is None
+    )
+    assert "dynamic" in caplog.text
