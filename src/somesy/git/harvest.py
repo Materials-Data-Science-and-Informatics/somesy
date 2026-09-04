@@ -5,6 +5,7 @@ from __future__ import annotations
 import shutil
 import subprocess
 from collections import Counter
+from datetime import date
 from pathlib import Path
 
 from .models import GitAuthor, GitMetadata
@@ -59,6 +60,15 @@ def _authors(path: Path) -> list[GitAuthor]:
     ]
 
 
+def _date(path: Path, *args: str) -> date | None:
+    """Return a Git date, if the requested revision exists."""
+    try:
+        value = _git(path, *args)
+        return date.fromisoformat(value.splitlines()[0]) if value else None
+    except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
+        return None
+
+
 def harvest(path: Path = Path.cwd()) -> GitMetadata | None:
     """Harvest Somesy-relevant metadata from ``path`` if it is a Git repository."""
     try:
@@ -75,5 +85,7 @@ def harvest(path: Path = Path.cwd()) -> GitMetadata | None:
         name=root.name,
         repository=_remote(root),
         version=version,
+        date_created=_date(root, "log", "--reverse", "--format=%cs"),
+        date_modified=_date(root, "log", "-1", "--format=%cs"),
         authors=_authors(root),
     )

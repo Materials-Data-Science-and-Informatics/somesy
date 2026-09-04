@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date
 from typing import Annotated
 
 from pydantic import Field
@@ -28,4 +29,6 @@ class GitMetadata(SomesyBaseModel):
     name: str | None = None
     repository: str | None = None
     version: str | None = None
+    date_created: date | None = None
+    date_modified: date | None = None
     authors: list[GitAuthor] = Field(default_factory=list)
