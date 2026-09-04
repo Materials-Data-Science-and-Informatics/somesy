@@ -76,13 +76,13 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
     conf, metadata = somesy_input.config, somesy_input.project
 
     # Get the base directory from the input file's location
-    try:
-        base_dir = somesy_input._origin.parent
-    except AttributeError:
+    if somesy_input._origin is None:
         logger.warning(
             "No origin found for somesy input, using current working directory."
         )
         base_dir = Path.cwd()
+    else:
+        base_dir = somesy_input._origin.parent
 
     # Resolve all paths in the config relative to the base directory
     conf.resolve_paths(base_dir)

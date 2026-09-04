@@ -1,7 +1,7 @@
 import pytest
 
-from somesy.mkdocs import MkDocs
 from somesy.core.models import Person
+from somesy.mkdocs import MkDocs
 
 
 @pytest.fixture
@@ -38,4 +38,5 @@ def test_save(tmp_path):
 
 def test_from_person(person: Person):
     p = MkDocs._to_person(MkDocs._from_person(person))
+    assert p is not None
     assert p.to_name_email_string() == person.to_name_email_string()

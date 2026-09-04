@@ -83,7 +83,10 @@ class XMLProxy:
     def parse(cls, path: str | Path, **kwargs) -> XMLProxy:
         """Parse an XML file into a wrapped ElementTree, preserving comments."""
         path = path if isinstance(path, Path) else Path(path)
-        return cls(load_xml(path).getroot(), **kwargs)
+        root = load_xml(path).getroot()
+        if root is None:
+            raise ValueError(f"XML file has no root element: {path}")
+        return cls(root, **kwargs)
 
     def write(self, path: str | Path, *, header: bool = True, **kwargs):
         """Write the XML DOM to an UTF-8 encoded file."""
@@ -378,6 +381,8 @@ class XMLProxy:
             # ensure the target node is cleared out and use it as target
             key._clear()
             nodes = [key]
+            if key.tag is None:
+                raise ValueError("Cannot overwrite an XML element without a tag")
             key = key.tag
 
         # ensure key string is qualified with a namespace

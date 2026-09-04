@@ -74,7 +74,7 @@ class Rust(ProjectMetadataWriter):
 
     def _get_property(
         self, key: str | list[str] | IgnoreKey, *, remove: bool = False, **kwargs
-    ) -> Any | None:
+    ) -> Any:
         """Get a property from the Cargo.toml file."""
         if isinstance(key, IgnoreKey):
             return None

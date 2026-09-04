@@ -61,7 +61,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         return self._get_property(self._get_key("version"))
 
     @version.setter
-    def version(self, value: str) -> None:
+    def version(self, value: str | None) -> None:
         """Set version, skipping if listed as dynamic."""
         if "version" in self._dynamic_fields:
             if value:
@@ -115,7 +115,7 @@ class PyprojectCommon(ProjectMetadataWriter):
 
     def _get_property(
         self, key: str | list[str], *, remove: bool = False, **kwargs
-    ) -> Any | None:
+    ) -> Any:
         """Get a property from the pyproject.toml file."""
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
@@ -173,7 +173,7 @@ class Poetry(PyprojectCommon):
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        self._poetry_version = version
+        self._poetry_version = version or 1
         v2_mappings = {
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],

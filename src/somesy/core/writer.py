@@ -35,7 +35,7 @@ class ProjectMetadataWriter(ABC):
         path: Path,
         *,
         create_if_not_exists: bool | None = False,
-        direct_mappings: FieldKeyMapping = None,
+        direct_mappings: FieldKeyMapping | None = None,
         merge: bool | None = False,
         pass_validation: bool | None = False,
     ) -> None:
@@ -113,7 +113,7 @@ class ProjectMetadataWriter(ABC):
         *,
         only_first: bool = False,
         remove: bool = False,
-    ) -> Any | None:
+    ) -> Any:
         """Get a property from the data.
 
         Override this to e.g. rewrite the retrieved key
@@ -355,17 +355,19 @@ class ProjectMetadataWriter(ABC):
 
     @staticmethod
     @abstractmethod
-    def _to_person(person_obj: Any) -> Person | Entity:
+    def _to_person(person_obj: Any) -> Person | Entity | None:
         """Convert an object representing a person into a `Person` or `Entity` object."""
 
     @classmethod
     def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
         """Return a list of Persons and Entities parsed from list of format-specific people representations."""
         # remove None values
-        people = [p for p in people if p is not None]
-
-        people = [cls._to_person(p) for p in people or []]
-        return people
+        return [
+            person
+            for p in people or []
+            if p is not None
+            if (person := cls._to_person(p)) is not None
+        ]
 
     # ----
     # individual magic getters and setters
@@ -390,7 +392,7 @@ class ProjectMetadataWriter(ABC):
         return self._get_property(self._get_key("version"))
 
     @version.setter
-    def version(self, version: str) -> None:
+    def version(self, version: str | None) -> None:
         """Set the version of the project."""
         self._set_property(self._get_key("version"), version)
 
@@ -466,12 +468,12 @@ class ProjectMetadataWriter(ABC):
         self._set_property(self._get_key("keywords"), keywords)
 
     @property
-    def license(self) -> str | list[str] | None:
+    def license(self) -> Any:
         """Return the license of the project."""
         return self._get_property(self._get_key("license"))
 
     @license.setter
-    def license(self, license: str | list[str] | None) -> None:
+    def license(self, license: Any) -> None:
         """Set the license of the project."""
         self._set_property(self._get_key("license"), license)
 

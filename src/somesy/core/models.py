@@ -271,7 +271,9 @@ class SomesyConfig(SomesyBaseModel):
     def get_input(self) -> SomesyInput:
         """Based on the somesy config, load the complete somesy input."""
         # get metadata+config from specified input file
-        somesy_input = SomesyInput.from_input_file(self.input_file)
+        somesy_input = SomesyInput.from_input_file(
+            self.input_file or Path("somesy.toml")
+        )
         # update input with merged config settings (cli overrides config file)
         dct: dict[str, Any] = {}
         dct.update(somesy_input.config or {})
@@ -299,16 +301,21 @@ class SomesyConfig(SomesyBaseModel):
         # Resolve all file paths
         resolved_input = resolve_path(self.input_file)
         self.input_file = resolved_input if isinstance(resolved_input, Path) else None
-        self.pyproject_file = resolve_path(self.pyproject_file)
-        self.package_json_file = resolve_path(self.package_json_file)
-        self.julia_file = resolve_path(self.julia_file)
-        self.fortran_file = resolve_path(self.fortran_file)
-        self.pom_xml_file = resolve_path(self.pom_xml_file)
-        self.mkdocs_file = resolve_path(self.mkdocs_file)
-        self.rust_file = resolve_path(self.rust_file)
-        self.cff_file = resolve_path(self.cff_file)
-        self.codemeta_file = resolve_path(self.codemeta_file)
-        self.packages = resolve_path(self.packages)
+        for field in (
+            "pyproject_file",
+            "package_json_file",
+            "julia_file",
+            "fortran_file",
+            "pom_xml_file",
+            "mkdocs_file",
+            "rust_file",
+            "cff_file",
+            "codemeta_file",
+            "packages",
+        ):
+            resolved = resolve_path(getattr(self, field))
+            if resolved is not None:
+                setattr(self, field, resolved)
 
 
 # --------
@@ -400,6 +407,7 @@ class ContributorBaseModel(SomesyBaseModel):
     @property
     def full_name(self) -> str:
         """Return the name of the contributor."""
+        raise NotImplementedError
 
     def to_name_email_string(self) -> str:
         """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
@@ -734,7 +742,7 @@ class ProjectMetadata(SomesyBaseModel):
     ] = None
 
     people: Annotated[
-        list[Person] | None,
+        list[Person],
         Field(
             description="Project authors, maintainers and contributors.",
             default_factory=list,
@@ -742,7 +750,7 @@ class ProjectMetadata(SomesyBaseModel):
     ]
 
     entities: Annotated[
-        list[Entity] | None,
+        list[Entity],
         Field(
             description="Project authors, maintainers and contributors as entities (organizations).",
             default_factory=list,
@@ -792,7 +800,7 @@ class SomesyInput(SomesyBaseModel):
         Field(description="Project metadata to be used and synchronized."),
     ]
     config: Annotated[
-        SomesyConfig | None,
+        SomesyConfig,
         Field(
             description="somesy tool configuration (matches CLI flags).",
             default_factory=lambda: SomesyConfig(),
