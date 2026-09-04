@@ -1,6 +1,7 @@
 """Tests for the sync functionality."""
 
 import json
+import subprocess
 from pathlib import Path
 
 from somesy.commands.sync import _sync_file, sync
@@ -99,6 +100,69 @@ def test_sync_enriches_codemeta_from_configured_pyproject(tmp_path):
     assert codemeta["issueTracker"] == "https://example.test/issues"
     assert codemeta["runtimePlatform"] == "Python >=3.10"
     assert codemeta["softwareRequirements"][0]["name"] == "requests"
+
+
+def test_codemeta_enrichment_preserves_canonical_and_merged_values(tmp_path):
+    def git(*args):
+        return subprocess.run(
+            ["git", *args], cwd=tmp_path, check=True, capture_output=True, text=True
+        )
+
+    git("init", "-q")
+    git("config", "user.name", "Jane Doe")
+    git("config", "user.email", "jane@example.com")
+    git("config", "commit.gpgsign", "false")
+    pyproject_file = tmp_path / "pyproject.toml"
+    pyproject_file.write_text(
+        "[project]\nname = 'example'\ndependencies = ['requests>=2']\n"
+    )
+    git("add", "pyproject.toml")
+    git("commit", "-qm", "initial")
+    git("tag", "v1.0.0")
+    git("remote", "add", "origin", "git@github.com:git/example.git")
+
+    codemeta_file = tmp_path / "codemeta.json"
+    codemeta_file.write_text(
+        json.dumps(
+            {
+                "@context": ["https://doi.org/10.5063/schema/codemeta-2.0"],
+                "@type": "SoftwareSourceCode",
+                "author": [],
+                "downloadUrl": "https://example.test/download",
+            }
+        )
+    )
+    input_data = SomesyInput(
+        config=SomesyConfig(
+            input_file=tmp_path / "somesy.toml",
+            pyproject_file=pyproject_file,
+            codemeta_file=codemeta_file,
+            merge_codemeta=True,
+            no_sync_cff=True,
+            no_sync_package_json=True,
+            no_sync_julia=True,
+            no_sync_fortran=True,
+            no_sync_pom_xml=True,
+            no_sync_mkdocs=True,
+            no_sync_rust=True,
+            pass_validation=True,
+        ),
+        project=ProjectMetadata(
+            name="from somesy",
+            description="Canonical metadata",
+            version="9.0.0",
+            license=LicenseEnum.MIT,
+            repository="https://canonical.example/repository",
+            people=[Person(given_names="A", family_names="B", author=True)],
+        ),
+    )
+
+    sync(input_data)
+
+    codemeta = json.loads(codemeta_file.read_text())
+    assert codemeta["codeRepository"] == "https://canonical.example/repository"
+    assert codemeta["version"] == "9.0.0"
+    assert codemeta["downloadUrl"] == "https://example.test/download"
 
 
 def test_package_sync(tmp_path, create_files, file_types):
