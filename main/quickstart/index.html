@@ -3015,7 +3015,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 </table>
 <p><strong>Notes:</strong></p>
 <ol>
-<li>note that <code>somesy</code> does not support setuptools or poetry <em>dynamic fields</em></li>
+<li><code>somesy</code> supports PEP 621 <code>dynamic</code> fields — fields listed in <code>dynamic</code> (e.g. <code>version</code>) are not overwritten during sync</li>
 <li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
 <li><code>fpm.toml</code> only supports one author and maintainer, so <code>somesy</code> will pick the <em>first</em> listed author and maintainer</li>
 <li><code>pom.xml</code> has no concept of <code>maintainers</code>, but it can have multiple licenses</li>

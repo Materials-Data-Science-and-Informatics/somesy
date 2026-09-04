@@ -704,6 +704,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pep-621-dynamic-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PEP 621 dynamic fields
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -2764,6 +2775,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pep-621-dynamic-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PEP 621 dynamic fields
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -4002,6 +4024,24 @@ to list authors and maintainers. <strong>Therefore somesy sometimes must do much
 than just move or rename fields</strong>. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the <code>somesy</code> code.</p>
+<h3 id="pep-621-dynamic-fields">PEP 621 <code>dynamic</code> fields<a class="headerlink" href="#pep-621-dynamic-fields" title="Permanent link">&para;</a></h3>
+<p>For <code>pyproject.toml</code> targets (setuptools and Poetry v2), somesy respects the
+<a href="https://peps.python.org/pep-0621/#dynamic">PEP 621 <code>dynamic</code> field</a>. If
+<code>version</code> or <code>description</code> is listed in <code>dynamic</code>, it means the value is
+provided at build time rather than written statically in the file. In this case
+somesy will:</p>
+<ul>
+<li><strong>skip validation</strong> of that field (it is not required to be present in the file), and</li>
+<li><strong>not overwrite</strong> the field during sync, logging a warning instead.</li>
+</ul>
+<p>For example, if your <code>pyproject.toml</code> contains:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-package"</span>
+<span class="n">dynamic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">"version"</span><span class="p">,</span><span class="w"> </span><span class="s2">"description"</span><span class="p">]</span>
+</code></pre></div>
+<p>somesy will sync all other managed fields as usual but leave <code>version</code> and
+<code>description</code> untouched, because they are expected to be set dynamically at
+build time.</p>
 <p><strong>people</strong> and <strong>entities</strong> are mapped to authors/maintainers/contributors depending
 on the output format. Both fields are marked as necessary but what <code>somesy</code> need is an
 author either in <strong>people</strong> or <strong>entities</strong>.</p>
@@ -4202,7 +4242,7 @@ one of the supported input formats:</p>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Each output file, such as package.json file, have its required fields and these fields are enforced by <code>somesy</code>. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as <code>version</code>. Therefore, we suggest users to set <code>pass_validation</code> to <code>true</code> if this is the case. <code>somesy</code> will fail otherwise.</p>
+<p>Each output file, such as package.json file, have its required fields and these fields are enforced by <code>somesy</code>. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as <code>version</code>. For <code>pyproject.toml</code> files, the preferred solution is to list those fields under <code>dynamic</code> (e.g. <code>dynamic = ["version"]</code>) — somesy will then skip validation and sync for those fields. For other formats, or as a last resort, you can set <code>pass_validation</code> to <code>true</code> in the somesy config to bypass validation entirely. <code>somesy</code> will fail otherwise.</p>
 </div>
 <p>The example above shows a project with a <code>package.json</code> file in the root folder and 2 packages in it. Three files are set here so all of them will be updated according to ground truth of <code>somesy project metadata</code>.</p>
 <div class="admonition note">
