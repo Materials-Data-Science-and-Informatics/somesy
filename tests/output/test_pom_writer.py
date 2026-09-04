@@ -1,7 +1,7 @@
 import pytest
 
-from somesy.pom_xml.writer import POM
 from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.pom_xml.writer import POM
 
 
 @pytest.fixture
@@ -127,13 +127,11 @@ def test_person_merge(pom_file, person: Person):
 
     # new person
     person3 = Person(
-        **{
-            "given_names": "Janice",
-            "family_names": "Doethan",
-            "email": "jane93@gmail.com",
-            "author": True,
-            "publication_author": True,
-        }
+        given_names="Janice",
+        family_names="Doethan",
+        email="jane93@gmail.com",
+        author=True,
+        publication_author=True,
     )
     # john has a new email address
     person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})

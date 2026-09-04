@@ -224,6 +224,43 @@ in the `[config]` section. CLI arguments set in an input file override the
 defaults, while options passed as CLI arguments override the configuration.
 The `-P` shortcut disables pyproject synchronization, while `-V` passes output validation.
 
+### Initialize a project
+
+Use `somesy init` to create a standalone `somesy.toml` from an existing project:
+
+```bash
+somesy init
+```
+
+Initialization reads metadata from all supported project files present in the
+current directory and harvests project information and authors from Git history.
+The harvested values are merged into Somesy’s general metadata model before the
+file is written.
+
+Only missing required values are requested interactively:
+
+- project name
+- project description
+- SPDX license
+- one author, as either a person or an entity
+
+For a person, the command asks for given names, family names, and optionally an
+email address. For an entity, it asks for the organization name and optionally
+an email address. Git authors count as project authors; therefore, the author
+prompt is shown only when no author was found in the harvested metadata.
+
+Detected project files are enabled as synchronization targets. Targets that are
+not present are disabled in the generated `[config]` section. The generated file
+is not overwritten by default:
+
+```bash
+somesy init --output-file path/to/somesy.toml
+somesy init --overwrite
+```
+
+Use `somesy init config` when you want to configure synchronization options
+manually instead of deriving them from the files in the project.
+
 Without an input file specifically provided, somesy will check if it can find a valid
 
 -   `.somesy.toml`

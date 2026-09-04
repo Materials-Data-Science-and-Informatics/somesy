@@ -167,8 +167,10 @@ class PoetryConfig(BaseModel):
                         validated.append(author)
                     else:
                         logger.warning(f"Same person {author} is added multiple times.")
-            elif "@" in author and EMailAddress.validate_python(
-                author.split(" ")[-1][1:-1]
+            elif (
+                isinstance(author, str)
+                and "@" in author
+                and EMailAddress.validate_python(author.split(" ")[-1][1:-1])
             ):
                 validated.append(author)
             else:

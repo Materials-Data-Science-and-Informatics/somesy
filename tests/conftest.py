@@ -1,18 +1,18 @@
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Set, Tuple, Type
+from typing import Any
 
 import pytest
 
 from somesy.cff import CFF
 from somesy.core.log import SomesyLogLevel, set_log_level
 from somesy.core.models import Entity, Person, SomesyInput
-from somesy.package_json.writer import PackageJSON
-from somesy.pyproject import Pyproject
-from somesy.julia import Julia
 from somesy.fortran import Fortran
-from somesy.pom_xml.writer import POM
+from somesy.julia import Julia
 from somesy.mkdocs import MkDocs
+from somesy.package_json.writer import PackageJSON
+from somesy.pom_xml.writer import POM
+from somesy.pyproject import Pyproject
 from somesy.rust import Rust
 
 TEST_DIR = Path(__file__).resolve().parent
@@ -47,7 +47,7 @@ def somesy_input() -> SomesyInput:
 
 
 @pytest.fixture
-def file_types() -> Type[FileTypes]:
+def file_types() -> type[FileTypes]:
     """Return a FileTypes instance."""
     return FileTypes
 
@@ -62,9 +62,10 @@ def create_files(tmp_path):
     # file_dir folder has the requested files
     file_dir = create_files(files)
     ```
+
     """
 
-    def _create_files(files: Set[Tuple[FileTypes, str]]):
+    def _create_files(files: set[tuple[FileTypes, str]]):
         for file_tuple in files:
             file_type, file_name = file_tuple
             if not isinstance(file_type, FileTypes):
@@ -74,7 +75,7 @@ def create_files(tmp_path):
             write_file_name.parent.mkdir(parents=True, exist_ok=True)
 
             read_file_path = Path("tests/data")
-            read_file_name: Path = None
+            read_file_name: Path | None = None
             # set file name as the input, if not given set to default
             if file_type == FileTypes.CITATION:
                 read_file_name = read_file_path / Path("CITATION.cff")
@@ -119,10 +120,11 @@ def load_files():
     # file_instances dict has the instances of the requested files
     file_instances = load_files(files)
     ```
+
     """
 
-    def _load_files(files: Set[FileTypes]):
-        file_instances: Dict[FileTypes, Any] = {}
+    def _load_files(files: set[FileTypes]):
+        file_instances: dict[FileTypes, Any] = {}
         for file_type in files:
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")

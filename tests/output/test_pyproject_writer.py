@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata, Entity
+from somesy.core.models import Entity, LicenseEnum, Person, ProjectMetadata
 from somesy.pyproject.writer import Poetry, SetupTools
 
 
@@ -215,13 +215,11 @@ def test_person_merge_pyproject(
 
     # new person
     person3 = Person(
-        **{
-            "given_names": "Janice",
-            "family_names": "Doethan",
-            "email": "jane93@gmail.com",
-            "author": True,
-            "publication_author": True,
-        }
+        given_names="Janice",
+        family_names="Doethan",
+        email="jane93@gmail.com",
+        author=True,
+        publication_author=True,
     )
     if version is not None:
         person3_rep = writer_class._from_person(person3, poetry_version=version)

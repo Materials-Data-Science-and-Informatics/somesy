@@ -91,8 +91,8 @@ class MkDocs(ProjectMetadataWriter):
     @authors.setter
     def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
-        authors = self._from_person(authors[0])
-        self._set_property(self._get_key("authors"), authors)
+        author = self._from_person(authors[0])
+        self._set_property(self._get_key("authors"), author)
 
     @staticmethod
     def _from_person(person: Entity | Person):
@@ -100,17 +100,17 @@ class MkDocs(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Entity | Person | None:
+    def _to_person(person_obj: str) -> Entity | Person | None:
         """MkDocs Person is a string with full name."""
         try:
-            return Person.from_name_email_string(person)
+            return Person.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person} to Person object, trying Entity.")
+            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
 
         try:
-            return Entity.from_name_email_string(person)
+            return Entity.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Entity.")
+            logger.warning(f"Cannot convert {person_obj} to Entity.")
             return None
 
     def sync(self, metadata: ProjectMetadata) -> None:

@@ -2,6 +2,7 @@
 
 import logging
 import traceback
+from typing import TypedDict
 
 import typer
 import wrapt
@@ -15,16 +16,38 @@ from somesy.core.models import SomesyConfig, SomesyInput
 logger = logging.getLogger("somesy")
 
 
+class FileArgConfig(TypedDict):
+    """Keyword arguments shared by Typer file options."""
+
+    file_okay: bool
+    dir_okay: bool
+    writable: bool
+    readable: bool
+    resolve_path: bool
+
+
+class ExistingFileArgConfig(FileArgConfig):
+    """File option arguments that require an existing file."""
+
+    exists: bool
+
+
 # configuration dicts for CLI file arguments
-file_arg_config = {
+file_arg_config: FileArgConfig = {
     "file_okay": True,
     "dir_okay": False,
     "writable": True,
     "readable": True,
     "resolve_path": True,
 }
-existing_file_arg_config = dict(file_arg_config)
-existing_file_arg_config.update({"exists": True})
+existing_file_arg_config: ExistingFileArgConfig = {
+    "file_okay": True,
+    "dir_okay": False,
+    "writable": True,
+    "readable": True,
+    "resolve_path": True,
+    "exists": True,
+}
 
 
 @wrapt.decorator

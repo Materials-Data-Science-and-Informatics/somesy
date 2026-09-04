@@ -271,7 +271,9 @@ class SomesyConfig(SomesyBaseModel):
     def get_input(self) -> SomesyInput:
         """Based on the somesy config, load the complete somesy input."""
         # get metadata+config from specified input file
-        somesy_input = SomesyInput.from_input_file(self.input_file)
+        somesy_input = SomesyInput.from_input_file(
+            self.input_file or Path("somesy.toml")
+        )
         # update input with merged config settings (cli overrides config file)
         dct: dict[str, Any] = {}
         dct.update(somesy_input.config or {})
@@ -299,16 +301,21 @@ class SomesyConfig(SomesyBaseModel):
         # Resolve all file paths
         resolved_input = resolve_path(self.input_file)
         self.input_file = resolved_input if isinstance(resolved_input, Path) else None
-        self.pyproject_file = resolve_path(self.pyproject_file)
-        self.package_json_file = resolve_path(self.package_json_file)
-        self.julia_file = resolve_path(self.julia_file)
-        self.fortran_file = resolve_path(self.fortran_file)
-        self.pom_xml_file = resolve_path(self.pom_xml_file)
-        self.mkdocs_file = resolve_path(self.mkdocs_file)
-        self.rust_file = resolve_path(self.rust_file)
-        self.cff_file = resolve_path(self.cff_file)
-        self.codemeta_file = resolve_path(self.codemeta_file)
-        self.packages = resolve_path(self.packages)
+        for field in (
+            "pyproject_file",
+            "package_json_file",
+            "julia_file",
+            "fortran_file",
+            "pom_xml_file",
+            "mkdocs_file",
+            "rust_file",
+            "cff_file",
+            "codemeta_file",
+            "packages",
+        ):
+            resolved = resolve_path(getattr(self, field))
+            if resolved is not None:
+                setattr(self, field, resolved)
 
 
 # --------
@@ -400,6 +407,7 @@ class ContributorBaseModel(SomesyBaseModel):
     @property
     def full_name(self) -> str:
         """Return the name of the contributor."""
+        raise NotImplementedError
 
     def to_name_email_string(self) -> str:
         """Convert project metadata person object to poetry string for person format `full name <x@y.z>`."""
@@ -409,11 +417,12 @@ class ContributorBaseModel(SomesyBaseModel):
             return self.full_name
 
     @classmethod
-    def from_name_email_string(cls, person: str):
+    def from_name_email_string(cls, person: str) -> ContributorBaseModel:
         """Return the type of class based on an name/e-mail string like `full name <x@y.z>`.
 
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
         """
+        raise NotImplementedError
 
 
 class Entity(ContributorBaseModel):
@@ -463,11 +472,11 @@ class Entity(ContributorBaseModel):
         return self.name
 
     @classmethod
-    def from_name_email_string(cls, entity: str) -> Entity:
+    def from_name_email_string(cls, person: str) -> Entity:
         """Return an `Entity` based on an name/e-mail string like `name <x@y.z>`."""
-        m = re.match(r"\s*([^<]+)<([^>]+)>", entity)
+        m = re.match(r"\s*([^<]+)<([^>]+)>", person)
         if m is None:
-            return Entity(name=entity)
+            return Entity(name=person)
 
         name, mail = (
             m.group(1).strip(),
@@ -475,7 +484,7 @@ class Entity(ContributorBaseModel):
         )
         return Entity(name=name, email=mail)
 
-    def same_person(self, other: Entity) -> bool:
+    def same_person(self, other: Person | Entity) -> bool:
         """Return whether two Entity metadata records are about the same real person.
 
         Uses heuristic match based on email and name (whichever are provided).
@@ -559,7 +568,7 @@ class Person(ContributorBaseModel):
 
     @field_validator("orcid", mode="before")
     @classmethod
-    def orcid_from_string(cls, orcid: str) -> HttpUrlStr | None:
+    def orcid_from_string(cls, orcid: Any) -> Any:
         """Convert orcid id string to HttpUrlStr."""
         # orcid regex without https://orcid.org/ prefix
         orcid_regex = r"^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$"
@@ -599,16 +608,8 @@ class Person(ContributorBaseModel):
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
         if m is None:
             names = [s.strip() for s in person.split()]
-            return Person(
-                **{
-                    "given-names": " ".join(names[:-1]),
-                    "family-names": names[-1],
-                }
-            )
-        if m is None:
-            names = [s.strip() for s in person.split()]
-            return Person(
-                **{
+            return Person.model_validate(
+                {
                     "given-names": " ".join(names[:-1]),
                     "family-names": names[-1],
                 }
@@ -619,8 +620,8 @@ class Person(ContributorBaseModel):
         )
         # NOTE: for our purposes, does not matter what are given or family names,
         # we only compare on full_name anyway.
-        return Person(
-            **{
+        return Person.model_validate(
+            {
                 "given-names": " ".join(names[:-1]),
                 "family-names": names[-1],
                 "email": mail,
@@ -733,29 +734,23 @@ class ProjectMetadata(SomesyBaseModel):
         Field(min_length=1, description="Keywords that describe the project."),
     ] = None
 
-    people: Annotated[
-        list[Person] | None,
-        Field(
-            description="Project authors, maintainers and contributors.",
-            default_factory=list,
-        ),
-    ]
+    people: list[Person] = Field(
+        default_factory=list,
+        description="Project authors, maintainers and contributors.",
+    )
 
-    entities: Annotated[
-        list[Entity] | None,
-        Field(
-            description="Project authors, maintainers and contributors as entities (organizations).",
-            default_factory=list,
-        ),
-    ]
+    entities: list[Entity] = Field(
+        default_factory=list,
+        description="Project authors, maintainers and contributors as entities (organizations).",
+    )
 
-    def authors(self):
+    def authors(self) -> list[Person | Entity]:
         """Return people and entities explicitly marked as authors."""
-        authors = [p for p in self.people if p.author]
+        authors: list[Person | Entity] = [p for p in self.people if p.author]
         authors.extend([e for e in self.entities if e.author])
         return authors
 
-    def publication_authors(self):
+    def publication_authors(self) -> list[Person | Entity]:
         """Return people marked as publication authors.
 
         This always includes people marked as authors.
@@ -765,19 +760,21 @@ class ProjectMetadata(SomesyBaseModel):
             p.publication_author for p in self.entities
         ):
             return []
-        publication_authors = [p for p in self.people if p.publication_author]
+        publication_authors: list[Person | Entity] = [
+            p for p in self.people if p.publication_author
+        ]
         publication_authors.extend([e for e in self.entities if e.publication_author])
         return publication_authors
 
-    def maintainers(self):
+    def maintainers(self) -> list[Person | Entity]:
         """Return people and entities marked as maintainers."""
-        maintainers = [p for p in self.people if p.maintainer]
+        maintainers: list[Person | Entity] = [p for p in self.people if p.maintainer]
         maintainers.extend([e for e in self.entities if e.maintainer])
         return maintainers
 
-    def contributors(self):
+    def contributors(self) -> list[Person | Entity]:
         """Return only people and entities not marked as authors."""
-        contributors = [p for p in self.people if not p.author]
+        contributors: list[Person | Entity] = [p for p in self.people if not p.author]
         contributors.extend([e for e in self.entities if not e.author])
         return contributors
 
@@ -792,7 +789,7 @@ class SomesyInput(SomesyBaseModel):
         Field(description="Project metadata to be used and synchronized."),
     ]
     config: Annotated[
-        SomesyConfig | None,
+        SomesyConfig,
         Field(
             description="somesy tool configuration (matches CLI flags).",
             default_factory=lambda: SomesyConfig(),

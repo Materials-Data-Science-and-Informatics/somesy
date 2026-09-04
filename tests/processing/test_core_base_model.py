@@ -1,5 +1,4 @@
 from pydantic import Field
-from typing import Optional
 
 from somesy.core.models import SomesyBaseModel
 
@@ -9,7 +8,7 @@ class SampleModel(SomesyBaseModel):
 
     name: str = Field(alias="full_name")
     age: int
-    email: Optional[str] = None
+    email: str | None = None
 
 
 def test_key_order():
@@ -137,7 +136,7 @@ def test_model_dump_with_none():
     model = SampleModel(full_name="John Doe", age=30, email=None)
     dumped = model.model_dump(exclude_none=False)
     # exclude default takes precedence so email should not be there
-    assert not "email" in dumped
+    assert "email" not in dumped
 
 
 def test_model_dump_json_with_none():

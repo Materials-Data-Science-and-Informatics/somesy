@@ -9,6 +9,7 @@ from rich.pretty import pretty_repr
 from somesy.cff.writer import CFF
 from somesy.codemeta import CodeMeta
 from somesy.core.core import INPUT_FILES_ORDERED
+from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
 from somesy.core.writer import ProjectMetadataWriter
 from somesy.fortran.writer import Fortran
@@ -30,19 +31,19 @@ def _sync_file(
     pass_validation: bool | None = False,
 ):
     """Sync metadata to a file using the provided writer."""
-    logger.verbose(f"Loading '{file.name}' ...")
+    logger.log(VERBOSE, f"Loading '{file.name}' ...")
     if writer_cls == CodeMeta:
         writer: ProjectMetadataWriter = writer_cls(
             file, merge=merge_codemeta, pass_validation=pass_validation
         )
     else:
         writer = writer_cls(file, pass_validation=pass_validation)
-    logger.verbose(f"Syncing '{file.name}' ...")
+    logger.log(VERBOSE, f"Syncing '{file.name}' ...")
     original_data = deepcopy(writer._data)
     writer.sync(metadata)
     if writer._data != original_data:
         writer.save(file)
-        logger.verbose(f"Saved synced '{file.name}'.\n")
+        logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
 
 
 def _sync_files(
@@ -76,13 +77,13 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
     conf, metadata = somesy_input.config, somesy_input.project
 
     # Get the base directory from the input file's location
-    try:
-        base_dir = somesy_input._origin.parent
-    except AttributeError:
+    if somesy_input._origin is None:
         logger.warning(
             "No origin found for somesy input, using current working directory."
         )
         base_dir = Path.cwd()
+    else:
+        base_dir = somesy_input._origin.parent
 
     # Resolve all paths in the config relative to the base directory
     conf.resolve_paths(base_dir)
@@ -107,6 +108,7 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
             # Try all possible input files in order of priority
             config_files = [package / file for file in INPUT_FILES_ORDERED]
             package_input = None
+            config_file: Path | None = None
 
             for config_file in config_files:
                 try:
@@ -121,6 +123,9 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
                     f"No valid somesy config found in package {package} "
                     f"(tried: {', '.join(str(f) for f in config_files)})"
                 )
+                continue
+
+            if config_file is None:
                 continue
 
             # Create new config with CLI options and package's input file

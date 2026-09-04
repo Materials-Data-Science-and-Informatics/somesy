@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from somesy.core.models import Person, ProjectMetadata, Entity
+from somesy.core.models import Entity, Person, ProjectMetadata
 
 # dicts with test inputs for people
 p1 = {
@@ -34,6 +34,7 @@ e7 = {**e3, "rorid": e5["rorid"]}  # same rorid as e5
 def test_same_person():
     # same is same (reflexivity)
     assert Person(**p1).same_person(Person(**p1))
+
     # missing orcid, different mail, different name -> not same
     assert not Person(**p1).same_person(Person(**p2))
     # missing orcid, different mail, same name -> same

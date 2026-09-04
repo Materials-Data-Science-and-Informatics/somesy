@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import LicenseEnum
 from somesy.fortran.writer import Fortran
 
 

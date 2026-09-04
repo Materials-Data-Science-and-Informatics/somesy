@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast, overload
 
 import defusedxml.ElementTree as DET
 
@@ -27,10 +27,11 @@ def indent(elem, level=0):
             elem.text = i + "  "
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
-        for el in elem:
-            indent(el, level + 1)
-        if not el.tail or not el.tail.strip():
-            el.tail = i
+        children = list(elem)
+        for child in children:
+            indent(child, level + 1)
+        if not children[-1].tail or not children[-1].tail.strip():
+            children[-1].tail = i
     else:
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
@@ -83,7 +84,10 @@ class XMLProxy:
     def parse(cls, path: str | Path, **kwargs) -> XMLProxy:
         """Parse an XML file into a wrapped ElementTree, preserving comments."""
         path = path if isinstance(path, Path) else Path(path)
-        return cls(load_xml(path).getroot(), **kwargs)
+        root = load_xml(path).getroot()
+        if root is None:
+            raise ValueError(f"XML file has no root element: {path}")
+        return cls(root, **kwargs)
 
     def write(self, path: str | Path, *, header: bool = True, **kwargs):
         """Write the XML DOM to an UTF-8 encoded file."""
@@ -205,7 +209,7 @@ class XMLProxy:
     @classmethod
     def from_jsonlike(
         cls, val: JSONLike, *, root_name: str | None = None, **kwargs: Any
-    ):
+    ) -> Any:
         """Convert a JSON-like primitive, array or dict into an XML element.
 
         Note that booleans are serialized as `true`/`false` and None as `null`.
@@ -230,7 +234,9 @@ class XMLProxy:
                 elem.append(ET.Comment(v if isinstance(v, str) else str(v)))
 
             elif isinstance(v, list):
-                for vv in XMLProxy.from_jsonlike(v, root_name=k, **kwargs):
+                for vv in cast(
+                    list[XMLProxy], XMLProxy.from_jsonlike(v, root_name=k, **kwargs)
+                ):
                     elem.append(vv._node)
             elif not isinstance(v, dict):  # primitive val
                 # FIXME: use better case-splitting for type of function to avoid cast
@@ -240,13 +246,25 @@ class XMLProxy:
                 )
                 elem.append(tmp._node)
             else:  # dict
-                elem.append(XMLProxy.from_jsonlike(v, root_name=k)._node)
+                elem.append(
+                    cast(XMLProxy, XMLProxy.from_jsonlike(v, root_name=k))._node
+                )
 
         return cls(elem, **kwargs)
 
     # ---- dict-like access ----
 
-    def get(self, key: str, *, as_nodes: bool = False, deep: bool = False):
+    @overload
+    def get(
+        self, key: str, *, as_nodes: Literal[True], deep: Literal[False] = False
+    ) -> list[XMLProxy]: ...
+
+    @overload
+    def get(
+        self, key: str, *, as_nodes: Literal[False] = False, deep: bool = False
+    ) -> Any: ...
+
+    def get(self, key: str, *, as_nodes: bool = False, deep: bool = False) -> Any:
         """Get sub-structure(s) of value(s) matching desired XML tag name.
 
         * If there are multiple matching elements, will return them all as a list.
@@ -378,6 +396,8 @@ class XMLProxy:
             # ensure the target node is cleared out and use it as target
             key._clear()
             nodes = [key]
+            if key.tag is None:
+                raise ValueError("Cannot overwrite an XML element without a tag")
             key = key.tag
 
         # ensure key string is qualified with a namespace
@@ -391,14 +411,14 @@ class XMLProxy:
             nodes.append(self._wrap(ET.SubElement(self._node, key_name)))
 
         # normalize values no XML element nodes
-        nvals = []
+        nvals: list[XMLProxy] = []
         for item in vals:
             # ensure value is represented as an XML node
             if isinstance(item, XMLProxy):
                 obj = self._wrap(ET.Element("dummy"))
                 obj._node.append(item._node)
             else:
-                obj = self.from_jsonlike(item, root_name=key_name)
+                obj = cast(XMLProxy, self.from_jsonlike(item, root_name=key_name))
 
             nvals.append(obj)
 

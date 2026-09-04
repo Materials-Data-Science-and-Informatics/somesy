@@ -54,9 +54,11 @@ def validate_codemeta(codemeta: dict) -> list:
         # Expand and compact to validate terms
         expanded = jsonld.expand(codemeta_copy)
         compacted = jsonld.compact(expanded, schema_context)
+        if not isinstance(compacted, dict):
+            raise TypeError("Codemeta compaction did not produce an object")
 
         # Check for unmapped fields (fields with ':' indicating schema prefix)
-        compacted_keys = compacted.keys()
+        compacted_keys = set(compacted)
         for key in compacted_keys:
             if ":" in key:
                 logger.error(f"Invalid schema reference found: {key}")
@@ -64,7 +66,7 @@ def validate_codemeta(codemeta: dict) -> list:
 
         # Check for unsupported terms by comparing original and compacted keys
         original_keys = set(codemeta.keys())
-        compacted_keys = set(compacted.keys())
+        compacted_keys = set(compacted)
 
         # Remove @type from comparison as it might be handled differently in compaction
         original_keys.discard("@type")

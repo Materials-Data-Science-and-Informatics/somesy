@@ -5,6 +5,7 @@ from pathlib import Path
 
 import tomlkit
 from rich.pretty import pretty_repr
+from tomlkit.items import InlineTable
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import ProjectMetadataWriter
@@ -67,7 +68,7 @@ class Julia(ProjectMetadataWriter):
                 array.multiline(True)
                 # Ensure whitespace after commas in inline tables
                 for item in array:
-                    if isinstance(item, tomlkit.items.InlineTable):
+                    if isinstance(item, InlineTable):
                         # Rebuild the inline table with desired formatting
                         formatted_item = tomlkit.inline_table()
                         for k, v in item.value.items():
@@ -87,17 +88,17 @@ class Julia(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Person | None:
+    def _to_person(person_obj: str) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
         try:
-            return Person.from_name_email_string(person)
+            return Person.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person} to Person object, trying Entity.")
+            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
 
         try:
-            return Entity.from_name_email_string(person)
+            return Entity.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Entity.")
+            logger.warning(f"Cannot convert {person_obj} to Entity.")
             return None
 
     def sync(self, metadata: ProjectMetadata) -> None:

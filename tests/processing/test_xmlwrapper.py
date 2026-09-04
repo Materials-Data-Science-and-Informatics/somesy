@@ -1,7 +1,7 @@
+import pytest
+
 from somesy.pom_xml import POM_URL
 from somesy.pom_xml.xmlproxy import XMLProxy
-
-import pytest
 
 
 def test_parse_write(tmp_path, xml_examples):

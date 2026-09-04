@@ -2,6 +2,7 @@
 
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
@@ -14,7 +15,7 @@ class IgnoreKey:
     """Special marker to be passed for dropping a key from serialization."""
 
 
-FieldKeyMapping = dict[str, list[str] | IgnoreKey]
+FieldKeyMapping = dict[str, str | list[str] | IgnoreKey]
 """Type to be used for the dict passed as `direct_mappings`."""
 
 DictLike = Any
@@ -35,7 +36,7 @@ class ProjectMetadataWriter(ABC):
         path: Path,
         *,
         create_if_not_exists: bool | None = False,
-        direct_mappings: FieldKeyMapping = None,
+        direct_mappings: FieldKeyMapping | None = None,
         merge: bool | None = False,
         pass_validation: bool | None = False,
     ) -> None:
@@ -109,11 +110,11 @@ class ProjectMetadataWriter(ABC):
 
     def _get_property(
         self,
-        key: str | list[str],
+        key: str | list[str] | IgnoreKey,
         *,
         only_first: bool = False,
         remove: bool = False,
-    ) -> Any | None:
+    ) -> Any:
         """Get a property from the data.
 
         Override this to e.g. rewrite the retrieved key
@@ -125,9 +126,11 @@ class ProjectMetadataWriter(ABC):
             remove: If True, will remove the retrieved value and clean up the dict.
 
         """
+        if isinstance(key, IgnoreKey):
+            return None
         key_path = [key] if isinstance(key, str) else key
 
-        curr = self._data
+        curr: Any = self._data
         seq = [curr]
         for k in key_path:
             curr = curr.get(k)
@@ -179,7 +182,9 @@ class ProjectMetadataWriter(ABC):
     # special handling for person metadata
 
     def _merge_person_metadata(
-        self, old: list[Person | Entity], new: list[Person | Entity]
+        self,
+        old: Sequence[Person | Entity],
+        new: Sequence[Person | Entity],
     ) -> list[Person | Entity]:
         """Update metadata of a list of persons.
 
@@ -240,7 +245,7 @@ class ProjectMetadataWriter(ABC):
         return existing_modified + new_people
 
     def _sync_person_list(
-        self, old: list[Any], new: list[Person | Entity]
+        self, old: list[Any], new: Sequence[Person | Entity]
     ) -> list[Any]:
         """Sync a list of persons with new metadata.
 
@@ -256,7 +261,7 @@ class ProjectMetadataWriter(ABC):
 
         # check if people are unique
         def filter_unique(
-            people: list[Person | Entity],
+            people: Sequence[Person | Entity],
         ) -> list[Person | Entity]:
             """Filter out duplicate people from a list."""
             if people is None or len(people) == 0:
@@ -313,6 +318,44 @@ class ProjectMetadataWriter(ABC):
             str(metadata.documentation) if metadata.documentation else None
         )
 
+    def harvest_metadata(self) -> dict[str, Any]:
+        """Return metadata read from this endpoint in Somesy model terms."""
+        data: dict[str, Any] = {}
+        for field in (
+            "name",
+            "version",
+            "description",
+            "license",
+            "homepage",
+            "repository",
+            "documentation",
+            "keywords",
+        ):
+            try:
+                value = getattr(self, field)
+            except (KeyError, TypeError):
+                continue
+            if value not in (None, [], ""):
+                data[field] = value
+
+        people: list[Person] = []
+        entities: list[Entity] = []
+        for role in ("authors", "maintainers", "contributors"):
+            for person in self._parse_people(getattr(self, role) or []):
+                updates = {"author": True} if role == "authors" else {}
+                updates.update({"maintainer": True} if role == "maintainers" else {})
+                person = person.model_copy(update=updates)
+                if isinstance(person, Entity):
+                    entities.append(person)
+                else:
+                    people.append(person)
+
+        if people:
+            data["people"] = people
+        if entities:
+            data["entities"] = entities
+        return data
+
     @staticmethod
     @abstractmethod
     def _from_person(person: Person | Entity) -> Any:
@@ -320,22 +363,24 @@ class ProjectMetadataWriter(ABC):
 
     @staticmethod
     @abstractmethod
-    def _to_person(person_obj: Any) -> Person | Entity:
+    def _to_person(person_obj: Any) -> Person | Entity | None:
         """Convert an object representing a person into a `Person` or `Entity` object."""
 
     @classmethod
     def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
         """Return a list of Persons and Entities parsed from list of format-specific people representations."""
         # remove None values
-        people = [p for p in people if p is not None]
-
-        people = [cls._to_person(p) for p in people or []]
-        return people
+        return [
+            person
+            for p in people or []
+            if p is not None
+            if (person := cls._to_person(p)) is not None
+        ]
 
     # ----
     # individual magic getters and setters
 
-    def _get_key(self, key):
+    def _get_key(self, key: str) -> str | list[str] | IgnoreKey:
         """Get a key itself."""
         return self.direct_mappings.get(key) or key
 
@@ -355,7 +400,7 @@ class ProjectMetadataWriter(ABC):
         return self._get_property(self._get_key("version"))
 
     @version.setter
-    def version(self, version: str) -> None:
+    def version(self, version: str | None) -> None:
         """Set the version of the project."""
         self._set_property(self._get_key("version"), version)
 
@@ -431,12 +476,12 @@ class ProjectMetadataWriter(ABC):
         self._set_property(self._get_key("keywords"), keywords)
 
     @property
-    def license(self) -> str | list[str] | None:
+    def license(self) -> Any:
         """Return the license of the project."""
         return self._get_property(self._get_key("license"))
 
     @license.setter
-    def license(self, license: str | list[str] | None) -> None:
+    def license(self, license: Any) -> None:
         """Set the license of the project."""
         self._set_property(self._get_key("license"), license)
 

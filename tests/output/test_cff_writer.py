@@ -1,7 +1,7 @@
 import pytest
 
 from somesy.cff.writer import CFF
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata, Entity
+from somesy.core.models import Entity, LicenseEnum, Person, ProjectMetadata
 
 
 @pytest.fixture
@@ -123,13 +123,11 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
 
     # new person
     person3 = Person(
-        **{
-            "given_names": "Janice",
-            "family_names": "Doethan",
-            "email": "jane93@gmail.com",
-            "author": True,
-            "publication_author": True,
-        }
+        given_names="Janice",
+        family_names="Doethan",
+        email="jane93@gmail.com",
+        author=True,
+        publication_author=True,
     )
     # john has a new email address
     person1c = person1b.model_copy(update={"email": "john.of.us@qualityland.com"})

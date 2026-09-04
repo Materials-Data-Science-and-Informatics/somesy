@@ -74,7 +74,7 @@ class Rust(ProjectMetadataWriter):
 
     def _get_property(
         self, key: str | list[str] | IgnoreKey, *, remove: bool = False, **kwargs
-    ) -> Any | None:
+    ) -> Any:
         """Get a property from the Cargo.toml file."""
         if isinstance(key, IgnoreKey):
             return None
@@ -126,24 +126,24 @@ class Rust(ProjectMetadataWriter):
         return person.to_name_email_string()
 
     @staticmethod
-    def _to_person(person: str) -> Person | Entity | None:
+    def _to_person(person_obj: str) -> Person | Entity | None:
         """Parse rust person string to a Person. It has format "full name <email>." but email is optional.
 
         Since there is no way to know whether this entry is a person or an entity, we will directly convert to Person.
         """
         try:
-            return Person.from_name_email_string(person)
+            return Person.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person} to Person object, trying Entity.")
+            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
 
         try:
-            return Entity.from_name_email_string(person)
+            return Entity.from_name_email_string(person_obj)
         except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person} to Entity.")
+            logger.warning(f"Cannot convert {person_obj} to Entity.")
             return None
 
     @classmethod
-    def _parse_people(cls, people: list[Any] | None) -> list[Person]:
+    def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
         """Return a list of Persons parsed from list of format-specific people representations. to_person can return None, so filter out None values."""
         return list(filter(None, map(cls._to_person, people or [])))
 
