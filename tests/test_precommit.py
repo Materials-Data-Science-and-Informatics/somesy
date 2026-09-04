@@ -1,6 +1,5 @@
 """End-to-end tests for the Somesy pre-commit hook."""
 
-import json
 import shutil
 import subprocess
 import sys
@@ -27,8 +26,7 @@ def test_precommit_sync_requires_staging_generated_metadata(
         "    hooks:\n"
         "      - id: somesy\n"
         "        name: Run somesy sync\n"
-        "        entry: "
-        f"{json.dumps(f'{somesy} sync')}\n"
+        "        entry: somesy sync\n"
         "        language: system\n"
         "        files: ^somesy\\.toml$\n"
         "        pass_filenames: false\n"
@@ -61,6 +59,9 @@ def test_precommit_sync_requires_staging_generated_metadata(
     failed_hook = run(sys.executable, "-m", "pre_commit", "run", check=False)
     assert failed_hook.returncode == 1
     assert "Run somesy sync" in failed_hook.stdout
+    assert "version: 2.0.0" in (tmp_path / "CITATION.cff").read_text(), (
+        failed_hook.stdout + failed_hook.stderr
+    )
 
     run("git", "add", ".")
     committed = run("git", "commit", "-m", "update metadata", check=False)
