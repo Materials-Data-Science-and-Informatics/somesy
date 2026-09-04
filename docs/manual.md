@@ -181,6 +181,32 @@ than just move or rename fields**. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the `somesy` code.
 
+### CodeMeta Enrichment
+
+When writing `codemeta.json`, Somesy first synchronizes the canonical metadata
+from `somesy.toml`. It then fills **missing** CodeMeta fields from enabled,
+configured language files and Git. This preserves the source priority:
+
+```text
+somesy.toml > language file > Git history
+```
+
+The enrichment never replaces a CodeMeta field written from canonical Somesy
+metadata. When `merge_codemeta` is enabled, unrelated user-managed CodeMeta
+fields remain unchanged as well.
+
+| Source | Enriched CodeMeta fields |
+| --- | --- |
+| `pyproject.toml` / `poetry.lock` | Python runtime, direct dependencies, README URL, issue tracker, release notes |
+| `package.json` | JavaScript/Node.js runtime, runtime/peer/optional dependencies, issue tracker |
+| `Cargo.toml`, `Project.toml`, `fpm.toml`, `pom.xml` | Programming language, runtime version where declared, dependencies |
+| Git | Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first and latest commit dates |
+
+Development and test dependencies are not included. A `poetry.lock` file only
+provides exact versions for dependencies declared by the project; transitive
+lock-file entries are not emitted. PyPI classifiers are kept in
+`pyproject.toml` because CodeMeta has no reliable equivalent.
+
 ### PEP 621 `dynamic` fields
 
 For `pyproject.toml` targets (setuptools and Poetry v2), somesy respects the

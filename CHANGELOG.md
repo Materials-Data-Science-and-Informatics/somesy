@@ -18,6 +18,7 @@ Please consult the changelog to inform yourself about breaking changes and secur
 - add `somesy init` to harvest metadata and create a project `somesy.toml`
 - add `somesy set` to update scalar project metadata in `somesy.toml`
 - add pyright hook
+- enrich `codemeta.json` with runtime metadata, declared dependencies, project URLs, and Git history from configured project files
 
 ## [v0.7.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3) <small>(2025-03-14)</small> { id="0.7.3" }
 

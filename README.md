@@ -171,6 +171,7 @@ supported (and enabled) _target files_. You can find an overview of supported
 formats further below.
 
 By default, `somesy` will create (if they did not exist) or update `CITATION.cff` and `codemeta.json` files in your repository.
+When generating `codemeta.json`, Somesy retains metadata managed in `somesy.toml` and fills missing runtime, dependency, project-URL, and Git-history fields from enabled project files. See the [CodeMeta enrichment details](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta-enrichment).
 If you happen to use
 
 - `pyproject.toml` (in Python projects),
