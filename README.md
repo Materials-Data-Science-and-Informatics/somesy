@@ -150,6 +150,12 @@ somesy init --output-file somesy.toml --overwrite
 
 For manual configuration of sync options, use `somesy init config`.
 
+Update a scalar project-metadata value with `somesy set`:
+
+```bash
+somesy set version 1.2.3
+```
+
 ### Using somesy
 
 Once somesy is installed and configured, somesy can take over and manage your project metadata.
