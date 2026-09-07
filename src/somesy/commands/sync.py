@@ -1,8 +1,10 @@
 """Sync selected metadata files with given input file."""
 
 import logging
-from copy import deepcopy
+import xml.etree.ElementTree as ET
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 
 from rich.pretty import pretty_repr
 
@@ -18,10 +20,25 @@ from somesy.julia.writer import Julia
 from somesy.mkdocs import MkDocs
 from somesy.package_json.writer import PackageJSON
 from somesy.pom_xml.writer import POM
+from somesy.pom_xml.xmlproxy import XMLProxy
 from somesy.pyproject.writer import Pyproject
 from somesy.rust import Rust
 
 logger = logging.getLogger("somesy")
+
+
+def _semantic_data(data: Any) -> Any:
+    """Return format-neutral data without formatting trivia."""
+    if isinstance(data, XMLProxy):
+        xml = ET.tostring(data._node, encoding="unicode")
+        return ET.canonicalize(xml, strip_text=True)
+    if unwrap := getattr(data, "unwrap", None):
+        data = unwrap()
+    if isinstance(data, Mapping):
+        return {key: _semantic_data(value) for key, value in data.items()}
+    if isinstance(data, (list, tuple)):
+        return [_semantic_data(value) for value in data]
+    return data
 
 
 def _sync_file(
@@ -42,11 +59,11 @@ def _sync_file(
     else:
         writer = writer_cls(file, pass_validation=pass_validation)
     logger.log(VERBOSE, f"Syncing '{file.name}' ...")
-    original_data = deepcopy(writer._data)
+    original_data = _semantic_data(writer._data)
     writer.sync(metadata)
     if writer_cls == CodeMeta and codemeta_sources is not None:
         enrich_codemeta(writer._data, codemeta_sources, codemeta_root or file.parent)
-    if writer._data != original_data:
+    if _semantic_data(writer._data) != original_data:
         writer.save(file)
         logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
 
