@@ -505,7 +505,7 @@
   <a href="#0.8.0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v0.8.0 (2026-09-03)
+        v0.8.0 (2026-09-07)
       
     </span>
   </a>
@@ -3065,7 +3065,7 @@
   <a href="#0.8.0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v0.8.0 (2026-09-03)
+        v0.8.0 (2026-09-07)
       
     </span>
   </a>
@@ -3273,23 +3273,46 @@
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Here we provide notes that summarize the most important changes in each released version.</p>
 <p>Please consult the changelog to inform yourself about breaking changes and security issues.</p>
-<h2 id="0.8.0"><a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0">v0.8.0</a> <small>(2026-09-03)</small><a class="headerlink" href="#0.8.0" title="Permanent link">&para;</a></h2>
+<h2 id="0.8.0"><a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0">v0.8.0</a> <small>(2026-09-07)</small><a class="headerlink" href="#0.8.0" title="Permanent link">&para;</a></h2>
 <ul>
-<li>support PEP 621 <code>dynamic</code> fields in <code>pyproject.toml</code> — fields listed in <code>dynamic</code> (e.g. <code>version</code>, <code>description</code>) are no longer required to be present and will not be overwritten during sync</li>
-<li>raise the minimum supported Python version to 3.10</li>
-<li>update project dependencies and pre-commit hooks</li>
-<li>fix dependency vulnerabilities and replace Safety with pip-audit</li>
-<li>modernize CI workflows and publish releases directly from CI</li>
-<li>remove obsolete GitLab configuration and release workflows</li>
-<li>support multiple SPDX licenses and modernize pyproject license output</li>
-<li>fix duplicate <code>-P</code> CLI shortcut warning in <code>somesy sync</code></li>
-<li>fix POM synchronization for people without email addresses</li>
-<li>add <code>somesy init</code> to harvest metadata and create a project <code>somesy.toml</code></li>
+<li><strong>Added</strong></li>
+<li>add <code>somesy init</code> to create <code>somesy.toml</code> for an existing project<ul>
+<li>harvest metadata from supported project files and Git history</li>
+<li>merge harvested sources and prompt only for missing required metadata</li>
+<li>automatically enable detected synchronization targets</li>
+<li>support custom output paths and opt-in overwriting</li>
+</ul>
+</li>
 <li>add <code>somesy set</code> to update scalar project metadata in <code>somesy.toml</code></li>
-<li>add pyright hook</li>
-<li>enrich <code>codemeta.json</code> with runtime metadata, declared dependencies, project URLs, and Git history from configured project files</li>
-<li>omit unreliable CodeMeta creation dates when Git history is shallow</li>
-<li>support a project DOI in <code>CITATION.cff</code> and <code>codemeta.json</code></li>
+<li>enrich <code>codemeta.json</code> from configured project files and Git history<ul>
+<li>include runtime metadata, direct dependencies, project URLs, repository and issue tracker URLs, version, and commit dates</li>
+<li>resolve configured files relative to the project root and preserve canonical Somesy and user-managed metadata</li>
+</ul>
+</li>
+<li>support project DOIs in Somesy metadata, <code>CITATION.cff</code>, and <code>codemeta.json</code></li>
+<li>add granular contributor descriptions, contribution types, and contribution dates to CodeMeta roles</li>
+<li>add Pyright static analysis and pre-commit integration checks</li>
+<li><strong>Changed</strong></li>
+<li>migrate generated CodeMeta metadata to the 3.1 context</li>
+<li>support multiple SPDX licenses and use modern PEP 621 license expressions in <code>pyproject.toml</code></li>
+<li>support PEP 621 <code>dynamic</code> fields in <code>pyproject.toml</code>; dynamic <code>version</code> and <code>description</code> fields are neither required nor overwritten</li>
+<li>preserve target-file formatting by writing only when synchronized metadata changes semantically</li>
+<li>raise the minimum supported Python version to 3.10 and test Python 3.10 through 3.14 on Linux, macOS, and Windows</li>
+<li>update runtime, development, documentation, and pre-commit dependencies</li>
+<li>publish GitHub and PyPI releases directly from the main CI workflow using PyPI trusted publishing</li>
+<li>replace Safety dependency scanning with pip-audit</li>
+<li>create the Poetry environment inside the repository for CI lint and pre-commit checks</li>
+<li><strong>Fixed</strong></li>
+<li>make generated CodeMeta output idempotent</li>
+<li>write JSON output with a trailing newline and preserve LF endings on Windows</li>
+<li>omit unreliable CodeMeta creation dates instead of overwriting them when Git history is shallow</li>
+<li>synchronize POM contributors without email addresses</li>
+<li>remove the duplicate <code>-P</code> CLI shortcut warning from <code>somesy sync</code>; output validation now uses <code>-V</code></li>
+<li>resolve strict mypy errors and update annotations for Python 3.10+</li>
+<li>prevent pytest from mistaking a test helper model for a test class</li>
+<li><strong>Removed</strong></li>
+<li>remove obsolete GitLab CI configuration and issue templates</li>
+<li>remove the obsolete reusable GitHub release workflow</li>
 </ul>
 <h2 id="0.7.3"><a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3">v0.7.3</a> <small>(2025-03-14)</small><a class="headerlink" href="#0.7.3" title="Permanent link">&para;</a></h2>
 <ul>

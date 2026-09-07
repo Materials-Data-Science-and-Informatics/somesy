@@ -3491,13 +3491,13 @@ The tasks are defined in <code>pyproject.toml</code> and can be launched using:<
 <div class="highlight"><pre><span></span><code>poetry run poe TASK_NAME
 </code></pre></div>
 <h3 id="ci-workflows">CI Workflows<a class="headerlink" href="#ci-workflows" title="Permanent link">&para;</a></h3>
-<p>The project contains CI workflows for both GitHub and GitLab.</p>
+<p>The project uses a GitHub Actions CI workflow.</p>
 <p>The main CI pipeline runs on each new pushed commit and will</p>
 <ol>
 <li>Run all configured code analysis tools,</li>
 <li>Run code tests with multiple versions of Python,</li>
 <li>build and deploy the online project documentation website, and</li>
-<li><em>if a new version tag was pushed,</em> launch the release workflow</li>
+<li><em>if a new version tag was pushed,</em> create the GitHub release and publish it to PyPI</li>
 </ol>
 <h2 id="quality-control">Quality Control<a class="headerlink" href="#quality-control" title="Permanent link">&para;</a></h2>
 <h3 id="static-analysis">Static Analysis<a class="headerlink" href="#static-analysis" title="Permanent link">&para;</a></h3>
@@ -3592,7 +3592,7 @@ open <code>https://localhost:8000</code> in your browser to see the local copy o
 to the upstream repository, and make sure that:</p>
 <ul>
 <li>the CI pipeline completes successfully</li>
-<li>the version number in <code>pyproject.toml</code> is updated, in particular:</li>
+<li>the version number in <code>.somesy.toml</code> is updated and synchronized to the project metadata files with <code>poetry run somesy sync</code>, in particular:</li>
 <li>it must be larger than the previous released version</li>
 <li>it should adequately reflect the <a href="https://semver.org">severity of changes</a></li>
 <li>the provided user and developer documentation is up-to-date, including:</li>
@@ -3610,10 +3610,9 @@ to the upstream repository, and make sure that:</p>
 <li>publish the package to enabled targets (see below)</li>
 </ul>
 <h3 id="release-targets">Release Targets<a class="headerlink" href="#release-targets" title="Permanent link">&para;</a></h3>
-<p>Targets for releases can be enabled or disabled in <code>.github/workflows/ci.yml</code> and
-configured by adapting the corresponding actions in <code>.github/workflows/releases.yml</code>.</p>
+<p>Release targets are configured in the <code>publish</code> job in <code>.github/workflows/ci.yml</code>.</p>
 <h4 id="github-release">Github Release<a class="headerlink" href="#github-release" title="Permanent link">&para;</a></h4>
-<p>By default, the release workflow will create a basic Github Release that provides
+<p>The CI workflow creates a basic Github Release that provides
 a snapshot of the repository as a download. This requires no additional configuration.</p>
 <p>See <a href="https://github.com/softprops/action-gh-release">here</a>
 for information on how the Github release can be customized.</p>
@@ -3623,15 +3622,13 @@ For most Python projects, using PyPI is the recommended primary distribution met
 <p>For releases to PyPI and Test PyPI the project uses the new
 <a href="https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/">Trusted Publishers</a>
 workflow that is both more secure and convenient to use than other authorization methods.</p>
-<p>Before the project can be released to PyPI or Test PyPI the first time,
+<p>Before the project can be released to PyPI for the first time,
 first a <a href="https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/">pending publisher</a>
 must be added in the PyPI account of the main project maintainer, using
-<code>release.yml</code> as the requested <em>workflow name</em>.</p>
-<p>Once this is done, set the corresponding option (<code>to_pypi</code> / <code>to_test_pypi</code>) to <code>true</code>
-in the <code>publish</code> job in <code>ci.yml</code> to enable the corresponding publication target.</p>
+<code>ci.yml</code> as the requested <em>workflow name</em>.</p>
 <p>If the old and less secure token-based authentication method is needed or
 the package should be published to a different PyPI-compatible package index, please
-adapt <code>release.yml</code> <a href="https://github.com/pypa/gh-action-pypi-publish">accordingly</a>).</p>
+adapt the <code>publish</code> job in <code>ci.yml</code> <a href="https://github.com/pypa/gh-action-pypi-publish">accordingly</a>).</p>
 
 
 
