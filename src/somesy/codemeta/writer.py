@@ -8,7 +8,6 @@ from pathlib import Path
 from typing import Any
 
 from somesy.codemeta.utils import validate_codemeta
-from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
@@ -45,34 +44,13 @@ class CodeMeta(ProjectMetadataWriter):
             "maintainers": ["maintainer"],
             "contributors": ["contributor"],
         }
-        # delete the file if it exists
-        if path.is_file() and not self.merge:
-            logger.log(VERBOSE, "Deleting existing codemeta.json file.")
-            path.unlink()
         super().__init__(
             path,
             create_if_not_exists=True,
             direct_mappings=mappings,
+            merge=merge,
             pass_validation=pass_validation,
         )
-
-        # if merge is True, add necessary keys to the codemeta.json file
-        if self.merge:
-            # check if the context exists but is not a list
-            if isinstance(self._data["@context"], str):
-                self._data["@context"] = [self._data["@context"]]
-            # finally add each item in the context to the codemeta.json file if it does not exist in the list
-            for item in self._default_context:
-                if item not in self._data["@context"]:
-                    self._data["@context"].append(item)
-
-            # add (or overwrite) the type
-            self._data["@type"] = "SoftwareSourceCode"
-
-            # overwrite authors, maintainers, contributors
-            self._data["author"] = []
-            self._data["maintainer"] = []
-            self._data["contributor"] = []
 
     @property
     def authors(self):
@@ -124,20 +102,18 @@ class CodeMeta(ProjectMetadataWriter):
 
     def _init_new_file(self) -> None:
         """Create a new codemeta.json file with bare minimum generic data."""
-        data = {
-            "@context": [
-                "https://doi.org/10.5063/schema/codemeta-2.0",
-                "https://w3id.org/software-iodata",
-                "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
-                "https://schema.org",
-                "https://w3id.org/software-types",
-            ],
-            "@type": "SoftwareSourceCode",
-            "author": [],
-        }
+        data = self._new_data()
         # dump to file
         with self.path.open("w+", newline="\n") as f:
             json.dump(data, f)
+
+    def _new_data(self) -> dict[str, Any]:
+        """Return the bare minimum generic CodeMeta data."""
+        return {
+            "@context": self._default_context.copy(),
+            "@type": "SoftwareSourceCode",
+            "author": [],
+        }
 
     def save(self, path: Path | None = None) -> None:
         """Save the codemeta.json file."""
@@ -152,7 +128,10 @@ class CodeMeta(ProjectMetadataWriter):
             licenses = data["license"]
             licenses = licenses if isinstance(licenses, list) else [licenses]
             data["license"] = [
-                f"https://spdx.org/licenses/{license}" for license in licenses
+                license
+                if license.startswith("https://spdx.org/licenses/")
+                else f"https://spdx.org/licenses/{license}"
+                for license in licenses
             ]
 
         # if softwareHelp is set, set url to softwareHelp
@@ -245,16 +224,31 @@ class CodeMeta(ProjectMetadataWriter):
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
+        if not self.merge:
+            self._data = self._new_data()
+        else:
+            if isinstance(self._data["@context"], str):
+                self._data["@context"] = [self._data["@context"]]
+            for item in self._default_context:
+                if item not in self._data["@context"]:
+                    self._data["@context"].append(item)
+            self._data["@type"] = "SoftwareSourceCode"
+            self._data["author"] = []
+            self._data["maintainer"] = []
+            self._data["contributor"] = []
+
         super().sync(metadata)
         if metadata.doi:
             self._data["identifier"] = f"https://doi.org/{metadata.doi}"
         licenses = metadata.license
-        self.license = (
-            [license.value for license in licenses]
-            if isinstance(licenses, list)
-            else licenses.value
-        )
+        self.license = [
+            f"https://spdx.org/licenses/{license.value}"
+            for license in (licenses if isinstance(licenses, list) else [licenses])
+        ]
         self.contributors = metadata.contributors()
+
+        if "softwareHelp" in self._data:
+            self._data["url"] = self._data["softwareHelp"]
 
         # add the default context items if they are not already in the codemeta.json file
         for item in self._default_context:
