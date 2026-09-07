@@ -3456,7 +3456,16 @@
 <span class="normal">311</span>
 <span class="normal">312</span>
 <span class="normal">313</span>
-<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CodeMeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CodeMeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Codemeta.json parser and saver."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -3480,10 +3489,6 @@
             <span class="s2">"maintainers"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"maintainer"</span><span class="p">],</span>
             <span class="s2">"contributors"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"contributor"</span><span class="p">],</span>
         <span class="p">}</span>
-        <span class="c1"># delete the file if it exists</span>
-        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">VERBOSE</span><span class="p">,</span> <span class="s2">"Deleting existing codemeta.json file."</span><span class="p">)</span>
-            <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">path</span><span class="p">,</span>
             <span class="n">create_if_not_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -3491,16 +3496,6 @@
             <span class="n">merge</span><span class="o">=</span><span class="n">merge</span><span class="p">,</span>
             <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
         <span class="p">)</span>
-
-        <span class="c1"># if merge is True, initialize the fields somesy manages</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
-            <span class="c1"># add (or overwrite) the type</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"@type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"SoftwareSourceCode"</span>
-
-            <span class="c1"># overwrite authors, maintainers, contributors</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"author"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"maintainer"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"contributor"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">authors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -3539,8 +3534,6 @@
 <span class="w">        </span><span class="sd">"""Load codemeta.json file."""</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">object_pairs_hook</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_upgrade_to_v3</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_upgrade_to_v3</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Normalize an existing CodeMeta file before v3.1 validation."""</span>
@@ -3563,7 +3556,14 @@
 <span class="w">        </span><span class="sd">"""Validate codemeta.json content using pydantic class."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pass_validation</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">invalid_fields</span> <span class="o">=</span> <span class="n">validate_codemeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="n">loaded_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upgrade_to_v3</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">invalid_fields</span> <span class="o">=</span> <span class="n">validate_codemeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">loaded_data</span>
         <span class="k">if</span> <span class="n">invalid_fields</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">"Invalid fields in codemeta.json: </span><span class="si">{</span><span class="n">invalid_fields</span><span class="si">}</span><span class="s2">. Cannot merge with invalid fields."</span>
@@ -3571,14 +3571,18 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Create a new codemeta.json file with bare minimum generic data."""</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_data</span><span class="p">()</span>
+        <span class="c1"># dump to file</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"w+"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_new_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Return the bare minimum generic CodeMeta data."""</span>
+        <span class="k">return</span> <span class="p">{</span>
             <span class="s2">"@context"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_context</span><span class="p">,</span>
             <span class="s2">"@type"</span><span class="p">:</span> <span class="s2">"SoftwareSourceCode"</span><span class="p">,</span>
             <span class="s2">"author"</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
-        <span class="c1"># dump to file</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"w+"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Save the codemeta.json file."""</span>
@@ -3593,7 +3597,10 @@
             <span class="n">licenses</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"license"</span><span class="p">]</span>
             <span class="n">licenses</span> <span class="o">=</span> <span class="n">licenses</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">licenses</span><span class="p">]</span>
             <span class="n">data</span><span class="p">[</span><span class="s2">"license"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="sa">f</span><span class="s2">"https://spdx.org/licenses/</span><span class="si">{</span><span class="n">license</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span>
+                <span class="n">license</span>
+                <span class="k">if</span> <span class="n">license</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"https://spdx.org/licenses/"</span><span class="p">)</span>
+                <span class="k">else</span> <span class="sa">f</span><span class="s2">"https://spdx.org/licenses/</span><span class="si">{</span><span class="n">license</span><span class="si">}</span><span class="s2">"</span>
+                <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span>
             <span class="p">]</span>
 
         <span class="c1"># if softwareHelp is set, set url to softwareHelp</span>
@@ -3739,16 +3746,27 @@
 
 <span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">        """</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_data</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_upgrade_to_v3</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"@type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"SoftwareSourceCode"</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"author"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"maintainer"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"contributor"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"identifier"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://doi.org/</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-            <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"https://spdx.org/licenses/</span><span class="si">{</span><span class="n">license</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="p">(</span><span class="n">licenses</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">licenses</span><span class="p">])</span>
+        <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s2">"softwareHelp"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"softwareHelp"</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -3890,21 +3908,7 @@
 <span class="normal">49</span>
 <span class="normal">50</span>
 <span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span>
-<span class="normal">56</span>
-<span class="normal">57</span>
-<span class="normal">58</span>
-<span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="n">merge</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -3925,10 +3929,6 @@
         <span class="s2">"maintainers"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"maintainer"</span><span class="p">],</span>
         <span class="s2">"contributors"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"contributor"</span><span class="p">],</span>
     <span class="p">}</span>
-    <span class="c1"># delete the file if it exists</span>
-    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">VERBOSE</span><span class="p">,</span> <span class="s2">"Deleting existing codemeta.json file."</span><span class="p">)</span>
-        <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
         <span class="n">path</span><span class="p">,</span>
         <span class="n">create_if_not_exists</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -3936,16 +3936,6 @@
         <span class="n">merge</span><span class="o">=</span><span class="n">merge</span><span class="p">,</span>
         <span class="n">pass_validation</span><span class="o">=</span><span class="n">pass_validation</span><span class="p">,</span>
     <span class="p">)</span>
-
-    <span class="c1"># if merge is True, initialize the fields somesy manages</span>
-    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
-        <span class="c1"># add (or overwrite) the type</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"@type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"SoftwareSourceCode"</span>
-
-        <span class="c1"># overwrite authors, maintainers, contributors</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"author"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"maintainer"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"contributor"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3970,7 +3960,12 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">146</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
 <span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
@@ -3990,9 +3985,7 @@
 <span class="normal">163</span>
 <span class="normal">164</span>
 <span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Save the codemeta.json file."""</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saving codemeta.json to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -4005,7 +3998,10 @@
         <span class="n">licenses</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"license"</span><span class="p">]</span>
         <span class="n">licenses</span> <span class="o">=</span> <span class="n">licenses</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">licenses</span><span class="p">]</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">"license"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="sa">f</span><span class="s2">"https://spdx.org/licenses/</span><span class="si">{</span><span class="n">license</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span>
+            <span class="n">license</span>
+            <span class="k">if</span> <span class="n">license</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"https://spdx.org/licenses/"</span><span class="p">)</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">"https://spdx.org/licenses/</span><span class="si">{</span><span class="n">license</span><span class="si">}</span><span class="s2">"</span>
+            <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span>
         <span class="p">]</span>
 
     <span class="c1"># if softwareHelp is set, set url to softwareHelp</span>
@@ -4040,7 +4036,9 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/codemeta/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">300</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
 <span class="normal">301</span>
 <span class="normal">302</span>
 <span class="normal">303</span>
@@ -4054,21 +4052,41 @@
 <span class="normal">311</span>
 <span class="normal">312</span>
 <span class="normal">313</span>
-<span class="normal">314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync codemeta.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_data</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_upgrade_to_v3</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"@type"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"SoftwareSourceCode"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"author"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"maintainer"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"contributor"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"identifier"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://doi.org/</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-        <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
-    <span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">"https://spdx.org/licenses/</span><span class="si">{</span><span class="n">license</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="p">(</span><span class="n">licenses</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="p">[</span><span class="n">licenses</span><span class="p">])</span>
+    <span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="s2">"softwareHelp"</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"softwareHelp"</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

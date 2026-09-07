@@ -221,7 +221,7 @@
       }
     },
     "z_3187dccd59625139_writer_py":{
-      "hash":"f9e636b38d856c91306a747486562e09",
+      "hash":"56f7f7587f81de8ea502c1658ef9bf64",
       "index":{
         "url":"z_3187dccd59625139_writer_py.html",
         "file":"src/somesy/codemeta/writer.py",
@@ -229,9 +229,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":182,
+          "n_statements":189,
           "n_excluded":0,
-          "n_missing":42,
+          "n_missing":40,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -293,7 +293,7 @@
       }
     },
     "z_52da451127691ee7_sync_py":{
-      "hash":"8bf9073f05a06438188f0655751f4b81",
+      "hash":"4e2cac131eaf6f98a4f7224321a9e391",
       "index":{
         "url":"z_52da451127691ee7_sync_py.html",
         "file":"src/somesy/commands/sync.py",
@@ -301,7 +301,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":96,
+          "n_statements":110,
           "n_excluded":0,
           "n_missing":3,
           "n_branches":0,
@@ -689,7 +689,7 @@
       }
     },
     "z_6c09ba444e4cc07f_writer_py":{
-      "hash":"e9d988d432f808ba1fec2552b918fcb7",
+      "hash":"a1a3182936f302573368ac851c4f13b7",
       "index":{
         "url":"z_6c09ba444e4cc07f_writer_py.html",
         "file":"src/somesy/mkdocs/writer.py",
@@ -699,7 +699,7 @@
           "n_files":1,
           "n_statements":64,
           "n_excluded":0,
-          "n_missing":12,
+          "n_missing":10,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0

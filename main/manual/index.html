@@ -4515,6 +4515,9 @@ filled with <code>ror id</code>.</p>
 in the <code>[config]</code> section. CLI arguments set in an input file override the
 defaults, while options passed as CLI arguments override the configuration.
 The <code>-P</code> shortcut disables pyproject synchronization, while <code>-V</code> passes output validation.</p>
+<p>Synchronization only writes a target when its parsed metadata changes. Formatter
+choices such as indentation, wrapping, quotes, comments, and mapping-key order are
+therefore preserved; list order and scalar values remain significant.</p>
 <h3 id="initialize-a-project">Initialize a project<a class="headerlink" href="#initialize-a-project" title="Permanent link">&para;</a></h3>
 <p>Use <code>somesy init</code> to create a standalone <code>somesy.toml</code> from an existing project:</p>
 <div class="highlight"><pre><span></span><code>somesy<span class="w"> </span>init
