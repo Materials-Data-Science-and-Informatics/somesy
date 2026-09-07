@@ -4,23 +4,42 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
-## [v0.8.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0) <small>(2026-09-03)</small> { id="0.8.0" }
+## [v0.8.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0) <small>(2026-09-07)</small> { id="0.8.0" }
 
-- support PEP 621 `dynamic` fields in `pyproject.toml` — fields listed in `dynamic` (e.g. `version`, `description`) are no longer required to be present and will not be overwritten during sync
-- raise the minimum supported Python version to 3.10
-- update project dependencies and pre-commit hooks
-- fix dependency vulnerabilities and replace Safety with pip-audit
-- modernize CI workflows and publish releases directly from CI
-- remove obsolete GitLab configuration and release workflows
-- support multiple SPDX licenses and modernize pyproject license output
-- fix duplicate `-P` CLI shortcut warning in `somesy sync`
-- fix POM synchronization for people without email addresses
-- add `somesy init` to harvest metadata and create a project `somesy.toml`
-- add `somesy set` to update scalar project metadata in `somesy.toml`
-- add pyright hook
-- enrich `codemeta.json` with runtime metadata, declared dependencies, project URLs, and Git history from configured project files
-- omit unreliable CodeMeta creation dates when Git history is shallow
-- support a project DOI in `CITATION.cff` and `codemeta.json`
+- **Added**
+  - add `somesy init` to create `somesy.toml` for an existing project
+    - harvest metadata from supported project files and Git history
+    - merge harvested sources and prompt only for missing required metadata
+    - automatically enable detected synchronization targets
+    - support custom output paths and opt-in overwriting
+  - add `somesy set` to update scalar project metadata in `somesy.toml`
+  - enrich `codemeta.json` from configured project files and Git history
+    - include runtime metadata, direct dependencies, project URLs, repository and issue tracker URLs, version, and commit dates
+    - resolve configured files relative to the project root and preserve canonical Somesy and user-managed metadata
+  - support project DOIs in Somesy metadata, `CITATION.cff`, and `codemeta.json`
+  - add granular contributor descriptions, contribution types, and contribution dates to CodeMeta roles
+  - add Pyright static analysis and pre-commit integration checks
+- **Changed**
+  - migrate generated CodeMeta metadata to the 3.1 context
+  - support multiple SPDX licenses and use modern PEP 621 license expressions in `pyproject.toml`
+  - support PEP 621 `dynamic` fields in `pyproject.toml`; dynamic `version` and `description` fields are neither required nor overwritten
+  - preserve target-file formatting by writing only when synchronized metadata changes semantically
+  - raise the minimum supported Python version to 3.10 and test Python 3.10 through 3.14 on Linux, macOS, and Windows
+  - update runtime, development, documentation, and pre-commit dependencies
+  - publish GitHub and PyPI releases directly from the main CI workflow using PyPI trusted publishing
+  - replace Safety dependency scanning with pip-audit
+  - create the Poetry environment inside the repository for CI lint and pre-commit checks
+- **Fixed**
+  - make generated CodeMeta output idempotent
+  - write JSON output with a trailing newline and preserve LF endings on Windows
+  - omit unreliable CodeMeta creation dates instead of overwriting them when Git history is shallow
+  - synchronize POM contributors without email addresses
+  - remove the duplicate `-P` CLI shortcut warning from `somesy sync`; output validation now uses `-V`
+  - resolve strict mypy errors and update annotations for Python 3.10+
+  - prevent pytest from mistaking a test helper model for a test class
+- **Removed**
+  - remove obsolete GitLab CI configuration and issue templates
+  - remove the obsolete reusable GitHub release workflow
 
 ## [v0.7.3](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.7.3) <small>(2025-03-14)</small> { id="0.7.3" }
 

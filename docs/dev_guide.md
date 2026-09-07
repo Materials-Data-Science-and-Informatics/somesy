@@ -126,14 +126,14 @@ poetry run poe TASK_NAME
 
 ### CI Workflows
 
-The project contains CI workflows for both GitHub and GitLab.
+The project uses a GitHub Actions CI workflow.
 
 The main CI pipeline runs on each new pushed commit and will
 
 1. Run all configured code analysis tools,
 2. Run code tests with multiple versions of Python,
 3. build and deploy the online project documentation website, and
-4. *if a new version tag was pushed,* launch the release workflow
+4. *if a new version tag was pushed,* create the GitHub release and publish it to PyPI
 
 ## Quality Control
 
@@ -263,7 +263,7 @@ Before releasing a new version, push the commit the new release should be based 
 to the upstream repository, and make sure that:
 
 * the CI pipeline completes successfully
-* the version number in `pyproject.toml` is updated, in particular:
+* the version number in `.somesy.toml` is updated and synchronized to the project metadata files with `poetry run somesy sync`, in particular:
   * it must be larger than the previous released version
   * it should adequately reflect the [severity of changes](https://semver.org)
 * the provided user and developer documentation is up-to-date, including:
@@ -282,12 +282,11 @@ The pushed version tag will trigger a pipeline that will:
 
 ### Release Targets
 
-Targets for releases can be enabled or disabled in `.github/workflows/ci.yml` and
-configured by adapting the corresponding actions in `.github/workflows/releases.yml`.
+Release targets are configured in the `publish` job in `.github/workflows/ci.yml`.
 
 #### Github Release
 
-By default, the release workflow will create a basic Github Release that provides
+The CI workflow creates a basic Github Release that provides
 a snapshot of the repository as a download. This requires no additional configuration.
 
 See [here](https://github.com/softprops/action-gh-release)
@@ -302,14 +301,11 @@ For releases to PyPI and Test PyPI the project uses the new
 [Trusted Publishers](https://blog.pypi.org/posts/2023-04-20-introducing-trusted-publishers/)
 workflow that is both more secure and convenient to use than other authorization methods.
 
-Before the project can be released to PyPI or Test PyPI the first time,
+Before the project can be released to PyPI for the first time,
 first a [pending publisher](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/)
 must be added in the PyPI account of the main project maintainer, using
-`release.yml` as the requested *workflow name*.
-
-Once this is done, set the corresponding option (`to_pypi` / `to_test_pypi`) to `true`
-in the `publish` job in `ci.yml` to enable the corresponding publication target.
+`ci.yml` as the requested *workflow name*.
 
 If the old and less secure token-based authentication method is needed or
 the package should be published to a different PyPI-compatible package index, please
-adapt `release.yml` [accordingly](https://github.com/pypa/gh-action-pypi-publish)).
+adapt the `publish` job in `ci.yml` [accordingly](https://github.com/pypa/gh-action-pypi-publish)).
