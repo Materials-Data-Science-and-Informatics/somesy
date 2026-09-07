@@ -1107,6 +1107,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../enrich/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enrich
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../utils/" class="md-nav__link">
         
   
@@ -3378,7 +3406,9 @@
 <span class="normal">257</span>
 <span class="normal">258</span>
 <span class="normal">259</span>
-<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CodeMeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CodeMeta</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Codemeta.json parser and saver."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -3609,6 +3639,8 @@
 <span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"identifier"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://doi.org/</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="si">}</span><span class="s2">"</span>
         <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
             <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
@@ -3955,12 +3987,16 @@
 <span class="normal">257</span>
 <span class="normal">258</span>
 <span class="normal">259</span>
-<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync codemeta.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">    """</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"identifier"</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://doi.org/</span><span class="si">{</span><span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="si">}</span><span class="s2">"</span>
     <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
         <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>

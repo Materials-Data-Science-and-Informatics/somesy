@@ -705,6 +705,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#codemeta-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CodeMeta Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pep-621-dynamic-fields" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1279,6 +1290,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/somesy/codemeta/enrich/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enrich
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3031,6 +3070,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#codemeta-enrichment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CodeMeta Enrichment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pep-621-dynamic-fields" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3281,6 +3331,13 @@ Furthermore, <code>somesy</code> might support the
 <td>no</td>
 <td></td>
 <td>Project version.</td>
+</tr>
+<tr>
+<td>doi</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>Project DOI.</td>
 </tr>
 <tr>
 <td>license</td>
@@ -4134,6 +4191,19 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>description</td>
 </tr>
 <tr>
+<td>doi</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>doi</td>
+<td>identifier</td>
+</tr>
+<tr>
 <td><strong>license</strong></td>
 <td>license</td>
 <td>license</td>
@@ -4301,6 +4371,49 @@ to list authors and maintainers. <strong>Therefore somesy sometimes must do much
 than just move or rename fields</strong>. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the <code>somesy</code> code.</p>
+<h3 id="codemeta-enrichment">CodeMeta Enrichment<a class="headerlink" href="#codemeta-enrichment" title="Permanent link">&para;</a></h3>
+<p>When writing <code>codemeta.json</code>, Somesy first synchronizes the canonical metadata
+from <code>somesy.toml</code>. It then fills <strong>missing</strong> CodeMeta fields from enabled,
+configured language files and Git. This preserves the source priority:</p>
+<div class="highlight"><pre><span></span><code>somesy.toml &gt; language file &gt; Git history
+</code></pre></div>
+<p>The enrichment never replaces a CodeMeta field written from canonical Somesy
+metadata. When <code>merge_codemeta</code> is enabled, unrelated user-managed CodeMeta
+fields remain unchanged as well.</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Enriched CodeMeta fields</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pyproject.toml</code> / <code>poetry.lock</code></td>
+<td>Python runtime, direct dependencies, README URL, issue tracker, release notes</td>
+</tr>
+<tr>
+<td><code>package.json</code></td>
+<td>JavaScript/Node.js runtime, runtime/peer/optional dependencies, issue tracker</td>
+</tr>
+<tr>
+<td><code>Cargo.toml</code>, <code>Project.toml</code>, <code>fpm.toml</code>, <code>pom.xml</code></td>
+<td>Programming language, runtime version where declared, dependencies</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first and latest commit dates</td>
+</tr>
+</tbody>
+</table>
+<p>Development and test dependencies are not included. A <code>poetry.lock</code> file only
+provides exact versions for dependencies declared by the project; transitive
+lock-file entries are not emitted. PyPI classifiers are kept in
+<code>pyproject.toml</code> because CodeMeta has no reliable equivalent.</p>
+<p>The first commit date requires complete Git history. In a shallow clone, Somesy
+omits <code>dateCreated</code> rather than reporting the shallow boundary as the project
+creation date. For reproducible generated metadata in CI, configure a full
+checkout (for GitHub Actions, <code>fetch-depth: 0</code>).</p>
 <h3 id="pep-621-dynamic-fields">PEP 621 <code>dynamic</code> fields<a class="headerlink" href="#pep-621-dynamic-fields" title="Permanent link">&para;</a></h3>
 <p>For <code>pyproject.toml</code> targets (setuptools and Poetry v2), somesy respects the
 <a href="https://peps.python.org/pep-0621/#dynamic">PEP 621 <code>dynamic</code> field</a>. If

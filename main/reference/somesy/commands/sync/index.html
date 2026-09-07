@@ -1105,6 +1105,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../codemeta/enrich/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enrich
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../codemeta/utils/" class="md-nav__link">
         
   
@@ -3030,12 +3058,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/commands/sync.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
 <span class="normal"> 77</span>
@@ -3116,7 +3139,12 @@
 <span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
-<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">,</span> <span class="n">is_package</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="n">somesy_input</span><span class="p">:</span> <span class="n">SomesyInput</span><span class="p">,</span> <span class="n">is_package</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Sync selected metadata files with given input file.</span>
 
 <span class="sd">    Args:</span>
@@ -3147,7 +3175,7 @@
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Project metadata: </span><span class="si">{</span><span class="n">pp_metadata</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># First sync the current project</span>
-    <span class="n">_sync_root_project</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+    <span class="n">_sync_root_project</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">base_dir</span><span class="p">)</span>
 
     <span class="c1"># Then sync each package if defined</span>
     <span class="k">if</span> <span class="n">conf</span><span class="o">.</span><span class="n">packages</span><span class="p">:</span>

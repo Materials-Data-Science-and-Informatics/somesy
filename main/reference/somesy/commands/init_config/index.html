@@ -1105,6 +1105,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../codemeta/enrich/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enrich
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../codemeta/utils/" class="md-nav__link">
         
   
@@ -3030,7 +3058,11 @@
 <span class="normal">32</span>
 <span class="normal">33</span>
 <span class="normal">34</span>
-<span class="normal">35</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">write_somesy_file</span><span class="p">(</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">write_somesy_file</span><span class="p">(</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"somesy.toml"</span><span class="p">),</span>
     <span class="o">*</span><span class="p">,</span>
@@ -3043,7 +3075,11 @@
 
     <span class="n">content</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">"project"</span><span class="p">:</span> <span class="n">BaseModel</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span>
-            <span class="n">metadata</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"json"</span><span class="p">,</span> <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span>
+            <span class="n">metadata</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s2">"json"</span><span class="p">,</span>
+            <span class="n">by_alias</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">exclude_defaults</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="p">}</span>
     <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -3121,11 +3157,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/commands/init_config.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
@@ -3154,7 +3186,11 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">init_config</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">init_config</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">options</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Initialize somesy configuration file.</span>
 
 <span class="sd">    Args:</span>

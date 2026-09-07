@@ -1183,6 +1183,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../codemeta/enrich/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    enrich
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../codemeta/utils/" class="md-nav__link">
         
   
@@ -3058,9 +3086,7 @@
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">invoke_without_command</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span>
     <span class="n">ctx</span><span class="p">:</span> <span class="n">typer</span><span class="o">.</span><span class="n">Context</span><span class="p">,</span>
@@ -3098,8 +3124,6 @@
                     <span class="s2">"pom_xml"</span><span class="p">:</span> <span class="s2">"pom.xml"</span><span class="p">,</span>
                     <span class="s2">"mkdocs"</span><span class="p">:</span> <span class="s2">"mkdocs.yml"</span><span class="p">,</span>
                     <span class="s2">"rust"</span><span class="p">:</span> <span class="s2">"Cargo.toml"</span><span class="p">,</span>
-                    <span class="s2">"cff"</span><span class="p">:</span> <span class="s2">"CITATION.cff"</span><span class="p">,</span>
-                    <span class="s2">"codemeta"</span><span class="p">:</span> <span class="s2">"codemeta.json"</span><span class="p">,</span>
                 <span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">}</span>
         <span class="p">)</span>
@@ -3130,7 +3154,9 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/cli/init.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">134</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
 <span class="normal">135</span>
 <span class="normal">136</span>
 <span class="normal">137</span>
@@ -3225,9 +3251,7 @@
 <span class="normal">226</span>
 <span class="normal">227</span>
 <span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="normal">229</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@app</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@wrap_exceptions</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">config</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">"""Set CLI configs for somesy."""</span>
