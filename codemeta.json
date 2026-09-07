@@ -1,11 +1,5 @@
 {
-  "@context": [
-    "https://doi.org/10.5063/schema/codemeta-2.0",
-    "https://w3id.org/software-iodata",
-    "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
-    "https://schema.org",
-    "https://w3id.org/software-types"
-  ],
+  "@context": "https://w3id.org/codemeta/3.1",
   "@type": "SoftwareSourceCode",
   "author": [
     {
@@ -17,12 +11,90 @@
       "identifier": "https://orcid.org/0000-0003-2637-0432"
     },
     {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0003-2637-0432",
+      "roleName": "Main developer, maintainer and tester.",
+      "startDate": "2023-03-01"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0003-2637-0432",
+      "roleName": "maintenance",
+      "startDate": "2023-03-01"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0003-2637-0432",
+      "roleName": "code",
+      "startDate": "2023-03-01"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0003-2637-0432",
+      "roleName": "test",
+      "startDate": "2023-03-01"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0003-2637-0432",
+      "roleName": "review",
+      "startDate": "2023-03-01"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0003-2637-0432",
+      "roleName": "doc",
+      "startDate": "2023-03-01"
+    },
+    {
       "@type": "Person",
       "givenName": "Anton",
       "familyName": "Pirogov",
       "email": "a.pirogov@fz-juelich.de",
       "@id": "https://orcid.org/0000-0002-5077-7497",
       "identifier": "https://orcid.org/0000-0002-5077-7497"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5077-7497",
+      "roleName": "Concepts, tool development and enhancement, documentation.",
+      "startDate": "2023-03-01",
+      "endDate": "2023-04-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5077-7497",
+      "roleName": "ideas",
+      "startDate": "2023-03-01",
+      "endDate": "2023-04-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5077-7497",
+      "roleName": "code",
+      "startDate": "2023-03-01",
+      "endDate": "2023-04-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5077-7497",
+      "roleName": "test",
+      "startDate": "2023-03-01",
+      "endDate": "2023-04-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5077-7497",
+      "roleName": "review",
+      "startDate": "2023-03-01",
+      "endDate": "2023-04-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5077-7497",
+      "roleName": "doc",
+      "startDate": "2023-03-01",
+      "endDate": "2023-04-30"
     }
   ],
   "name": "somesy",
@@ -59,6 +131,20 @@
       "identifier": "https://orcid.org/0000-0001-7939-226X"
     },
     {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0001-7939-226X",
+      "roleName": "Discussions and suggestions concerning metadata standards and usability.",
+      "startDate": "2023-03-01",
+      "endDate": "2023-03-31"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0001-7939-226X",
+      "roleName": "ideas",
+      "startDate": "2023-03-01",
+      "endDate": "2023-03-31"
+    },
+    {
       "@type": "Person",
       "givenName": "Volker",
       "familyName": "Hofmann",
@@ -67,12 +153,38 @@
       "identifier": "https://orcid.org/0000-0002-5149-603X"
     },
     {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5149-603X",
+      "roleName": "Discussions and suggestions concerning tool scope and usability.",
+      "startDate": "2023-06-01",
+      "endDate": "2023-06-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5149-603X",
+      "roleName": "ideas",
+      "startDate": "2023-06-01",
+      "endDate": "2023-06-30"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0002-5149-603X",
+      "roleName": "doc",
+      "startDate": "2023-06-01",
+      "endDate": "2023-06-30"
+    },
+    {
       "@type": "Person",
       "givenName": "Stefan",
       "familyName": "Sandfeld",
       "email": "s.sandfeld@fz-juelich.de",
       "@id": "https://orcid.org/0000-0001-9560-4728",
       "identifier": "https://orcid.org/0000-0001-9560-4728"
+    },
+    {
+      "@type": "Role",
+      "schema:author": "https://orcid.org/0000-0001-9560-4728",
+      "roleName": "fundingFinding"
     }
   ],
   "softwareRequirements": [

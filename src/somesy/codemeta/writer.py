@@ -2,8 +2,10 @@
 
 import json
 import logging
+import uuid
 from collections import OrderedDict
 from collections.abc import Sequence
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +14,9 @@ from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
 logger = logging.getLogger("somesy")
+
+V2_CONTEXT = "https://doi.org/10.5063/schema/codemeta-2.0"
+V3_CONTEXT = "https://w3id.org/codemeta/3.1"
 
 
 class CodeMeta(ProjectMetadataWriter):
@@ -28,13 +33,7 @@ class CodeMeta(ProjectMetadataWriter):
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self.merge = merge
-        self._default_context = [
-            "https://doi.org/10.5063/schema/codemeta-2.0",
-            "https://w3id.org/software-iodata",
-            "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
-            "https://schema.org",
-            "https://w3id.org/software-types",
-        ]
+        self._default_context = V3_CONTEXT
         mappings: FieldKeyMapping = {
             "repository": ["codeRepository"],
             "homepage": ["softwareHelp"],
@@ -60,7 +59,7 @@ class CodeMeta(ProjectMetadataWriter):
     @authors.setter
     def authors(self, authors: list[Person | Entity]) -> None:
         """Set the authors of the project."""
-        authors_dict = [self._from_person(a) for a in authors]
+        authors_dict = self._people_with_roles(authors)
         self._set_property(self._get_key("authors"), authors_dict)
 
     @property
@@ -82,7 +81,7 @@ class CodeMeta(ProjectMetadataWriter):
     @contributors.setter
     def contributors(self, contributors: list[Person | Entity]) -> None:
         """Set the contributors of the project."""
-        contributors_dict = [self._from_person(c) for c in contributors]
+        contributors_dict = self._people_with_roles(contributors)
         self._set_property(self._get_key("contributors"), contributors_dict)
 
     def _load(self) -> None:
@@ -90,11 +89,35 @@ class CodeMeta(ProjectMetadataWriter):
         with self.path.open() as f:
             self._data = json.load(f, object_pairs_hook=OrderedDict)
 
+    def _upgrade_to_v3(self) -> None:
+        """Normalize an existing CodeMeta file before v3.1 validation."""
+        context = self._data.get("@context", [])
+        context = context if isinstance(context, list) else [context]
+        context = [item for item in context if item != V2_CONTEXT]
+        if V3_CONTEXT not in context:
+            context.insert(0, V3_CONTEXT)
+        self._data["@context"] = context
+
+        for old, new in (
+            ("contIntegration", "continuousIntegration"),
+            ("embargoDate", "embargoEndDate"),
+        ):
+            if old in self._data and new not in self._data:
+                self._data[new] = self._data[old]
+            self._data.pop(old, None)
+
     def _validate(self) -> None:
         """Validate codemeta.json content using pydantic class."""
         if self.pass_validation:
             return
-        invalid_fields = validate_codemeta(self._data)
+        loaded_data = self._data
+        if self.merge:
+            self._data = deepcopy(self._data)
+            self._upgrade_to_v3()
+        try:
+            invalid_fields = validate_codemeta(self._data)
+        finally:
+            self._data = loaded_data
         if invalid_fields and self.merge:
             raise ValueError(
                 f"Invalid fields in codemeta.json: {invalid_fields}. Cannot merge with invalid fields."
@@ -110,7 +133,7 @@ class CodeMeta(ProjectMetadataWriter):
     def _new_data(self) -> dict[str, Any]:
         """Return the bare minimum generic CodeMeta data."""
         return {
-            "@context": self._default_context.copy(),
+            "@context": self._default_context,
             "@type": "SoftwareSourceCode",
             "author": [],
         }
@@ -182,6 +205,59 @@ class CodeMeta(ProjectMetadataWriter):
             return entity_dict
 
     @staticmethod
+    def _role_identifier(person: Person | Entity, person_dict: dict) -> str:
+        """Return an identifier that can link a CodeMeta role to its person."""
+        if identifier := person_dict.get("@id"):
+            return identifier
+        identity = person.email or person.full_name
+        return f"urn:uuid:{uuid.uuid5(uuid.NAMESPACE_URL, f'{type(person).__name__}:{identity}')}"
+
+    @staticmethod
+    def _has_contribution_metadata(person: Person | Entity) -> bool:
+        """Return whether a person has metadata representable by a CodeMeta role."""
+        return any(
+            (
+                person.contribution,
+                person.contribution_types,
+                person.contribution_begin,
+                person.contribution_end,
+            )
+        )
+
+    def _people_with_roles(self, people: Sequence[Person | Entity]) -> list[dict]:
+        """Serialize people and their granular contribution roles."""
+        result = []
+        for person in people:
+            person_dict = self._from_person(person)
+            if not self._has_contribution_metadata(person):
+                result.append(person_dict)
+                continue
+
+            identifier = self._role_identifier(person, person_dict)
+            person_dict["@id"] = identifier
+            result.append(person_dict)
+
+            role_names: list[str | None] = []
+            if person.contribution:
+                role_names.append(person.contribution)
+            role_names.extend(
+                contribution_type.value
+                for contribution_type in person.contribution_types or []
+            )
+            if not role_names:
+                role_names.append(None)
+            for role_name in role_names:
+                role = {"@type": "Role", "schema:author": identifier}
+                if role_name:
+                    role["roleName"] = role_name
+                if person.contribution_begin:
+                    role["startDate"] = person.contribution_begin.isoformat()
+                if person.contribution_end:
+                    role["endDate"] = person.contribution_end.isoformat()
+                result.append(role)
+        return result
+
+    @staticmethod
     def _to_person(person_obj) -> Person | Entity:
         """Convert codemeta.json dict or str for person/entity format to project metadata person object."""
         if "name" in person_obj:
@@ -227,11 +303,7 @@ class CodeMeta(ProjectMetadataWriter):
         if not self.merge:
             self._data = self._new_data()
         else:
-            if isinstance(self._data["@context"], str):
-                self._data["@context"] = [self._data["@context"]]
-            for item in self._default_context:
-                if item not in self._data["@context"]:
-                    self._data["@context"].append(item)
+            self._upgrade_to_v3()
             self._data["@type"] = "SoftwareSourceCode"
             self._data["author"] = []
             self._data["maintainer"] = []
@@ -249,8 +321,3 @@ class CodeMeta(ProjectMetadataWriter):
 
         if "softwareHelp" in self._data:
             self._data["url"] = self._data["softwareHelp"]
-
-        # add the default context items if they are not already in the codemeta.json file
-        for item in self._default_context:
-            if item not in self._data["@context"]:
-                self._data["@context"].append(item)

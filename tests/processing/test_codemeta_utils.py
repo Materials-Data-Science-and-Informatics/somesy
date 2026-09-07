@@ -5,7 +5,7 @@ def test_validate_codemeta_valid():
     """Test validation with valid codemeta data."""
     valid_data = {
         "@context": [
-            "https://doi.org/10.5063/schema/codemeta-2.0",
+            "https://w3id.org/codemeta/3.1",
             "https://schema.org",
         ],
         "@type": "SoftwareSourceCode",
@@ -20,12 +20,31 @@ def test_validate_codemeta_valid():
     assert len(invalid_fields) == 0
 
 
+def test_validate_codemeta_role_reference():
+    """Test validation accepts CodeMeta v3.1 role references."""
+    valid_data = {
+        "@context": "https://w3id.org/codemeta/3.1",
+        "@type": "SoftwareSourceCode",
+        "name": "original_name",
+        "contributor": [
+            {"@type": "Person", "@id": "urn:uuid:person"},
+            {
+                "@type": "Role",
+                "schema:author": "urn:uuid:person",
+                "roleName": "code",
+            },
+        ],
+    }
+
+    assert validate_codemeta(valid_data) == []
+
+
 def test_validate_codemeta_invalid():
     """Test validation with invalid codemeta data."""
     # Test missing required field
     missing_required = {
         "@context": [
-            "https://doi.org/10.5063/schema/codemeta-2.0",
+            "https://w3id.org/codemeta/3.1",
             "https://schema.org",
         ],
         "@type": "SoftwareSourceCode",
@@ -36,7 +55,7 @@ def test_validate_codemeta_invalid():
 
     # Test invalid @context
     invalid_context = {
-        "@context": ["https://schema.org"],  # missing codemeta v2 doi
+        "@context": ["https://schema.org"],  # missing CodeMeta v3.1 context
         "@type": "SoftwareSourceCode",
         "name": "test_name",
     }
@@ -46,7 +65,7 @@ def test_validate_codemeta_invalid():
     # Test invalid field
     invalid_data = {
         "@context": [
-            "https://doi.org/10.5063/schema/codemeta-2.0",
+            "https://w3id.org/codemeta/3.1",
             "https://schema.org",
         ],
         "@type": "SoftwareSourceCode",
