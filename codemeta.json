@@ -99,7 +99,7 @@
   ],
   "name": "somesy",
   "description": "A CLI tool for synchronizing software project metadata.",
-  "version": "0.8.0a3",
+  "version": "0.8.0",
   "keywords": [
     "metadata",
     "FAIR"
@@ -187,6 +187,7 @@
       "roleName": "fundingFinding"
     }
   ],
+  "url": "https://materials-data-science-and-informatics.github.io/somesy",
   "softwareRequirements": [
     {
       "@type": "SoftwareApplication",
@@ -270,6 +271,5 @@
   "runtimePlatform": "Python >=3.10",
   "issueTracker": "https://github.com/Materials-Data-Science-and-Informatics/somesy/issues",
   "dateCreated": "2023-05-12",
-  "dateModified": "2026-09-07",
-  "url": "https://materials-data-science-and-informatics.github.io/somesy"
+  "dateModified": "2026-09-07"
 }
