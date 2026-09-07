@@ -5,11 +5,11 @@ import logging
 import uuid
 from collections import OrderedDict
 from collections.abc import Sequence
+from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
 from somesy.codemeta.utils import validate_codemeta
-from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
@@ -43,10 +43,6 @@ class CodeMeta(ProjectMetadataWriter):
             "maintainers": ["maintainer"],
             "contributors": ["contributor"],
         }
-        # delete the file if it exists
-        if path.is_file() and not self.merge:
-            logger.log(VERBOSE, "Deleting existing codemeta.json file.")
-            path.unlink()
         super().__init__(
             path,
             create_if_not_exists=True,
@@ -54,16 +50,6 @@ class CodeMeta(ProjectMetadataWriter):
             merge=merge,
             pass_validation=pass_validation,
         )
-
-        # if merge is True, initialize the fields somesy manages
-        if self.merge:
-            # add (or overwrite) the type
-            self._data["@type"] = "SoftwareSourceCode"
-
-            # overwrite authors, maintainers, contributors
-            self._data["author"] = []
-            self._data["maintainer"] = []
-            self._data["contributor"] = []
 
     @property
     def authors(self):
@@ -102,8 +88,6 @@ class CodeMeta(ProjectMetadataWriter):
         """Load codemeta.json file."""
         with self.path.open() as f:
             self._data = json.load(f, object_pairs_hook=OrderedDict)
-        if self.merge:
-            self._upgrade_to_v3()
 
     def _upgrade_to_v3(self) -> None:
         """Normalize an existing CodeMeta file before v3.1 validation."""
@@ -126,7 +110,14 @@ class CodeMeta(ProjectMetadataWriter):
         """Validate codemeta.json content using pydantic class."""
         if self.pass_validation:
             return
-        invalid_fields = validate_codemeta(self._data)
+        loaded_data = self._data
+        if self.merge:
+            self._data = deepcopy(self._data)
+            self._upgrade_to_v3()
+        try:
+            invalid_fields = validate_codemeta(self._data)
+        finally:
+            self._data = loaded_data
         if invalid_fields and self.merge:
             raise ValueError(
                 f"Invalid fields in codemeta.json: {invalid_fields}. Cannot merge with invalid fields."
@@ -134,14 +125,18 @@ class CodeMeta(ProjectMetadataWriter):
 
     def _init_new_file(self) -> None:
         """Create a new codemeta.json file with bare minimum generic data."""
-        data = {
+        data = self._new_data()
+        # dump to file
+        with self.path.open("w+", newline="\n") as f:
+            json.dump(data, f)
+
+    def _new_data(self) -> dict[str, Any]:
+        """Return the bare minimum generic CodeMeta data."""
+        return {
             "@context": self._default_context,
             "@type": "SoftwareSourceCode",
             "author": [],
         }
-        # dump to file
-        with self.path.open("w+", newline="\n") as f:
-            json.dump(data, f)
 
     def save(self, path: Path | None = None) -> None:
         """Save the codemeta.json file."""
@@ -156,7 +151,10 @@ class CodeMeta(ProjectMetadataWriter):
             licenses = data["license"]
             licenses = licenses if isinstance(licenses, list) else [licenses]
             data["license"] = [
-                f"https://spdx.org/licenses/{license}" for license in licenses
+                license
+                if license.startswith("https://spdx.org/licenses/")
+                else f"https://spdx.org/licenses/{license}"
+                for license in licenses
             ]
 
         # if softwareHelp is set, set url to softwareHelp
@@ -302,13 +300,24 @@ class CodeMeta(ProjectMetadataWriter):
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
+        if not self.merge:
+            self._data = self._new_data()
+        else:
+            self._upgrade_to_v3()
+            self._data["@type"] = "SoftwareSourceCode"
+            self._data["author"] = []
+            self._data["maintainer"] = []
+            self._data["contributor"] = []
+
         super().sync(metadata)
         if metadata.doi:
             self._data["identifier"] = f"https://doi.org/{metadata.doi}"
         licenses = metadata.license
-        self.license = (
-            [license.value for license in licenses]
-            if isinstance(licenses, list)
-            else licenses.value
-        )
+        self.license = [
+            f"https://spdx.org/licenses/{license.value}"
+            for license in (licenses if isinstance(licenses, list) else [licenses])
+        ]
         self.contributors = metadata.contributors()
+
+        if "softwareHelp" in self._data:
+            self._data["url"] = self._data["softwareHelp"]

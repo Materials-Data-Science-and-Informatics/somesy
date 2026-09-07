@@ -255,6 +255,10 @@ in the `[config]` section. CLI arguments set in an input file override the
 defaults, while options passed as CLI arguments override the configuration.
 The `-P` shortcut disables pyproject synchronization, while `-V` passes output validation.
 
+Synchronization only writes a target when its parsed metadata changes. Formatter
+choices such as indentation, wrapping, quotes, comments, and mapping-key order are
+therefore preserved; list order and scalar values remain significant.
+
 ### Initialize a project
 
 Use `somesy init` to create a standalone `somesy.toml` from an existing project:
