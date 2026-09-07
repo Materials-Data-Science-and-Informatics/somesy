@@ -246,6 +246,8 @@ class CodeMeta(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
+        if metadata.doi:
+            self._data["identifier"] = f"https://doi.org/{metadata.doi}"
         licenses = metadata.license
         self.license = (
             [license.value for license in licenses]

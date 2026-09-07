@@ -88,6 +88,12 @@ class CFF(ProjectMetadataWriter):
             self.authors, metadata.publication_authors()
         )
 
+    def sync(self, metadata: ProjectMetadata) -> None:
+        """Sync CFF metadata."""
+        super().sync(metadata)
+        if metadata.doi:
+            self._data["doi"] = metadata.doi
+
     @staticmethod
     def _from_person(person: Person | Entity):
         """Convert project metadata person or entity object to cff dict for person format."""

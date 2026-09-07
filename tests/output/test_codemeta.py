@@ -12,6 +12,9 @@ def test_update_codemeta(somesy_input, tmp_path):
     cm.save()
 
     assert codemeta_file.is_file()
+    assert json.loads(codemeta_file.read_text())["identifier"] == (
+        "https://doi.org/10.5281/zenodo.1234567"
+    )
     dat = open(codemeta_file, "rb").read()
     assert dat.endswith(b"}\n")
     assert not dat.endswith(b"}\n\n")

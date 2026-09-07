@@ -26,7 +26,11 @@ def write_somesy_file(
 
     content = {
         "project": BaseModel.model_dump(
-            metadata, mode="json", by_alias=True, exclude_none=True
+            metadata,
+            mode="json",
+            by_alias=True,
+            exclude_defaults=True,
+            exclude_none=True,
         )
     }
     if config is not None:

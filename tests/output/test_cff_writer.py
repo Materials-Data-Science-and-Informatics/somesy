@@ -18,9 +18,13 @@ def test_content_match(cff: CFF):
 
 
 def test_sync(cff: CFF, somesy_input: dict):
+    identifiers = [{"type": "url", "value": "https://example.test/archive"}]
+    cff._data["identifiers"] = identifiers
     cff.sync(somesy_input.project)
     assert cff.name == "testproject"
     assert cff.version == "1.0.0"
+    assert cff._data["doi"] == "10.5281/zenodo.1234567"
+    assert cff._data["identifiers"] == identifiers
 
 
 def test_save_does_not_write_trailing_whitespace(tmp_path):

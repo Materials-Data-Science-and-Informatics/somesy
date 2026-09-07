@@ -36,9 +36,14 @@ def test_init_harvests_project_file_and_git_authors(
     assert result.exit_code == 0, result.stdout
     content = get_input_content(tmp_path / "somesy.toml")
     assert content["project"]["name"] == "test-package"
+    assert "entities" not in content["project"]
     assert any(
         person["email"] == "git@example.com" for person in content["project"]["people"]
     )
+    assert "no_sync_cff" not in content["config"]
+    assert "no_sync_codemeta" not in content["config"]
+    assert "no_sync_pyproject" not in content["config"]
+    assert content["config"]["no_sync_package_json"] is True
 
 
 def test_init_prompts_for_missing_required_metadata(tmp_path, monkeypatch):

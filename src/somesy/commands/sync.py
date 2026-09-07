@@ -8,6 +8,7 @@ from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
 from somesy.codemeta import CodeMeta
+from somesy.codemeta.enrich import enrich as enrich_codemeta
 from somesy.core.core import INPUT_FILES_ORDERED
 from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
@@ -29,6 +30,8 @@ def _sync_file(
     writer_cls: type[ProjectMetadataWriter],
     merge_codemeta: bool | None = False,
     pass_validation: bool | None = False,
+    codemeta_sources: dict[str, Path | list[Path] | None] | None = None,
+    codemeta_root: Path | None = None,
 ):
     """Sync metadata to a file using the provided writer."""
     logger.log(VERBOSE, f"Loading '{file.name}' ...")
@@ -41,6 +44,8 @@ def _sync_file(
     logger.log(VERBOSE, f"Syncing '{file.name}' ...")
     original_data = deepcopy(writer._data)
     writer.sync(metadata)
+    if writer_cls == CodeMeta and codemeta_sources is not None:
+        enrich_codemeta(writer._data, codemeta_sources, codemeta_root or file.parent)
     if writer._data != original_data:
         writer.save(file)
         logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
@@ -97,7 +102,7 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
     logger.debug(f"Project metadata: {pp_metadata}")
 
     # First sync the current project
-    _sync_root_project(conf, metadata)
+    _sync_root_project(conf, metadata, base_dir)
 
     # Then sync each package if defined
     if conf.packages:
@@ -155,7 +160,9 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
             sync(package_input, is_package=True)
 
 
-def _sync_root_project(conf: SomesyConfig, metadata: ProjectMetadata):
+def _sync_root_project(
+    conf: SomesyConfig, metadata: ProjectMetadata, base_dir: Path
+) -> None:
     """Sync metadata files for the root project."""
     # update these only if they exist:
     if conf.pyproject_file and not conf.no_sync_pyproject:
@@ -232,4 +239,16 @@ def _sync_root_project(conf: SomesyConfig, metadata: ProjectMetadata):
             create_if_missing=True,
             merge_codemeta=conf.merge_codemeta,
             pass_validation=conf.pass_validation,
+            codemeta_root=base_dir,
+            codemeta_sources={
+                "pyproject": None if conf.no_sync_pyproject else conf.pyproject_file,
+                "package_json": (
+                    None if conf.no_sync_package_json else conf.package_json_file
+                ),
+                "julia": None if conf.no_sync_julia else conf.julia_file,
+                "fortran": None if conf.no_sync_fortran else conf.fortran_file,
+                "pom_xml": None if conf.no_sync_pom_xml else conf.pom_xml_file,
+                "mkdocs": None if conf.no_sync_mkdocs else conf.mkdocs_file,
+                "rust": None if conf.no_sync_rust else conf.rust_file,
+            },
         )

@@ -62,6 +62,26 @@ def test_same_entity():
     assert Entity(**e5).same_person(Entity(**e7))
 
 
+@pytest.mark.parametrize(
+    ("doi", "expected"),
+    [
+        ("10.5281/zenodo.1234567", "10.5281/zenodo.1234567"),
+        ("https://doi.org/10.5281/zenodo.1234567", "10.5281/zenodo.1234567"),
+    ],
+)
+def test_normalize_project_doi(somesy_input, doi, expected):
+    project = somesy_input.project.model_dump()
+    project["doi"] = doi
+    assert ProjectMetadata(**project).doi == expected
+
+
+def test_reject_invalid_project_doi(somesy_input):
+    project = somesy_input.project.model_dump()
+    project["doi"] = "https://example.test/not-a-doi"
+    with pytest.raises(ValueError, match="DOI must be"):
+        ProjectMetadata(**project)
+
+
 def test_detect_duplicate_person(somesy_input):
     metadata = somesy_input.project
 

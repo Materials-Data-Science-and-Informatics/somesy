@@ -121,8 +121,6 @@ def initialize(
                     "pom_xml": "pom.xml",
                     "mkdocs": "mkdocs.yml",
                     "rust": "Cargo.toml",
-                    "cff": "CITATION.cff",
-                    "codemeta": "codemeta.json",
                 }.items()
             }
         )
