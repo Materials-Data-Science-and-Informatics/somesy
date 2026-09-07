@@ -44,9 +44,8 @@ authors or maintainers.
 
 !!! note
 
-    Currently, provided information about contributors that are neither authors
-    nor maintainers, and all the detailed information on the contributions is
-    not used.
+    Detailed contribution information is synchronized to `codemeta.json` as
+    CodeMeta roles. Other output formats may not support it.
 
     Nevertheless, **we encourage** tracking granular contributor and contribution information
     in order to motivate and acknowledge also minor or invisible contributions to a projects.
