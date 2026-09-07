@@ -9,7 +9,7 @@ from pyld import jsonld
 
 logger = logging.getLogger(__name__)
 
-V2_DOI = "https://doi.org/10.5063/schema/codemeta-2.0"
+V3_CONTEXT = "https://w3id.org/codemeta/3.1"
 
 
 def validate_codemeta(codemeta: dict) -> list:
@@ -22,7 +22,7 @@ def validate_codemeta(codemeta: dict) -> list:
         invalid_fields (list): List of invalid fields.
 
     """
-    schema_path = Path(__file__).parent / "schema-2.jsonld"
+    schema_path = Path(__file__).parent / "schema-3.jsonld"
     invalid_fields = []
 
     # Check for required fields
@@ -35,10 +35,10 @@ def validate_codemeta(codemeta: dict) -> list:
     codemeta_context = codemeta.get("@context", [])
     if isinstance(codemeta_context, str):
         codemeta_context = [codemeta_context]
-    if V2_DOI not in codemeta_context:
+    if V3_CONTEXT not in codemeta_context:
         invalid_fields.append("@context")
         logger.warning(
-            "The @context field in codemeta.json does not contain the Codemeta v2 DOI."
+            "The @context field in codemeta.json does not contain the Codemeta v3.1 context."
         )
 
     try:
@@ -57,10 +57,10 @@ def validate_codemeta(codemeta: dict) -> list:
         if not isinstance(compacted, dict):
             raise TypeError("Codemeta compaction did not produce an object")
 
-        # Check for unmapped fields (fields with ':' indicating schema prefix)
+        # Check for unmapped prefixes while allowing prefixes declared by CodeMeta.
         compacted_keys = set(compacted)
         for key in compacted_keys:
-            if ":" in key:
+            if ":" in key and key.split(":", 1)[0] not in schema_context:
                 logger.error(f"Invalid schema reference found: {key}")
                 invalid_fields.append(key)
 
