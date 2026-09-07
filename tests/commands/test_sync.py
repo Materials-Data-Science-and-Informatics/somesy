@@ -165,6 +165,50 @@ def test_codemeta_enrichment_preserves_canonical_and_merged_values(tmp_path):
     assert codemeta["downloadUrl"] == "https://example.test/download"
 
 
+def test_codemeta_only_sync_still_enriches_from_git(tmp_path):
+    def git(*args):
+        return subprocess.run(
+            ["git", *args], cwd=tmp_path, check=True, capture_output=True, text=True
+        )
+
+    git("init", "-q")
+    git("config", "user.name", "Jane Doe")
+    git("config", "user.email", "jane@example.com")
+    git("config", "commit.gpgsign", "false")
+    git("remote", "add", "origin", "git@github.com:example/project.git")
+    (tmp_path / "somesy.toml").write_text("project")
+    git("add", "somesy.toml")
+    git("commit", "-qm", "initial")
+
+    codemeta_file = tmp_path / "codemeta.json"
+    sync(
+        SomesyInput(
+            config=SomesyConfig(
+                input_file=tmp_path / "somesy.toml",
+                codemeta_file=codemeta_file,
+                no_sync_cff=True,
+                no_sync_pyproject=True,
+                no_sync_package_json=True,
+                no_sync_julia=True,
+                no_sync_fortran=True,
+                no_sync_pom_xml=True,
+                no_sync_mkdocs=True,
+                no_sync_rust=True,
+                pass_validation=True,
+            ),
+            project=ProjectMetadata(
+                name="from somesy",
+                description="Canonical metadata",
+                license=LicenseEnum.MIT,
+                people=[Person(given_names="A", family_names="B", author=True)],
+            ),
+        )
+    )
+
+    codemeta = json.loads(codemeta_file.read_text())
+    assert codemeta["codeRepository"] == "https://github.com/example/project"
+
+
 def test_package_sync(tmp_path, create_files, file_types):
     """Test sync with package handling."""
     # Create main project structure

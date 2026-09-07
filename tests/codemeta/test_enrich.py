@@ -20,7 +20,7 @@ def test_enriches_python_metadata_and_uses_locked_direct_versions(tmp_path):
     )
 
     codemeta = {"name": "canonical"}
-    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"})
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
 
     assert codemeta["programmingLanguage"] == "Python"
     assert codemeta["runtimePlatform"] == "Python >=3.10"
@@ -54,7 +54,7 @@ def test_enrichment_never_overwrites_canonical_codemeta_values(tmp_path):
         "softwareRequirements": ["custom requirement"],
     }
 
-    enrich(codemeta, {"package_json": tmp_path / "package.json"})
+    enrich(codemeta, {"package_json": tmp_path / "package.json"}, tmp_path)
 
     assert codemeta["name"] == "from somesy"
     assert codemeta["runtimePlatform"] == "custom runtime"
@@ -67,7 +67,8 @@ def test_enriches_other_supported_language_manifests(tmp_path):
         '[package]\nrust-version = "1.80"\n[dependencies]\nserde = "1"\n'
     )
     (tmp_path / "Project.toml").write_text(
-        '[deps]\nExample = "uuid"\n[compat]\njulia = "1.10"\n'
+        '[deps]\nExample = "uuid"\nNoCompat = "other-uuid"\n'
+        '[compat]\njulia = "1.10"\nExample = "0.5"\n'
     )
     (tmp_path / "fpm.toml").write_text(
         '[dependencies]\nlib = { git = "https://example.test/lib" }\n'
@@ -85,6 +86,7 @@ def test_enriches_other_supported_language_manifests(tmp_path):
             "fortran": tmp_path / "fpm.toml",
             "pom_xml": tmp_path / "pom.xml",
         },
+        tmp_path,
     )
 
     assert codemeta["programmingLanguage"] == "Rust, Julia, Fortran, Java"
@@ -92,9 +94,13 @@ def test_enriches_other_supported_language_manifests(tmp_path):
     assert {item["name"] for item in codemeta["softwareRequirements"]} == {
         "serde",
         "Example",
+        "NoCompat",
         "lib",
         "junit",
     }
+    requirements = {item["name"]: item for item in codemeta["softwareRequirements"]}
+    assert requirements["Example"]["version"] == "0.5"
+    assert "version" not in requirements["NoCompat"]
 
 
 def test_enriches_missing_dates_and_repository_from_git(tmp_path):
@@ -114,7 +120,7 @@ def test_enriches_missing_dates_and_repository_from_git(tmp_path):
     git("remote", "add", "origin", "git@github.com:example/project.git")
 
     codemeta = {}
-    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"})
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
 
     assert codemeta["codeRepository"] == "https://github.com/example/project"
     assert codemeta["issueTracker"] == "https://github.com/example/project/issues"
@@ -131,7 +137,24 @@ def test_enrichment_omits_unknown_git_creation_date(tmp_path, mocker):
     )
 
     codemeta = {}
-    enrich(codemeta, {"pyproject": path})
+    enrich(codemeta, {"pyproject": path}, tmp_path)
 
     assert "dateCreated" not in codemeta
     assert codemeta["dateModified"] == "2024-01-01"
+
+
+def test_language_file_issue_tracker_takes_priority_over_git(tmp_path, mocker):
+    path = tmp_path / "pyproject.toml"
+    path.write_text(
+        "[project]\nname = 'example'\n[project.urls]\n"
+        "Issues = 'https://example.test/issues'\n"
+    )
+    mocker.patch(
+        "somesy.codemeta.enrich.harvest_git",
+        return_value=GitMetadata(repository="https://github.com/example/project.git"),
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": path}, tmp_path)
+
+    assert codemeta["issueTracker"] == "https://example.test/issues"

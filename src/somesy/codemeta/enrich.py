@@ -18,7 +18,9 @@ from somesy.git import harvest as harvest_git
 
 
 def enrich(
-    codemeta: dict[str, Any], sources: dict[str, Path | list[Path] | None]
+    codemeta: dict[str, Any],
+    sources: dict[str, Path | list[Path] | None],
+    root: Path,
 ) -> None:
     """Fill CodeMeta fields absent after canonical Somesy synchronization.
 
@@ -38,9 +40,7 @@ def enrich(
     _add(codemeta, "programmingLanguage", ", ".join(_unique(values["languages"])))
     _add(codemeta, "runtimePlatform", ", ".join(_unique(values["runtimes"])))
 
-    root = _source_root(sources)
-    if root is not None:
-        _read_git(root, values)
+    _read_git(root, values)
     for key in (
         "codeRepository",
         "issueTracker",
@@ -55,13 +55,6 @@ def _paths(paths: Path | list[Path] | None) -> list[Path]:
     if paths is None:
         return []
     return paths if isinstance(paths, list) else [paths]
-
-
-def _source_root(sources: dict[str, Path | list[Path] | None]) -> Path | None:
-    for paths in sources.values():
-        if values := _paths(paths):
-            return values[0].parent
-    return None
 
 
 def _read_source(source_type: str, path: Path, values: dict[str, Any]) -> None:
@@ -139,9 +132,10 @@ def _read_toml_project(source_type: str, path: Path, values: dict[str, Any]) -> 
         runtime = "Rust"
     elif source_type == "julia":
         values["languages"].append("Julia")
-        if version := data.get("compat", {}).get("julia"):
+        compat = data.get("compat", {})
+        if version := compat.get("julia"):
             values["runtimes"].append(f"Julia {version}")
-        dependencies = data.get("deps", {})
+        dependencies = {name: compat.get(name, "") for name in data.get("deps", {})}
         runtime = "Julia"
     else:
         values["languages"].append("Fortran")
@@ -265,7 +259,7 @@ def _read_git(root: Path, values: dict[str, Any]) -> None:
         values["codeRepository"] = repository.removesuffix(".git")
         parsed = urlparse(values["codeRepository"])
         if parsed.netloc in {"github.com", "gitlab.com"}:
-            values["issueTracker"] = values["codeRepository"] + "/issues"
+            _url(values, "issueTracker", values["codeRepository"] + "/issues")
     values["dateCreated"] = (
         metadata.date_created.isoformat() if metadata.date_created else None
     )
