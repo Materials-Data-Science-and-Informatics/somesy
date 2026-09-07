@@ -3145,7 +3145,7 @@
 <span class="sd">        invalid_fields (list): List of invalid fields.</span>
 
 <span class="sd">    """</span>
-    <span class="n">schema_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"schema-2.jsonld"</span>
+    <span class="n">schema_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">"schema-3.jsonld"</span>
     <span class="n">invalid_fields</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># Check for required fields</span>
@@ -3158,10 +3158,10 @@
     <span class="n">codemeta_context</span> <span class="o">=</span> <span class="n">codemeta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"@context"</span><span class="p">,</span> <span class="p">[])</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">codemeta_context</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">codemeta_context</span> <span class="o">=</span> <span class="p">[</span><span class="n">codemeta_context</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">V2_DOI</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">codemeta_context</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">V3_CONTEXT</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">codemeta_context</span><span class="p">:</span>
         <span class="n">invalid_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"@context"</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s2">"The @context field in codemeta.json does not contain the Codemeta v2 DOI."</span>
+            <span class="s2">"The @context field in codemeta.json does not contain the Codemeta v3.1 context."</span>
         <span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -3180,10 +3180,10 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">compacted</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Codemeta compaction did not produce an object"</span><span class="p">)</span>
 
-        <span class="c1"># Check for unmapped fields (fields with ':' indicating schema prefix)</span>
+        <span class="c1"># Check for unmapped prefixes while allowing prefixes declared by CodeMeta.</span>
         <span class="n">compacted_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">compacted</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">compacted_keys</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">":"</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">":"</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">schema_context</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid schema reference found: </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
                 <span class="n">invalid_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 

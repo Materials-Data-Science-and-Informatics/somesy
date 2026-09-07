@@ -203,7 +203,7 @@
       }
     },
     "z_3187dccd59625139_utils_py":{
-      "hash":"807912d975eae26c72b595d50ab9fa34",
+      "hash":"3b412a1405b8b84a456456aa49a60e56",
       "index":{
         "url":"z_3187dccd59625139_utils_py.html",
         "file":"src/somesy/codemeta/utils.py",
@@ -213,7 +213,7 @@
           "n_files":1,
           "n_statements":48,
           "n_excluded":0,
-          "n_missing":8,
+          "n_missing":7,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -221,7 +221,7 @@
       }
     },
     "z_3187dccd59625139_writer_py":{
-      "hash":"bad37ea877dcd21435dffea2b5adaa43",
+      "hash":"f9e636b38d856c91306a747486562e09",
       "index":{
         "url":"z_3187dccd59625139_writer_py.html",
         "file":"src/somesy/codemeta/writer.py",
@@ -229,9 +229,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":139,
+          "n_statements":182,
           "n_excluded":0,
-          "n_missing":47,
+          "n_missing":42,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
