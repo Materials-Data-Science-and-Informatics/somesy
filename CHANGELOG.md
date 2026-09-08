@@ -6,6 +6,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
 
 ## Unreleased
 
+## [v0.8.1](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.1) <small>(2026-09-08)</small> { id="0.8.1" }
+
 - **Added**
   - add `somesy init --non-interactive` for automated and batch initialization
     - write the best available harvested metadata without prompting
