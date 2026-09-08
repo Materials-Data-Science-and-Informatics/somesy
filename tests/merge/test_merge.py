@@ -3,8 +3,9 @@
 import subprocess
 
 import pytest
+from pydantic import ValidationError
 
-from somesy.core.models import Person
+from somesy.core.models import LicenseEnum, Person
 from somesy.git.harvest import harvest
 from somesy.git.models import GitAuthor, GitMetadata
 from somesy.harvest import harvest_sources
@@ -70,6 +71,39 @@ def test_merge_metadata_adds_git_authors_as_code_authors():
     assert [str(value) for value in (result.people[0].contribution_types or [])] == [
         "code"
     ]
+
+
+def test_allow_incomplete_still_rejects_invalid_metadata():
+    with pytest.raises(ValidationError):
+        merge_metadata(
+            [
+                {
+                    "name": "project",
+                    "description": "description",
+                    "license": "not-an-spdx-license",
+                    "people": [
+                        Person(given_names="Jane", family_names="Doe", author=True)
+                    ],
+                }
+            ],
+            allow_incomplete=True,
+        )
+
+
+def test_allow_incomplete_validates_supplied_metadata():
+    result = merge_metadata(
+        [
+            {
+                "name": "project",
+                "license": "MIT",
+                "people": [Person(given_names="Jane", family_names="Doe", author=True)],
+            }
+        ],
+        allow_incomplete=True,
+    )
+
+    assert result.description is None
+    assert result.license is LicenseEnum.MIT
 
 
 def _commit(path, name, email, message):

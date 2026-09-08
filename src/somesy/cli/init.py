@@ -22,12 +22,16 @@ app = typer.Typer()
 
 
 def _prompt_missing_metadata(
-    sources: list[tuple[Path, dict[str, Any]]], git_metadata
+    sources: list[tuple[Path, dict[str, Any]]],
+    git_metadata,
+    non_interactive: bool = False,
 ) -> dict[str, Any]:
-    """Prompt for required metadata that harvesting did not provide."""
+    """Prompt or warn for required metadata that harvesting did not provide."""
     harvested = [content for _, content in sources]
     if git_metadata is not None:
-        harvested.append(git_metadata.model_dump(exclude_none=True))
+        harvested.append(
+            git_metadata.model_dump(exclude_none=True, exclude_defaults=False)
+        )
     fallback: dict[str, Any] = {}
 
     for field, prompt in {
@@ -35,16 +39,22 @@ def _prompt_missing_metadata(
         "description": "Project description",
     }.items():
         if not any(source.get(field) for source in harvested):
-            fallback[field] = typer.prompt(prompt)
+            if non_interactive:
+                logger.warning("Missing required metadata: %s", field)
+            else:
+                fallback[field] = typer.prompt(prompt)
 
     if not any(source.get("license") for source in harvested):
-        while True:
-            value = typer.prompt("SPDX license")
-            try:
-                fallback["license"] = LicenseEnum(value)
-                break
-            except ValueError:
-                typer.echo(f"Unknown SPDX license: {value}")
+        if non_interactive:
+            logger.warning("Missing required metadata: license")
+        else:
+            while True:
+                value = typer.prompt("SPDX license")
+                try:
+                    fallback["license"] = LicenseEnum(value)
+                    break
+                except ValueError:
+                    typer.echo(f"Unknown SPDX license: {value}")
 
     def is_author(person: Any) -> bool:
         return (
@@ -59,26 +69,31 @@ def _prompt_missing_metadata(
         for key in ("people", "entities", "authors")
     )
     if not has_author:
-        author_type = typer.prompt("Author type", type=str, default="person").lower()
-        while author_type not in {"person", "entity"}:
-            typer.echo("Author type must be 'person' or 'entity'.")
-            author_type = typer.prompt("Author type", default="person").lower()
-        if author_type == "person":
-            person = {
-                "given_names": typer.prompt("Author given names"),
-                "family_names": typer.prompt("Author family names"),
-                "author": True,
-            }
-            email = typer.prompt("Author email", default="")
-            if email:
-                person["email"] = email
-            fallback["people"] = [Person(**person)]
+        if non_interactive:
+            logger.warning("Missing required metadata: author")
         else:
-            name = typer.prompt("Author organization")
-            fallback["entities"] = [{"name": name, "author": True}]
-            email = typer.prompt("Author email", default="")
-            if email:
-                fallback["entities"][0]["email"] = email
+            author_type = typer.prompt(
+                "Author type", type=str, default="person"
+            ).lower()
+            while author_type not in {"person", "entity"}:
+                typer.echo("Author type must be 'person' or 'entity'.")
+                author_type = typer.prompt("Author type", default="person").lower()
+            if author_type == "person":
+                person = {
+                    "given_names": typer.prompt("Author given names"),
+                    "family_names": typer.prompt("Author family names"),
+                    "author": True,
+                }
+                email = typer.prompt("Author email", default="")
+                if email:
+                    person["email"] = email
+                fallback["people"] = [Person(**person)]
+            else:
+                name = typer.prompt("Author organization")
+                fallback["entities"] = [{"name": name, "author": True}]
+                email = typer.prompt("Author email", default="")
+                if email:
+                    fallback["entities"][0]["email"] = email
 
     return fallback
 
@@ -95,6 +110,11 @@ def initialize(
         **file_arg_config,
     ),
     overwrite: bool = typer.Option(False, "--overwrite"),
+    non_interactive: bool = typer.Option(
+        False,
+        "--non-interactive",
+        help="Do not prompt for missing metadata; report warnings instead.",
+    ),
 ):
     """Harvest project metadata and create a somesy.toml file."""
     if ctx.invoked_subcommand is not None:
@@ -102,28 +122,36 @@ def initialize(
     root = Path.cwd()
     sources = harvest_sources(root)
     git_metadata = harvest_git(root)
-    fallback = _prompt_missing_metadata(sources, git_metadata)
+    fallback = _prompt_missing_metadata(sources, git_metadata, non_interactive)
     source_content = [content for _, content in sources]
     if fallback:
         source_content.append(fallback)
-    metadata = merge_metadata(source_content, git_metadata)
+    metadata = merge_metadata(
+        source_content, git_metadata, allow_incomplete=non_interactive
+    )
     source_names = {path.name for path, _ in sources}
-    config = None
-    if source_names:
-        config = SomesyConfig.model_validate(
-            {
-                f"no_sync_{key}": filename not in source_names
-                for key, filename in {
-                    "pyproject": "pyproject.toml",
-                    "package_json": "package.json",
-                    "julia": "Project.toml",
-                    "fortran": "fpm.toml",
-                    "pom_xml": "pom.xml",
-                    "mkdocs": "mkdocs.yml",
-                    "rust": "Cargo.toml",
-                }.items()
-            }
+    incomplete = (
+        any(
+            getattr(metadata, field, None) is None
+            for field in ("name", "description", "license")
         )
+        or not metadata.authors()
+    )
+    config = None
+    if source_names or incomplete:
+        config_data = {
+            f"no_sync_{key}": filename not in source_names
+            for key, filename in {
+                "pyproject": "pyproject.toml",
+                "package_json": "package.json",
+                "julia": "Project.toml",
+                "fortran": "fpm.toml",
+                "pom_xml": "pom.xml",
+                "mkdocs": "mkdocs.yml",
+                "rust": "Cargo.toml",
+            }.items()
+        }
+        config = SomesyConfig.model_validate(config_data)
     output = output_file if output_file.is_absolute() else root / output_file
     write_somesy_file(metadata, output, config=config, overwrite=overwrite)
     typer.echo(f"Created {output}")
