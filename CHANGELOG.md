@@ -4,6 +4,15 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## Unreleased
+
+- **Added**
+  - add `somesy init --non-interactive` for automated and batch initialization
+    - write the best available harvested metadata without prompting
+    - warn when required project metadata is missing
+    - allow partial generated metadata to be synchronized with an explicit
+      `--pass-validation` option or `pass_validation` config setting
+
 ## [v0.8.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.0) <small>(2026-09-07)</small> { id="0.8.0" }
 
 - **Added**
