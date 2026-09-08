@@ -77,7 +77,7 @@ class CFF(ProjectMetadataWriter):
         if "abstract" in self._data:
             if "\n" in self._data["abstract"]:
                 self._data["abstract"] = LiteralScalarString(self._data["abstract"])
-        else:
+        elif self.description is not None:
             self._data["abstract"] = str(self.description)
 
         self._yaml.dump(self._data, path)

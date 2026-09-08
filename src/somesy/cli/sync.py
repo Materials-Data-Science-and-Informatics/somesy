@@ -156,7 +156,7 @@ def sync(
         False,
         "--pass-validation",
         "-V",
-        help="Pass validation of metadata files (default: False)",
+        help="Allow incomplete input and pass output validation (default: False)",
     ),
     packages: list[Path] | None = typer.Option(
         None,

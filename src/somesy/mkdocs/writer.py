@@ -115,10 +115,13 @@ class MkDocs(ProjectMetadataWriter):
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync the MkDocs object with the ProjectMetadata object."""
-        self.name = metadata.name
-        self.description = metadata.description
+        if metadata.name is not None:
+            self.name = metadata.name
+        if metadata.description is not None:
+            self.description = metadata.description
         # no author merge since it is a free text field
-        self.authors = metadata.authors()
+        if metadata.authors():
+            self.authors = metadata.authors()
         if metadata.homepage:
             self.homepage = str(metadata.homepage)
         if metadata.repository:

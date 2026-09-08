@@ -12,6 +12,7 @@ from somesy.codemeta import CodeMeta
 from somesy.commands.sync import _semantic_data, _sync_file, sync
 from somesy.core.models import (
     LicenseEnum,
+    PartialProjectMetadata,
     Person,
     ProjectMetadata,
     SomesyConfig,
@@ -217,6 +218,31 @@ def test_codemeta_derived_values_converge_after_one_write(tmp_path):
     assert data["softwareHelp"] == data["url"] == "https://example.com/project"
     _sync_codemeta(metadata, path, tmp_path)
     assert path.read_bytes() == first
+
+
+def test_codemeta_merge_preserves_authors_missing_from_partial_metadata(tmp_path):
+    path = tmp_path / "codemeta.json"
+    path.write_text(
+        json.dumps(
+            {
+                "@context": "https://w3id.org/codemeta/3.1",
+                "@type": "SoftwareSourceCode",
+                "author": [{"@type": "Organization", "name": "Existing Author"}],
+            }
+        )
+    )
+    _sync_file(
+        PartialProjectMetadata(name="project", license="MIT"),
+        path,
+        CodeMeta,
+        merge_codemeta=True,
+        pass_validation=True,
+        codemeta_sources={},
+    )
+
+    assert json.loads(path.read_text())["author"] == [
+        {"@type": "Organization", "name": "Existing Author"}
+    ]
 
 
 def test_sync_file_does_not_rewrite_unchanged_data(tmp_path):
@@ -524,6 +550,35 @@ def test_package_sync_missing_config(tmp_path, create_files, file_types):
     # Verify package files don't exist
     assert not (package_dir / "CITATION.cff").exists()
     assert not (package_dir / "codemeta.json").exists()
+
+
+def test_package_sync_pass_validation_loads_incomplete_input(tmp_path):
+    """Apply the root pass-validation setting while loading a package."""
+    package_dir = tmp_path / "package"
+    package_dir.mkdir()
+    (package_dir / "somesy.toml").write_text(
+        "[project]\nname = 'child'\nlicense = 'MIT'\n"
+    )
+    root = SomesyInput(
+        config=SomesyConfig(
+            input_file=tmp_path / "somesy.toml",
+            packages=[Path("package")],
+            no_sync_cff=True,
+            no_sync_pyproject=True,
+            no_sync_package_json=True,
+            no_sync_julia=True,
+            no_sync_fortran=True,
+            no_sync_pom_xml=True,
+            no_sync_mkdocs=True,
+            no_sync_rust=True,
+            pass_validation=True,
+        ),
+        project=_codemeta_metadata(),
+    )
+
+    sync(root)
+
+    assert (package_dir / "codemeta.json").exists()
 
 
 def test_sync_with_flags(create_files, file_types):

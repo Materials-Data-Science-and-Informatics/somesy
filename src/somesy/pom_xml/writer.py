@@ -246,10 +246,10 @@ class POM(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
-        licenses = metadata.license
-        self.license = (
-            [license.value for license in licenses]
-            if isinstance(licenses, list)
-            else licenses.value
-        )
+        if licenses := metadata.license:
+            self.license = (
+                [license.value for license in licenses]
+                if isinstance(licenses, list)
+                else licenses.value
+            )
         self.contributors = self._sync_person_list(self.contributors, metadata.people)

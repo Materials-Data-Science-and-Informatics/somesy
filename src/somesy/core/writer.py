@@ -293,8 +293,10 @@ class ProjectMetadataWriter(ABC):
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
-        self.name = metadata.name
-        self.description = metadata.description
+        if metadata.name is not None:
+            self.name = metadata.name
+        if metadata.description is not None:
+            self.description = metadata.description
 
         if metadata.version:
             self.version = metadata.version
@@ -302,15 +304,16 @@ class ProjectMetadataWriter(ABC):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
-        self._sync_authors(metadata)
+        if metadata.authors():
+            self._sync_authors(metadata)
         self.maintainers = self._sync_person_list(
             self.maintainers, metadata.maintainers()
         )
 
-        licenses = metadata.license
-        self.license = (
-            licenses[0].value if isinstance(licenses, list) else licenses.value
-        )
+        if licenses := metadata.license:
+            self.license = (
+                licenses[0].value if isinstance(licenses, list) else licenses.value
+            )
 
         self.homepage = str(metadata.homepage) if metadata.homepage else None
         self.repository = str(metadata.repository) if metadata.repository else None

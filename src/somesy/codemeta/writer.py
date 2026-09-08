@@ -305,18 +305,19 @@ class CodeMeta(ProjectMetadataWriter):
         else:
             self._upgrade_to_v3()
             self._data["@type"] = "SoftwareSourceCode"
-            self._data["author"] = []
+            if metadata.authors():
+                self._data["author"] = []
             self._data["maintainer"] = []
             self._data["contributor"] = []
 
         super().sync(metadata)
         if metadata.doi:
             self._data["identifier"] = f"https://doi.org/{metadata.doi}"
-        licenses = metadata.license
-        self.license = [
-            f"https://spdx.org/licenses/{license.value}"
-            for license in (licenses if isinstance(licenses, list) else [licenses])
-        ]
+        if licenses := metadata.license:
+            self.license = [
+                f"https://spdx.org/licenses/{license.value}"
+                for license in (licenses if isinstance(licenses, list) else [licenses])
+            ]
         self.contributors = metadata.contributors()
 
         if "softwareHelp" in self._data:
