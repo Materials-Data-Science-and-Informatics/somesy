@@ -3282,7 +3282,7 @@ Furthermore, <code>somesy</code> might support the
 <tbody>
 <tr>
 <td>project</td>
-<td>ProjectMetadata</td>
+<td>ProjectMetadata / PartialProjectMetadata</td>
 <td><strong>yes</strong></td>
 <td></td>
 <td>Project metadata to be used and synchronized.</td>
@@ -3914,7 +3914,7 @@ values declared in a somesy input file (such as <code>somesy.toml</code>).</p>
 <td>bool</td>
 <td>no</td>
 <td>false</td>
-<td>Pass validation for all output files.</td>
+<td>Allow incomplete input and pass output validation.</td>
 </tr>
 <tr>
 <td>packages</td>
@@ -4501,8 +4501,9 @@ filled with <code>ror id</code>.</p>
 <span class=" -Color -Color-Faint">│</span>                                                    codemeta.json file        <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    (default: False)          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    <span class=" -Color -Color-Faint">[default: overwrite]     </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-V</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">      </span>  Pass validation of        <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                    metadata files (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-V</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">      </span>  Allow incomplete input    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                    and pass output           <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                    validation (default:      <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    False)                    <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--packages</span>              <span class=" -Color -Color-Bold -Color-Bold-Green">-k</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span>  Packages (subfolders) for <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">│</span>                                                    monorepos with their own  <span class=" -Color -Color-Faint">│</span>
@@ -4537,6 +4538,10 @@ file is written.</p>
 email address. For an entity, it asks for the organization name and optionally
 an email address. Git authors count as project authors; therefore, the author
 prompt is shown only when no author was found in the harvested metadata.</p>
+<p>For scripts, use <code>somesy init --non-interactive</code>. It never prompts, warns about
+any missing required values, and writes the harvested metadata. To synchronize
+an incomplete file, explicitly use <code>somesy sync --pass-validation</code> or set
+<code>pass_validation = true</code> in the config; missing values are omitted from output.</p>
 <p>Detected project files are enabled as synchronization targets. Targets that are
 not present are disabled in the generated <code>[config]</code> section. The generated file
 is not overwritten by default:</p>

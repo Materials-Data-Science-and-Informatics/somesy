@@ -3722,12 +3722,12 @@
 <span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
-        <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-            <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
-        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">licenses</span> <span class="o">:=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">people</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -4066,12 +4066,12 @@
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">    """</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
-    <span class="n">licenses</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-        <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
-    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">licenses</span> <span class="o">:=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">[</span><span class="n">license</span><span class="o">.</span><span class="n">value</span> <span class="k">for</span> <span class="n">license</span> <span class="ow">in</span> <span class="n">licenses</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">licenses</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="k">else</span> <span class="n">licenses</span><span class="o">.</span><span class="n">value</span>
+        <span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">people</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>

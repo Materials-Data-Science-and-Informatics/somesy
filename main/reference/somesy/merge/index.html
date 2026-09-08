@@ -3002,12 +3002,14 @@
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">merge_metadata</span><span class="p">(</span>
     <span class="n">sources</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
     <span class="n">git</span><span class="p">:</span> <span class="n">GitMetadata</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">allow_incomplete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectMetadata</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Merge harvested endpoint data and Git data into ProjectMetadata.</p>
+        <p>Merge harvested endpoint and Git data, optionally allowing missing fields.</p>
 
 
             <details class="mkdocstrings-source">
@@ -3050,10 +3052,17 @@
 <span class="normal">149</span>
 <span class="normal">150</span>
 <span class="normal">151</span>
-<span class="normal">152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">merge_metadata</span><span class="p">(</span>
-    <span class="n">sources</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span> <span class="n">git</span><span class="p">:</span> <span class="n">GitMetadata</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">merge_metadata</span><span class="p">(</span>
+    <span class="n">sources</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]],</span>
+    <span class="n">git</span><span class="p">:</span> <span class="n">GitMetadata</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">allow_incomplete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProjectMetadata</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""Merge harvested endpoint data and Git data into ProjectMetadata."""</span>
+<span class="w">    </span><span class="sd">"""Merge harvested endpoint and Git data, optionally allowing missing fields."""</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"people"</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">"entities"</span><span class="p">:</span> <span class="p">[]}</span>
     <span class="n">keywords</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -3088,7 +3097,8 @@
 
     <span class="k">if</span> <span class="n">keywords</span><span class="p">:</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">"keywords"</span><span class="p">]</span> <span class="o">=</span> <span class="n">keywords</span>
-    <span class="k">return</span> <span class="n">ProjectMetadata</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">PartialProjectMetadata</span> <span class="k">if</span> <span class="n">allow_incomplete</span> <span class="k">else</span> <span class="n">ProjectMetadata</span>
+    <span class="k">return</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

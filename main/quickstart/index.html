@@ -3173,6 +3173,10 @@ name, description, SPDX license, and one author. An author can be a person or an
 organization. Existing project files are enabled as sync targets; absent files
 are disabled. Use <code>--output-file</code> to choose another path or <code>--overwrite</code> to
 replace an existing file.</p>
+<p>For scripts, <code>somesy init --non-interactive</code> never prompts. It writes the
+harvested metadata and warns about missing required values. To synchronize an
+incomplete file, explicitly use <code>somesy sync --pass-validation</code> or set
+<code>pass_validation = true</code> in the config.</p>
 <div class="highlight"><pre><span></span><code>somesy<span class="w"> </span>init<span class="w"> </span>--output-file<span class="w"> </span>somesy.toml<span class="w"> </span>--overwrite
 </code></pre></div>
 <p>For manual configuration of sync options, use <code>somesy init config</code>.</p>
