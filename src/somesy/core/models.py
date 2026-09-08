@@ -245,7 +245,7 @@ class SomesyConfig(SomesyBaseModel):
     # property to pass validation for all inputs/outputs
     pass_validation: Annotated[
         bool | None,
-        Field(description="Pass validation for all output files."),
+        Field(description="Allow incomplete input and pass output validation."),
     ] = False
 
     # packages (sub-folders) for monorepos with their own somesy config
@@ -272,7 +272,8 @@ class SomesyConfig(SomesyBaseModel):
         """Based on the somesy config, load the complete somesy input."""
         # get metadata+config from specified input file
         somesy_input = SomesyInput.from_input_file(
-            self.input_file or Path("somesy.toml")
+            self.input_file or Path("somesy.toml"),
+            allow_incomplete=bool(self.pass_validation),
         )
         # update input with merged config settings (cli overrides config file)
         dct: dict[str, Any] = {}
@@ -794,13 +795,26 @@ class ProjectMetadata(SomesyBaseModel):
         return contributors
 
 
+class PartialProjectMetadata(ProjectMetadata):
+    """Validated project metadata that may omit normally required values."""
+
+    name: str | None = None  # type: ignore[assignment]
+    description: str | None = None  # type: ignore[assignment]
+    license: LicenseEnum | list[LicenseEnum] | None = None  # type: ignore[assignment]
+
+    @model_validator(mode="after")
+    def at_least_one_author(self) -> PartialProjectMetadata:
+        """Allow an author to be omitted while retaining all field validation."""
+        return self
+
+
 class SomesyInput(SomesyBaseModel):
     """The complete somesy input file (`somesy.toml`) or section (`pyproject.toml`)."""
 
     _origin: Path | None
 
     project: Annotated[
-        ProjectMetadata,
+        ProjectMetadata | PartialProjectMetadata,
         Field(description="Project metadata to be used and synchronized."),
     ]
     config: Annotated[
@@ -815,6 +829,10 @@ class SomesyInput(SomesyBaseModel):
     @model_validator(mode="after")
     def set_origin(self):
         """Set the origin of the input file."""
+        if isinstance(self.project, PartialProjectMetadata) and not bool(
+            self.config.pass_validation
+        ):
+            ProjectMetadata.model_validate(self.project.model_dump())
         if self.config and self.config.input_file:
             self._origin = self.config.input_file
         return self
@@ -835,9 +853,23 @@ class SomesyInput(SomesyBaseModel):
         return str(path).endswith("somesy.toml")
 
     @classmethod
-    def from_input_file(cls, path: Path) -> SomesyInput:
+    def from_input_file(
+        cls, path: Path, *, allow_incomplete: bool = False
+    ) -> SomesyInput:
         """Load somesy input from given file."""
         content = get_input_content(path)
-        ret = SomesyInput(**content)
+        config = SomesyConfig(**content.get("config", {}))
+        if allow_incomplete:
+            config.pass_validation = True
+        project_model = (
+            PartialProjectMetadata if config.pass_validation else ProjectMetadata
+        )
+        ret = cls.model_validate(
+            {
+                **content,
+                "project": project_model(**content["project"]),
+                "config": config,
+            }
+        )
         ret._origin = path
         return ret

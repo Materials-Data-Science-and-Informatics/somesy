@@ -104,7 +104,9 @@ class Julia(ProjectMetadataWriter):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
         # overridden to not sync fields that are not present in the Project.toml file
-        self.name = metadata.name
+        if metadata.name is not None:
+            self.name = metadata.name
         self.version = metadata.version
 
-        self._sync_authors(metadata)
+        if metadata.authors():
+            self._sync_authors(metadata)

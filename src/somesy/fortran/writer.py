@@ -139,8 +139,10 @@ class Fortran(ProjectMetadataWriter):
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
-        self.name = metadata.name
-        self.description = metadata.description
+        if metadata.name is not None:
+            self.name = metadata.name
+        if metadata.description is not None:
+            self.description = metadata.description
 
         if metadata.version:
             self.version = metadata.version
@@ -148,7 +150,8 @@ class Fortran(ProjectMetadataWriter):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
-        self.authors = metadata.authors()
+        if metadata.authors():
+            self.authors = metadata.authors()
         maintainers = metadata.maintainers()
 
         # set if not empty
@@ -156,11 +159,11 @@ class Fortran(ProjectMetadataWriter):
             # only one maintainer is allowed
             self.maintainers = maintainers
 
-        licenses = metadata.license
-        self.license = (
-            " OR ".join(license.value for license in licenses)
-            if isinstance(licenses, list)
-            else licenses.value
-        )
+        if licenses := metadata.license:
+            self.license = (
+                " OR ".join(license.value for license in licenses)
+                if isinstance(licenses, list)
+                else licenses.value
+            )
 
         self.homepage = str(metadata.homepage) if metadata.homepage else None

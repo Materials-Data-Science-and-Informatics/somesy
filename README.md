@@ -144,6 +144,11 @@ organization. Existing project files are enabled as sync targets; absent files
 are disabled. Use `--output-file` to choose another path or `--overwrite` to
 replace an existing file.
 
+For scripts, `somesy init --non-interactive` never prompts. It writes the
+harvested metadata and warns about missing required values. To synchronize an
+incomplete file, explicitly use `somesy sync --pass-validation` or set
+`pass_validation = true` in the config.
+
 ```bash
 somesy init --output-file somesy.toml --overwrite
 ```

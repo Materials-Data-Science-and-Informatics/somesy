@@ -7,7 +7,7 @@ import re
 from collections.abc import Iterable
 from typing import Any
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import Entity, PartialProjectMetadata, Person, ProjectMetadata
 from somesy.git.models import GitAuthor, GitMetadata
 
 logger = logging.getLogger("somesy")
@@ -112,9 +112,12 @@ def _git_person(author: GitAuthor) -> Person | None:
 
 
 def merge_metadata(
-    sources: Iterable[dict[str, Any]], git: GitMetadata | None = None
+    sources: Iterable[dict[str, Any]],
+    git: GitMetadata | None = None,
+    *,
+    allow_incomplete: bool = False,
 ) -> ProjectMetadata:
-    """Merge harvested endpoint data and Git data into ProjectMetadata."""
+    """Merge harvested endpoint and Git data, optionally allowing missing fields."""
     data: dict[str, Any] = {"people": [], "entities": []}
     keywords: list[str] = []
 
@@ -149,4 +152,5 @@ def merge_metadata(
 
     if keywords:
         data["keywords"] = keywords
-    return ProjectMetadata(**data)
+    model = PartialProjectMetadata if allow_incomplete else ProjectMetadata
+    return model(**data)

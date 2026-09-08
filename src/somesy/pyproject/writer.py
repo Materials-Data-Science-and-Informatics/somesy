@@ -269,7 +269,8 @@ class Poetry(PyprojectCommon):
         # Restore original _from_person method
         self._from_person = original_from_person  # type: ignore
 
-        self.license = license_expression(metadata.license)
+        if metadata.license:
+            self.license = license_expression(metadata.license)
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
@@ -341,7 +342,8 @@ class SetupTools(PyprojectCommon):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file and fix license field."""
         super().sync(metadata)
-        self.license = license_expression(metadata.license)
+        if metadata.license:
+            self.license = license_expression(metadata.license)
 
 
 # ----

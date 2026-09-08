@@ -284,6 +284,11 @@ email address. For an entity, it asks for the organization name and optionally
 an email address. Git authors count as project authors; therefore, the author
 prompt is shown only when no author was found in the harvested metadata.
 
+For scripts, use `somesy init --non-interactive`. It never prompts, warns about
+any missing required values, and writes the harvested metadata. To synchronize
+an incomplete file, explicitly use `somesy sync --pass-validation` or set
+`pass_validation = true` in the config; missing values are omitted from output.
+
 Detected project files are enabled as synchronization targets. Targets that are
 not present are disabled in the generated `[config]` section. The generated file
 is not overwritten by default:

@@ -134,7 +134,9 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
 
             for config_file in config_files:
                 try:
-                    package_input = SomesyInput.from_input_file(config_file)
+                    package_input = SomesyInput.from_input_file(
+                        config_file, allow_incomplete=bool(conf.pass_validation)
+                    )
                     logger.debug(f"Found config file: {config_file}")
                     break
                 except (FileNotFoundError, RuntimeError):
