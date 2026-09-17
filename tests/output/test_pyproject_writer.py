@@ -406,3 +406,25 @@ build-backend = "poetry.core.masonry.api"
         "version" not in p._data["project"] or p._data["project"].get("version") is None
     )
     assert "dynamic" in caplog.text
+
+
+def test_project_urls_table_newline_separation(tmp_path):
+    pyproject_str = """[project]
+name = "test-pkg"
+version = "0.1.0"
+description = "A test package"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+"""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(pyproject_str)
+
+    p = SetupTools(path)
+    p.homepage = "https://example.com"
+    p.repository = "https://github.com/example/repo"
+    p.save()
+
+    saved = path.read_text()
+    assert "\n\n[build-system]" in saved

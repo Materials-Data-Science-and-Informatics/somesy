@@ -112,6 +112,15 @@ class PyprojectCommon(ProjectMetadataWriter):
         """Save the pyproject file."""
         path = path or self.path
 
+        # Ensure nested tables (such as [project.urls]) have a trailing blank line before subsequent sections
+        for section in self._data.values():
+            if isinstance(section, tomlkit.items.Table):
+                for sub_val in section.values():
+                    if isinstance(sub_val, tomlkit.items.Table) and sub_val.value.body:
+                        last_key, _ = sub_val.value.body[-1]
+                        if last_key is not None:
+                            sub_val.add(tomlkit.nl())
+
         with open(path, "w") as f:
             tomlkit.dump(self._data, f)
 
