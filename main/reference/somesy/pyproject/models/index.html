@@ -2665,19 +2665,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SetuptoolsConfig
+        Pep621Config
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SetuptoolsConfig">
+    <nav class="md-nav" aria-label="Pep621Config">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_required_unless_dynamic" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_required_unless_dynamic" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_required_unless_dynamic
@@ -2688,7 +2688,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_version" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_version" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_version
@@ -2699,7 +2699,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_readme" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_readme" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_readme
@@ -2710,7 +2710,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_email_format" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_email_format" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_email_format
@@ -3269,19 +3269,19 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SetuptoolsConfig
+        Pep621Config
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="SetuptoolsConfig">
+    <nav class="md-nav" aria-label="Pep621Config">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_required_unless_dynamic" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_required_unless_dynamic" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_required_unless_dynamic
@@ -3292,7 +3292,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_version" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_version" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_version
@@ -3303,7 +3303,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_readme" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_readme" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_readme
@@ -3314,7 +3314,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#somesy.pyproject.models.SetuptoolsConfig.validate_email_format" class="md-nav__link">
+  <a href="#somesy.pyproject.models.Pep621Config.validate_email_format" class="md-nav__link">
     <span class="md-ellipsis">
       
         validate_email_format
@@ -3409,7 +3409,7 @@
 
 
 
-        <p>Person model for setuptools.</p>
+        <p>Person model for PEP 621 <code>[project]</code> metadata.</p>
 
 
 
@@ -3432,7 +3432,7 @@
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">STPerson</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Person model for setuptools."""</span>
+<span class="w">    </span><span class="sd">"""Person model for PEP 621 `[project]` metadata."""</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
     <span class="n">email</span><span class="p">:</span> <span class="n">Annotated</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">Field</span><span class="p">(</span><span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -3519,7 +3519,7 @@
 
 
 
-        <p>License model for setuptools.</p>
+        <p>License model for PEP 621 <code>[project]</code> metadata.</p>
 
 
 
@@ -3559,7 +3559,7 @@
 <span class="normal">65</span>
 <span class="normal">66</span>
 <span class="normal">67</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">License</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""License model for setuptools."""</span>
+<span class="w">    </span><span class="sd">"""License model for PEP 621 `[project]` metadata."""</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"validate_assignment"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
@@ -4240,7 +4240,7 @@
 
 
 
-        <p>Content type enum for setuptools field file.</p>
+        <p>Content type enum for the PEP 621 readme file field.</p>
 
 
 
@@ -4257,7 +4257,7 @@
 <span class="normal">201</span>
 <span class="normal">202</span>
 <span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ContentTypeEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Content type enum for setuptools field file."""</span>
+<span class="w">    </span><span class="sd">"""Content type enum for the PEP 621 readme file field."""</span>
 
     <span class="n">plain</span> <span class="o">=</span> <span class="s2">"text/plain"</span>
     <span class="n">rst</span> <span class="o">=</span> <span class="s2">"text/x-rst"</span>
@@ -4303,7 +4303,7 @@
 
 
 
-        <p>File model for setuptools.</p>
+        <p>File model for PEP 621 <code>[project]</code> metadata.</p>
 
 
 
@@ -4319,7 +4319,7 @@
 <span class="normal">208</span>
 <span class="normal">209</span>
 <span class="normal">210</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">File</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""File model for setuptools."""</span>
+<span class="w">    </span><span class="sd">"""File model for PEP 621 `[project]` metadata."""</span>
 
     <span class="n">file</span><span class="p">:</span> <span class="n">Path</span>
     <span class="n">content_type</span><span class="p">:</span> <span class="n">ContentTypeEnum</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="s2">"content-type"</span><span class="p">)</span>
@@ -4364,7 +4364,7 @@
 
 
 
-        <p>URLs model for setuptools.</p>
+        <p>URLs model for PEP 621 <code>[project]</code> metadata.</p>
 
 
 
@@ -4382,7 +4382,7 @@
 <span class="normal">217</span>
 <span class="normal">218</span>
 <span class="normal">219</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">URLs</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""URLs model for setuptools."""</span>
+<span class="w">    </span><span class="sd">"""URLs model for PEP 621 `[project]` metadata."""</span>
 
     <span class="n">homepage</span><span class="p">:</span> <span class="n">HttpUrlStr</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">repository</span><span class="p">:</span> <span class="n">HttpUrlStr</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -4416,11 +4416,11 @@
 
 
 
-<h2 id="somesy.pyproject.models.SetuptoolsConfig" class="doc doc-heading">
-            <span class="doc doc-object-name doc-class-name">SetuptoolsConfig</span>
+<h2 id="somesy.pyproject.models.Pep621Config" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Pep621Config</span>
 
 
-<a href="#somesy.pyproject.models.SetuptoolsConfig" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#somesy.pyproject.models.Pep621Config" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents ">
@@ -4429,7 +4429,8 @@
 
 
 
-        <p>Setuptools input model. Required fields are name, version, description, and requires_python.</p>
+        <p>PEP 621 <code>[project]</code> input model, as written by uv, hatchling, flit, PDM, setuptools and Poetry 2.x.</p>
+<p>Required fields are name, and version and description unless listed as dynamic.</p>
 
 
 
@@ -4513,8 +4514,14 @@
 <span class="normal">292</span>
 <span class="normal">293</span>
 <span class="normal">294</span>
-<span class="normal">295</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">SetuptoolsConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Setuptools input model. Required fields are name, version, description, and requires_python."""</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Pep621Config</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""PEP 621 `[project]` input model, as written by uv, hatchling, flit, PDM, setuptools and Poetry 2.x.</span>
+
+<span class="sd">    Required fields are name, and version and description unless listed as dynamic.</span>
+<span class="sd">    """</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"use_enum_values"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
@@ -4606,11 +4613,11 @@
 <div class="doc doc-object doc-function">
 
 
-<h3 id="somesy.pyproject.models.SetuptoolsConfig.validate_required_unless_dynamic" class="doc doc-heading">
+<h3 id="somesy.pyproject.models.Pep621Config.validate_required_unless_dynamic" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">validate_required_unless_dynamic</span>
 
 
-<a href="#somesy.pyproject.models.SetuptoolsConfig.validate_required_unless_dynamic" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#somesy.pyproject.models.Pep621Config.validate_required_unless_dynamic" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">validate_required_unless_dynamic</span><span class="p">()</span>
 </code></pre></div>
 
@@ -4621,10 +4628,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">243</span>
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span>
@@ -4633,7 +4637,10 @@
 <span class="normal">249</span>
 <span class="normal">250</span>
 <span class="normal">251</span>
-<span class="normal">252</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_required_unless_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate that version and description are present unless listed in dynamic."""</span>
     <span class="n">dynamic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span> <span class="ow">or</span> <span class="p">[]</span>
@@ -4655,7 +4662,7 @@
 <div class="doc doc-object doc-function">
 
 
-<h3 id="somesy.pyproject.models.SetuptoolsConfig.validate_version" class="doc doc-heading">
+<h3 id="somesy.pyproject.models.Pep621Config.validate_version" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">validate_version</span>
 
 
@@ -4663,7 +4670,7 @@
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
-<a href="#somesy.pyproject.models.SetuptoolsConfig.validate_version" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#somesy.pyproject.models.Pep621Config.validate_version" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">validate_version</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </code></pre></div>
 
@@ -4674,15 +4681,15 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">264</span>
-<span class="normal">265</span>
-<span class="normal">266</span>
-<span class="normal">267</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">267</span>
 <span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
 <span class="normal">271</span>
-<span class="normal">272</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"version"</span><span class="p">)</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"version"</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_version</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate version using PEP 440."""</span>
@@ -4700,7 +4707,7 @@
 <div class="doc doc-object doc-function">
 
 
-<h3 id="somesy.pyproject.models.SetuptoolsConfig.validate_readme" class="doc doc-heading">
+<h3 id="somesy.pyproject.models.Pep621Config.validate_readme" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">validate_readme</span>
 
 
@@ -4708,7 +4715,7 @@
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
-<a href="#somesy.pyproject.models.SetuptoolsConfig.validate_readme" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#somesy.pyproject.models.Pep621Config.validate_readme" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">validate_readme</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </code></pre></div>
 
@@ -4719,10 +4726,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">274</span>
-<span class="normal">275</span>
-<span class="normal">276</span>
-<span class="normal">277</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">277</span>
 <span class="normal">278</span>
 <span class="normal">279</span>
 <span class="normal">280</span>
@@ -4731,7 +4735,10 @@
 <span class="normal">283</span>
 <span class="normal">284</span>
 <span class="normal">285</span>
-<span class="normal">286</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"readme"</span><span class="p">)</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"readme"</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_readme</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate readme file(s) by checking whether files exist."""</span>
@@ -4753,7 +4760,7 @@
 <div class="doc doc-object doc-function">
 
 
-<h3 id="somesy.pyproject.models.SetuptoolsConfig.validate_email_format" class="doc doc-heading">
+<h3 id="somesy.pyproject.models.Pep621Config.validate_email_format" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">validate_email_format</span>
 
 
@@ -4761,7 +4768,7 @@
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
   </span>
 
-<a href="#somesy.pyproject.models.SetuptoolsConfig.validate_email_format" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#somesy.pyproject.models.Pep621Config.validate_email_format" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">validate_email_format</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 </code></pre></div>
 
@@ -4772,14 +4779,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/pyproject/models.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">291</span>
 <span class="normal">292</span>
 <span class="normal">293</span>
 <span class="normal">294</span>
-<span class="normal">295</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"authors"</span><span class="p">,</span> <span class="s2">"maintainers"</span><span class="p">)</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"authors"</span><span class="p">,</span> <span class="s2">"maintainers"</span><span class="p">)</span>
 <span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">validate_email_format</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Validate email format."""</span>

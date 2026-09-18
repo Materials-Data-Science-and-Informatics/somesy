@@ -3109,6 +3109,9 @@
 <p>! info</p>
 <pre><code>Poetry changed location of its project metadata with its version 2. Starting with version **0.7.0**, `somesy` supports both major versions of `poetry`, version 1 and 2.
 </code></pre>
+<p>! info</p>
+<pre><code>For `pyproject.toml`, `somesy` works with the *metadata standard*, not with the build backend. Any project that declares its metadata in the standard [PEP 621](https://peps.python.org/pep-0621/) `[project]` table is supported, no matter whether it is built with **uv**, **hatchling**, **flit**, **PDM**, **setuptools** or **Poetry 2.x**. Poetry is the exception that needs its own handling, because Poetry 1.x keeps metadata in `[tool.poetry]` and Poetry 2.x still extends the `[project]` table with Poetry-specific conventions. A leftover `[tool.poetry]` section in a project built with another backend is treated as what it is, configuration rather than metadata. Backend-specific settings such as `[tool.uv]`, `[tool.hatch]` or `[dependency-groups]` are never modified by `somesy`.
+</code></pre>
 <h3 id="installing-somesy">Installing somesy<a class="headerlink" href="#installing-somesy" title="Permanent link">&para;</a></h3>
 <p>Somesy requires Python <code>&gt;=3.10</code>. To get a first impression, you can install the
 latest stable version of somesy from PyPI using <code>pip</code>:</p>
@@ -3256,7 +3259,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 <td>pyproject.toml</td>
 <td>✓</td>
 <td></td>
-<td>pyproject.toml <em>(setuptools and poetry)</em></td>
+<td>pyproject.toml <em>(PEP 621 <code>[project]</code> and Poetry)</em></td>
 <td>✓(1.)</td>
 </tr>
 <tr>
@@ -3319,7 +3322,7 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 </table>
 <p><strong>Notes:</strong></p>
 <ol>
-<li><code>somesy</code> supports PEP 621 <code>dynamic</code> fields — fields listed in <code>dynamic</code> (e.g. <code>version</code>) are not overwritten during sync</li>
+<li><code>pyproject.toml</code> support is based on the metadata standard, not on the build backend: the PEP 621 <code>[project]</code> table is handled for <strong>uv</strong>, <strong>hatchling</strong>, <strong>flit</strong>, <strong>PDM</strong>, <strong>setuptools</strong> and <strong>Poetry 2.x</strong>, while <strong>Poetry 1.x</strong> is handled through its own <code>[tool.poetry]</code> table. <code>somesy</code> also supports PEP 621 <code>dynamic</code> fields — fields listed in <code>dynamic</code> (e.g. <code>version</code>) are not overwritten during sync</li>
 <li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
 <li><code>fpm.toml</code> only supports one author and maintainer, so <code>somesy</code> will pick the <em>first</em> listed author and maintainer</li>
 <li><code>pom.xml</code> has no concept of <code>maintainers</code>, but it can have multiple licenses</li>

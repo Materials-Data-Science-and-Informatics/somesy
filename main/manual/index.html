@@ -3940,7 +3940,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <tr>
 <th>Somesy Field</th>
 <th>Poetry Config</th>
-<th>SetupTools Config</th>
+<th>PEP 621 <code>[project]</code></th>
 <th>Java POM</th>
 <th>Julia Config</th>
 <th>Fortran Config</th>
@@ -4039,7 +4039,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <tr>
 <th>Somesy Field</th>
 <th>Poetry Config</th>
-<th>SetupTools Config</th>
+<th>PEP 621 <code>[project]</code></th>
 <th>Java POM</th>
 <th>Julia Config</th>
 <th>Fortran Config</th>
@@ -4138,7 +4138,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <tr>
 <th>Somesy Field</th>
 <th>Poetry Config</th>
-<th>SetupTools Config</th>
+<th>PEP 621 <code>[project]</code></th>
 <th>Java POM</th>
 <th>Julia Config</th>
 <th>Fortran Config</th>
@@ -4388,7 +4388,7 @@ fields remain unchanged as well.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>pyproject.toml</code> / <code>poetry.lock</code></td>
+<td><code>pyproject.toml</code>, lock file (<code>uv.lock</code>, <code>poetry.lock</code> or <code>pdm.lock</code>)</td>
 <td>Python runtime, direct dependencies, README URL, issue tracker, release notes</td>
 </tr>
 <tr>
@@ -4405,16 +4405,28 @@ fields remain unchanged as well.</p>
 </tr>
 </tbody>
 </table>
-<p>Development and test dependencies are not included. A <code>poetry.lock</code> file only
-provides exact versions for dependencies declared by the project; transitive
-lock-file entries are not emitted. PyPI classifiers are kept in
-<code>pyproject.toml</code> because CodeMeta has no reliable equivalent.</p>
+<p>Development and test dependencies are not included; neither PEP 735
+<code>[dependency-groups]</code> nor <code>[project.optional-dependencies]</code> extras are treated
+as project requirements. A lock file only provides exact versions for
+dependencies declared by the project; transitive lock-file entries are not
+emitted. The nearest lock file at or above the <code>pyproject.toml</code> is used, so
+workspace members that share a lock file at the workspace root are covered.
+PyPI classifiers are kept in <code>pyproject.toml</code> because CodeMeta has no reliable
+equivalent.</p>
+<p><code>[project.urls]</code> key names are not standardized by PEP 621. Common spellings
+are recognized regardless of capitalization and separators: <code>Issues</code>,
+<code>Issue Tracker</code>, <code>Bug Tracker</code>, <code>Bug Reports</code> and <code>Bugs</code> fill <code>issueTracker</code>,
+while <code>Changelog</code>, <code>Changes</code>, <code>Release Notes</code> and <code>History</code> fill
+<code>releaseNotes</code>. When syncing <code>homepage</code>, <code>repository</code> and <code>documentation</code> into
+<code>[project.urls]</code>, somesy likewise updates an entry that already exists under a
+different spelling instead of adding a second one.</p>
 <p>The first commit date requires complete Git history. In a shallow clone, Somesy
 omits <code>dateCreated</code> rather than reporting the shallow boundary as the project
 creation date. For reproducible generated metadata in CI, configure a full
 checkout (for GitHub Actions, <code>fetch-depth: 0</code>).</p>
 <h3 id="pep-621-dynamic-fields">PEP 621 <code>dynamic</code> fields<a class="headerlink" href="#pep-621-dynamic-fields" title="Permanent link">&para;</a></h3>
-<p>For <code>pyproject.toml</code> targets (setuptools and Poetry v2), somesy respects the
+<p>For <code>pyproject.toml</code> targets using the PEP 621 <code>[project]</code> table (uv, hatchling,
+flit, PDM, setuptools) as well as for Poetry v2, somesy respects the
 <a href="https://peps.python.org/pep-0621/#dynamic">PEP 621 <code>dynamic</code> field</a>. If
 <code>version</code> or <code>description</code> is listed in <code>dynamic</code>, it means the value is
 provided at build time rather than written statically in the file. In this case
@@ -4615,7 +4627,7 @@ one of the supported input formats:</p>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><span class="k">[tool.poetry]</span><span class="w"> </span><span class="c1"># [project] in case of poetry version 2</span>
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span><span class="w"> </span><span class="c1"># or [tool.poetry] in case of poetry version 1</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"my-amazing-project"</span>
 <span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"0.1.0"</span>
 <span class="p">...</span>

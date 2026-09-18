@@ -3318,6 +3318,33 @@
 <p>Here we provide notes that summarize the most important changes in each released version.</p>
 <p>Please consult the changelog to inform yourself about breaking changes and security issues.</p>
 <h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Added</strong></li>
+<li>read exact dependency versions from <code>uv.lock</code> and <code>pdm.lock</code> for <code>codemeta.json</code>
+    enrichment, next to the already supported <code>poetry.lock</code><ul>
+<li>use the nearest lock file at or above the <code>pyproject.toml</code>, so workspace
+  members sharing a lock file at the workspace root are covered</li>
+</ul>
+</li>
+<li>recognize common <code>[project.urls]</code> spellings such as <code>Bug Tracker</code> and
+    <code>Release Notes</code> when filling <code>issueTracker</code> and <code>releaseNotes</code></li>
+<li><strong>Fixed</strong></li>
+<li>read the license of projects that still use the deprecated
+    <code>license = { text = "..." }</code> table instead of failing to harvest it</li>
+<li>update an existing <code>[project.urls]</code> entry regardless of its spelling, for
+    example <code>Homepage</code>, instead of adding a second entry next to it, and follow
+    the capitalization of the table when adding an entry</li>
+<li>keep the metadata in <code>[project]</code> when a project built with another backend
+    has a leftover <code>[tool.poetry]</code> section</li>
+<li>keep the versions from a lock file that contains an entry without a
+    version, as uv writes it for projects with a dynamic version</li>
+<li><strong>Changed</strong></li>
+<li>document that <code>pyproject.toml</code> support follows the PEP 621 <code>[project]</code>
+    standard and therefore covers uv, hatchling, flit, PDM, setuptools and
+    Poetry 2.x, not only setuptools and Poetry</li>
+<li>rename the <code>SetupTools</code> writer to <code>Pep621</code> and its input model to
+    <code>Pep621Config</code></li>
+</ul>
 <h2 id="0.8.1"><a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.1">v0.8.1</a> <small>(2026-09-08)</small><a class="headerlink" href="#0.8.1" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Added</strong></li>
