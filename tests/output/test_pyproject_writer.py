@@ -2,9 +2,10 @@ import logging
 from pathlib import Path
 
 import pytest
+import tomlkit
 
 from somesy.core.models import Entity, LicenseEnum, Person, ProjectMetadata
-from somesy.pyproject.writer import Poetry, SetupTools
+from somesy.pyproject.writer import Pep621, Poetry, Pyproject
 
 
 @pytest.fixture
@@ -43,7 +44,21 @@ def pyproject_setuptools_file(create_files, file_types):
     return folder / Path("pyproject.toml")
 
 
-def test_content_match(pyproject_poetry, pyproject_poetry2, pyproject_setuptools):
+@pytest.fixture
+def pyproject_uv(load_files, file_types):
+    files = load_files([file_types.UV])
+    return files[file_types.UV]
+
+
+@pytest.fixture
+def pyproject_uv_file(create_files, file_types):
+    folder = create_files([(file_types.UV, "pyproject.toml")])
+    return folder / Path("pyproject.toml")
+
+
+def test_content_match(
+    pyproject_poetry, pyproject_poetry2, pyproject_setuptools, pyproject_uv
+):
     # create a function to check both file formats
     def assert_content_match(pyproject_file):
         assert pyproject_file.name == "test-package"
@@ -64,9 +79,16 @@ def test_content_match(pyproject_poetry, pyproject_poetry2, pyproject_setuptools
     assert_content_match(pyproject_poetry)
     assert_content_match(pyproject_poetry2)
     assert_content_match(pyproject_setuptools)
+    assert_content_match(pyproject_uv)
 
 
-def test_sync(pyproject_poetry, pyproject_poetry2, pyproject_setuptools, somesy_input):
+def test_sync(
+    pyproject_poetry,
+    pyproject_poetry2,
+    pyproject_setuptools,
+    pyproject_uv,
+    somesy_input,
+):
     def assert_sync(pyproject):
         pyproject.sync(somesy_input.project)
         assert pyproject.name == "testproject"
@@ -75,13 +97,15 @@ def test_sync(pyproject_poetry, pyproject_poetry2, pyproject_setuptools, somesy_
     assert_sync(pyproject_poetry)
     assert_sync(pyproject_poetry2)
     assert_sync(pyproject_setuptools)
+    assert_sync(pyproject_uv)
 
 
 @pytest.mark.parametrize(
     "writer_fixture, writer_class, version",
     [
         ("pyproject_poetry2_file", Poetry, 2),
-        ("pyproject_setuptools_file", SetupTools, None),
+        ("pyproject_setuptools_file", Pep621, None),
+        ("pyproject_uv_file", Pep621, None),
     ],
 )
 def test_issue_121_writes_modern_license_string(
@@ -97,7 +121,8 @@ def test_issue_121_writes_modern_license_string(
     "writer_fixture, writer_class, version",
     [
         ("pyproject_poetry2_file", Poetry, 2),
-        ("pyproject_setuptools_file", SetupTools, None),
+        ("pyproject_setuptools_file", Pep621, None),
+        ("pyproject_uv_file", Pep621, None),
     ],
 )
 def test_issue_121_writes_multiple_license_expression(
@@ -110,7 +135,9 @@ def test_issue_121_writes_multiple_license_expression(
     assert writer._data["project"]["license"] == "MIT OR Apache-2.0"
 
 
-def test_save(tmp_path, pyproject_poetry, pyproject_poetry2, pyproject_setuptools):
+def test_save(
+    tmp_path, pyproject_poetry, pyproject_poetry2, pyproject_setuptools, pyproject_uv
+):
     def assert_save(pyproject):
         custom_path = tmp_path / Path("pyproject.toml")
         pyproject.save(custom_path)
@@ -120,6 +147,7 @@ def test_save(tmp_path, pyproject_poetry, pyproject_poetry2, pyproject_setuptool
     assert_save(pyproject_poetry)
     assert_save(pyproject_poetry2)
     assert_save(pyproject_setuptools)
+    assert_save(pyproject_uv)
 
 
 def test_from_to_person(person):
@@ -138,13 +166,13 @@ def test_from_to_person(person):
     assert isinstance(e, Entity)
     assert e.name == "Entity"
 
-    # test for setuptools
-    assert SetupTools._from_person(person) == {
+    # test for PEP 621 [project]
+    assert Pep621._from_person(person) == {
         "name": person.full_name,
         "email": person.email,
     }
 
-    p = SetupTools._to_person(SetupTools._from_person(person))
+    p = Pep621._to_person(Pep621._from_person(person))
     assert p.full_name == person.full_name
     assert p.email == person.email
 
@@ -154,7 +182,8 @@ def test_from_to_person(person):
     [
         (Poetry, "pyproject_poetry_file", 1),
         (Poetry, "pyproject_poetry2_file", 2),
-        (SetupTools, "pyproject_setuptools_file", None),
+        (Pep621, "pyproject_setuptools_file", None),
+        (Pep621, "pyproject_uv_file", None),
     ],
 )
 def test_person_merge_pyproject(
@@ -319,7 +348,7 @@ def test_without_email(tmp_path, person):
 
 
 def test_dynamic_version_not_synced_setuptools(tmp_path, caplog):
-    """Setuptools: version listed as dynamic should not be written during sync."""
+    """PEP 621: version listed as dynamic should not be written during sync."""
     pyproject_str = """\
 [project]
 name = "test-pkg"
@@ -335,7 +364,7 @@ build-backend = "setuptools.build_meta"
     path = tmp_path / "pyproject.toml"
     path.write_text(pyproject_str)
 
-    st = SetupTools(path)
+    st = Pep621(path)
     assert "version" in st._dynamic_fields
 
     pm = ProjectMetadata(
@@ -406,3 +435,270 @@ build-backend = "poetry.core.masonry.api"
         "version" not in p._data["project"] or p._data["project"].get("version") is None
     )
     assert "dynamic" in caplog.text
+
+
+UV_PYPROJECT = """\
+[project]
+name = "test-pkg"
+version = "0.1.0"
+description = "A test"
+authors = [{ name = "John Doe", email = "john@example.com" }]
+requires-python = ">=3.10"
+dependencies = ["packaging>=24.0"]
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+some-dependency = { workspace = true }
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+"""
+
+HATCHLING_PYPROJECT = """\
+[project]
+name = "test-pkg"
+description = "A test"
+dynamic = ["version"]
+authors = [{ name = "John Doe", email = "john@example.com" }]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/test_pkg/__about__.py"
+"""
+
+FLIT_PYPROJECT = """\
+[project]
+name = "test-pkg"
+version = "0.1.0"
+description = "A test"
+authors = [{ name = "John Doe", email = "john@example.com" }]
+
+[build-system]
+requires = ["flit_core>=3.4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.module]
+name = "test_pkg"
+"""
+
+PDM_PYPROJECT = """\
+[project]
+name = "test-pkg"
+version = "0.1.0"
+description = "A test"
+authors = [{ name = "John Doe", email = "john@example.com" }]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+test = ["pytest>=8.0"]
+"""
+
+
+@pytest.fixture
+def metadata(person) -> ProjectMetadata:
+    """Return metadata to sync into a project file."""
+    return ProjectMetadata(
+        name="testproject",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="1.0.0",
+        people=[person.model_copy(update=dict(author=True, publication_author=True))],
+    )
+
+
+@pytest.mark.parametrize(
+    "content",
+    [UV_PYPROJECT, HATCHLING_PYPROJECT, FLIT_PYPROJECT, PDM_PYPROJECT],
+    ids=["uv", "hatchling", "flit", "pdm"],
+)
+def test_pep621_backends_use_project_handler(tmp_path, content):
+    """Any backend storing metadata in [project] is handled by Pep621, not Poetry."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(content)
+
+    assert isinstance(Pyproject(path).__wrapped__, Pep621)
+
+
+@pytest.mark.parametrize(
+    "content",
+    [UV_PYPROJECT, HATCHLING_PYPROJECT, FLIT_PYPROJECT, PDM_PYPROJECT],
+    ids=["uv", "hatchling", "flit", "pdm"],
+)
+def test_sync_leaves_backend_specific_tables_untouched(tmp_path, content, metadata):
+    """Sync only writes inside [project], never into backend or dependency tables."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(content)
+    before = tomlkit.parse(content)
+
+    pyproject = Pyproject(path)
+    pyproject.sync(metadata)
+    pyproject.save()
+
+    after = tomlkit.parse(path.read_text())
+    assert after["project"]["name"] == "testproject"
+    for table in ("build-system", "tool", "dependency-groups"):
+        if table in before:
+            assert after[table] == before[table]
+    # dependencies are declared in [project] but are not somesy's to manage
+    if "dependencies" in before["project"]:
+        assert after["project"]["dependencies"] == before["project"]["dependencies"]
+
+
+def test_ambiguous_pyproject_names_both_metadata_tables(tmp_path):
+    """A file without [project] and without [tool.poetry] cannot be handled."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text('[build-system]\nrequires = ["hatchling"]\n')
+
+    with pytest.raises(ValueError, match=r"\[project\].*\[tool\.poetry\]"):
+        Pyproject(path)
+
+
+def test_dynamic_version_not_synced_hatchling(tmp_path, caplog, metadata):
+    """Hatchling: a version computed by the backend is not overwritten."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(HATCHLING_PYPROJECT)
+
+    pyproject = Pyproject(path)
+    assert "version" in pyproject._dynamic_fields
+
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        pyproject.sync(metadata)
+
+    assert "version" not in pyproject._data["project"]
+    assert "dynamic" in caplog.text
+
+
+@pytest.mark.parametrize(
+    "declaration, expected",
+    [
+        ('license = "MIT"', "MIT"),  # PEP 639 expression
+        ('license = { text = "MIT" }', "MIT"),  # deprecated PEP 621 table
+        ('license = { file = "LICENSE" }', None),  # file, not an identifier
+        ("", None),
+    ],
+)
+def test_reads_license_from_both_pep621_spellings(tmp_path, declaration, expected):
+    """Files predating PEP 639 still declare the license as a table."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(
+        f'[project]\nname = "test-pkg"\nversion = "0.1.0"\n'
+        f'description = "A test"\n{declaration}\n'
+    )
+
+    assert Pyproject(path).license == expected
+
+
+def test_harvest_metadata_from_uv_project(pyproject_uv_file):
+    """Harvested metadata is usable as somesy input, e.g. by `somesy init`."""
+    harvested = Pyproject(pyproject_uv_file).harvest_metadata()
+
+    assert harvested["name"] == "test-package"
+    assert harvested["license"] == "MIT"
+    assert harvested["homepage"] == "https://example.com/test-package"
+    assert harvested["people"][0].email == "john.doe@example.com"
+
+
+@pytest.mark.parametrize("spelling", ["Homepage", "homepage", "home-page", "HOMEPAGE"])
+def test_updates_existing_project_url_whatever_its_spelling(
+    tmp_path, spelling, metadata
+):
+    """PEP 621 leaves [project.urls] key names to the project, so both the
+    harvested value and the update must follow the spelling already in use.
+    """
+    path = tmp_path / "pyproject.toml"
+    path.write_text(
+        '[project]\nname = "test-pkg"\nversion = "0.1.0"\n'
+        'description = "A test"\n\n[project.urls]\n'
+        f'{spelling} = "https://example.com/old"\n'
+    )
+
+    pyproject = Pyproject(path)
+    assert pyproject.homepage == "https://example.com/old"
+
+    metadata.homepage = "https://example.com/new"
+    pyproject.sync(metadata)
+    pyproject.save()
+
+    urls = tomlkit.parse(path.read_text())["project"]["urls"]
+    assert dict(urls) == {spelling: "https://example.com/new"}
+
+
+def test_leftover_poetry_configuration_does_not_claim_the_project(tmp_path, metadata):
+    """A project migrated to another backend may keep [tool.poetry] sections."""
+    path = tmp_path / "pyproject.toml"
+    path.write_text(
+        HATCHLING_PYPROJECT
+        + '\n[tool.poetry.group.dev.dependencies]\npytest = "^8.0"\n'
+    )
+
+    pyproject = Pyproject(path)
+
+    assert isinstance(pyproject.__wrapped__, Pep621)
+    pyproject.sync(metadata)
+    assert pyproject._data["project"]["name"] == "testproject"
+
+
+def test_poetry_v2_project_is_still_handled_by_poetry(pyproject_poetry2_file):
+    """Poetry 2.x keeps its metadata in [project] but is built by Poetry."""
+    assert isinstance(Pyproject(pyproject_poetry2_file).__wrapped__, Poetry)
+
+
+@pytest.mark.parametrize(
+    "writer_fixture", ["pyproject_uv_file", "pyproject_poetry2_file"]
+)
+def test_deprecated_license_table_is_read_as_an_expression(
+    request, tmp_path, writer_fixture
+):
+    """Files predating PEP 639 declare the license as a table, in every flavor."""
+    path = request.getfixturevalue(writer_fixture)
+    data = tomlkit.parse(path.read_text())
+    license = tomlkit.inline_table()
+    license["text"] = "MIT"
+    data["project"]["license"] = license
+    path.write_text(tomlkit.dumps(data))
+
+    assert Pyproject(path).license == "MIT"
+
+
+@pytest.mark.parametrize(
+    "existing, expected_key",
+    [
+        ("Homepage", "Repository"),  # capitalized table, follow it
+        ("homepage", "repository"),  # lowercase table, follow it
+        (None, "repository"),  # nothing to follow, somesy's own spelling
+    ],
+    ids=["capitalized", "lowercase", "empty"],
+)
+def test_added_project_url_follows_the_style_of_the_table(
+    tmp_path, existing, expected_key, metadata
+):
+    """A table written by a template is uniformly capitalized, keep it that way."""
+    urls = (
+        f'\n[project.urls]\n{existing} = "https://example.com/hp"\n' if existing else ""
+    )
+    path = tmp_path / "pyproject.toml"
+    path.write_text(
+        '[project]\nname = "test-pkg"\nversion = "0.1.0"\ndescription = "A test"\n'
+        + urls
+    )
+
+    metadata.repository = "https://github.com/example/test-pkg"
+    pyproject = Pyproject(path)
+    pyproject.sync(metadata)
+    pyproject.save()
+
+    urls_after = tomlkit.parse(path.read_text())["project"]["urls"]
+    assert expected_key in urls_after
+    assert urls_after[expected_key] == "https://github.com/example/test-pkg"

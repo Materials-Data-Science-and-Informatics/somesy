@@ -213,3 +213,20 @@ def test_partial_input_still_rejects_unknown_top_level_sections(tmp_path):
 
     with pytest.raises(ValueError):
         SomesyInput.from_input_file(path)
+
+
+def test_init_harvests_pep621_project_without_poetry(
+    tmp_path, create_files, file_types, monkeypatch
+):
+    """A uv project is harvested from its [project] table, not skipped."""
+    create_files({(file_types.UV, "pyproject.toml")})
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("somesy.cli.init.harvest_git", lambda _: None)
+
+    result = runner.invoke(app, ["init", "--non-interactive"])
+
+    assert result.exit_code == 0, result.stdout
+    content = get_input_content(tmp_path / "somesy.toml")
+    assert content["project"]["name"] == "test-package"
+    assert content["project"]["people"][0]["email"] == "john.doe@example.com"
+    assert "no_sync_pyproject" not in content["config"]

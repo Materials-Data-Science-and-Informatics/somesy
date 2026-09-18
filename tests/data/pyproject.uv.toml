@@ -1,0 +1,99 @@
+[project]
+name = "test-package"
+version = "0.1.0"
+description = "This is a test package for demonstration purposes."
+authors = [{ name = "John Doe", email = "john.doe@example.com" }]
+license = "MIT"
+keywords = ["test", "demo", "example"]
+classifiers = [
+    "Operating System :: POSIX :: Linux",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+requires-python = ">=3.10"
+dependencies = ["packaging>=24.0"]
+
+# the capitalized spelling used by the common project templates
+[project.urls]
+Homepage = "https://example.com/test-package"
+Repository = "https://github.com/example/test-package"
+Documentation = "https://example.com/test-package"
+
+[project.scripts]
+test-package = "test_package:main"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+# uv holds only behavioral settings here, no project metadata
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+packaging = { git = "https://github.com/pypa/packaging" }
+
+# PEP 735 dependency groups, not project metadata
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+# project metadata
+[tool.somesy.project]
+name = "testproject"
+version = "1.0.0"
+description = "This is a test project for demonstration purposes."
+keywords = ["test", "demo", "example"]
+license = "MIT"
+repository = "https://github.com/example/testproject"
+homepage = "https://example.com/testproject"
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "John"
+email = "john.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0000"
+
+contribution = "The main developer, maintainer, and tester."
+contribution_begin = "2023-01-15"
+contribution_types = ["maintenance", "code", "test", "review", "doc"]
+
+author = true
+maintainer = true
+publication_author = true
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "Jane"
+email = "jane.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0001"
+
+contribution = "Initial concepts, tool development and enhancement, documentation."
+contribution_begin = "2023-02-20"
+contribution_types = ["ideas", "code", "test", "review", "doc"]
+
+author = true
+
+[[tool.somesy.project.people]]
+family-names = "Doe"
+given-names = "Michael"
+email = "michael.doe@example.com"
+orcid = "https://orcid.org/0000-0000-0000-0002"
+
+contribution = "Valuable input concerning metadata standards and usability."
+contribution_begin = "2023-03-10"
+contribution_types = ["ideas"]
+publication_author = true
+
+[tool.somesy.config]
+no_sync_cff = false
+cff_file = "CITATION.cff"
+no_sync_pyproject = false
+pyproject_file = "pyproject.toml"
+no_sync_codemeta = false
+codemeta_file = "codemeta.json"
+no_sync_package_json = false
+show_info = false
+verbose = false
+debug = true

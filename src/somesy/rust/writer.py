@@ -1,4 +1,4 @@
-"""Pyproject writers for setuptools and rust."""
+"""Cargo.toml writer for Rust projects."""
 
 import logging
 from pathlib import Path

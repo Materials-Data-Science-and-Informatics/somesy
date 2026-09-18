@@ -1,5 +1,5 @@
 """Pyproject module."""
 
-from .writer import Poetry, Pyproject, SetupTools
+from .writer import Pep621, Poetry, Pyproject
 
-__all__ = ["Poetry", "Pyproject", "SetupTools"]
+__all__ = ["Pep621", "Poetry", "Pyproject"]

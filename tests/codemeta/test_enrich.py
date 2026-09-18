@@ -3,6 +3,8 @@
 import subprocess
 from datetime import date
 
+import pytest
+
 from somesy.codemeta.enrich import enrich
 from somesy.git.models import GitMetadata
 
@@ -158,3 +160,203 @@ def test_language_file_issue_tracker_takes_priority_over_git(tmp_path, mocker):
     enrich(codemeta, {"pyproject": path}, tmp_path)
 
     assert codemeta["issueTracker"] == "https://example.test/issues"
+
+
+PEP621_PYPROJECT = (
+    "[project]\nname = 'example'\nrequires-python = '>=3.10'\n"
+    "dependencies = ['requests>=2', 'rich']\n\n"
+    "[dependency-groups]\ndev = ['pytest>=8.0']\n\n"
+    "[project.optional-dependencies]\nextra = ['httpx>=0.27']\n"
+)
+
+
+def _versions(codemeta):
+    return {
+        item["name"]: item.get("version") for item in codemeta["softwareRequirements"]
+    }
+
+
+@pytest.mark.parametrize("lock_name", ["uv.lock", "poetry.lock", "pdm.lock"])
+def test_uses_exact_versions_from_any_supported_lock_file(tmp_path, lock_name):
+    (tmp_path / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / lock_name).write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert _versions(codemeta)["requests"] == "2.32.3"
+
+
+def test_finds_workspace_lock_file_above_the_package(tmp_path):
+    """uv workspace members keep their lock file at the workspace root."""
+    member = tmp_path / "packages" / "member"
+    member.mkdir(parents=True)
+    (member / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": member / "pyproject.toml"}, tmp_path)
+
+    assert _versions(codemeta)["requests"] == "2.32.3"
+
+
+def test_does_not_search_for_lock_files_above_the_project_root(tmp_path):
+    root = tmp_path / "project"
+    root.mkdir()
+    (root / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": root / "pyproject.toml"}, root)
+
+    assert _versions(codemeta)["requests"] == ">=2"
+
+
+def test_falls_back_to_declared_specifiers_without_lock_file(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(PEP621_PYPROJECT)
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert _versions(codemeta) == {"requests": ">=2", "rich": None}
+
+
+def test_omits_dependency_groups_and_extras(tmp_path):
+    """Development and optional dependencies are not project requirements."""
+    (tmp_path / "pyproject.toml").write_text(PEP621_PYPROJECT)
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert set(_versions(codemeta)) == {"requests", "rich"}
+
+
+@pytest.mark.parametrize(
+    "issue_key, changelog_key",
+    [
+        ("Issues", "Changelog"),
+        ("Bug Tracker", "Release Notes"),
+        ("bug-tracker", "release_notes"),
+    ],
+)
+def test_maps_common_project_url_spellings(tmp_path, issue_key, changelog_key):
+    """PEP 621 does not standardise [project.urls] key names."""
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'example'\n\n[project.urls]\n"
+        f"'{issue_key}' = 'https://example.test/issues'\n"
+        f"'{changelog_key}' = 'https://example.test/changelog'\n"
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert codemeta["issueTracker"] == "https://example.test/issues"
+    assert codemeta["releaseNotes"] == "https://example.test/changelog"
+
+
+def test_poetry_v1_dependencies_still_use_the_poetry_lock(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.poetry]\nname = 'example'\n\n[tool.poetry.dependencies]\n"
+        "python = '^3.10'\nrequests = '^2.0'\n"
+    )
+    (tmp_path / "poetry.lock").write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert codemeta["runtimePlatform"] == "Python ^3.10"
+    assert _versions(codemeta) == {"requests": "2.32.3"}
+
+
+@pytest.mark.parametrize(
+    "lock_directory, expected",
+    [("outside", "2.32.3"), ("above", ">=2")],
+)
+def test_lock_lookup_for_a_pyproject_outside_the_root(
+    tmp_path, lock_directory, expected
+):
+    """Outside the root only the pyproject's own directory is searched."""
+    root = tmp_path / "root"
+    root.mkdir()
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    directory = outside if lock_directory == "outside" else tmp_path
+    (directory / "uv.lock").write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": outside / "pyproject.toml"}, root)
+
+    assert _versions(codemeta)["requests"] == expected
+
+
+def test_keeps_locked_versions_when_an_entry_has_no_version(tmp_path):
+    """uv omits the version of the project itself when it is dynamic."""
+    (tmp_path / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "example"\nsource = { editable = "." }\n\n'
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n\n'
+        '[[package]]\nname = "rich"\nversion = "14.2.0"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert _versions(codemeta) == {"requests": "2.32.3", "rich": "14.2.0"}
+
+
+def test_ignores_malformed_lock_file(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / "uv.lock").write_text("[[package]\nthis is not toml\n")
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert _versions(codemeta)["requests"] == ">=2"
+
+
+def test_git_history_is_harvested_from_the_package_not_the_project_root(
+    tmp_path, mocker
+):
+    """A package may be its own repository, only shared files come from above."""
+    member = tmp_path / "packages" / "member"
+    member.mkdir(parents=True)
+    (member / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+    harvest = mocker.patch(
+        "somesy.codemeta.enrich.harvest_git",
+        return_value=GitMetadata(repository="https://example.test/member"),
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": member / "pyproject.toml"}, member, tmp_path)
+
+    # the lock file is shared by the whole project ...
+    assert _versions(codemeta)["requests"] == "2.32.3"
+    # ... while the Git history belongs to the package
+    harvest.assert_called_once_with(member)
+    assert codemeta["codeRepository"] == "https://example.test/member"
+
+
+def test_project_root_defaults_to_the_given_root(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(PEP621_PYPROJECT)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "requests"\nversion = "2.32.3"\n'
+    )
+
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    assert _versions(codemeta)["requests"] == "2.32.3"

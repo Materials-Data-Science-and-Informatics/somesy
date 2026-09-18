@@ -23,7 +23,7 @@ logger = getLogger("somesy")
 
 
 class STPerson(BaseModel):
-    """Person model for setuptools."""
+    """Person model for PEP 621 `[project]` metadata."""
 
     name: Annotated[str, Field(min_length=1)]
     email: Annotated[str | None, Field(min_length=1)] = None
@@ -37,7 +37,7 @@ class STPerson(BaseModel):
 
 
 class License(BaseModel):
-    """License model for setuptools."""
+    """License model for PEP 621 `[project]` metadata."""
 
     model_config = {"validate_assignment": True}
 
@@ -196,7 +196,7 @@ class PoetryConfig(BaseModel):
 
 
 class ContentTypeEnum(Enum):
-    """Content type enum for setuptools field file."""
+    """Content type enum for the PEP 621 readme file field."""
 
     plain = "text/plain"
     rst = "text/x-rst"
@@ -204,14 +204,14 @@ class ContentTypeEnum(Enum):
 
 
 class File(BaseModel):
-    """File model for setuptools."""
+    """File model for PEP 621 `[project]` metadata."""
 
     file: Path
     content_type: ContentTypeEnum | None = Field(alias="content-type")
 
 
 class URLs(BaseModel):
-    """URLs model for setuptools."""
+    """URLs model for PEP 621 `[project]` metadata."""
 
     homepage: HttpUrlStr | None = None
     repository: HttpUrlStr | None = None
@@ -219,8 +219,11 @@ class URLs(BaseModel):
     changelog: HttpUrlStr | None = None
 
 
-class SetuptoolsConfig(BaseModel):
-    """Setuptools input model. Required fields are name, version, description, and requires_python."""
+class Pep621Config(BaseModel):
+    """PEP 621 `[project]` input model, as written by uv, hatchling, flit, PDM, setuptools and Poetry 2.x.
+
+    Required fields are name, and version and description unless listed as dynamic.
+    """
 
     model_config = {"use_enum_values": True}
 

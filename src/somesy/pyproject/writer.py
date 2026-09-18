@@ -1,6 +1,7 @@
-"""Pyproject writers for setuptools and poetry."""
+"""Pyproject writers for PEP 621 `[project]` metadata and Poetry."""
 
 import logging
+import re
 from pathlib import Path
 from typing import Any
 
@@ -14,9 +15,19 @@ from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
 
-from .models import License, PoetryConfig, SetuptoolsConfig
+from .models import Pep621Config, PoetryConfig
 
 logger = logging.getLogger("somesy")
+
+
+def normalize_url_key(name: str) -> str:
+    """Return a `[project.urls]` key in a form that can be compared.
+
+    PEP 621 does not standardize these key names, so the same URL appears as
+    "Bug Tracker", "bug-tracker" or "bugtracker" depending on the template the
+    project started from.
+    """
+    return re.sub(r"[\s_-]+", "", name).lower()
 
 
 def license_expression(licenses) -> str:
@@ -51,6 +62,29 @@ class PyprojectCommon(ProjectMetadataWriter):
             direct_mappings=direct_mappings or {},
             pass_validation=pass_validation,
         )
+        self._adopt_url_key_spelling()
+
+    def _adopt_url_key_spelling(self) -> None:
+        """Point the url mappings at the key spellings used in the file.
+
+        The common project templates capitalize the `[project.urls]` keys
+        ("Homepage", "Bug Tracker"). Without this, somesy would neither read
+        those entries nor update them, and would instead write a second,
+        differently spelled entry next to them. A key somesy adds follows the
+        capitalization of the keys already there, to keep the table uniform.
+        """
+        keys = list(self._get_property(["urls"]) or {})
+        existing = {normalize_url_key(key): key for key in keys}
+        capitalized = bool(keys) and all(key[:1].isupper() for key in keys)
+        for field, key_path in self.direct_mappings.items():
+            if not isinstance(key_path, list) or key_path[:1] != ["urls"]:
+                continue
+            name = key_path[-1]
+            spelling = existing.get(normalize_url_key(name))
+            if spelling is None and capitalized:
+                spelling = name.capitalize()
+            if spelling is not None:
+                self.direct_mappings[field] = ["urls", spelling]
 
     @property
     def _dynamic_fields(self) -> list[str]:
@@ -72,6 +106,25 @@ class PyprojectCommon(ProjectMetadataWriter):
                 )
             return
         self._set_property(self._get_key("version"), version)
+
+    @property
+    def license(self) -> str | None:
+        """Return the license of the project as an SPDX expression.
+
+        PEP 639 replaced the `license = { text = ... }` table with a plain
+        expression, but files predating it are still valid and must be read.
+        A `{ file = ... }` table names a license file instead of an
+        identifier, so there is no expression to report.
+        """
+        license = self._get_property(["license"])
+        if isinstance(license, dict):
+            return license.get("text")
+        return license
+
+    @license.setter
+    def license(self, license: str | None) -> None:
+        """Set the license of the project."""
+        self._set_property(["license"], license)
 
     @property
     def description(self) -> str | None:
@@ -182,7 +235,6 @@ class Poetry(PyprojectCommon):
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
             "documentation": ["urls", "documentation"],
-            "license": ["license", "text"],
         }
         if version == 1:
             super().__init__(
@@ -232,27 +284,6 @@ class Poetry(PyprojectCommon):
             logger.warning(f"Cannot convert {person_obj} to Entity.")
             return None
 
-    @property
-    def license(self) -> License | str | None:
-        """Get license from pyproject.toml file."""
-        raw_license = self._get_property(["license"])
-        if self._poetry_version == 1:
-            return raw_license
-        if raw_license is None:
-            return None
-        if isinstance(raw_license, str):
-            return raw_license
-        return raw_license
-
-    @license.setter
-    def license(self, license: License | str) -> None:
-        """Set license in pyproject.toml file."""
-        # if version is 1, set license as str
-        if self._poetry_version == 1:
-            self._set_property(["license"], license)
-        else:
-            self._set_property(["license"], license)
-
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file."""
         # Store original _from_person method
@@ -287,11 +318,16 @@ class Poetry(PyprojectCommon):
                 self._data["project"]["urls"] = urls
 
 
-class SetupTools(PyprojectCommon):
-    """Setuptools config file handler parsed from setup.cfg."""
+class Pep621(PyprojectCommon):
+    """Handler for PEP 621 `[project]` metadata in pyproject.toml.
+
+    This covers every backend that stores its metadata in the standard
+    `[project]` table, i.e. uv, hatchling, flit, PDM, setuptools and
+    Poetry 2.x. Only Poetry 1.x needs its own handler, see [somesy.pyproject.writer.Poetry][].
+    """
 
     def __init__(self, path: Path, pass_validation: bool | None = False):
-        """Setuptools config file handler parsed from pyproject.toml.
+        """PEP 621 `[project]` config file handler parsed from pyproject.toml.
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
@@ -305,13 +341,13 @@ class SetupTools(PyprojectCommon):
             path,
             section=section,
             direct_mappings=mappings,
-            model_cls=SetuptoolsConfig,
+            model_cls=Pep621Config,
             pass_validation=pass_validation,
         )
 
     @staticmethod
     def _from_person(person: Person | Entity):
-        """Convert project metadata person object to setuptools dict for person format."""
+        """Convert project metadata person object to a PEP 621 person table."""
         response = {"name": person.full_name}
         if person.email:
             response["email"] = person.email
@@ -319,7 +355,7 @@ class SetupTools(PyprojectCommon):
 
     @staticmethod
     def _to_person(person_obj: str | dict) -> Entity | Person | None:
-        """Parse setuptools person string to a Person/Entity."""
+        """Parse a PEP 621 person entry to a Person/Entity."""
         # NOTE: for our purposes, does not matter what are given or family names,
         # we only compare on full_name anyway.
         if isinstance(person_obj, dict):
@@ -346,16 +382,31 @@ class SetupTools(PyprojectCommon):
             self.license = license_expression(metadata.license)
 
 
+def _builds_with_poetry(data: Any) -> bool:
+    """Return whether the project declares a Poetry build backend.
+
+    Only used to tell a Poetry 2.x project apart from a project of another
+    backend that kept a `[tool.poetry]` section for its dependencies, for
+    example while migrating away from Poetry. Without a build backend we
+    cannot tell, and assume Poetry as before.
+    """
+    backend = data.get("build-system", {}).get("build-backend")
+    return not backend or "poetry" in str(backend)
+
+
 # ----
 
 
 class Pyproject(wrapt.ObjectProxy):
     """Class for syncing pyproject file with other metadata files."""
 
-    __wrapped__: SetupTools | Poetry
+    __wrapped__: Pep621 | Poetry
 
     def __init__(self, path: Path, pass_validation: bool | None = False):
-        """Pyproject wrapper class. Wraps either setuptools or poetry.
+        """Pyproject wrapper class. Wraps either PEP 621 `[project]` or Poetry metadata.
+
+        The handler is picked based on the metadata tables present in the file,
+        not on the configured build backend.
 
         Args:
             path (Path): Path to pyproject.toml file.
@@ -377,6 +428,15 @@ class Pyproject(wrapt.ObjectProxy):
         is_poetry = "tool" in data and "poetry" in data["tool"]
         has_project = "project" in data
 
+        if is_poetry and has_project and not _builds_with_poetry(data):
+            # another backend builds the project, so it reads the metadata from
+            # [project] and what remains in [tool.poetry] is only configuration
+            logger.log(
+                VERBOSE,
+                "Ignoring the tool.poetry section, the project is not built with Poetry",
+            )
+            is_poetry = False
+
         if is_poetry:
             if has_project:
                 logger.log(
@@ -389,10 +449,15 @@ class Pyproject(wrapt.ObjectProxy):
                 path, pass_validation=pass_validation, version=2 if has_project else 1
             )
         elif has_project and not is_poetry:
-            logger.log(VERBOSE, "Found setuptools-based metadata in pyproject.toml")
-            self.__wrapped__ = SetupTools(path, pass_validation=pass_validation)
+            # brackets are escaped, the log handler renders rich markup
+            logger.log(VERBOSE, "Found PEP 621 \\[project] metadata in pyproject.toml")
+            self.__wrapped__ = Pep621(path, pass_validation=pass_validation)
         else:
-            msg = "The pyproject.toml file is ambiguous. For Poetry projects, ensure [tool.poetry] section exists. For setuptools, ensure [project] section exists without [tool.poetry]"
+            msg = (
+                "The pyproject.toml file is ambiguous. Ensure it has either a PEP 621 "
+                "[project] section (uv, hatchling, flit, PDM, setuptools, Poetry 2.x) "
+                "or a [tool.poetry] section (Poetry 1.x)."
+            )
             raise ValueError(msg)
 
         super().__init__(self.__wrapped__)
