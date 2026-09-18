@@ -25,6 +25,7 @@ class FileTypes(Enum):
     POETRY = "poetry"
     POETRY2 = "poetry2"
     SETUPTOOLS = "setuptools"
+    UV = "uv"
     CITATION = "citation"
     SOMESY = "somesy"
     PACKAGE_JSON = "package_json"
@@ -33,6 +34,39 @@ class FileTypes(Enum):
     POM_XML = "pom_xml"
     MKDOCS = "mkdocs"
     RUST = "rust"
+
+
+FILE_NAMES: dict[FileTypes, str] = {
+    FileTypes.POETRY: "pyproject.toml",
+    FileTypes.POETRY2: "pyproject2.toml",
+    FileTypes.SETUPTOOLS: "pyproject.setuptools.toml",
+    FileTypes.UV: "pyproject.uv.toml",
+    FileTypes.CITATION: "CITATION.cff",
+    FileTypes.SOMESY: "somesy.toml",
+    FileTypes.PACKAGE_JSON: "package.json",
+    FileTypes.JULIA: "Project.toml",
+    FileTypes.FORTRAN: "fpm.toml",
+    FileTypes.POM_XML: "pom.xml",
+    FileTypes.MKDOCS: "mkdocs.yml",
+    FileTypes.RUST: "Cargo.toml",
+}
+"""Name of the file in `tests/data` backing each file type."""
+
+FILE_LOADERS: dict[FileTypes, Any] = {
+    FileTypes.POETRY: Pyproject,
+    FileTypes.POETRY2: Pyproject,
+    FileTypes.SETUPTOOLS: Pyproject,
+    FileTypes.UV: Pyproject,
+    FileTypes.CITATION: CFF,
+    FileTypes.SOMESY: SomesyInput.from_input_file,
+    FileTypes.PACKAGE_JSON: PackageJSON,
+    FileTypes.JULIA: Julia,
+    FileTypes.FORTRAN: Fortran,
+    FileTypes.POM_XML: POM,
+    FileTypes.MKDOCS: MkDocs,
+    FileTypes.RUST: Rust,
+}
+"""Callable turning the file of each file type into its somesy representation."""
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -74,31 +108,7 @@ def create_files(tmp_path):
             # create the subfolder (if file name is a path with folders)
             write_file_name.parent.mkdir(parents=True, exist_ok=True)
 
-            read_file_path = Path("tests/data")
-            read_file_name: Path | None = None
-            # set file name as the input, if not given set to default
-            if file_type == FileTypes.CITATION:
-                read_file_name = read_file_path / Path("CITATION.cff")
-            elif file_type == FileTypes.SETUPTOOLS:
-                read_file_name = read_file_path / Path("pyproject.setuptools.toml")
-            elif file_type == FileTypes.POETRY:
-                read_file_name = read_file_path / Path("pyproject.toml")
-            elif file_type == FileTypes.POETRY2:
-                read_file_name = read_file_path / Path("pyproject2.toml")
-            elif file_type == FileTypes.SOMESY:
-                read_file_name = read_file_path / Path("somesy.toml")
-            elif file_type == FileTypes.PACKAGE_JSON:
-                read_file_name = read_file_path / Path("package.json")
-            elif file_type == FileTypes.JULIA:
-                read_file_name = read_file_path / Path("Project.toml")
-            elif file_type == FileTypes.FORTRAN:
-                read_file_name = read_file_path / Path("fpm.toml")
-            elif file_type == FileTypes.POM_XML:
-                read_file_name = read_file_path / Path("pom.xml")
-            elif file_type == FileTypes.MKDOCS:
-                read_file_name = read_file_path / Path("mkdocs.yml")
-            elif file_type == FileTypes.RUST:
-                read_file_name = read_file_path / Path("Cargo.toml")
+            read_file_name = TEST_DATA_DIR / FILE_NAMES[file_type]
 
             with open(read_file_name, "r") as f:
                 content = f.read()
@@ -129,40 +139,8 @@ def load_files():
             if not isinstance(file_type, FileTypes):
                 raise ValueError(f"Invalid file type: {file_type}")
 
-            read_file_name = TEST_DATA_DIR
-            if file_type == FileTypes.CITATION:
-                read_file_name = read_file_name / Path("CITATION.cff")
-                file_instances[file_type] = CFF(read_file_name)
-            elif file_type == FileTypes.SETUPTOOLS:
-                read_file_name = read_file_name / Path("pyproject.setuptools.toml")
-                file_instances[file_type] = Pyproject(read_file_name)
-            elif file_type == FileTypes.POETRY:
-                read_file_name = read_file_name / Path("pyproject.toml")
-                file_instances[file_type] = Pyproject(read_file_name)
-            elif file_type == FileTypes.POETRY2:
-                read_file_name = read_file_name / Path("pyproject2.toml")
-                file_instances[file_type] = Pyproject(read_file_name)
-            elif file_type == FileTypes.SOMESY:
-                read_file_name = read_file_name / Path("somesy.toml")
-                file_instances[file_type] = SomesyInput.from_input_file(read_file_name)
-            elif file_type == FileTypes.PACKAGE_JSON:
-                read_file_name = read_file_name / Path("package.json")
-                file_instances[file_type] = PackageJSON(read_file_name)
-            elif file_type == FileTypes.JULIA:
-                read_file_name = read_file_name / Path("Project.toml")
-                file_instances[file_type] = Julia(read_file_name)
-            elif file_type == FileTypes.FORTRAN:
-                read_file_name = read_file_name / Path("fpm.toml")
-                file_instances[file_type] = Fortran(read_file_name)
-            elif file_type == FileTypes.POM_XML:
-                read_file_name = read_file_name / Path("pom.xml")
-                file_instances[file_type] = POM(read_file_name)
-            elif file_type == FileTypes.MKDOCS:
-                read_file_name = read_file_name / Path("mkdocs.yml")
-                file_instances[file_type] = MkDocs(read_file_name)
-            elif file_type == FileTypes.RUST:
-                read_file_name = read_file_name / Path("Cargo.toml")
-                file_instances[file_type] = Rust(read_file_name)
+            read_file_name = TEST_DATA_DIR / FILE_NAMES[file_type]
+            file_instances[file_type] = FILE_LOADERS[file_type](read_file_name)
 
         return file_instances
 
