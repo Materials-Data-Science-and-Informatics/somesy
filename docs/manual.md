@@ -132,7 +132,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 
 === "Person Metadata"
 
-    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
+    | Somesy Field     | Poetry Config | PEP 621 `[project]` | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
     | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | ---------- | -------------- | --------------- | -------------- |
     |                  |               |                   |              |              |                |              |            |                |                 |                |
     | **given-names**  | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | givenName       | name(+email)     |
@@ -143,7 +143,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 
 === "Entity Metadata"
 
-    | Somesy Field     | Poetry Config | SetupTools Config | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
+    | Somesy Field     | Poetry Config | PEP 621 `[project]` | Java POM     | Julia Config | Fortran Config | package.json | mkdocs.yml | Rust Config    | CITATION.cff    | CodeMeta       |
     | ---------------- | ------------- | ----------------- | ------------ | ------------ | -------------- | ------------ | ---------- | -------------- | --------------- | -------------- |
     |                  |               |                   |              |              |                |              |            |                |                 |                |
     | **name**  | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | givenName       | name(+email)     |
@@ -154,7 +154,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 
 === "Project Metadata"
 
-    | Somesy Field      | Poetry Config | SetupTools Config  | Java POM                        | Julia Config | Fortran Config | package.json | mkdocs.yml       | Rust Config     | CITATION.cff    | CodeMeta          |
+    | Somesy Field      | Poetry Config | PEP 621 `[project]`  | Java POM                        | Julia Config | Fortran Config | package.json | mkdocs.yml       | Rust Config     | CITATION.cff    | CodeMeta          |
     | ----------------- | ------------- | ------------------ | ------------------------------- | ------------ | -------------- | ------------ | ---------------- | --------------- | --------------- | ----------------- |
     |                   |               |                    |                                 |              |                |              |                  |                 |                 |                   |
     | **name**          | name          | name               | name                            | name         | name           | name         | site_name        | name            | title           | name              |
@@ -197,15 +197,27 @@ fields remain unchanged as well.
 
 | Source | Enriched CodeMeta fields |
 | --- | --- |
-| `pyproject.toml` / `poetry.lock` | Python runtime, direct dependencies, README URL, issue tracker, release notes |
+| `pyproject.toml`, lock file (`uv.lock`, `poetry.lock` or `pdm.lock`) | Python runtime, direct dependencies, README URL, issue tracker, release notes |
 | `package.json` | JavaScript/Node.js runtime, runtime/peer/optional dependencies, issue tracker |
 | `Cargo.toml`, `Project.toml`, `fpm.toml`, `pom.xml` | Programming language, runtime version where declared, dependencies |
 | Git | Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first and latest commit dates |
 
-Development and test dependencies are not included. A `poetry.lock` file only
-provides exact versions for dependencies declared by the project; transitive
-lock-file entries are not emitted. PyPI classifiers are kept in
-`pyproject.toml` because CodeMeta has no reliable equivalent.
+Development and test dependencies are not included; neither PEP 735
+`[dependency-groups]` nor `[project.optional-dependencies]` extras are treated
+as project requirements. A lock file only provides exact versions for
+dependencies declared by the project; transitive lock-file entries are not
+emitted. The nearest lock file at or above the `pyproject.toml` is used, so
+workspace members that share a lock file at the workspace root are covered.
+PyPI classifiers are kept in `pyproject.toml` because CodeMeta has no reliable
+equivalent.
+
+`[project.urls]` key names are not standardized by PEP 621. Common spellings
+are recognized regardless of capitalization and separators: `Issues`,
+`Issue Tracker`, `Bug Tracker`, `Bug Reports` and `Bugs` fill `issueTracker`,
+while `Changelog`, `Changes`, `Release Notes` and `History` fill
+`releaseNotes`. When syncing `homepage`, `repository` and `documentation` into
+`[project.urls]`, somesy likewise updates an entry that already exists under a
+different spelling instead of adding a second one.
 
 The first commit date requires complete Git history. In a shallow clone, Somesy
 omits `dateCreated` rather than reporting the shallow boundary as the project
@@ -214,7 +226,8 @@ checkout (for GitHub Actions, `fetch-depth: 0`).
 
 ### PEP 621 `dynamic` fields
 
-For `pyproject.toml` targets (setuptools and Poetry v2), somesy respects the
+For `pyproject.toml` targets using the PEP 621 `[project]` table (uv, hatchling,
+flit, PDM, setuptools) as well as for Poetry v2, somesy respects the
 [PEP 621 `dynamic` field](https://peps.python.org/pep-0621/#dynamic). If
 `version` or `description` is listed in `dynamic`, it means the value is
 provided at build time rather than written statically in the file. In this case
@@ -339,7 +352,7 @@ one of the supported input formats:
 === "pyproject.toml"
 
     ```toml
-    [tool.poetry] # [project] in case of poetry version 2
+    [project] # or [tool.poetry] in case of poetry version 1
     name = "my-amazing-project"
     version = "0.1.0"
     ...

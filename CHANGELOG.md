@@ -6,6 +6,30 @@ Please consult the changelog to inform yourself about breaking changes and secur
 
 ## Unreleased
 
+- **Added**
+  - read exact dependency versions from `uv.lock` and `pdm.lock` for `codemeta.json`
+    enrichment, next to the already supported `poetry.lock`
+    - use the nearest lock file at or above the `pyproject.toml`, so workspace
+      members sharing a lock file at the workspace root are covered
+  - recognize common `[project.urls]` spellings such as `Bug Tracker` and
+    `Release Notes` when filling `issueTracker` and `releaseNotes`
+- **Fixed**
+  - read the license of projects that still use the deprecated
+    `license = { text = "..." }` table instead of failing to harvest it
+  - update an existing `[project.urls]` entry regardless of its spelling, for
+    example `Homepage`, instead of adding a second entry next to it, and follow
+    the capitalization of the table when adding an entry
+  - keep the metadata in `[project]` when a project built with another backend
+    has a leftover `[tool.poetry]` section
+  - keep the versions from a lock file that contains an entry without a
+    version, as uv writes it for projects with a dynamic version
+- **Changed**
+  - document that `pyproject.toml` support follows the PEP 621 `[project]`
+    standard and therefore covers uv, hatchling, flit, PDM, setuptools and
+    Poetry 2.x, not only setuptools and Poetry
+  - rename the `SetupTools` writer to `Pep621` and its input model to
+    `Pep621Config`
+
 ## [v0.8.1](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.1) <small>(2026-09-08)</small> { id="0.8.1" }
 
 - **Added**

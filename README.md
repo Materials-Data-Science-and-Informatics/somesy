@@ -60,6 +60,10 @@ Make sure that you use the latest version in order to avoid any problems.
 
     Poetry changed location of its project metadata with its version 2. Starting with version **0.7.0**, `somesy` supports both major versions of `poetry`, version 1 and 2.
 
+! info
+
+    For `pyproject.toml`, `somesy` works with the *metadata standard*, not with the build backend. Any project that declares its metadata in the standard [PEP 621](https://peps.python.org/pep-0621/) `[project]` table is supported, no matter whether it is built with **uv**, **hatchling**, **flit**, **PDM**, **setuptools** or **Poetry 2.x**. Poetry is the exception that needs its own handling, because Poetry 1.x keeps metadata in `[tool.poetry]` and Poetry 2.x still extends the `[project]` table with Poetry-specific conventions. A leftover `[tool.poetry]` section in a project built with another backend is treated as what it is, configuration rather than metadata. Backend-specific settings such as `[tool.uv]`, `[tool.hatch]` or `[dependency-groups]` are never modified by `somesy`.
+
 ### Installing somesy
 
 Somesy requires Python `>=3.10`. To get a first impression, you can install the
@@ -233,7 +237,7 @@ Here is an overview of all the currently supported files and formats.
 | Input Formats  | Status |     | Target Formats                           | Status |
 | -------------- | ------ | --- | ---------------------------------------- | ------ |
 | (.)somesy.toml | ✓      |     | -                                        | ✓      |
-| pyproject.toml | ✓      |     | pyproject.toml _(setuptools and poetry)_ | ✓(1.)  |
+| pyproject.toml | ✓      |     | pyproject.toml _(PEP 621 `[project]` and Poetry)_ | ✓(1.)  |
 | package.json   | ✓      |     | package.json _(JavaScript)_              | ✓(2.)  |
 | Project.toml   | ✓      |     | Project.toml _(Julia)_                   | ✓      |
 | fpm.toml       | ✓      |     | fpm.toml _(Fortran)_                     | ✓(3.)  |
@@ -245,7 +249,7 @@ Here is an overview of all the currently supported files and formats.
 
 **Notes:**
 
-1. `somesy` supports PEP 621 `dynamic` fields — fields listed in `dynamic` (e.g. `version`) are not overwritten during sync
+1. `pyproject.toml` support is based on the metadata standard, not on the build backend: the PEP 621 `[project]` table is handled for **uv**, **hatchling**, **flit**, **PDM**, **setuptools** and **Poetry 2.x**, while **Poetry 1.x** is handled through its own `[tool.poetry]` table. `somesy` also supports PEP 621 `dynamic` fields — fields listed in `dynamic` (e.g. `version`) are not overwritten during sync
 2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses
