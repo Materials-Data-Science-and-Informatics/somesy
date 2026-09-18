@@ -49,6 +49,7 @@ def _sync_file(
     pass_validation: bool | None = False,
     codemeta_sources: dict[str, Path | list[Path] | None] | None = None,
     codemeta_root: Path | None = None,
+    codemeta_project_root: Path | None = None,
 ):
     """Sync metadata to a file using the provided writer."""
     logger.log(VERBOSE, f"Loading '{file.name}' ...")
@@ -62,7 +63,10 @@ def _sync_file(
     original_data = _semantic_data(writer._data)
     writer.sync(metadata)
     if writer_cls == CodeMeta and codemeta_sources is not None:
-        enrich_codemeta(writer._data, codemeta_sources, codemeta_root or file.parent)
+        root = codemeta_root or file.parent
+        enrich_codemeta(
+            writer._data, codemeta_sources, root, codemeta_project_root or root
+        )
     if _semantic_data(writer._data) != original_data:
         writer.save(file)
         logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
@@ -88,12 +92,19 @@ def _sync_files(
             _sync_file(metadata, file, writer_class, **kwargs)
 
 
-def sync(somesy_input: SomesyInput, is_package: bool = False):
+def sync(
+    somesy_input: SomesyInput,
+    is_package: bool = False,
+    project_root: Path | None = None,
+):
     """Sync selected metadata files with given input file.
 
     Args:
         somesy_input: The input configuration and metadata to sync
         is_package: Whether this is a package (subfolder) being synced
+        project_root: Root of the overall project, differs from the base
+            directory for packages of a multi-package repository. Files shared
+            by all packages, such as a lock file, are looked up from here.
 
     """
     conf, metadata = somesy_input.config, somesy_input.project
@@ -119,7 +130,7 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
     logger.debug(f"Project metadata: {pp_metadata}")
 
     # First sync the current project
-    _sync_root_project(conf, metadata, base_dir)
+    _sync_root_project(conf, metadata, base_dir, project_root or base_dir)
 
     # Then sync each package if defined
     if conf.packages:
@@ -176,11 +187,18 @@ def sync(somesy_input: SomesyInput, is_package: bool = False):
                 package_input.config.codemeta_file = Path("codemeta.json")
 
             # Recursively call sync on the package
-            sync(package_input, is_package=True)
+            sync(
+                package_input,
+                is_package=True,
+                project_root=project_root or base_dir,
+            )
 
 
 def _sync_root_project(
-    conf: SomesyConfig, metadata: ProjectMetadata, base_dir: Path
+    conf: SomesyConfig,
+    metadata: ProjectMetadata,
+    base_dir: Path,
+    project_root: Path,
 ) -> None:
     """Sync metadata files for the root project."""
     # update these only if they exist:
@@ -259,6 +277,7 @@ def _sync_root_project(
             merge_codemeta=conf.merge_codemeta,
             pass_validation=conf.pass_validation,
             codemeta_root=base_dir,
+            codemeta_project_root=project_root,
             codemeta_sources={
                 "pyproject": None if conf.no_sync_pyproject else conf.pyproject_file,
                 "package_json": (

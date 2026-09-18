@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import tomlkit
 
 from somesy.cff import CFF
 from somesy.codemeta import CodeMeta
@@ -675,3 +676,68 @@ def test_sync_merge_codemeta(create_files, file_types):
 
     # Verify CodeMeta was created
     assert (test_dir / "codemeta.json").exists()
+
+
+def test_sync_uv_project_end_to_end(create_files, file_types):
+    """A uv project syncs from its own [tool.somesy] section like any other."""
+    test_dir = create_files({(file_types.UV, "pyproject.toml")})
+    (test_dir / "uv.lock").write_text(
+        '[[package]]\nname = "packaging"\nversion = "24.2"\n'
+    )
+    pyproject_file = test_dir / "pyproject.toml"
+    original = tomlkit.parse(pyproject_file.read_text())
+
+    sync(SomesyInput.from_input_file(pyproject_file))
+
+    synced = tomlkit.parse(pyproject_file.read_text())
+    assert synced["project"]["name"] == "testproject"
+    assert synced["project"]["version"] == "1.0.0"
+    # uv's own settings are behavioral, not metadata, and must survive untouched
+    assert synced["tool"]["uv"] == original["tool"]["uv"]
+    assert synced["dependency-groups"] == original["dependency-groups"]
+    assert synced["build-system"] == original["build-system"]
+    assert synced["project"]["scripts"] == original["project"]["scripts"]
+
+    assert (test_dir / "CITATION.cff").exists()
+    codemeta = json.loads((test_dir / "codemeta.json").read_text())
+    assert codemeta["name"] == "testproject"
+    assert codemeta["programmingLanguage"] == "Python"
+    assert codemeta["softwareRequirements"] == [
+        {
+            "@type": "SoftwareApplication",
+            "identifier": "packaging",
+            "name": "packaging",
+            "runtimePlatform": "Python",
+            "version": "24.2",
+        }
+    ]
+
+
+def test_workspace_member_uses_the_lock_file_at_the_project_root(
+    tmp_path, create_files, file_types
+):
+    """uv workspaces resolve all members into a single lock file at the root."""
+    member_dir = tmp_path / "packages" / "member"
+    member_dir.mkdir(parents=True)
+    create_files(
+        {
+            (file_types.SOMESY, "somesy.toml"),
+            (file_types.UV, "pyproject.toml"),
+            (file_types.UV, "packages/member/pyproject.toml"),
+        }
+    )
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "packaging"\nversion = "24.2"\n'
+    )
+
+    root_input = SomesyInput.from_input_file(tmp_path / "somesy.toml")
+    root_input.config.packages = [Path("packages/member")]
+
+    sync(root_input)
+
+    member_codemeta = json.loads((member_dir / "codemeta.json").read_text())
+    versions = {
+        item["name"]: item.get("version")
+        for item in member_codemeta["softwareRequirements"]
+    }
+    assert versions == {"packaging": "24.2"}

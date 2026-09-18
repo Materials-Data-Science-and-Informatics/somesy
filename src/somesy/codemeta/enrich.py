@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -15,23 +15,49 @@ from packaging.requirements import Requirement
 from tomlkit.exceptions import ParseError
 
 from somesy.git import harvest as harvest_git
+from somesy.pyproject.writer import normalize_url_key
+
+_LOCK_FILES = ("uv.lock", "poetry.lock", "pdm.lock")
+"""Lock files understood for exact dependency versions, in order of precedence.
+
+All of them list resolved packages as `[[package]]` tables carrying a `name`,
+so a single parser covers them. The `version` may be absent, for example uv
+omits it for the project itself when its version is dynamic.
+"""
+
+_URL_ALIASES = {
+    "issueTracker": {"issues", "issuetracker", "bugtracker", "bugreports", "bugs"},
+    "releaseNotes": {"changelog", "changes", "releasenotes", "history"},
+}
+"""Normalized `[project.urls]` key names mapped to the CodeMeta field they fill."""
 
 
 def enrich(
     codemeta: dict[str, Any],
     sources: dict[str, Path | list[Path] | None],
     root: Path,
+    project_root: Path | None = None,
 ) -> None:
     """Fill CodeMeta fields absent after canonical Somesy synchronization.
 
     ``codemeta`` already contains data written from somesy.toml.  This function
     therefore only adds optional fields and never replaces an existing value.
+
+    Args:
+        codemeta: The CodeMeta data to fill in place.
+        sources: Project files to read, by source type.
+        root: Directory this project is rooted at, used to harvest Git history.
+        project_root: Root of the overall project, differs from ``root`` for a
+            package of a multi-package repository. Files shared by all
+            packages, such as a lock file, are looked up from here. Defaults to
+            ``root``.
+
     """
     values: dict[str, Any] = {"requirements": [], "languages": [], "runtimes": []}
     for source_type, paths in sources.items():
         for path in _paths(paths):
             if path.is_file():
-                _read_source(source_type, path, values)
+                _read_source(source_type, path, values, project_root or root)
 
     _add(codemeta, "readme", values.get("readme"))
     _add(codemeta, "issueTracker", values.get("issueTracker"))
@@ -57,9 +83,11 @@ def _paths(paths: Path | list[Path] | None) -> list[Path]:
     return paths if isinstance(paths, list) else [paths]
 
 
-def _read_source(source_type: str, path: Path, values: dict[str, Any]) -> None:
+def _read_source(
+    source_type: str, path: Path, values: dict[str, Any], project_root: Path
+) -> None:
     if source_type == "pyproject":
-        _read_pyproject(path, values)
+        _read_pyproject(path, values, project_root)
     elif source_type == "package_json":
         _read_package_json(path, values)
     elif source_type in {"julia", "fortran", "rust"}:
@@ -68,7 +96,7 @@ def _read_source(source_type: str, path: Path, values: dict[str, Any]) -> None:
         _read_pom(path, values)
 
 
-def _read_pyproject(path: Path, values: dict[str, Any]) -> None:
+def _read_pyproject(path: Path, values: dict[str, Any], project_root: Path) -> None:
     data = tomlkit.parse(path.read_text())
     project = data.get("project") or data.get("tool", {}).get("poetry", {})
     if not project:
@@ -81,16 +109,15 @@ def _read_pyproject(path: Path, values: dict[str, Any]) -> None:
     _urls(urls, values)
     _url(values, "readme", project.get("readme"))
 
+    locked = _lock_versions(path.parent, project_root)
     dependencies = project.get("dependencies", [])
     if isinstance(dependencies, dict):  # Poetry v1
         python = dependencies.pop("python", None)
         if python:
             values["runtimes"].append(f"Python {python}")
-        locked = _poetry_lock_versions(path.with_name("poetry.lock"))
         for name, spec in dependencies.items():
             _named_requirement(values, name, _poetry_version(spec), "Python", locked)
         return
-    locked = _poetry_lock_versions(path.with_name("poetry.lock"))
     for dependency in dependencies:
         _requirement(values, dependency, "Python", locked)
 
@@ -99,13 +126,46 @@ def _poetry_version(spec: Any) -> str:
     return spec if isinstance(spec, str) else spec.get("version", "")
 
 
-def _poetry_lock_versions(path: Path) -> dict[str, str]:
-    if not path.is_file():
-        return {}
+def _lock_versions(start: Path, root: Path) -> dict[str, str]:
+    """Return exact versions from the nearest lock file at or above ``start``.
+
+    Workspace members (as used by uv) keep their lock file at the workspace
+    root, so directories are searched upwards, but never above ``root``.
+    """
+    for directory in _directories(start, root):
+        for name in _LOCK_FILES:
+            path = directory / name
+            if path.is_file():
+                return _parse_lock(path)
+    return {}
+
+
+def _directories(start: Path, root: Path) -> Iterator[Path]:
+    directory = start.resolve()
+    stop = root.resolve()
+    if stop != directory and stop not in directory.parents:
+        yield directory  # the file lies outside the project, do not walk up
+        return
+    while True:
+        yield directory
+        if directory == stop or directory == directory.parent:
+            return
+        directory = directory.parent
+
+
+def _parse_lock(path: Path) -> dict[str, str]:
+    """Return the resolved version of every package named in a lock file.
+
+    Entries without a version are skipped, they carry no version to report.
+    """
     try:
         packages = tomlkit.parse(path.read_text()).get("package", [])
-        return {_normalise(package["name"]): package["version"] for package in packages}
-    except (KeyError, TypeError, ParseError):
+        return {
+            _normalise(package["name"]): package["version"]
+            for package in packages
+            if package.get("name") and package.get("version")
+        }
+    except (AttributeError, KeyError, TypeError, ParseError):
         return {}
 
 
@@ -170,14 +230,19 @@ def _read_pom(path: Path, values: dict[str, Any]) -> None:
 
 
 def _urls(urls: Any, values: dict[str, Any]) -> None:
+    """Map free-form `[project.urls]` entries to CodeMeta fields.
+
+    PEP 621 does not standardize the key names, so common spellings such as
+    "Bug Tracker" or "Release Notes" are matched next to "Issues" and "Changelog".
+    """
     if not isinstance(urls, dict):
         return
     for name, url in urls.items():
-        lowered = name.lower()
-        if lowered == "issues":
-            _url(values, "issueTracker", url)
-        elif lowered == "changelog":
-            _url(values, "releaseNotes", url)
+        normalized = normalize_url_key(name)
+        for key, aliases in _URL_ALIASES.items():
+            if normalized in aliases:
+                _url(values, key, url)
+                break
 
 
 def _url(values: dict[str, Any], key: str, value: Any) -> None:
