@@ -7,12 +7,13 @@ from somesy.pyproject import Pyproject
 def test_poetry_validate_accept(load_files, file_types):
     """Validate by loading the data pyproject file using the fixture."""
     load_files([file_types.SETUPTOOLS])
+    load_files([file_types.UV])  # PEP 621 without any [tool.poetry]
     load_files([file_types.POETRY])  # Poetry v1
     load_files([file_types.POETRY2])  # Poetry v2
 
 
 def test_poetry_validate(tmp_path):
-    """Test validating a pyproject file in both poetry and setuptools formats."""
+    """Test validating a pyproject file in both poetry and PEP 621 formats."""
 
     # Test Poetry v1 format with invalid values
     reject_poetry_v1_object = {
@@ -42,12 +43,12 @@ def test_poetry_validate(tmp_path):
     # if we pass validation, it should not raise an error for either version
     Pyproject(invalid_poetry_path, pass_validation=True)
 
-    # Test setuptools format with invalid values
-    reject_setuptools_object = {
+    # Test PEP 621 [project] format with invalid values
+    reject_pep621_object = {
         "project": {"name": "somesy", "version": "abc", "authors": ["John Doe <"]}
     }
     with open(invalid_poetry_path, "w+") as f:
-        dump(reject_setuptools_object, f)
+        dump(reject_pep621_object, f)
     with pytest.raises(ValueError):
         Pyproject(invalid_poetry_path)
 
@@ -55,8 +56,8 @@ def test_poetry_validate(tmp_path):
     Pyproject(invalid_poetry_path, pass_validation=True)
 
 
-def test_dynamic_version_setuptools_valid(tmp_path):
-    """Setuptools: dynamic = ['version'] without version field should pass validation."""
+def test_dynamic_version_pep621_valid(tmp_path):
+    """PEP 621: dynamic = ['version'] without version field should pass validation."""
     obj = {
         "project": {
             "name": "somesy",
@@ -92,8 +93,8 @@ def test_dynamic_version_poetry2_valid(tmp_path):
     assert "version" in p._dynamic_fields
 
 
-def test_missing_version_not_dynamic_setuptools_fails(tmp_path):
-    """Setuptools: missing version without dynamic should fail validation."""
+def test_missing_version_not_dynamic_pep621_fails(tmp_path):
+    """PEP 621: missing version without dynamic should fail validation."""
     obj = {
         "project": {
             "name": "somesy",
