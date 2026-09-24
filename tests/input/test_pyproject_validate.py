@@ -1,7 +1,93 @@
 import pytest
+from pydantic import ValidationError
 from tomlkit import dump
 
 from somesy.pyproject import Pyproject
+
+VALID_NAMES = [
+    "a",
+    "7",
+    "acme",
+    "acme-widgets",
+    "acme_widgets",
+    "acme.widgets",
+    "zope.interface",
+    "ruamel.yaml",
+    "backports.zoneinfo",
+    "acme..widgets",
+    "acme--widgets",
+    "acme__widgets",
+    "acme._-widgets",
+    "Acme.Widgets",
+]
+
+INVALID_NAMES = [
+    "",
+    "...",
+    ".acme",
+    "acme.",
+    "-acme",
+    "acme-",
+    "_acme",
+    "acme_",
+    " acme",
+    "acme ",
+    "ac me",
+    "ac\tme",
+    "acme\n",
+    "acmé",
+    "acme/widgets",
+    "acme@widgets",
+    "acme!",
+]
+
+# (wrap, authors) per metadata route: PEP 621 people are tables, Poetry v1 accepts plain strings.
+PEP621_AUTHORS = [{"name": "John Doe", "email": "john.doe@example.com"}]
+POETRY_AUTHORS = ["John Doe <john.doe@example.com>"]
+ROUTES = {
+    "pep621": (lambda obj: {"project": obj}, PEP621_AUTHORS),
+    "poetry-v1": (lambda obj: {"tool": {"poetry": obj}}, POETRY_AUTHORS),
+    "poetry-v2": (lambda obj: {"tool": {"poetry": {}}, "project": obj}, PEP621_AUTHORS),
+}
+
+
+@pytest.fixture(params=ROUTES.values(), ids=ROUTES.keys())
+def pyproject_route(request):
+    """Write a minimal, otherwise-valid pyproject.toml for one metadata route."""
+    wrap, authors = request.param
+
+    def _write(tmp_path, name: str):
+        obj = {
+            "name": name,
+            "version": "0.1.0",
+            "description": "test package",
+            "license": "MIT",
+            "authors": authors,
+        }
+        path = tmp_path / "pyproject.toml"
+        with open(path, "w+") as f:
+            dump(wrap(obj), f)
+        return path
+
+    return _write
+
+
+@pytest.mark.parametrize("name", VALID_NAMES)
+def test_package_name_accepts_dots_and_repeated_separators(
+    tmp_path, pyproject_route, name
+):
+    """PEP 621 and Poetry v1/v2 names allow dots and repeated/mixed separators."""
+    path = pyproject_route(tmp_path, name)
+    assert Pyproject(path).name == name
+
+
+@pytest.mark.parametrize("name", INVALID_NAMES)
+def test_package_name_rejects_invalid_names(tmp_path, pyproject_route, name):
+    """Invalid package names are still rejected, targeting the name field."""
+    path = pyproject_route(tmp_path, name)
+    with pytest.raises(ValidationError) as exc_info:
+        Pyproject(path)
+    assert any(err["loc"] == ("name",) for err in exc_info.value.errors())
 
 
 def test_poetry_validate_accept(load_files, file_types):

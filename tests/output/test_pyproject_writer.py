@@ -277,6 +277,47 @@ def test_person_merge_pyproject(
     assert pj.authors[1] == person3_rep
 
 
+def _unrelated_tables(doc: tomlkit.TOMLDocument) -> dict:
+    """Tables sync never touches: build-system, and tool.* other than tool.poetry.
+
+    tool.poetry holds the metadata itself for Poetry v1 fixtures, so it is
+    excluded rather than being unrelated content.
+    """
+    tool = dict(doc.get("tool", {}))
+    tool.pop("poetry", None)
+    return {"build-system": doc.get("build-system"), "tool": tool}
+
+
+@pytest.mark.parametrize(
+    "writer_fixture",
+    [
+        "pyproject_poetry_file",
+        "pyproject_poetry2_file",
+        "pyproject_setuptools_file",
+        "pyproject_uv_file",
+    ],
+)
+def test_dotted_name_round_trips_through_save_and_reload(
+    request, writer_fixture, somesy_input
+):
+    """A dotted name survives sync/save/reload, leaving unrelated tables untouched."""
+    path = request.getfixturevalue(writer_fixture)
+    before = _unrelated_tables(tomlkit.parse(path.read_text()))
+
+    somesy_input.project.name = "Acme.Widgets"
+    pyproject = Pyproject(path)
+    pyproject.sync(somesy_input.project)
+    pyproject.save()
+
+    after = tomlkit.parse(path.read_text())
+    assert _unrelated_tables(after) == before
+
+    reloaded = Pyproject(path)
+    assert reloaded.name == "Acme.Widgets"
+    assert reloaded.version == somesy_input.project.version
+    assert reloaded.description == somesy_input.project.description
+
+
 def test_without_email(tmp_path, person):
     # Test Poetry v1
     pyproject_v1_str = """
