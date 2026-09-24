@@ -126,3 +126,56 @@ def test_missing_version_not_dynamic_poetry2_fails(tmp_path):
 
     with pytest.raises(ValueError, match="version"):
         Pyproject(path)
+
+
+def test_pep508_dotted_package_name_pep621(tmp_path):
+    """PEP 508 allows dots in distribution names (issue #141)."""
+    obj = {
+        "project": {
+            "name": "acme.widgets",
+            "version": "1.0.0",
+            "description": "A namespaced package",
+        }
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+    p = Pyproject(path)
+    assert p.name == "acme.widgets"
+
+
+def test_pep508_dotted_package_name_poetry_v1(tmp_path):
+    """Poetry v1 [tool.poetry] names may also contain dots."""
+    obj = {
+        "tool": {
+            "poetry": {
+                "name": "acme.widgets",
+                "version": "1.0.0",
+                "description": "A namespaced package",
+                "authors": ["Jane Doe <j.doe@example.com>"],
+                "license": "MIT",
+            }
+        }
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+    p = Pyproject(path)
+    assert p.name == "acme.widgets"
+
+
+def test_pep508_name_must_not_start_or_end_with_separator(tmp_path):
+    """Leading or trailing '.', '-', '_' is not a valid PEP 508 name."""
+    path = tmp_path / "pyproject.toml"
+    for name in (".acme", "acme.", "-acme", "acme_"):
+        obj = {
+            "project": {
+                "name": name,
+                "version": "1.0.0",
+                "description": "invalid",
+            }
+        }
+        with open(path, "w+") as f:
+            dump(obj, f)
+        with pytest.raises(ValueError):
+            Pyproject(path)
