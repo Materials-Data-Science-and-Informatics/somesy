@@ -743,3 +743,58 @@ def test_added_project_url_follows_the_style_of_the_table(
     urls_after = tomlkit.parse(path.read_text())["project"]["urls"]
     assert expected_key in urls_after
     assert urls_after[expected_key] == "https://github.com/example/test-pkg"
+
+
+@pytest.mark.parametrize("poetry", [False, True], ids=["pep621", "poetry2"])
+def test_new_project_urls_are_separated_from_next_table(tmp_path, metadata, poetry):
+    content = UV_PYPROJECT
+    if poetry:
+        content = (
+            content.replace(
+                'build-backend = "uv_build"',
+                'build-backend = "poetry.core.masonry.api"',
+            )
+            + "\n[tool.poetry]\n"
+        )
+    path = tmp_path / "pyproject.toml"
+    path.write_text(content)
+    metadata.homepage = "https://example.com/"
+    metadata.repository = "https://github.com/example/test-pkg"
+
+    pyproject = Pyproject(path, pass_validation=True)
+    pyproject.sync(metadata)
+    pyproject.save()
+    result = path.read_text()
+
+    assert (
+        '[project.urls]\nhomepage = "https://example.com/"\n'
+        'repository = "https://github.com/example/test-pkg"\n\n[build-system]'
+    ) in result
+    assert (
+        tomlkit.parse(result)["build-system"] == tomlkit.parse(content)["build-system"]
+    )
+    assert "[tool.uv]\npackage = true" in result
+
+    again = Pyproject(path, pass_validation=True)
+    again.sync(metadata)
+    again.save()
+    assert path.read_text() == result
+
+
+def test_existing_project_urls_keep_their_spacing_and_comment(tmp_path, metadata):
+    path = tmp_path / "pyproject.toml"
+    content = UV_PYPROJECT.replace(
+        "[build-system]",
+        '[project.urls]\n# Existing URL comment\nhomepage = "https://old.example/"\n\n'
+        "[build-system]",
+    )
+    path.write_text(content)
+    metadata.homepage = "https://new.example/"
+    pyproject = Pyproject(path, pass_validation=True)
+    pyproject.sync(metadata)
+    pyproject.save()
+
+    assert (
+        "[project.urls]\n# Existing URL comment\n"
+        'homepage = "https://new.example/"\n\n[build-system]'
+    ) in path.read_text()
