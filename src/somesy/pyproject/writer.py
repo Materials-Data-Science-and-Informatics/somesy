@@ -9,7 +9,7 @@ import tomlkit
 import wrapt
 from rich.pretty import pretty_repr
 from tomlkit import load
-from tomlkit.items import InlineTable
+from tomlkit.items import InlineTable, Table
 
 from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
@@ -56,6 +56,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         """
         self._model_cls = model_cls
         self._section = section
+        self._created_tables: list[Table] = []
         super().__init__(
             path,
             create_if_not_exists=False,
@@ -195,7 +196,9 @@ class PyprojectCommon(ProjectMetadataWriter):
         curr = dat
         for path_key in key_path[:-1]:
             if path_key not in curr:
-                curr.add(path_key, tomlkit.table())
+                table = tomlkit.table()
+                curr.add(path_key, table)
+                self._created_tables.append(table)
             curr = curr[path_key]
 
         # Handle arrays with proper formatting
@@ -215,6 +218,11 @@ class PyprojectCommon(ProjectMetadataWriter):
             curr[key_path[-1]] = array
         else:
             curr[key_path[-1]] = value
+
+        if any(curr is table for table in self._created_tables):
+            for field in curr:
+                curr.item(field).trivia.trail = "\n"
+            curr.item(list(curr)[-1]).trivia.trail = "\n\n"
 
 
 class Poetry(PyprojectCommon):
