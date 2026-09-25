@@ -21,6 +21,10 @@ from somesy.core.types import HttpUrlStr
 EMailAddress = TypeAdapter(EmailStr)
 logger = getLogger("somesy")
 
+# PEP 508 distribution name: ASCII letter/digit endpoints, with any run of
+# letters, digits, dots, underscores or hyphens allowed in between.
+_PACKAGE_NAME_PATTERN = r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$"
+
 
 class STPerson(BaseModel):
     """Person model for PEP 621 `[project]` metadata."""
@@ -74,7 +78,7 @@ class PoetryConfig(BaseModel):
 
     name: Annotated[
         str,
-        Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Package name"),
+        Field(pattern=_PACKAGE_NAME_PATTERN, description="Package name"),
     ]
     version: Annotated[
         str | None,
@@ -227,7 +231,7 @@ class Pep621Config(BaseModel):
 
     model_config = {"use_enum_values": True}
 
-    name: Annotated[str, Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$")]
+    name: Annotated[str, Field(pattern=_PACKAGE_NAME_PATTERN)]
     version: Annotated[
         str | None,
         Field(

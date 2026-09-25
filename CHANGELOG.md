@@ -23,6 +23,9 @@ Please consult the changelog to inform yourself about breaking changes and secur
     has a leftover `[tool.poetry]` section
   - keep the versions from a lock file that contains an entry without a
     version, as uv writes it for projects with a dynamic version
+  - accept Python package names containing dots and repeated or mixed
+    `._-` separators, such as `zope.interface`, for PEP 621 and Poetry
+    `pyproject.toml` metadata
 - **Changed**
   - document that `pyproject.toml` support follows the PEP 621 `[project]`
     standard and therefore covers uv, hatchling, flit, PDM, setuptools and
