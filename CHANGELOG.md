@@ -14,6 +14,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - recognize common `[project.urls]` spellings such as `Bug Tracker` and
     `Release Notes` when filling `issueTracker` and `releaseNotes`
 - **Fixed**
+  - separate newly generated `[project.urls]` from the following TOML table
+    with a blank line
   - read the license of projects that still use the deprecated
     `license = { text = "..." }` table instead of failing to harvest it
   - update an existing `[project.urls]` entry regardless of its spelling, for
