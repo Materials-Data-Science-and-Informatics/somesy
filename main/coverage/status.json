@@ -131,7 +131,7 @@
       }
     },
     "z_1772db955a685d28_sync_py":{
-      "hash":"d445038f939835853ba4e0d400357d83",
+      "hash":"f84406a56169e50d49d3c8f979057da8",
       "index":{
         "url":"z_1772db955a685d28_sync_py.html",
         "file":"src/somesy/cli/sync.py",
@@ -141,7 +141,7 @@
           "n_files":1,
           "n_statements":39,
           "n_excluded":0,
-          "n_missing":6,
+          "n_missing":0,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -833,7 +833,7 @@
       }
     },
     "z_22470fc7858cbfa7_models_py":{
-      "hash":"cd723fe8d58817b2a98ba93d8c09d4d6",
+      "hash":"166a25fec9990f1926c567d38745883a",
       "index":{
         "url":"z_22470fc7858cbfa7_models_py.html",
         "file":"src/somesy/pyproject/models.py",
@@ -841,9 +841,9 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":161,
+          "n_statements":162,
           "n_excluded":0,
-          "n_missing":33,
+          "n_missing":30,
           "n_branches":0,
           "n_partial_branches":0,
           "n_missing_branches":0
@@ -851,7 +851,7 @@
       }
     },
     "z_22470fc7858cbfa7_writer_py":{
-      "hash":"334c288d5a105e8d65e8a6d0b81b6487",
+      "hash":"e193c9f0a6f878a4abe5f33ad693f794",
       "index":{
         "url":"z_22470fc7858cbfa7_writer_py.html",
         "file":"src/somesy/pyproject/writer.py",
@@ -859,7 +859,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":216,
+          "n_statements":223,
           "n_excluded":0,
           "n_missing":19,
           "n_branches":0,

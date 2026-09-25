@@ -3329,6 +3329,8 @@
 <li>recognize common <code>[project.urls]</code> spellings such as <code>Bug Tracker</code> and
     <code>Release Notes</code> when filling <code>issueTracker</code> and <code>releaseNotes</code></li>
 <li><strong>Fixed</strong></li>
+<li>separate newly generated <code>[project.urls]</code> from the following TOML table
+    with a blank line</li>
 <li>read the license of projects that still use the deprecated
     <code>license = { text = "..." }</code> table instead of failing to harvest it</li>
 <li>update an existing <code>[project.urls]</code> entry regardless of its spelling, for
@@ -3338,6 +3340,9 @@
     has a leftover <code>[tool.poetry]</code> section</li>
 <li>keep the versions from a lock file that contains an entry without a
     version, as uv writes it for projects with a dynamic version</li>
+<li>accept Python package names containing dots and repeated or mixed
+    <code>._-</code> separators, such as <code>zope.interface</code>, for PEP 621 and Poetry
+    <code>pyproject.toml</code> metadata</li>
 <li><strong>Changed</strong></li>
 <li>document that <code>pyproject.toml</code> support follows the PEP 621 <code>[project]</code>
     standard and therefore covers uv, hatchling, flit, PDM, setuptools and
