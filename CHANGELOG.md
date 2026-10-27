@@ -6,6 +6,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
 
 ## Unreleased
 
+## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
+
 - **Added**
   - read exact dependency versions from `uv.lock` and `pdm.lock` for `codemeta.json`
     enrichment, next to the already supported `poetry.lock`
