@@ -65,7 +65,6 @@ Metadata best practices for FAIR software are implemented using:
 * `cffconvert` to check the `CITATION.cff` (citation metadata)
 * `codemetapy` to generate a `codemeta.json` (general software metadata)
 * `reuse` to check [REUSE-compliance](https://reuse.software/spec/) (granular copyright and license metadata)
-* `licensecheck` to scan for possible license incompatibilities in the dependencies
 
 ## Basics
 
