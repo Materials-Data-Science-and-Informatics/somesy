@@ -787,3 +787,49 @@ def test_cli_packages_option_accepts_directory(
 
     assert result.exit_code == 0, result.output
     assert (tmp_path / "package1" / "CITATION.cff").is_file()
+
+
+def _write_monorepo(tmp_path, root_config: str, package_config: str):
+    """Write a root and a package somesy.toml with the given `[config]` bodies."""
+    project = (Path("tests/data") / "somesy.toml").read_text().split("[config]")[0]
+    (tmp_path / "pkg").mkdir()
+    (tmp_path / "somesy.toml").write_text(f"{project}[config]\n{root_config}\n")
+    (tmp_path / "pkg" / "somesy.toml").write_text(
+        f"{project}[config]\n{package_config}\n"
+    )
+
+
+def test_package_config_no_sync_cff_is_respected(tmp_path, monkeypatch):
+    """A package's own `[config]` is the base for its sync."""
+    _write_monorepo(tmp_path, "no_sync_pyproject = true", "no_sync_cff = true")
+    monkeypatch.chdir(tmp_path)
+
+    result = CliRunner().invoke(app, ["sync", "-k", "pkg"])
+
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "CITATION.cff").is_file()
+    assert not (tmp_path / "pkg" / "CITATION.cff").exists()
+
+
+def test_root_file_config_is_not_inherited_by_package(tmp_path, monkeypatch):
+    """Options from the root config file do not apply to packages."""
+    _write_monorepo(tmp_path, "no_sync_cff = true", "no_sync_pyproject = true")
+    monkeypatch.chdir(tmp_path)
+
+    result = CliRunner().invoke(app, ["sync", "-k", "pkg"])
+
+    assert result.exit_code == 0, result.output
+    assert not (tmp_path / "CITATION.cff").exists()
+    assert (tmp_path / "pkg" / "CITATION.cff").is_file()
+
+
+def test_explicit_root_cli_flag_overrides_package_config(tmp_path, monkeypatch):
+    """Options explicitly passed on the root CLI override the package config."""
+    _write_monorepo(tmp_path, "no_sync_pyproject = true", "no_sync_pyproject = true")
+    monkeypatch.chdir(tmp_path)
+
+    result = CliRunner().invoke(app, ["sync", "--no-sync-cff", "-k", "pkg"])
+
+    assert result.exit_code == 0, result.output
+    assert not (tmp_path / "CITATION.cff").exists()
+    assert not (tmp_path / "pkg" / "CITATION.cff").exists()

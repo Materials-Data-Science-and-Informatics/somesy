@@ -160,22 +160,23 @@ def sync(
                 )
                 continue
 
-            # Create new config with CLI options and package's input file
-            cli_options = {
-                "no_sync_pyproject": conf.no_sync_pyproject,
-                "no_sync_package_json": conf.no_sync_package_json,
-                "no_sync_julia": conf.no_sync_julia,
-                "no_sync_fortran": conf.no_sync_fortran,
-                "no_sync_pom_xml": conf.no_sync_pom_xml,
-                "no_sync_mkdocs": conf.no_sync_mkdocs,
-                "no_sync_rust": conf.no_sync_rust,
-                "no_sync_cff": conf.no_sync_cff,
-                "no_sync_codemeta": conf.no_sync_codemeta,
-                "merge_codemeta": conf.merge_codemeta,
-                "pass_validation": conf.pass_validation,
-                "packages": None,  # Don't pass packages to avoid recursive package handling
+            # The package's own config is the base; only options explicitly
+            # passed on the root CLI override it (nothing is inherited from the
+            # root config file or defaults).
+            cli_overrides = {
+                key: value
+                for key, value in conf._cli_overrides.items()
+                if key.startswith("no_sync_")
+                or key in ("merge_codemeta", "pass_validation")
             }
-            package_input.config = SomesyConfig(input_file=config_file, **cli_options)
+            package_input.config = SomesyConfig(
+                **{
+                    **package_input.config.model_dump(),
+                    **cli_overrides,
+                    "input_file": config_file,
+                    "packages": None,  # avoid recursive package handling
+                }
+            )
 
             # Set default CFF and CodeMeta paths in package directory if not specified
             if not package_input.config.no_sync_cff:

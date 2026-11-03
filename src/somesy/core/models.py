@@ -268,6 +268,9 @@ class SomesyConfig(SomesyBaseModel):
         self.verbose = log_level == SomesyLogLevel.VERBOSE
         self.debug = log_level == SomesyLogLevel.DEBUG
 
+    _cli_overrides: dict[str, Any] = PrivateAttr(default_factory=dict)
+    """Options explicitly set on this config (CLI), set on the combined config."""
+
     def get_input(self) -> SomesyInput:
         """Based on the somesy config, load the complete somesy input."""
         # get metadata+config from specified input file
@@ -280,6 +283,7 @@ class SomesyConfig(SomesyBaseModel):
         dct.update(somesy_input.config or {})
         dct.update(self.model_dump())
         somesy_input.config = SomesyConfig(**dct)
+        somesy_input.config._cli_overrides = self.model_dump()
         return somesy_input
 
     def resolve_paths(self, base_dir: Path) -> None:

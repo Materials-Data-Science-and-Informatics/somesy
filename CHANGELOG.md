@@ -25,6 +25,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - warn when the input file passed with `-i` does not exist
   - `somesy sync --packages` accepts package directories
   - aborting a prompt no longer prints an empty error
+  - monorepo packages keep their own `[config]`; only options passed on the
+    command line override it
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
