@@ -705,6 +705,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#description-and-abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Description and abstract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#codemeta-enrichment" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3070,6 +3081,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#description-and-abstract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Description and abstract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#codemeta-enrichment" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3323,6 +3345,13 @@ Furthermore, <code>somesy</code> might support the
 <td><strong>yes</strong></td>
 <td></td>
 <td>Project description.</td>
+</tr>
+<tr>
+<td>abstract</td>
+<td>str</td>
+<td>no</td>
+<td></td>
+<td>Project abstract for CITATION.cff (defaults to description).</td>
 </tr>
 <tr>
 <td>version</td>
@@ -4190,6 +4219,19 @@ some of the currently supported formats. Bold field names are mandatory, the oth
 <td>description</td>
 </tr>
 <tr>
+<td>abstract</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+<td>abstract</td>
+<td>-</td>
+</tr>
+<tr>
 <td>doi</td>
 <td>-</td>
 <td>-</td>
@@ -4370,6 +4412,23 @@ to list authors and maintainers. <strong>Therefore somesy sometimes must do much
 than just move or rename fields</strong>. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the <code>somesy</code> code.</p>
+<h3 id="description-and-abstract">Description and abstract<a class="headerlink" href="#description-and-abstract" title="Permanent link">&para;</a></h3>
+<p>The <code>description</code> is a short, one-line summary of the project. For Python
+packages it becomes the package summary, which PyPI only accepts as a single
+line of at most 512 characters; somesy warns when the <code>description</code> synced into
+<code>pyproject.toml</code> breaks either rule.</p>
+<p>For a longer text, such as a multi-paragraph abstract for citations, set the
+optional <code>abstract</code> field. It is only written to <code>CITATION.cff</code> (as <code>abstract</code>);
+all other files keep the short <code>description</code>. Without an <code>abstract</code>,
+<code>CITATION.cff</code> uses the <code>description</code> instead.</p>
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<span class="n">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"Brief description of my amazing software."</span>
+<span class="n">abstract</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"""</span>
+<span class="s2">A longer abstract of my amazing software.</span>
+
+<span class="s2">It can span several paragraphs.</span>
+<span class="s2">"""</span>
+</code></pre></div>
 <h3 id="codemeta-enrichment">CodeMeta Enrichment<a class="headerlink" href="#codemeta-enrichment" title="Permanent link">&para;</a></h3>
 <p>When writing <code>codemeta.json</code>, Somesy first synchronizes the canonical metadata
 from <code>somesy.toml</code>. It then fills <strong>missing</strong> CodeMeta fields from enabled,
@@ -4567,8 +4626,8 @@ manually instead of deriving them from the files in the project.</p>
 <code>somesy.toml</code> file:</p>
 <div class="highlight"><pre><span></span><code>somesy<span class="w"> </span><span class="nb">set</span><span class="w"> </span>version<span class="w"> </span><span class="m">1</span>.2.3
 </code></pre></div>
-<p>The command supports <code>name</code>, <code>description</code>, <code>version</code>, <code>license</code>, <code>homepage</code>,
-<code>repository</code>, and <code>documentation</code>. It does not update structured values such as
+<p>The command supports <code>name</code>, <code>description</code>, <code>abstract</code>, <code>version</code>, <code>license</code>,
+<code>homepage</code>, <code>repository</code>, and <code>documentation</code>. It does not update structured values such as
 keywords, people, or entities.</p>
 <p>Without an input file specifically provided, somesy will check if it can find a valid</p>
 <ul>

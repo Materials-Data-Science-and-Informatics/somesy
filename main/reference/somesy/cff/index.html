@@ -3107,7 +3107,10 @@
 <span class="normal">124</span>
 <span class="normal">125</span>
 <span class="normal">126</span>
-<span class="normal">127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CFF</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Citation File Format (CFF) parser and saver."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -3187,6 +3190,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sync CFF metadata."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="c1"># an abstract can be longer than a package summary, so prefer it here</span>
+        <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">abstract</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">abstract</span>
         <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span>
 
@@ -3392,9 +3398,15 @@
 <span class="normal">92</span>
 <span class="normal">93</span>
 <span class="normal">94</span>
-<span class="normal">95</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync CFF metadata."""</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="c1"># an abstract can be longer than a package summary, so prefer it here</span>
+    <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">abstract</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">abstract</span>
     <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">"doi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">doi</span>
 </code></pre></div></td></tr></table></div>
