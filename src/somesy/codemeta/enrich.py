@@ -123,7 +123,17 @@ def _read_pyproject(path: Path, values: dict[str, Any], project_root: Path) -> N
 
 
 def _poetry_version(spec: Any) -> str:
-    return spec if isinstance(spec, str) else spec.get("version", "")
+    """Return the version constraint of a dependency spec.
+
+    A list of specs (multiple constraints, e.g. per Python version) yields the
+    distinct constraints joined by ", ".
+    """
+    if isinstance(spec, str):
+        return spec
+    if isinstance(spec, list):
+        versions = (_poetry_version(item) for item in spec)
+        return ", ".join(dict.fromkeys(v for v in versions if v))
+    return spec.get("version", "")
 
 
 def _lock_versions(start: Path, root: Path) -> dict[str, str]:
@@ -157,13 +167,21 @@ def _parse_lock(path: Path) -> dict[str, str]:
     """Return the resolved version of every package named in a lock file.
 
     Entries without a version are skipped, they carry no version to report.
+    Packages locked at several distinct versions are omitted.
     """
     try:
         packages = tomlkit.parse(path.read_text()).get("package", [])
+        versions: dict[str, set[str]] = {}
+        for package in packages:
+            if package.get("name") and package.get("version"):
+                versions.setdefault(_normalise(package["name"]), set()).add(
+                    package["version"]
+                )
+        # a package locked at several versions has no single exact version
         return {
-            _normalise(package["name"]): package["version"]
-            for package in packages
-            if package.get("name") and package.get("version")
+            name: next(iter(found))
+            for name, found in versions.items()
+            if len(found) == 1
         }
     except (AttributeError, KeyError, TypeError, ParseError):
         return {}
@@ -218,7 +236,7 @@ def _read_toml_project(source_type: str, path: Path, values: dict[str, Any]) -> 
 
 def _read_pom(path: Path, values: dict[str, Any]) -> None:
     root = ElementTree.parse(path).getroot()
-    if root is None:
+    if root is None:  # only for type checkers; parse() always yields a root
         return
     namespace = root.tag[1:].partition("}")[0] if root.tag.startswith("{") else ""
     prefix = f"{{{namespace}}}" if namespace else ""
@@ -233,10 +251,12 @@ def _read_pom(path: Path, values: dict[str, Any]) -> None:
             if version := properties.findtext(f"{prefix}{key}"):
                 values["runtimes"].append(f"Java {version}")
                 break
-    for dependency in root.findall(f".//{prefix}dependency"):
+    for dependency in root.findall(f"{prefix}dependencies/{prefix}dependency"):
         name = dependency.findtext(f"{prefix}artifactId")
         if name:
             version = dependency.findtext(f"{prefix}version") or ""
+            if "${" in version:
+                version = ""
             _named_requirement(values, name, version, "Java")
 
 

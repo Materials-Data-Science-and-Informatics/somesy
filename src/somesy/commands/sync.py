@@ -284,7 +284,6 @@ def _sync_root_project(
                 "julia": None if conf.no_sync_julia else conf.julia_file,
                 "fortran": None if conf.no_sync_fortran else conf.fortran_file,
                 "pom_xml": None if conf.no_sync_pom_xml else conf.pom_xml_file,
-                "mkdocs": None if conf.no_sync_mkdocs else conf.mkdocs_file,
                 "rust": None if conf.no_sync_rust else conf.rust_file,
             },
         )

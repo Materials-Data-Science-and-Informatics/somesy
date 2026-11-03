@@ -55,6 +55,17 @@ Please consult the changelog to inform yourself about breaking changes and secur
     instead of aborting
   - convert `ssh://` repository URLs with a port or an scp-like path to valid
     `https://` URLs
+  - `codemeta.json`:
+    - Poetry dependencies with several version constraints no longer abort
+      `somesy sync`
+    - read back contributors without an ORCID and skip role entries
+    - read authors from existing files
+    - remove an old DOI identifier when the input has no DOI
+    - ignore `<dependencyManagement>` and unresolved `${...}` versions in
+      `pom.xml` dependencies
+    - omit the exact version when a lock file lists a package more than once
+    - warn when both the old and new name of a renamed CodeMeta 3 property
+      are present
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
