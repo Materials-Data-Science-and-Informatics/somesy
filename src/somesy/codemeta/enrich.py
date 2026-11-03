@@ -97,7 +97,7 @@ def _read_source(
 
 
 def _read_pyproject(path: Path, values: dict[str, Any], project_root: Path) -> None:
-    data = tomlkit.parse(path.read_text())
+    data = tomlkit.parse(path.read_text(encoding="utf-8"))
     project = data.get("project") or data.get("tool", {}).get("poetry", {})
     if not project:
         return
@@ -170,7 +170,7 @@ def _parse_lock(path: Path) -> dict[str, str]:
     Packages locked at several distinct versions are omitted.
     """
     try:
-        packages = tomlkit.parse(path.read_text()).get("package", [])
+        packages = tomlkit.parse(path.read_text(encoding="utf-8")).get("package", [])
         versions: dict[str, set[str]] = {}
         for package in packages:
             if package.get("name") and package.get("version"):
@@ -188,7 +188,7 @@ def _parse_lock(path: Path) -> dict[str, str]:
 
 
 def _read_package_json(path: Path, values: dict[str, Any]) -> None:
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding="utf-8"))
     values["languages"].append(_javascript_language(path))
     if node := data.get("engines", {}).get("node"):
         values["runtimes"].append(f"Node.js {node}")
@@ -211,7 +211,7 @@ def _javascript_language(path: Path) -> str:
 
 
 def _read_toml_project(source_type: str, path: Path, values: dict[str, Any]) -> None:
-    data = tomlkit.parse(path.read_text())
+    data = tomlkit.parse(path.read_text(encoding="utf-8"))
     if source_type == "rust":
         package = data.get("package", {})
         values["languages"].append("Rust")

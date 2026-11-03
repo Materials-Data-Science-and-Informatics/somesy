@@ -68,7 +68,7 @@ def init_config(input_path: Path, options: dict) -> None:
             content["tool"]["somesy"] = {}
         content["tool"]["somesy"]["config"] = options
 
-    with open(input_path, "w") as f:
+    with open(input_path, "w", encoding="utf-8") as f:
         tomlkit.dump(content, f)
 
     logger.info(f"Input file ({input_path}) updated.")

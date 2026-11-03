@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from somesy.codemeta.utils import V3_CONTEXT, validate_codemeta
+from somesy.core.core import write_json
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
@@ -84,7 +85,7 @@ class CodeMeta(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load codemeta.json file."""
-        with self.path.open() as f:
+        with self.path.open(encoding="utf-8") as f:
             self._data = json.load(f, object_pairs_hook=OrderedDict)
 
     def _upgrade_to_v3(self) -> None:
@@ -126,8 +127,7 @@ class CodeMeta(ProjectMetadataWriter):
         """Create a new codemeta.json file with bare minimum generic data."""
         data = self._new_data()
         # dump to file
-        with self.path.open("w+", newline="\n") as f:
-            json.dump(data, f)
+        write_json(data, self.path)
 
     def _new_data(self) -> dict[str, Any]:
         """Return the bare minimum generic CodeMeta data."""
@@ -156,9 +156,7 @@ class CodeMeta(ProjectMetadataWriter):
                 for license in licenses
             ]
 
-        with path.open("w", newline="\n") as f:
-            # codemeta.json indentation is 2 spaces
-            json.dump(data, f)
+        write_json(data, path)
 
     @staticmethod
     def _from_person(person: Person | Entity) -> dict:

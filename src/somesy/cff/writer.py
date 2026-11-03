@@ -51,12 +51,12 @@ class CFF(ProjectMetadataWriter):
             "message": "If you use this software, please cite it using these metadata.",
             "type": "software",
         }
-        with open(self.path, "w") as f:
+        with open(self.path, "w", encoding="utf-8") as f:
             self._yaml.dump(self._data, f)
 
     def _load(self):
         """Load the CFF file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = self._yaml.load(f)
 
     def _validate(self) -> None:

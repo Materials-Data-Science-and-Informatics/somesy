@@ -48,7 +48,7 @@ def fill(
 
     if template_file:
         logger.debug(f"Reading Jinja2 template from '{template_file}'.")
-        with open(template_file, "r") as f:
+        with open(template_file, "r", encoding="utf-8") as f:
             template_str = f.read()
     else:
         logger.debug("Reading Jinja2 template from stdin.")
@@ -65,7 +65,7 @@ def fill(
 
     if output_file:
         logger.debug(f"Writing result to '{output_file}'.")
-        with open(output_file, "w") as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             f.write(result)
     else:
         logger.debug("Writing result to stdout.")

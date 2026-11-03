@@ -1,5 +1,7 @@
+import json
+
 from somesy.codemeta import CodeMeta
-from somesy.json_wrapper import json
+from somesy.core.core import write_json
 
 
 def test_update_codemeta(somesy_input, tmp_path):
@@ -37,10 +39,9 @@ def test_update_codemeta(somesy_input, tmp_path):
     # fourth time, change the project name back and change version in codemeta.json
     # -> codemeta.json is the same
     somesy_input.project.name = "testproject"
-    with open(codemeta_file, "w") as f:
-        codemeta = json.loads(dat3)
-        codemeta["version"] = "0.0.2"
-        json.dump(codemeta, f)
+    codemeta = json.loads(dat3)
+    codemeta["version"] = "0.0.2"
+    write_json(codemeta, codemeta_file)
     cm.sync(somesy_input.project)
     cm.save()
     assert codemeta_file.is_file()
@@ -132,8 +133,7 @@ def test_update_codemeta_with_merge(somesy_input, tmp_path):
         "contIntegration": "https://example.com/ci",
         "embargoDate": "2024-01-01",
     }
-    with open(codemeta_file, "w") as f:
-        json.dump(initial_data, f)
+    write_json(initial_data, codemeta_file)
 
     # Initialize CodeMeta with merge=True
     cm = CodeMeta(codemeta_file, merge=True)

@@ -35,7 +35,7 @@ class Julia(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load Project.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = tomlkit.load(f)
 
     def _validate(self) -> None:
@@ -79,7 +79,7 @@ class Julia(ProjectMetadataWriter):
             else:
                 self._data[key] = value
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             tomlkit.dump(self._data, f)
 
     @staticmethod

@@ -1,5 +1,6 @@
 """package.json parser and saver."""
 
+import json
 import logging
 from collections import OrderedDict
 from pathlib import Path
@@ -7,9 +8,9 @@ from typing import Any
 
 from rich.pretty import pretty_repr
 
+from somesy.core.core import write_json
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
-from somesy.json_wrapper import json
 from somesy.package_json.models import PackageAuthor, PackageJsonConfig
 
 logger = logging.getLogger("somesy")
@@ -107,7 +108,7 @@ class PackageJSON(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load package.json file."""
-        with self.path.open() as f:
+        with self.path.open(encoding="utf-8") as f:
             self._data = json.load(f, object_pairs_hook=OrderedDict)
 
     def _validate(self) -> None:
@@ -125,9 +126,7 @@ class PackageJSON(ProjectMetadataWriter):
         path = path or self.path
         logger.debug(f"Saving package.json to {path}")
 
-        with path.open("w", newline="\n") as f:
-            # package.json indentation is 2 spaces
-            json.dump(self._data, f)
+        write_json(self._data, path)
 
     @staticmethod
     def _from_person(person: Entity | Person) -> dict:

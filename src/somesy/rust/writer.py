@@ -41,7 +41,7 @@ class Rust(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load Cargo.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = load(f)
 
     def _validate(self) -> None:
@@ -68,7 +68,7 @@ class Rust(ProjectMetadataWriter):
                 self._data["package"]["description"], multiline=True
             )
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             dump(self._data, f)
 
     def _get_property(

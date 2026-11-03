@@ -76,6 +76,9 @@ Please consult the changelog to inform yourself about breaking changes and secur
     - return no Git metadata instead of crashing when Git is not installed
     - handle author names that are not valid UTF-8
     - default to the current directory at call time, not at import time
+  - read and write all files as UTF-8, so names such as "Müller" work on systems
+    with a different default encoding (e.g. Windows)
+  - importing somesy no longer changes `json.dump` for the whole Python process
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

@@ -153,7 +153,7 @@ class PyprojectCommon(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = tomlkit.load(f)
 
     def _validate(self) -> None:
@@ -174,7 +174,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         """Save the pyproject file."""
         path = path or self.path
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             tomlkit.dump(self._data, f)
 
     def _get_property(
@@ -437,7 +437,7 @@ class Pyproject(wrapt.ObjectProxy):
         if not path.is_file():
             raise FileNotFoundError(f"pyproject file {path} not found")
 
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             data = load(f)
 
         # inspect file to pick suitable project metadata writer

@@ -23,6 +23,13 @@ INPUT_FILES_ORDERED = [
 """Input files ordered by priority for discovery."""
 
 
+def write_json(data: Any, path: Path) -> None:
+    """Write data as UTF-8 JSON with 2-space indentation, unescaped non-ASCII and a trailing newline."""
+    with path.open("w", encoding="utf-8", newline="\n") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
 def discover_input(input_file: Path | None = None) -> Path:
     """Check given input file path. If not given, find somesy configuration file path from default list.
 
@@ -81,7 +88,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> dict[str, Any]:
     logger.debug(f"Path {path}")
     # somesy.toml / .somesy.toml
     if path.suffix == ".toml" and "somesy" in path.name:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             ret = tomlkit.load(f)
             return ret if no_unwrap else ret.unwrap()
 
@@ -90,7 +97,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> dict[str, Any]:
         "Project.toml",
         "fpm.toml",
     ]:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             input_content = tomlkit.load(f)
             if "tool" in input_content and "somesy" in input_content["tool"]:
                 return input_content["tool"]["somesy"].unwrap()
@@ -101,7 +108,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> dict[str, Any]:
 
     # Cargo.toml
     if path.name == "Cargo.toml":
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             input_content = tomlkit.load(f)
             if (
                 "package" in input_content
@@ -116,7 +123,7 @@ def get_input_content(path: Path, *, no_unwrap: bool = False) -> dict[str, Any]:
 
     # package.json
     if path.suffix == ".json" and "package" in path.name:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             input_content = json.load(f)
             if "somesy" in input_content:
                 return input_content["somesy"]
