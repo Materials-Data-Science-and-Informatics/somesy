@@ -148,7 +148,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
     |                  |               |                   |              |              |                |              |            |                |                 |                |
     | **name**  | name(+email)    | name              | name         | name(+email)   | name(+email)     | name         | name(+email) | name(+email)     | givenName       | name(+email)     |
     | email     | name(+email)    | email             | email        | name(+email)   | name(+email)     | email        | name(+email) | name(+email)     | email           | name(+email)     |
-    | rorid   | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
+    | rorid   | -             | -                 | url          | -            | -              | url          | -          | -              | - *(never written)* | -              |
     | website   | -             | -                 | url          | -            | -              | url          | -          | -              | id              | -              |
     | *(many others)*  | -             | -                 | -            | -            | -              | -            | -          | -              | *(same)*        | -              |
 
@@ -173,6 +173,20 @@ some of the currently supported formats. Bold field names are mandatory, the oth
     | homepage          | homepage      | urls.homepage      | urls                            | -            | homepage       | homepage     | site_url         | homepage        | url             | url               |
     | repository        | repository    | urls.repository    | scm.url                         | -            | -              | repository   | repo_url         | repository      | repository_code | codeRepository    |
     | documentation     | documentation | urls.documentation | distributionManagement.site.url | -            | -              | -            | -                | documentation   | -               | buildInstructions |
+
+If several `license` values are given, all of them are written: as a list in
+`CITATION.cff` and `codemeta.json`, as one `<license>` element each in
+`pom.xml`, and as an SPDX `A OR B` expression in `pyproject.toml`,
+`package.json`, `Cargo.toml` and `fpm.toml`.
+
+If the somesy input has no `homepage`, `repository` or `documentation`, URLs
+already present in an output file are kept, not deleted.
+
+In `pom.xml`, free-text `<role>` values are kept; somesy only manages roles
+that are somesy contribution types. In `mkdocs.yml`, `repo_name` is written as
+`org/repo` only when it is not already set, and `site_name` may be free text.
+`Cargo.toml` workspace inheritance (e.g. `version.workspace = true`) is kept
+and such values are ignored when harvesting.
 
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
@@ -276,7 +290,8 @@ on the output format. Both fields are marked as necessary but what `somesy` need
 author either in **people** or **entities**.
 
 When an **entity** has a `ror id` but no `website` set, url related fields will be
-filled with `ror id`.
+filled with the ROR URL (this is also the website in `CITATION.cff`, which never
+contains a `rorid` key).
 
 ## The somesy CLI tool
 
@@ -325,9 +340,12 @@ any missing required values, and writes the harvested metadata. To synchronize
 an incomplete file, explicitly use `somesy sync --pass-validation` or set
 `pass_validation = true` in the config; missing values are omitted from output.
 
+Git bot accounts (names ending in `[bot]`) are skipped. Git authors with a
+single-word name are not added, with a warning; add them manually.
+
 Detected project files are enabled as synchronization targets. Targets that are
 not present are disabled in the generated `[config]` section. The generated file
-is not overwritten by default:
+is not overwritten by default (somesy fails before prompting if it exists):
 
 ```bash
 somesy init --output-file path/to/somesy.toml
@@ -362,6 +380,8 @@ Without an input file specifically provided, somesy will check if it can find a 
 
 which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the `-i` option.
+If the file passed with `-i` does not exist, somesy logs a warning and falls back to
+this discovery. `somesy set` uses the same discovery when `-i` is not given.
 
 ### Somesy Input File
 
@@ -457,5 +477,7 @@ A project with multiple packages inside can have completely different metadata s
 [config]
 packages = ['package1', 'package2', 'package3']
 ```
+
+`packages` (or `--packages/-k` on the command line) takes directories. Each package's own `[config]` is the base; only options explicitly passed on the root command line override it. Values from the root config file are not inherited.
 
 Each of these packages (sub-folders) are assumed to have separate somesy metadata in the folder. These packages could be a `somesy` supported language/framework or it could be any other language. `somesy` will create at least `CITATION.CFF` and `codemeta.json` regardless if not instructed otherwise.

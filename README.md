@@ -222,6 +222,8 @@ repos:
 >
 > Please add the latest version of Somesy to your project. You can update the version of Somesy in your config file now and later to use the newest versions as they become available.
 
+The hook runs when `.somesy.toml`, `somesy.toml`, `pyproject.toml`, `package.json`, `Project.toml`, `Cargo.toml` or `fpm.toml` change, also in subfolders.
+
 Note that `pre-commit` gives `somesy` the [staged](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F) version of files,
 so when using `somesy` with pre-commit, keep in mind that
 

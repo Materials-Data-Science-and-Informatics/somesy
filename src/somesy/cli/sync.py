@@ -29,7 +29,7 @@ def sync(
         None,
         "--input-file",
         "-i",
-        help="Somesy input file path (default: .somesy.toml)",
+        help="Somesy input file path (default: discovered)",
         **file_arg_config,
     ),
     no_sync_pyproject: bool | None = typer.Option(
