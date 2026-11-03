@@ -88,7 +88,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
     a subfolder changes
   - `CITATION.cff`: never write the non-CFF `rorid` key for organizations, and
     remove it on the next sync from files written by earlier versions
-  - `pom.xml`: free-text `<role>` values no longer crash sync
+  - `pom.xml`: free-text `<role>` values no longer crash sync and are kept when
+    a developer or contributor entry is updated
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

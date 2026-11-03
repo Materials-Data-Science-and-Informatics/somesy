@@ -120,6 +120,29 @@ class POM(ProjectMetadataWriter):
             logger.debug(f"Ignoring POM roles that are not contribution types: {roles}")
         return valid or None
 
+    def _records_keeping_roles(
+        self, people: list[Entity | Person], existing: list[dict]
+    ) -> list[dict[str, Any]]:
+        """Convert people to POM records, keeping free-text roles of matching existing entries."""
+        known = {c.value for c in ContributionTypeEnum}
+        old_people = [(self._to_person(e), e) for e in existing]
+        records = []
+        for person in people:
+            record = self._from_person(person)
+            for old_person, old in old_people:
+                if old_person is None or not old_person.same_person(person):
+                    continue
+                old_roles = (old.get("roles") or {}).get("role") or []
+                if not isinstance(old_roles, list):
+                    old_roles = [old_roles]
+                roles = record.get("roles", {}).get("role", [])
+                roles += [r for r in dict.fromkeys(old_roles) if r not in known]
+                if roles:
+                    record["roles"] = {"role": roles}
+                break
+            records.append(record)
+        return records
+
     @staticmethod
     def _to_person(person_obj: dict) -> Entity | Person | None:
         """Parse POM XML person to a somesy Person.
@@ -181,7 +204,7 @@ class POM(ProjectMetadataWriter):
     @authors.setter
     def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
-        author_records = [self._from_person(c) for c in authors]
+        author_records = self._records_keeping_roles(authors, self.authors)
         self._set_property(self._get_key("authors"), author_records)
 
     # contributors must be a list
@@ -196,7 +219,7 @@ class POM(ProjectMetadataWriter):
     @contributors.setter
     def contributors(self, contributors: list[Entity | Person]) -> None:
         """Set the contributors of the project."""
-        contr = [self._from_person(c) for c in contributors]
+        contr = self._records_keeping_roles(contributors, self.contributors)
         self._set_property(self._get_key("contributors"), contr)
 
     # no maintainers supported im POM, only developers and contributors

@@ -257,3 +257,49 @@ def test_free_text_roles_do_not_crash_sync(tmp_path):
     ignored = POM._to_person({"name": "Jane Doe", "roles": {"role": "architect"}})
     assert ignored is not None
     assert ignored.contribution_types is None
+
+
+def _sync_roles(pom_path, contribution_types):
+    person = Person(
+        given_names="Jane",
+        family_names="Doe",
+        email="jane@example.org",
+        author=True,
+        contribution_types=contribution_types,
+    )
+    metadata = ProjectMetadata(
+        name="p",
+        description="d",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[person],
+    )
+    pom = POM(pom_path)
+    pom.sync(metadata)
+    pom.save()
+    return POM(pom_path).authors[0]["roles"]["role"]
+
+
+def _write_roles_pom(path, roles):
+    path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
+        "<name>Jane Doe</name><email>jane@example.org</email><roles>"
+        + "".join(f"<role>{r}</role>" for r in roles)
+        + "</roles></developer></developers></project>"
+    )
+
+
+def test_sync_keeps_free_text_roles(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    _write_roles_pom(pom_path, ["architect", "code"])
+    assert _sync_roles(pom_path, ["code"]) == ["code", "architect"]
+
+    first = pom_path.read_text()
+    assert _sync_roles(pom_path, ["code"]) == ["code", "architect"]
+    assert pom_path.read_text() == first
+
+
+def test_sync_keeps_free_text_roles_without_contribution_types(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    _write_roles_pom(pom_path, ["architect"])
+    assert _sync_roles(pom_path, None) == "architect"
