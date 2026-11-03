@@ -19,6 +19,12 @@ from .models import Pep621Config, PoetryConfig
 
 logger = logging.getLogger("somesy")
 
+SUMMARY_MAX_LENGTH = 512
+"""Longest package summary (`description`) that PyPI accepts on upload."""
+
+SUMMARY_LINE_BREAK = re.compile(r"[\r\n]")
+"""Line breaks are not allowed in a package summary (core metadata `Summary`)."""
+
 
 def normalize_url_key(name: str) -> str:
     """Return a `[project.urls]` key in a form that can be compared.
@@ -141,6 +147,16 @@ class PyprojectCommon(ProjectMetadataWriter):
                     "Field 'description' is listed as dynamic — skipping sync from somesy."
                 )
             return
+        if description and (
+            len(description) > SUMMARY_MAX_LENGTH
+            or SUMMARY_LINE_BREAK.search(description)
+        ):
+            logger.warning(
+                "Field 'description' becomes the package summary, which must be a "
+                "single line of at most %d characters to be uploaded to PyPI. "
+                "Put a longer text in the 'abstract' field instead.",
+                SUMMARY_MAX_LENGTH,
+            )
         self._set_property(self._get_key("description"), description)
 
     def _load(self) -> None:
