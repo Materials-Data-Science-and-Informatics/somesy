@@ -26,7 +26,7 @@ dependencies = [
     "typer>=0.27.2",
     "cffconvert>=2.0.0",
     "wrapt>=2.4.0",
-    "packaging>=24.2,<25.0",
+    "packaging>=24.2,<27.0",
     "jinja2>=3.1.6",
     "defusedxml>=0.7.1",
     "pyld>=3.3.0"
@@ -70,8 +70,16 @@ pre-commit = "^4.6.2"
 pytest = "^9.1.1"
 pytest-cov = "^7.1.0"
 hypothesis = "^6.167.1"
-licensecheck = "^2024.3"
 pytest-mock = "^3.15.1"
+# security fixes of these transitive dependencies need Python >= 3.11
+dnspython = [
+    { version = ">=2.9.0", python = ">=3.11,<4.0" },
+    { version = "*", python = "<3.11" },
+]
+filelock = [
+    { version = ">=4.2.1", python = ">=3.11,<4.0" },
+    { version = "*", python = "<3.11" },
+]
 
 [tool.poetry.group.docs]
 optional = true
@@ -107,7 +115,6 @@ init-dev = { shell = "pre-commit install" }
 lint = "pre-commit run"  # pass --all-files to check everything
 test = "pytest"  # pass --cov to also collect coverage info
 docs = "mkdocs build"  # run this to generate local documentation
-licensecheck = "licensecheck"  # run this when you add new deps
 
 # Tool Configurations
 # -------------------
@@ -161,9 +168,6 @@ ignore = ["D203", "D213", "D407", "B008"]
     "SIM115",
     "TRY004",
 ]
-
-[tool.licensecheck]
-using = "poetry"
 
 [tool.mypy]
 disable_error_code = ["attr-defined"]

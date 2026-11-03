@@ -198,7 +198,7 @@ fields remain unchanged as well.
 | Source | Enriched CodeMeta fields |
 | --- | --- |
 | `pyproject.toml`, lock file (`uv.lock`, `poetry.lock` or `pdm.lock`) | Python runtime, direct dependencies, README URL, issue tracker, release notes |
-| `package.json` | JavaScript/Node.js runtime, runtime/peer/optional dependencies, issue tracker |
+| `package.json` | JavaScript or TypeScript (when a `tsconfig*.json` is next to it), Node.js runtime, runtime/peer/optional dependencies, issue tracker |
 | `Cargo.toml`, `Project.toml`, `fpm.toml`, `pom.xml` | Programming language, runtime version where declared, dependencies |
 | Git | Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first and latest commit dates |
 

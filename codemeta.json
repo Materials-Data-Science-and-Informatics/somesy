@@ -243,7 +243,7 @@
       "identifier": "packaging",
       "name": "packaging",
       "runtimePlatform": "Python",
-      "version": "24.2"
+      "version": "26.3"
     },
     {
       "@type": "SoftwareApplication",
@@ -271,5 +271,5 @@
   "runtimePlatform": "Python >=3.10",
   "issueTracker": "https://github.com/Materials-Data-Science-and-Informatics/somesy/issues",
   "dateCreated": "2023-05-12",
-  "dateModified": "2026-09-25"
+  "dateModified": "2026-11-03"
 }
