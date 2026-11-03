@@ -41,8 +41,9 @@ def _repository(value: Any) -> str | None:
         return None
     if match := re.fullmatch(r"git@([^:]+):(.+)", value):
         return f"https://{match[1]}/{match[2]}"
-    if value.startswith("ssh://git@"):
-        return "https://" + value.removeprefix("ssh://git@")
+    # ssh://[user@]host[:port]/path or scp-like ssh://[user@]host:path
+    if match := re.fullmatch(r"ssh://(?:[^@/]+@)?([^:/]+)(?::\d+)?[:/](.+)", value):
+        return f"https://{match[1]}/{match[2]}"
     return value
 
 

@@ -51,6 +51,10 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - `somesy init` skips Git bot accounts and warns about single-word Git author
     names instead of dropping them silently
   - remove Pydantic 2.11 deprecation warnings
+  - `somesy init` skips malformed `pom.xml` or `mkdocs.yml` files with a warning
+    instead of aborting
+  - convert `ssh://` repository URLs with a port or an scp-like path to valid
+    `https://` URLs
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

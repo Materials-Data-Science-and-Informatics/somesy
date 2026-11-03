@@ -5,6 +5,9 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 from typing import Any
+from xml.etree.ElementTree import ParseError as XMLParseError
+
+from ruamel.yaml import YAMLError
 
 from somesy.fortran.writer import Fortran
 from somesy.julia.writer import Julia
@@ -37,6 +40,13 @@ def harvest_sources(root: Path) -> list[tuple[Path, dict[str, Any]]]:
         try:
             writer = writer_cls(path, pass_validation=True)
             sources.append((path, writer.harvest_metadata()))
-        except (FileNotFoundError, KeyError, TypeError, ValueError) as error:
+        except (
+            FileNotFoundError,
+            KeyError,
+            TypeError,
+            ValueError,
+            XMLParseError,
+            YAMLError,
+        ) as error:
             logger.warning("Cannot harvest metadata from %s: %s", path, error)
     return sources
