@@ -159,6 +159,7 @@ some of the currently supported formats. Bold field names are mandatory, the oth
     |                   |               |                    |                                 |              |                |              |                  |                 |                 |                   |
     | **name**          | name          | name               | name                            | name         | name           | name         | site_name        | name            | title           | name              |
     | **description**   | description   | description        | description                     | -            | description    | description  | site_description | description     | abstract        | description       |
+    | abstract          | -             | -                  | -                               | -            | -              | -            | -                | -               | abstract        | -                 |
     | doi               | -             | -                  | -                               | -            | -              | -            | -                | -               | doi             | identifier        |
     | **license**       | license       | license            | licenses.license                | -            | license        | license      | -                | license         | license         | license           |
     | version       | version       | version            | version                         | version      | version        | version      | -                | version         | version         | version           |
@@ -180,6 +181,28 @@ to list authors and maintainers. **Therefore somesy sometimes must do much more
 than just move or rename fields**. This means that giving a clean and complete
 mapping overview is not feasible. In case of doubt or confusion, please open an
 issue or consult the `somesy` code.
+
+### Description and abstract
+
+The `description` is a short, one-line summary of the project. For Python
+packages it becomes the package summary, which PyPI only accepts as a single
+line of at most 512 characters; somesy warns when the `description` synced into
+`pyproject.toml` breaks either rule.
+
+For a longer text, such as a multi-paragraph abstract for citations, set the
+optional `abstract` field. It is only written to `CITATION.cff` (as `abstract`);
+all other files keep the short `description`. Without an `abstract`,
+`CITATION.cff` uses the `description` instead.
+
+```toml
+[project]
+description = "Brief description of my amazing software."
+abstract = """
+A longer abstract of my amazing software.
+
+It can span several paragraphs.
+"""
+```
 
 ### CodeMeta Enrichment
 
@@ -323,8 +346,8 @@ Use `somesy set` to update one scalar project-metadata value in an existing
 somesy set version 1.2.3
 ```
 
-The command supports `name`, `description`, `version`, `license`, `homepage`,
-`repository`, and `documentation`. It does not update structured values such as
+The command supports `name`, `description`, `abstract`, `version`, `license`,
+`homepage`, `repository`, and `documentation`. It does not update structured values such as
 keywords, people, or entities.
 
 Without an input file specifically provided, somesy will check if it can find a valid
