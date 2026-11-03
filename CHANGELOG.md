@@ -71,6 +71,11 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - `mkdocs.yml`: accept free-text `site_name` values, handle an empty
     `site_description`, and write `repo_name` (as `org/repo`) when it is not set
   - `pom.xml`: elements created during sync are namespaced correctly
+  - Git harvesting:
+    - remove credentials such as access tokens from the remote URL
+    - return no Git metadata instead of crashing when Git is not installed
+    - handle author names that are not valid UTF-8
+    - default to the current directory at call time, not at import time
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
