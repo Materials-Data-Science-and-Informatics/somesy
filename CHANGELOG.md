@@ -18,78 +18,44 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - warn when the `description` synced into `pyproject.toml` is longer than
     512 characters or spans several lines
   - support `abstract` in `somesy set`
-- **Fixed**
-  - `somesy init config` no longer writes an invalid `sync_package_json` key
-  - `somesy init` stops before prompting when the output file already exists
-  - `somesy set` finds `.somesy.toml` and reports invalid values in one line,
-    without listing every allowed value
-  - warn when the input file passed with `-i` does not exist
-  - `somesy sync --packages` accepts package directories
-  - aborting a prompt no longer prints an empty error
-  - monorepo packages keep their own `[config]`; only options passed on the
-    command line override it
-  - saving `fpm.toml` or `Project.toml` with an array of tables such as
-    `[[executable]]` no longer crashes
-  - keep `version` in `Project.toml` when the input has none
-  - read `fpm.toml` files without an `author`
-  - `package.json` and `pom.xml`: write organizations with a website instead
-    of crashing, list only non-authors as contributors (including
-    organizations), and keep maintainers without an email
-  - `package.json`: read organizations with a `url`
-  - `pom.xml`: read developers with a single role, without a name, or files
-    without `<developers>`
+- **Changed**
   - keep existing homepage, repository and documentation URLs in output files
     when the input has none, instead of deleting them
-  - `pom.xml`: keep `<connection>` and `<developerConnection>` when syncing the
-    repository and do not write empty `<scm>` or `<site>` elements
   - write all licenses: a list in `CITATION.cff`, an `OR` expression in
     `package.json` and `fpm.toml`
-  - keep a stable key order for people and entities in output files
-  - do not merge two organizations with the same name but different ROR IDs or
-    websites
-  - write non-ASCII organization names unescaped
-  - harvested authors are also marked as publication authors
+  - monorepo packages use their own `[config]`; only options passed on the
+    command line override it
+  - list only non-authors (including organizations) as contributors in
+    `package.json` and `pom.xml`
   - `somesy init` skips Git bot accounts and warns about single-word Git author
-    names instead of dropping them silently
-  - remove Pydantic 2.11 deprecation warnings
-  - `somesy init` skips malformed `pom.xml` or `mkdocs.yml` files with a warning
-    instead of aborting
-  - convert `ssh://` repository URLs with a port or an scp-like path to valid
-    `https://` URLs
-  - `codemeta.json`:
-    - Poetry dependencies with several version constraints no longer abort
-      `somesy sync`
-    - read back contributors without an ORCID and skip role entries
-    - read authors from existing files
-    - remove an old DOI identifier when the input has no DOI
-    - ignore `<dependencyManagement>` and unresolved `${...}` versions in
-      `pom.xml` dependencies
-    - omit the exact version when a lock file lists a package more than once
-    - warn when both the old and new name of a renamed CodeMeta 3 property
-      are present
+    names
+  - a missing `readme` file in `pyproject.toml` is a warning, not an error
+  - the pre-commit hook also runs for `Cargo.toml` and for input files in
+    subfolders
+- **Fixed**
+  - CLI: `init config` wrote an invalid key; `init` prompted before failing on
+    an existing file; `set` ignored `.somesy.toml` and printed long errors;
+    `sync --packages` rejected directories; a missing `-i` file is now reported
+  - crashes: arrays of tables in `fpm.toml`/`Project.toml`, organizations with a
+    website in `package.json`/`pom.xml`, Poetry dependencies with several
+    constraints, malformed `pom.xml`/`mkdocs.yml` during `init`, missing Git
+  - `CITATION.cff`: never write the non-CFF `rorid` key (removed from existing
+    files on the next sync)
+  - `pom.xml`: keep `<connection>` and free-text `<role>` values, no empty
+    `<scm>`/`<site>` elements, read single roles and developers without a name
+  - `codemeta.json`: read existing authors and non-ORCID contributors, drop a
+    removed DOI, ignore managed and unresolved Maven dependencies
   - `Cargo.toml`: keep workspace inheritance such as `version.workspace = true`
-    instead of overwriting it, and load such files
-  - `mkdocs.yml`: accept free-text `site_name` values, handle an empty
-    `site_description`, and write `repo_name` (as `org/repo`) when it is not set
-  - `pom.xml`: elements created during sync are namespaced correctly
-  - Git harvesting:
-    - remove credentials such as access tokens from the remote URL
-    - return no Git metadata instead of crashing when Git is not installed
-    - handle author names that are not valid UTF-8
-    - default to the current directory at call time, not at import time
-  - read and write all files as UTF-8, so names such as "Müller" work on systems
-    with a different default encoding (e.g. Windows)
-  - importing somesy no longer changes `json.dump` for the whole Python process
-  - `pyproject.toml`:
-    - accept Poetry 2 projects without a `license`
-    - warn instead of failing when a `readme` file does not exist, for both
-      Poetry and PEP 621 projects
-  - the somesy pre-commit hook runs when `Cargo.toml` or a somesy input file in
-    a subfolder changes
-  - `CITATION.cff`: never write the non-CFF `rorid` key for organizations, and
-    remove it on the next sync from files written by earlier versions
-  - `pom.xml`: free-text `<role>` values no longer crash sync and are kept when
-    a developer or contributor entry is updated
+  - `mkdocs.yml`: accept free-text `site_name` and an empty `site_description`,
+    write `repo_name`
+  - `Project.toml`: keep `version` when the input has none; `fpm.toml`: read files
+    without an `author`; Poetry 2 projects without a `license` are accepted
+  - Git: strip credentials from the remote URL, handle non-UTF-8 author names,
+    convert `ssh://` URLs with a port to `https://`
+  - stable key order and unescaped non-ASCII names in output files; all files
+    are read and written as UTF-8
+  - do not merge organizations with the same name but different ROR IDs
+  - importing somesy no longer patches `json.dump` globally
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
