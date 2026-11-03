@@ -160,9 +160,6 @@ def sync(
                 )
                 continue
 
-            if config_file is None:
-                continue
-
             # Create new config with CLI options and package's input file
             cli_options = {
                 "no_sync_pyproject": conf.no_sync_pyproject,

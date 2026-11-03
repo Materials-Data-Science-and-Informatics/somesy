@@ -7,6 +7,7 @@ from typing import Any
 
 import pytest
 import tomlkit
+from typer.testing import CliRunner
 
 from somesy.cff import CFF
 from somesy.codemeta import CodeMeta
@@ -21,6 +22,7 @@ from somesy.core.models import (
 )
 from somesy.fortran import Fortran
 from somesy.julia import Julia
+from somesy.main import app
 from somesy.mkdocs import MkDocs
 from somesy.package_json import PackageJSON
 from somesy.pom_xml.writer import POM
@@ -764,3 +766,24 @@ def test_workspace_member_uses_the_lock_file_at_the_project_root(
         for item in member_codemeta["softwareRequirements"]
     }
     assert versions == {"packaging": "24.2"}
+
+
+def test_cli_packages_option_accepts_directory(
+    tmp_path, create_files, file_types, monkeypatch
+):
+    """`--packages` takes directories, not files."""
+    (tmp_path / "package1").mkdir()
+    create_files(
+        {
+            (file_types.SOMESY, "somesy.toml"),
+            (file_types.POETRY, "pyproject.toml"),
+            (file_types.SOMESY, "package1/somesy.toml"),
+            (file_types.POETRY, "package1/pyproject.toml"),
+        }
+    )
+    monkeypatch.chdir(tmp_path)
+
+    result = CliRunner().invoke(app, ["sync", "-k", "package1"])
+
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "package1" / "CITATION.cff").is_file()

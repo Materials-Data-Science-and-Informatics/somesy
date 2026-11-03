@@ -41,8 +41,9 @@ def discover_input(input_file: Path | None = None) -> Path:
             logger.info(f"Using provided file '{input_file}' as somesy input file.")
             return input_file
         else:
-            msg = f"Passed file '{input_file}' does not exist. Searching for usable somesy input file..."
-            logger.log(VERBOSE, msg)
+            logger.warning(
+                f"Passed file '{input_file}' does not exist. Searching for usable somesy input file..."
+            )
 
     for filename in INPUT_FILES_ORDERED:
         input_file = Path(filename)

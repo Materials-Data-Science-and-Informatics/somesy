@@ -48,6 +48,14 @@ existing_file_arg_config: ExistingFileArgConfig = {
     "resolve_path": True,
     "exists": True,
 }
+existing_dir_arg_config: ExistingFileArgConfig = {
+    "file_okay": False,
+    "dir_okay": True,
+    "writable": True,
+    "readable": True,
+    "resolve_path": True,
+    "exists": True,
+}
 
 
 @wrapt.decorator
@@ -56,6 +64,8 @@ def wrap_exceptions(wrapped, instance, args, kwargs):
     try:
         return wrapped(*args, **kwargs)
 
+    except (typer.Abort, typer.Exit, typer.exceptions.TyperException):
+        raise
     except Exception as e:
         # Escape the error message to prevent Rich from misinterpreting it
         escaped_error_message = escape(str(e))

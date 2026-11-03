@@ -35,7 +35,7 @@ def write_somesy_file(
     }
     if config is not None:
         content["config"] = config.model_dump(mode="json", by_alias=True)
-    with open(path, "w" if overwrite else "x") as file:
+    with open(path, "w" if overwrite else "x", encoding="utf-8") as file:
         tomlkit.dump(content, file)
 
 

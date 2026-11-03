@@ -14,7 +14,6 @@ app = typer.Typer()
 logger = logging.getLogger("somesy")
 
 
-@app.callback()
 def version(value: bool):
     """Show somesy version and exit."""
     if value:

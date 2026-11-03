@@ -9,6 +9,7 @@ from somesy.commands import sync as sync_command
 from somesy.core.models import SomesyInput
 
 from .util import (
+    existing_dir_arg_config,
     existing_file_arg_config,
     file_arg_config,
     resolved_somesy_input,
@@ -163,7 +164,7 @@ def sync(
         "--packages",
         "-k",
         help="Packages (subfolders) for monorepos with their own somesy config.",
-        **existing_file_arg_config,
+        **existing_dir_arg_config,
     ),
 ):
     """Sync project metadata input with metadata files."""

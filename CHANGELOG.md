@@ -18,6 +18,13 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - warn when the `description` synced into `pyproject.toml` is longer than
     512 characters or spans several lines
   - support `abstract` in `somesy set`
+- **Fixed**
+  - `somesy init config` no longer writes an invalid `sync_package_json` key
+  - `somesy init` stops before prompting when the output file already exists
+  - `somesy set` finds `.somesy.toml` and reports invalid values in one line
+  - warn when the input file passed with `-i` does not exist
+  - `somesy sync --packages` accepts package directories
+  - aborting a prompt no longer prints an empty error
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
