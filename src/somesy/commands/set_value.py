@@ -10,6 +10,7 @@ from somesy.core.models import ProjectMetadata, SomesyInput
 SETTABLE_FIELDS = {
     "name",
     "description",
+    "abstract",
     "version",
     "license",
     "homepage",
