@@ -66,6 +66,11 @@ Please consult the changelog to inform yourself about breaking changes and secur
     - omit the exact version when a lock file lists a package more than once
     - warn when both the old and new name of a renamed CodeMeta 3 property
       are present
+  - `Cargo.toml`: keep workspace inheritance such as `version.workspace = true`
+    instead of overwriting it, and load such files
+  - `mkdocs.yml`: accept free-text `site_name` values, handle an empty
+    `site_description`, and write `repo_name` (as `org/repo`) when it is not set
+  - `pom.xml`: elements created during sync are namespaced correctly
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

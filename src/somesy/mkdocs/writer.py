@@ -56,8 +56,6 @@ class MkDocs(ProjectMetadataWriter):
 
     def _validate(self) -> None:
         """Validate the MkDocs file."""
-        if self.pass_validation:
-            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {MkDocsConfig.__name__}: {pretty_repr(config)}"
@@ -70,7 +68,9 @@ class MkDocs(ProjectMetadataWriter):
 
         # if description have new line characters, it should be saved as multiline string
         if self._data is not None and "site_description" in self._data:
-            if "\n" in self._data["site_description"]:
+            if isinstance(self._data["site_description"], str) and (
+                "\n" in self._data["site_description"]
+            ):
                 self._data["site_description"] = LiteralScalarString(
                     self._data["site_description"]
                 )
@@ -126,4 +126,9 @@ class MkDocs(ProjectMetadataWriter):
             self.homepage = str(metadata.homepage)
         if metadata.repository:
             self.repository = str(metadata.repository)
-            self.repo_name = metadata.repository.path
+            # display name like "org/repo", only if the user did not set one
+            if not self._get_property("repo_name"):
+                repo_name = metadata.repository.path or ""
+                self._set_property(
+                    "repo_name", repo_name.strip("/").removesuffix(".git")
+                )

@@ -1,6 +1,7 @@
 """Cargo.toml writer for Rust projects."""
 
 import logging
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -49,8 +50,6 @@ class Rust(ProjectMetadataWriter):
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
-        if self.pass_validation:
-            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {RustConfig.__name__}: {pretty_repr(config)}"
@@ -80,13 +79,27 @@ class Rust(ProjectMetadataWriter):
             return None
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
-        return super()._get_property(full_path, remove=remove, **kwargs)
+        value = super()._get_property(full_path, remove=remove, **kwargs)
+        if not remove and self._is_workspace_ref(value):
+            return None  # inherited from the workspace, treat as absent
+        return value
+
+    @staticmethod
+    def _is_workspace_ref(value: Any) -> bool:
+        """Check whether value is a workspace inheritance table `{workspace = true}`."""
+        return isinstance(value, Mapping) and value.get("workspace") is True
 
     def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:
         """Set a property in the Cargo.toml file."""
         if isinstance(key, IgnoreKey):
             return
         key_path = [key] if isinstance(key, str) else key
+
+        # keep workspace inheritance, e.g. `version.workspace = true`
+        existing = super()._get_property(self._section + key_path)
+        if self._is_workspace_ref(existing):
+            logger.debug(f"Not setting {key_path}, inherited from workspace.")
+            return
 
         if not value:  # remove value and clean up the sub-dict
             self._get_property(key_path, remove=True)

@@ -40,3 +40,22 @@ def test_harvest_sources_skips_malformed_sources(
     assert [path.name for path, _ in sources] == ["pyproject.toml"]
     assert "pom.xml" in caplog.text
     assert "mkdocs.yml" in caplog.text
+
+
+def test_harvest_sources_ignores_rust_workspace_values(tmp_path):
+    from somesy.merge import merge_metadata
+
+    (tmp_path / "Cargo.toml").write_text(
+        '[package]\nname = "x"\nversion.workspace = true\n'
+        "authors.workspace = true\nlicense.workspace = true\n"
+        'description = "d"\n'
+    )
+    sources = harvest_sources(tmp_path)
+    assert len(sources) == 1
+    content = sources[0][1]
+    assert content["name"] == "x"
+    assert content["description"] == "d"
+    for key in ("version", "authors", "license"):
+        assert not content.get(key)
+    merged = merge_metadata([c for _, c in sources], None, allow_incomplete=True)
+    assert merged.name == "x"

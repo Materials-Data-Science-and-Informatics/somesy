@@ -108,7 +108,12 @@ class POM(ProjectMetadataWriter):
 
     @staticmethod
     def _to_person(person_obj: dict) -> Entity | Person | None:
-        """Parse POM XML person to a somesy Person."""
+        """Parse POM XML person to a somesy Person.
+
+        POM has no person/entity distinction, so this is a heuristic: a name
+        containing a space is a Person (last word is the family name),
+        anything else is an Entity.
+        """
         if "name" not in person_obj:
             logger.warning(f"POM person without name, omitting: {person_obj}")
             return None

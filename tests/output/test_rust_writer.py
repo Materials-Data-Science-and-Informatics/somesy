@@ -145,3 +145,20 @@ def test_person_merge_no_email(rust_file, person):
 
     r.sync(pm)
     assert r.authors[0] == Rust._from_person(person)
+
+
+def test_workspace_inheritance_kept(tmp_path, somesy_input):
+    path = tmp_path / "Cargo.toml"
+    path.write_text(
+        '[package]\nname = "x"\nversion.workspace = true\n'
+        "authors.workspace = true\nlicense.workspace = true\n"
+        'description = "old"\n'
+    )
+    rust = Rust(path)
+    rust.sync(somesy_input.project)
+    rust.save()
+    text = path.read_text()
+    for key in ("version", "authors", "license"):
+        assert f"{key}.workspace = true" in text
+    assert 'name = "testproject"' in text
+    assert 'description = "old"' not in text

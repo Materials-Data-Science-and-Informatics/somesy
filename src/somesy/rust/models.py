@@ -2,12 +2,18 @@
 
 import re
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Literal
 
 from packaging.version import parse as parse_version
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 from somesy.core.types import HttpUrlStr
+
+
+class WorkspaceRef(BaseModel):
+    """Value inherited from the workspace, i.e. `{workspace = true}`."""
+
+    workspace: Literal[True]
 
 
 class RustConfig(BaseModel):
@@ -24,20 +30,18 @@ class RustConfig(BaseModel):
         ),
     ]
     version: Annotated[
-        str,
-        Field(
-            pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$",
-            description="Package version",
-        ),
+        Annotated[str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")]
+        | WorkspaceRef,
+        Field(description="Package version"),
     ]
     description: Annotated[str | None, Field(description="Package description")] = None
     license: Annotated[
-        str | None,
+        str | WorkspaceRef | None,
         Field(
             description="A combination SPDX license identifiers with AND, OR and so on."
         ),
     ] = None
-    authors: Annotated[set[str], Field(description="Package authors")]
+    authors: Annotated[set[str] | WorkspaceRef, Field(description="Package authors")]
     maintainers: Annotated[
         set[str] | None, Field(description="Package maintainers")
     ] = None
@@ -76,6 +80,8 @@ class RustConfig(BaseModel):
     @classmethod
     def validate_version(cls, v):
         """Validate version using PEP 440."""
+        if isinstance(v, WorkspaceRef):
+            return v
         try:
             _ = parse_version(v)
         except ValueError as err:

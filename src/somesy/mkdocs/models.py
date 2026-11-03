@@ -15,10 +15,7 @@ class MkDocsConfig(BaseModel):
 
     model_config = {"use_enum_values": True}
 
-    site_name: Annotated[
-        str,
-        Field(pattern=r"^[A-Za-z0-9]+([_-][A-Za-z0-9]+)*$", description="Site name"),
-    ]
+    site_name: Annotated[str, Field(min_length=1, description="Site name")]
     site_description: Annotated[str | None, Field(description="Site description")] = (
         None
     )
