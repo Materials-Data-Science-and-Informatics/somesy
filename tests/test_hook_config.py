@@ -4,13 +4,13 @@ import re
 from pathlib import Path
 
 import pytest
-import yaml
+from ruamel.yaml import YAML
 
 ROOT = Path(__file__).parent.parent
 
 
 def _files_regex(config: Path, hook_id: str) -> str:
-    data = yaml.safe_load(config.read_text(encoding="utf-8"))
+    data = YAML(typ="safe").load(config.read_text(encoding="utf-8"))
     hooks = (
         data
         if isinstance(data, list)
