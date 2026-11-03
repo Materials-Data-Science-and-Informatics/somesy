@@ -91,6 +91,9 @@ class CFF(ProjectMetadataWriter):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync CFF metadata."""
         super().sync(metadata)
+        # an abstract can be longer than a package summary, so prefer it here
+        if metadata.abstract:
+            self.description = metadata.abstract
         if metadata.doi:
             self._data["doi"] = metadata.doi
 

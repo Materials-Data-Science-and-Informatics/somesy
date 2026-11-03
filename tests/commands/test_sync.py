@@ -295,6 +295,29 @@ def test_basic_sync(create_files, file_types):
     assert (test_dir / "pyproject.toml").exists()
 
 
+def test_sync_writes_abstract_only_to_citation_cff(create_files, file_types):
+    """An abstract goes to CITATION.cff, the description to all other files."""
+    test_dir = create_files(
+        {
+            (file_types.SOMESY, "somesy.toml"),
+            (file_types.POETRY, "pyproject.toml"),
+        }
+    )
+    input_file = test_dir / "somesy.toml"
+    abstract = "A long abstract.\n\nIt has a second paragraph."
+    content = tomlkit.parse(input_file.read_text())
+    content["project"]["abstract"] = abstract
+    input_file.write_text(tomlkit.dumps(content))
+    description = content["project"]["description"]
+
+    sync(SomesyInput.from_input_file(input_file))
+
+    assert CFF(test_dir / "CITATION.cff").description == abstract
+    assert Pyproject(test_dir / "pyproject.toml").description == description
+    codemeta = json.loads((test_dir / "codemeta.json").read_text())
+    assert codemeta["description"] == description
+
+
 def test_sync_enriches_codemeta_from_configured_pyproject(tmp_path):
     pyproject_file = tmp_path / "pyproject.toml"
     pyproject_file.write_text(

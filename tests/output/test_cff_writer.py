@@ -27,6 +27,47 @@ def test_sync(cff: CFF, somesy_input: dict):
     assert cff._data["identifiers"] == identifiers
 
 
+def _metadata(person: Person, **kwargs) -> ProjectMetadata:
+    return ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        people=[person.model_copy(update=dict(author=True, publication_author=True))],
+        **kwargs,
+    )
+
+
+def test_sync_abstract_defaults_to_description(tmp_path, person: Person):
+    cff = CFF(tmp_path / "CITATION.cff", create_if_not_exists=True)
+    cff.sync(_metadata(person))
+    assert cff._data["abstract"] == "Project description"
+
+
+def test_sync_abstract_overrides_description(tmp_path, person: Person):
+    cff = CFF(tmp_path / "CITATION.cff", create_if_not_exists=True)
+    cff.sync(_metadata(person, abstract="A longer project abstract."))
+    assert cff._data["abstract"] == "A longer project abstract."
+
+
+def test_sync_removed_abstract_falls_back_to_description(tmp_path, person: Person):
+    cff = CFF(tmp_path / "CITATION.cff", create_if_not_exists=True)
+    cff.sync(_metadata(person, abstract="A longer project abstract."))
+    cff.sync(_metadata(person))
+    assert cff._data["abstract"] == "Project description"
+
+
+def test_save_multiline_abstract_as_block_scalar(tmp_path, person: Person):
+    path = tmp_path / "CITATION.cff"
+    abstract = "First paragraph.\n\nSecond paragraph."
+    cff = CFF(path, create_if_not_exists=True)
+    cff.sync(_metadata(person, abstract=abstract))
+    cff.save()
+
+    assert "abstract: |" in path.read_text()
+    # the person fixture has an ORCID that the CFF schema rejects
+    assert CFF(path, pass_validation=True).description == abstract
+
+
 def test_save_does_not_write_trailing_whitespace(tmp_path):
     file_path = tmp_path / "CITATION.cff"
     cff = CFF(file_path, create_if_not_exists=True)
