@@ -155,3 +155,24 @@ def test_merge_real_endpoint_files_and_multiple_git_authors(
         [str(value) for value in (person.contribution_types or [])] == ["code"]
         for person in git_people.values()
     )
+
+
+def test_merge_skips_single_word_and_bot_git_authors(caplog):
+    result = merge_metadata(
+        [{"name": "project", "description": "d", "license": "MIT"}],
+        GitMetadata(
+            authors=[
+                GitAuthor(name="Cher", email="cher@x.org"),
+                GitAuthor(name="dependabot[bot]"),
+                GitAuthor(name="Jane Doe", author=True),
+            ]
+        ),
+        allow_incomplete=True,
+    )
+
+    assert [p.full_name for p in result.people] == ["Jane Doe"]
+    assert result.people[0].publication_author is True
+    assert not result.entities
+    warnings = [r.message for r in caplog.records if r.levelname == "WARNING"]
+    assert any("Cher" in w for w in warnings)
+    assert not any("dependabot" in w for w in warnings)

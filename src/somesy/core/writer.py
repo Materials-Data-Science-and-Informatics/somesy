@@ -353,7 +353,11 @@ class ProjectMetadataWriter(ABC):
         entities: list[Entity] = []
         for role in ("authors", "maintainers", "contributors"):
             for person in self._parse_people(getattr(self, role) or []):
-                updates = {"author": True} if role == "authors" else {}
+                updates = (
+                    {"author": True, "publication_author": True}
+                    if role == "authors"
+                    else {}
+                )
                 updates.update({"maintainer": True} if role == "maintainers" else {})
                 person = person.model_copy(update=updates)
                 if isinstance(person, Entity):

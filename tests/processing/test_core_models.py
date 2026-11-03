@@ -2,7 +2,13 @@ import json
 
 import pytest
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import (
+    Entity,
+    Person,
+    ProjectMetadata,
+    SomesyConfig,
+    SomesyInput,
+)
 
 # dicts with test inputs for people
 p1 = {
@@ -203,3 +209,47 @@ def test_orcid_from_string():
     person_dict["orcid"] = orcid_url
     p = Person(**person_dict)
     assert str(p.orcid) == orcid_url
+
+
+def test_entity_same_name_different_identifier_is_not_same():
+    """Entities with equal names but differing rorid/website are distinct."""
+    a = Entity.model_validate(dict(name="Org", rorid="https://ror.org/11111111"))
+    b = Entity.model_validate(dict(name="Org", rorid="https://ror.org/22222222"))
+    assert not a.same_person(b)
+    c = Entity.model_validate(dict(name="Org", website="https://a.example.com"))
+    d = Entity.model_validate(dict(name="Org", website="https://b.example.com"))
+    assert not c.same_person(d)
+    # identifier only on one side: still falls back to name
+    assert a.same_person(Entity(name="Org"))
+
+
+def test_entity_model_dump_json():
+    """rorid becomes website when none is set; unicode and key order are kept."""
+    ent = Entity.model_validate(dict(name="Jülich", rorid="https://ror.org/02nv7yv05"))
+    ent.set_key_order(["rorid", "name"])
+    out = ent.model_dump_json()
+    assert "Jülich" in out
+    assert json.loads(out) == {
+        "name": "Jülich",
+        "website": "https://ror.org/02nv7yv05",
+    }
+    # rorid is kept when a website is already set
+    ent = Entity.model_validate(
+        dict(name="X", website="https://x.example.com", rorid="https://ror.org/1")
+    )
+    ent.set_key_order(["rorid", "name", "website"])
+    dumped = json.loads(ent.model_dump_json())
+    assert list(dumped) == ["rorid", "name", "website"]
+
+
+def test_person_from_single_word_name_raises():
+    """A single word is no valid person name; callers fall back to Entity."""
+    with pytest.raises(ValueError, match="given-names"):
+        Person.from_name_email_string("Cher <cher@x.org>")
+    assert Entity.from_name_email_string("Cher <cher@x.org>").name == "Cher"
+
+
+def test_somesy_input_without_input_file_is_not_somesy_file(somesy_input):
+    project = somesy_input.project.model_dump()
+    config = SomesyConfig(input_file=None)
+    assert not SomesyInput(project=project, config=config).is_somesy_file()

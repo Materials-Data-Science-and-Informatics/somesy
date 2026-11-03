@@ -96,13 +96,23 @@ def _merge_people(
 
 def _git_person(author: GitAuthor) -> Person | None:
     """Convert a Git author into a Somesy Person."""
+    if author.name.endswith("[bot]"):
+        return None
     identity = author.name
     if author.email:
         identity = f"{identity} <{author.email}>"
+    if len(author.name.split()) < 2:
+        logger.warning(
+            "Skipping Git author '%s': a person needs given and family names. "
+            "Add them to the somesy input manually.",
+            identity,
+        )
+        return None
     try:
         return Person.from_name_email_string(identity).model_copy(
             update={
                 "author": author.author,
+                "publication_author": author.author or None,
                 "contribution_types": author.contribution_types,
             }
         )

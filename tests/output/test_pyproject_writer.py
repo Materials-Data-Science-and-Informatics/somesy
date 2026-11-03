@@ -649,6 +649,9 @@ def test_harvest_metadata_from_uv_project(pyproject_uv_file):
     assert harvested["license"] == "MIT"
     assert harvested["homepage"] == "https://example.com/test-package"
     assert harvested["people"][0].email == "john.doe@example.com"
+    # authors harvested via model_copy still get publication_author
+    assert harvested["people"][0].author
+    assert harvested["people"][0].publication_author is True
 
 
 @pytest.mark.parametrize("spelling", ["Homepage", "homepage", "home-page", "HOMEPAGE"])

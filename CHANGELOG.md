@@ -43,6 +43,14 @@ Please consult the changelog to inform yourself about breaking changes and secur
     repository and do not write empty `<scm>` or `<site>` elements
   - write all licenses: a list in `CITATION.cff`, an `OR` expression in
     `package.json` and `fpm.toml`
+  - keep a stable key order for people and entities in output files
+  - do not merge two organizations with the same name but different ROR IDs or
+    websites
+  - write non-ASCII organization names unescaped
+  - harvested authors are also marked as publication authors
+  - `somesy init` skips Git bot accounts and warns about single-word Git author
+    names instead of dropping them silently
+  - remove Pydantic 2.11 deprecation warnings
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

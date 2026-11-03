@@ -98,7 +98,7 @@ class SomesyBaseModel(BaseModel):
         key_order = self._key_order or []
         existing = set(key_order).intersection(set(dct.keys()))
         key_order = [k for k in key_order if k in existing]
-        key_order += list(set(dct.keys()) - set(key_order))
+        key_order += [k for k in dct if k not in existing]
         return {k: dct[k] for k in key_order}
 
     def model_dump(self, *args, **kwargs):
@@ -110,7 +110,7 @@ class SomesyBaseModel(BaseModel):
         ret = self._reorder_dict(dct)
 
         if by_alias:
-            ret = {self.model_fields[k].alias or k: v for k, v in ret.items()}
+            ret = {type(self).model_fields[k].alias or k: v for k, v in ret.items()}
         return ret
 
     def model_dump_json(self, *args, **kwargs):
@@ -123,7 +123,7 @@ class SomesyBaseModel(BaseModel):
         ret = self._reorder_dict(dct)
 
         if by_alias:
-            ret = {self.model_fields[k].alias or k: v for k, v in ret.items()}
+            ret = {type(self).model_fields[k].alias or k: v for k, v in ret.items()}
         return json.dumps(ret, ensure_ascii=False)
 
 
@@ -426,6 +426,7 @@ class ContributorBaseModel(SomesyBaseModel):
         """Return the type of class based on an name/e-mail string like `full name <x@y.z>`.
 
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
+        A single-word name is not a valid person name and raises a `ValidationError`.
         """
         raise NotImplementedError
 
@@ -502,12 +503,17 @@ class Entity(ContributorBaseModel):
             and self.rorid == other.rorid
         ):
             return True
+        if self.rorid is not None and other.rorid is not None:
+            # distinct identifiers: different organizations, even with equal names
+            return False
         if (
             self.website is not None
             and other.website is not None
             and self.website == other.website
         ):
             return True
+        if self.website is not None and other.website is not None:
+            return False
         if (
             self.email is not None
             and other.email is not None
@@ -517,15 +523,19 @@ class Entity(ContributorBaseModel):
         return self.name == other.name
 
     def model_dump_json(self, *args, **kwargs):
-        """Patched json method (to preserve custom key order), remove rorid and set it as website if it is not None."""
+        """Patched json method (to preserve custom key order).
+
+        If no website is set, the rorid is used as website and removed.
+        If a website is set, the rorid is kept alongside it.
+        """
         ret = super().model_dump_json(*args, **kwargs)
         # convert ret to dict
         ret = json.loads(ret)
         if self.rorid is not None and "website" not in ret:
             ret["website"] = str(self.rorid)
-            ret.pop("rorid")
+            ret.pop("rorid", None)
         # convert ret back to json string
-        return json.dumps(ret)
+        return json.dumps(ret, ensure_ascii=False)
 
 
 class Person(ContributorBaseModel):
@@ -609,6 +619,7 @@ class Person(ContributorBaseModel):
         """Return a `Person` based on an name/e-mail string like `full name <x@y.z>`.
 
         If the name is `A B C`, then `A B` will be the given names and `C` will be the family name.
+        A single-word name is not a valid person name and raises a `ValidationError`.
         """
         m = re.match(r"\s*([^<]+)<([^>]+)>", person)
         if m is None:
@@ -821,7 +832,7 @@ class PartialProjectMetadata(ProjectMetadata):
 class SomesyInput(SomesyBaseModel):
     """The complete somesy input file (`somesy.toml`) or section (`pyproject.toml`)."""
 
-    _origin: Path | None
+    _origin: Path | None = PrivateAttr(default=None)
 
     project: Annotated[
         ProjectMetadata | PartialProjectMetadata,
