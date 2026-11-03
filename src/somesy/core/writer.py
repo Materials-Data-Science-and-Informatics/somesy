@@ -25,6 +25,14 @@ NOTE: This should be probably turned into a proper protocol.
 """
 
 
+def license_expression(licenses) -> str:
+    """Convert one or more license identifiers to an SPDX expression."""
+    return " OR ".join(
+        str(license)
+        for license in (licenses if isinstance(licenses, list) else [licenses])
+    )
+
+
 class ProjectMetadataWriter(ABC):
     """Base class for Project Metadata Output Wrapper.
 
@@ -311,15 +319,15 @@ class ProjectMetadataWriter(ABC):
         )
 
         if licenses := metadata.license:
-            self.license = (
-                licenses[0].value if isinstance(licenses, list) else licenses.value
-            )
+            self.license = license_expression(licenses)
 
-        self.homepage = str(metadata.homepage) if metadata.homepage else None
-        self.repository = str(metadata.repository) if metadata.repository else None
-        self.documentation = (
-            str(metadata.documentation) if metadata.documentation else None
-        )
+        # keep existing values in the target file if somesy has none
+        if metadata.homepage:
+            self.homepage = str(metadata.homepage)
+        if metadata.repository:
+            self.repository = str(metadata.repository)
+        if metadata.documentation:
+            self.documentation = str(metadata.documentation)
 
     def harvest_metadata(self) -> dict[str, Any]:
         """Return metadata read from this endpoint in Somesy model terms."""

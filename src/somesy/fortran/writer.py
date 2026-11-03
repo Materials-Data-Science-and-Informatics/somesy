@@ -8,7 +8,12 @@ from rich.pretty import pretty_repr
 from tomlkit.items import AoT, InlineTable
 
 from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+from somesy.core.writer import (
+    FieldKeyMapping,
+    IgnoreKey,
+    ProjectMetadataWriter,
+    license_expression,
+)
 
 from .models import FortranConfig
 
@@ -155,10 +160,7 @@ class Fortran(ProjectMetadataWriter):
             self.maintainers = maintainers
 
         if licenses := metadata.license:
-            self.license = (
-                " OR ".join(license.value for license in licenses)
-                if isinstance(licenses, list)
-                else licenses.value
-            )
+            self.license = license_expression(licenses)
 
-        self.homepage = str(metadata.homepage) if metadata.homepage else None
+        if metadata.homepage:
+            self.homepage = str(metadata.homepage)

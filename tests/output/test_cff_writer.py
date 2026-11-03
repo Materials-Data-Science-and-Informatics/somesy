@@ -28,10 +28,10 @@ def test_sync(cff: CFF, somesy_input: dict):
 
 
 def _metadata(person: Person, **kwargs) -> ProjectMetadata:
+    kwargs.setdefault("license", LicenseEnum.MIT)
     return ProjectMetadata(
         name="My awesome project",
         description="Project description",
-        license=LicenseEnum.MIT,
         people=[person.model_copy(update=dict(author=True, publication_author=True))],
         **kwargs,
     )
@@ -223,3 +223,11 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
     assert cff.authors[2] == entity1b.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
+
+
+def test_sync_multiple_licenses_as_list(tmp_path, person: Person):
+    cff = CFF(tmp_path / "CITATION.cff", create_if_not_exists=True)
+    cff.sync(_metadata(person, license=[LicenseEnum.MIT, LicenseEnum.Apache_2_0]))
+    assert cff.license == ["MIT", "Apache-2.0"]
+    cff.sync(_metadata(person))
+    assert cff.license == "MIT"

@@ -91,6 +91,9 @@ class CFF(ProjectMetadataWriter):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync CFF metadata."""
         super().sync(metadata)
+        # CFF 1.2.0 allows a list of SPDX ids
+        if isinstance(metadata.license, list) and len(metadata.license) > 1:
+            self.license = [license.value for license in metadata.license]
         # an abstract can be longer than a package summary, so prefer it here
         if metadata.abstract:
             self.description = metadata.abstract

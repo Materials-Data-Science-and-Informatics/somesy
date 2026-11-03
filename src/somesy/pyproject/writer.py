@@ -13,7 +13,7 @@ from tomlkit.items import InlineTable, Table
 
 from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
+from somesy.core.writer import IgnoreKey, ProjectMetadataWriter, license_expression
 
 from .models import Pep621Config, PoetryConfig
 
@@ -34,14 +34,6 @@ def normalize_url_key(name: str) -> str:
     project started from.
     """
     return re.sub(r"[\s_-]+", "", name).lower()
-
-
-def license_expression(licenses) -> str:
-    """Convert one or more license identifiers to an SPDX expression."""
-    return " OR ".join(
-        str(license)
-        for license in (licenses if isinstance(licenses, list) else [licenses])
-    )
 
 
 class PyprojectCommon(ProjectMetadataWriter):

@@ -839,3 +839,15 @@ def test_abstract_is_not_synced_to_pyproject(
     assert pyproject.description == "Project description"
     assert "abstract" not in pyproject_setuptools_file.read_text()
     assert not [r for r in caplog.records if r.levelno >= logging.WARNING]
+
+
+def test_sync_keeps_urls_if_absent(pyproject_setuptools_file, somesy_input):
+    project = somesy_input.project
+    project.homepage = project.repository = project.documentation = None
+    writer = Pep621(pyproject_setuptools_file)
+    writer.sync(project)
+    assert writer._data["project"]["urls"] == {
+        "homepage": "https://example.com/test-package",
+        "repository": "https://github.com/example/test-package",
+        "documentation": "https://example.com/test-package",
+    }

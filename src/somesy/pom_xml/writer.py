@@ -230,9 +230,10 @@ class POM(ProjectMetadataWriter):
     @repository.setter
     def repository(self, value: str | dict | None) -> None:
         """Set the repository url of the project."""
-        self._set_property(
-            self._get_key("repository"), {"name": "git repository", "url": value}
-        )
+        if value is None:
+            return
+        # only touch <scm><url>, keep e.g. <connection> intact
+        self._set_property(["scm", "url"], value)
 
     @property
     def documentation(self) -> str | dict | None:
@@ -245,6 +246,8 @@ class POM(ProjectMetadataWriter):
     @documentation.setter
     def documentation(self, value: str | dict | None) -> None:
         """Set the documentation url of the project."""
+        if value is None:
+            return
         self._set_property(
             self._get_key("documentation"), {"name": "documentation site", "url": value}
         )

@@ -197,3 +197,33 @@ def test_authors_without_developers(tmp_path):
 def test_to_person_without_name(caplog):
     assert POM._to_person({"email": "a@b.com"}) is None
     assert POM._parse_people([{"email": "a@b.com"}]) == []
+
+
+def test_sync_keeps_urls_if_absent(pom: POM, somesy_input):
+    before = (pom.homepage, pom.repository, pom.documentation)
+    project = somesy_input.project
+    project.homepage = project.repository = project.documentation = None
+    pom.sync(project)
+    assert (pom.homepage, pom.repository, pom.documentation) == before
+
+
+def test_repository_keeps_scm_connection(pom: POM, somesy_input):
+    somesy_input.project.repository = "https://example.com/new/repo"
+    pom.sync(somesy_input.project)
+    assert pom.repository == "https://example.com/new/repo"
+    scm = pom._get_property(["scm"])
+    assert isinstance(scm, dict)
+    assert scm["url"] == "https://example.com/new/repo"
+    assert scm["connection"] == "scm:git:git@github.com:lampepfl/dotty.git"
+
+
+def test_no_empty_scm_or_site_without_urls(tmp_path, somesy_input):
+    project = somesy_input.project
+    project.homepage = project.repository = project.documentation = None
+    path = tmp_path / "pom.xml"
+    pom = POM(path, create_if_not_exists=True)
+    pom.sync(project)
+    pom.save()
+    content = path.read_text()
+    assert "scm" not in content
+    assert "distributionManagement" not in content

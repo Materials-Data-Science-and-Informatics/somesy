@@ -37,6 +37,12 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - `package.json`: read organizations with a `url`
   - `pom.xml`: read developers with a single role, without a name, or files
     without `<developers>`
+  - keep existing homepage, repository and documentation URLs in output files
+    when the input has none, instead of deleting them
+  - `pom.xml`: keep `<connection>` and `<developerConnection>` when syncing the
+    repository and do not write empty `<scm>` or `<site>` elements
+  - write all licenses: a list in `CITATION.cff`, an `OR` expression in
+    `package.json` and `fpm.toml`
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
