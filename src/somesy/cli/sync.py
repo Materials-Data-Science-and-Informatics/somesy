@@ -6,6 +6,7 @@ from pathlib import Path
 import typer
 
 from somesy.commands import sync as sync_command
+from somesy.commands.sync import SYNC_TARGETS
 from somesy.core.models import SomesyInput
 
 from .util import (
@@ -201,39 +202,13 @@ def run_sync(somesy_input: SomesyInput):
     conf = somesy_input.config
     logger.info("[bold green]Synchronizing project metadata...[/bold green]")
     logger.info("Files to sync:")
-    if not conf.no_sync_pyproject:
-        logger.info(
-            f"  - [italic]pyproject.toml[/italic]:\t[grey]{conf.pyproject_file}[/grey]"
-        )
-    if not conf.no_sync_package_json:
-        logger.info(
-            f"  - [italic]package.json[/italic]:\t[grey]{conf.package_json_file}[/grey]"
-        )
-    if not conf.no_sync_julia:
-        logger.info(
-            f"  - [italic]Project.toml[/italic]:\t[grey]{conf.julia_file}[/grey]\n"
-        )
-    if not conf.no_sync_fortran:
-        logger.info(
-            f"  - [italic]fpm.toml(fortran)[/italic]:\t[grey]{conf.fortran_file}[/grey]"
-        )
-    if not conf.no_sync_pom_xml:
-        logger.info(
-            f"  - [italic]pom.xml[/italic]:\t[grey]{conf.pom_xml_file}[/grey]\n"
-        )
-    if not conf.no_sync_mkdocs:
-        logger.info(
-            f"  - [italic]mkdocs.yml[/italic]:\t[grey]{conf.mkdocs_file}[/grey]"
-        )
-    if not conf.no_sync_rust:
-        logger.info(f"  - [italic]Cargo.toml[/italic]:\t[grey]{conf.rust_file}[/grey]")
-
-    if not conf.no_sync_cff:
-        logger.info(f"  - [italic]CITATION.cff[/italic]:\t[grey]{conf.cff_file}[/grey]")
-    if not conf.no_sync_codemeta:
-        logger.info(
-            f"  - [italic]codemeta.json[/italic]:\t[grey]{conf.codemeta_file}[/grey]\n"
-        )
+    for target in SYNC_TARGETS:
+        if not getattr(conf, f"no_sync_{target.key}"):
+            files = getattr(conf, f"{target.key}_file")
+            gap = "\n" if target.log_gap else ""
+            logger.info(
+                f"  - [italic]{target.label}[/italic]:\t[grey]{files}[/grey]{gap}"
+            )
     # ----
     if conf.pass_validation:
         logger.info("[bold yellow]Passing validation of metadata files.[/bold yellow]")
