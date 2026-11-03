@@ -5,7 +5,7 @@ from pathlib import Path
 
 import tomlkit
 from rich.pretty import pretty_repr
-from tomlkit.items import InlineTable
+from tomlkit.items import AoT, InlineTable
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
@@ -42,13 +42,8 @@ class Fortran(ProjectMetadataWriter):
     @property
     def authors(self):
         """Return the only author of the fpm.toml file as list."""
-        authors = []
-        try:
-            self._to_person(self._get_property(self._get_key("authors")))
-            authors = [self._get_property(self._get_key("authors"))]
-        except ValueError:
-            logger.warning("Cannot convert authors to Person object.")
-        return authors
+        author = self._get_property(self._get_key("authors"))
+        return [author] if author else []
 
     @authors.setter
     def authors(self, authors: list[Person | Entity]) -> None:
@@ -97,8 +92,8 @@ class Fortran(ProjectMetadataWriter):
             )
 
         # Handle arrays with proper formatting
-        for key, value in self._data.items():
-            if isinstance(value, list):
+        for key, value in list(self._data.items()):
+            if isinstance(value, list) and not isinstance(value, AoT):
                 array = tomlkit.array()
                 array.extend(value)
                 array.multiline(True)

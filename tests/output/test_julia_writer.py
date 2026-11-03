@@ -148,3 +148,20 @@ def test_without_email(tmp_path, person):
 
     assert len(pj.authors) == 1
     assert pj.authors[0] == f"{person.full_name} <{person.email}>"
+
+
+def test_save_array_of_tables(tmp_path, julia_file):
+    julia_file.write_text(
+        julia_file.read_text() + '\n[[custom]]\nname = "Test"\nuuid = "abc"\n'
+    )
+    julia = Julia(julia_file)
+    out = tmp_path / "Project.toml"
+    julia.save(out)
+    assert "[[custom]]" in out.read_text()
+
+
+def test_sync_without_version(julia, somesy_input):
+    somesy_input.project.version = None
+    old = julia.version
+    julia.sync(somesy_input.project)
+    assert old and julia.version == old

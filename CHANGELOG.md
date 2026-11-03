@@ -27,6 +27,10 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - aborting a prompt no longer prints an empty error
   - monorepo packages keep their own `[config]`; only options passed on the
     command line override it
+  - saving `fpm.toml` or `Project.toml` with an array of tables such as
+    `[[executable]]` no longer crashes
+  - keep `version` in `Project.toml` when the input has none
+  - read `fpm.toml` files without an `author`
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
