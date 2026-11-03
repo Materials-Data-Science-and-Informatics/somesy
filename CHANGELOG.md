@@ -11,6 +11,13 @@ Please consult the changelog to inform yourself about breaking changes and secur
     `tsconfig.json` (or a variant such as `tsconfig.build.json`) is next to the
     `package.json`
   - support Python 3.15 and test it in CI on Linux, macOS, and Windows
+  - add an optional `abstract` field, written to `abstract` in `CITATION.cff`
+    instead of the `description`, so a long abstract is not synced into the
+    package summary in `pyproject.toml` (which PyPI limits to one line of at most
+    512 characters)
+  - warn when the `description` synced into `pyproject.toml` is longer than
+    512 characters or spans several lines
+  - support `abstract` in `somesy set`
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

@@ -15,6 +15,7 @@ runner = CliRunner()
     [
         ("name", "renamed-project"),
         ("description", "A revised description."),
+        ("abstract", "A longer abstract for CITATION.cff."),
         ("version", "1.2.3"),
         ("license", "MIT"),
         ("homepage", "https://example.com"),

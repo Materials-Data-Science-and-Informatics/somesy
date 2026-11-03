@@ -798,3 +798,44 @@ def test_existing_project_urls_keep_their_spacing_and_comment(tmp_path, metadata
         "[project.urls]\n# Existing URL comment\n"
         'homepage = "https://new.example/"\n\n[build-system]'
     ) in path.read_text()
+
+
+@pytest.mark.parametrize(
+    "pyproject_file", ["pyproject_setuptools_file", "pyproject_poetry_file"]
+)
+@pytest.mark.parametrize(
+    "description, warns",
+    [
+        ("x" * 512, False),
+        ("x" * 513, True),
+        ("First line.\nSecond line.", True),
+        ("Ends with a carriage return.\r", True),
+    ],
+)
+def test_warns_about_description_not_accepted_as_pypi_summary(
+    request, caplog, metadata, pyproject_file, description, warns
+):
+    """PyPI rejects a summary longer than 512 characters or with line breaks."""
+    path = request.getfixturevalue(pyproject_file)
+    pyproject = Pyproject(path)
+
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        pyproject.sync(metadata.model_copy(update={"description": description}))
+
+    assert pyproject.description == description
+    assert ("'abstract'" in caplog.text) is warns
+
+
+def test_abstract_is_not_synced_to_pyproject(
+    pyproject_setuptools_file, caplog, metadata
+):
+    """The abstract is for CITATION.cff only, the package keeps its summary."""
+    pyproject = Pyproject(pyproject_setuptools_file)
+
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        pyproject.sync(metadata.model_copy(update={"abstract": "x" * 1000}))
+    pyproject.save()
+
+    assert pyproject.description == "Project description"
+    assert "abstract" not in pyproject_setuptools_file.read_text()
+    assert not [r for r in caplog.records if r.levelno >= logging.WARNING]

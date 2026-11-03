@@ -705,6 +705,12 @@ class ProjectMetadata(SomesyBaseModel):
 
     name: Annotated[str, Field(description="Project name.")]
     description: Annotated[str, Field(description="Project description.")]
+    abstract: Annotated[
+        str | None,
+        Field(
+            description="Project abstract for CITATION.cff (defaults to description)."
+        ),
+    ] = None
     version: Annotated[str | None, Field(description="Project version.")] = None
     doi: Annotated[str | None, Field(description="Project DOI.")] = None
     license: Annotated[
