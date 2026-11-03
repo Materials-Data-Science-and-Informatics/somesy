@@ -6,9 +6,47 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+import tomlkit
+from tomlkit.items import AoT, Array, InlineTable
+
 from somesy.core.models import Entity, Person, ProjectMetadata
 
 logger = logging.getLogger("somesy")
+
+
+def toml_array(value: list) -> Array:
+    """Build a multiline tomlkit array, with spaced inline tables."""
+    array = tomlkit.array()
+    array.extend(value)
+    array.multiline(True)
+    # Ensure whitespace after commas in inline tables
+    for item in array:
+        if isinstance(item, InlineTable):
+            # Rebuild the inline table with desired formatting
+            formatted_item = tomlkit.inline_table()
+            for k, v in item.value.items():
+                formatted_item[k] = v
+            formatted_item.trivia.trail = " "  # Add space after each comma
+            array[array.index(item)] = formatted_item
+    return array
+
+
+def multiline_description(table: Any) -> None:
+    """Store a description containing line breaks as a multiline TOML string."""
+    if "description" in table and "\n" in table["description"]:
+        table["description"] = tomlkit.string(table["description"], multiline=True)
+
+
+def format_toml_data(data: Any) -> None:
+    """Prepare a tomlkit document for saving: multiline description, multiline arrays."""
+    multiline_description(data)
+
+    # Handle arrays with proper formatting (snapshot, since we assign while iterating)
+    for key, value in list(data.items()):
+        if isinstance(value, list) and not isinstance(value, AoT):
+            data[key] = toml_array(value)
+        else:
+            data[key] = value
 
 
 class IgnoreKey:

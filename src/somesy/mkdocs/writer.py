@@ -7,7 +7,7 @@ from rich.pretty import pretty_repr
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.mkdocs.models import MkDocsConfig
 
@@ -102,16 +102,7 @@ class MkDocs(ProjectMetadataWriter):
     @staticmethod
     def _to_person(person_obj: str) -> Entity | Person | None:
         """MkDocs Person is a string with full name."""
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync the MkDocs object with the ProjectMetadata object."""

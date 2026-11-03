@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import functools
 import json
+import logging
 import re
 from datetime import date
 from pathlib import Path
@@ -21,6 +22,8 @@ from rich.pretty import pretty_repr
 from .core import get_input_content
 from .log import SomesyLogLevel
 from .types import ContributionTypeEnum, Country, HttpUrlStr, LicenseEnum
+
+logger = logging.getLogger("somesy")
 
 # --------
 # Somesy configuration model
@@ -674,6 +677,32 @@ class Person(ContributorBaseModel):
         return self.full_name == other.full_name
 
 
+def parse_name_email(person_obj: str) -> Person | Entity | None:
+    """Parse a "Name <email>" string to a Person, falling back to an Entity."""
+    try:
+        return Person.from_name_email_string(person_obj)
+    except (ValueError, AttributeError):
+        logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
+
+    try:
+        return Entity.from_name_email_string(person_obj)
+    except (ValueError, AttributeError):
+        logger.warning(f"Cannot convert {person_obj} to Entity.")
+        return None
+
+
+def _ensure_distinct(items: list, kind: str) -> list:
+    """Raise a ValueError if the same person/entity is listed twice."""
+    for i in range(len(items)):
+        for j in range(i + 1, len(items)):
+            if items[i].same_person(items[j]):
+                a = pretty_repr(json.loads(items[i].model_dump_json()))
+                b = pretty_repr(json.loads(items[j].model_dump_json()))
+                msg = f"Same {kind} is listed twice:\n{a}\n{b}"
+                raise ValueError(msg)
+    return items
+
+
 class ProjectMetadata(SomesyBaseModel):
     """Pydantic model for Project Metadata Input."""
 
@@ -683,27 +712,13 @@ class ProjectMetadata(SomesyBaseModel):
     @classmethod
     def ensure_distinct_people(cls, people):
         """Make sure that no person is listed twice in the same list."""
-        for i in range(len(people)):
-            for j in range(i + 1, len(people)):
-                if people[i].same_person(people[j]):
-                    p1 = pretty_repr(json.loads(people[i].model_dump_json()))
-                    p2 = pretty_repr(json.loads(people[j].model_dump_json()))
-                    msg = f"Same person is listed twice:\n{p1}\n{p2}"
-                    raise ValueError(msg)
-        return people
+        return _ensure_distinct(people, "person")
 
     @field_validator("entities")
     @classmethod
     def ensure_distinct_entities(cls, entities):
         """Make sure that no entity is listed twice in the same list."""
-        for i in range(len(entities)):
-            for j in range(i + 1, len(entities)):
-                if entities[i].same_person(entities[j]):
-                    e1 = pretty_repr(json.loads(entities[i].model_dump_json()))
-                    e2 = pretty_repr(json.loads(entities[j].model_dump_json()))
-                    msg = f"Same entity is listed twice:\n{e1}\n{e2}"
-                    raise ValueError(msg)
-        return entities
+        return _ensure_distinct(entities, "entity")
 
     @model_validator(mode="after")
     def at_least_one_author(self) -> ProjectMetadata:

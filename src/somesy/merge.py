@@ -77,17 +77,8 @@ def _merge_people(
     result = list(existing)
     for candidate in incoming:
         for index, person in enumerate(result):
-            same_person = (
-                isinstance(person, Person)
-                and isinstance(candidate, Person)
-                and person.same_person(candidate)
-            )
-            same_entity = (
-                isinstance(person, Entity)
-                and isinstance(candidate, Entity)
-                and person.same_person(candidate)
-            )
-            if same_person or same_entity:
+            # same_person is False for a Person/Entity mix
+            if person.same_person(candidate):
                 result[index] = _merge_person(person, candidate)
                 break
         else:

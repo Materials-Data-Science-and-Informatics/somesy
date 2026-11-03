@@ -6,10 +6,15 @@ from pathlib import Path
 from typing import Any
 
 from rich.pretty import pretty_repr
-from tomlkit import array, dump, inline_table, items, load, string, table
+from tomlkit import dump, load, string, table
 
-from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
+from somesy.core.writer import (
+    FieldKeyMapping,
+    IgnoreKey,
+    ProjectMetadataWriter,
+    toml_array,
+)
 
 from .models import RustConfig, check_keyword
 
@@ -117,18 +122,7 @@ class Rust(ProjectMetadataWriter):
 
         # Handle arrays with proper formatting
         if isinstance(value, list):
-            arr = array()
-            arr.extend(value)
-            arr.multiline(True)
-            # Ensure whitespace after commas in inline tables
-            for item in arr:
-                if isinstance(item, items.InlineTable):
-                    # Rebuild the inline table with desired formatting
-                    formatted_item = inline_table()
-                    for k, v in item.value.items():
-                        formatted_item[k] = v
-                    formatted_item.trivia.trail = " "  # Add space after each comma
-                    arr[arr.index(item)] = formatted_item
+            arr = toml_array(value)
             curr[key_path[-1]] = arr
         else:
             curr[key_path[-1]] = value
@@ -144,16 +138,7 @@ class Rust(ProjectMetadataWriter):
 
         Since there is no way to know whether this entry is a person or an entity, we will directly convert to Person.
         """
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     @classmethod
     def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:

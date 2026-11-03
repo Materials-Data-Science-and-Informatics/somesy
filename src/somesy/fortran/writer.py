@@ -5,13 +5,13 @@ from pathlib import Path
 
 import tomlkit
 from rich.pretty import pretty_repr
-from tomlkit.items import AoT, InlineTable
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import (
     FieldKeyMapping,
     IgnoreKey,
     ProjectMetadataWriter,
+    format_toml_data,
     license_expression,
 )
 
@@ -91,29 +91,7 @@ class Fortran(ProjectMetadataWriter):
     def save(self, path: Path | None = None) -> None:
         """Save the fpm file."""
         path = path or self.path
-        if "description" in self._data and "\n" in self._data["description"]:
-            self._data["description"] = tomlkit.string(
-                self._data["description"], multiline=True
-            )
-
-        # Handle arrays with proper formatting
-        for key, value in list(self._data.items()):
-            if isinstance(value, list) and not isinstance(value, AoT):
-                array = tomlkit.array()
-                array.extend(value)
-                array.multiline(True)
-                # Ensure whitespace after commas in inline tables
-                for item in array:
-                    if isinstance(item, InlineTable):
-                        # Rebuild the inline table with desired formatting
-                        formatted_item = tomlkit.inline_table()
-                        for k, v in item.value.items():
-                            formatted_item[k] = v
-                        formatted_item.trivia.trail = " "  # Add space after each comma
-                        array[array.index(item)] = formatted_item
-                self._data[key] = array
-            else:
-                self._data[key] = value
+        format_toml_data(self._data)
 
         with open(path, "w", encoding="utf-8") as f:
             tomlkit.dump(self._data, f)
@@ -126,16 +104,7 @@ class Fortran(ProjectMetadataWriter):
     @staticmethod
     def _to_person(person_obj: str) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
