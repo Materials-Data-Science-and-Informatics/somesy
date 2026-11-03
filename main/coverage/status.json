@@ -2,7 +2,7 @@
   "note":"This file is an internal implementation detail to speed up HTML report generation. Its format can change at any time. You might be looking for the JSON report: https://coverage.rtfd.io/cmd.html#cmd-json",
   "format":5,
   "version":"7.16.0",
-  "globals":"abc69cfab41a7cad369045f0a8333348",
+  "globals":"415b898c8c192ac319f873797e37e74a",
   "files":{
     "z_97b113e3d51588b3___init___py":{
       "hash":"1166b808f88d68e941426a505f5912c2",
@@ -185,7 +185,7 @@
       }
     },
     "z_3187dccd59625139_enrich_py":{
-      "hash":"1dcc55310838dbc2aabad5e789d97540",
+      "hash":"b8ed376b4c9cc061c53aa95f9b69869a",
       "index":{
         "url":"z_3187dccd59625139_enrich_py.html",
         "file":"src/somesy/codemeta/enrich.py",
@@ -193,7 +193,7 @@
         "nums":{
           "precision":0,
           "n_files":1,
-          "n_statements":197,
+          "n_statements":201,
           "n_excluded":0,
           "n_missing":8,
           "n_branches":0,
