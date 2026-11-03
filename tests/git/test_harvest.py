@@ -150,6 +150,9 @@ def test_harvest_without_git_returns_none(tmp_path, monkeypatch):
     assert harvest(tmp_path) is None
 
 
+@pytest.mark.skipif(
+    not hasattr(os, "environb"), reason="needs bytes environment (POSIX only)"
+)
 def test_harvest_tolerates_non_utf8_author(tmp_path):
     _init_repo(tmp_path)
     envb = {**os.environb, b"GIT_AUTHOR_NAME": "Jos\xe9".encode("latin-1")}

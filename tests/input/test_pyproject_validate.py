@@ -65,7 +65,7 @@ def pyproject_route(request):
             "authors": authors,
         }
         path = tmp_path / "pyproject.toml"
-        with open(path, "w+") as f:
+        with open(path, "w+", encoding="utf-8") as f:
             dump(wrap(obj), f)
         return path
 
