@@ -4,7 +4,7 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
-## Unreleased
+## [v0.9.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.9.0) <small>(2026-11-03)</small> { id="0.9.0" }
 
 - **Added**
   - set `programmingLanguage` to `TypeScript` in `codemeta.json` enrichment when a
