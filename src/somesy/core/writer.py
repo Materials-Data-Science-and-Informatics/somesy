@@ -95,7 +95,7 @@ class ProjectMetadataWriter(ABC):
 
         Args:
             path: Path to target output file.
-            create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
+            create_if_not_exists: Create an empty file if not exists. Defaults to False.
             direct_mappings: Dict with direct mappings of keys between somesy and target
             merge: Merge the output file with an existing file. Defaults to False.
             pass_validation: Pass validation for all output files. Defaults to False.
@@ -158,7 +158,6 @@ class ProjectMetadataWriter(ABC):
         self,
         key: str | list[str] | IgnoreKey,
         *,
-        only_first: bool = False,
         remove: bool = False,
     ) -> Any:
         """Get a property from the data.
@@ -168,7 +167,6 @@ class ProjectMetadataWriter(ABC):
 
         Args:
             key: Name of the key or sequence of multiple keys to retrieve the value.
-            only_first: If True, returns only first entry if the value is a list.
             remove: If True, will remove the retrieved value and clean up the dict.
 
         """
@@ -180,7 +178,6 @@ class ProjectMetadataWriter(ABC):
         seq = [curr]
         for k in key_path:
             curr = curr.get(k)
-            curr = curr[0] if isinstance(curr, list) and only_first else curr
             seq.append(curr)
             if curr is None:
                 return None
@@ -195,8 +192,6 @@ class ProjectMetadataWriter(ABC):
                 if not dct.get(path_key):
                     del dct[path_key]
 
-        if isinstance(curr, list) and only_first:
-            return curr[0]
         return curr
 
     def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:

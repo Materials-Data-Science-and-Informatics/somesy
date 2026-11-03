@@ -70,13 +70,12 @@ class POM(ProjectMetadataWriter):
         self,
         key: str | list[str] | IgnoreKey,
         *,
-        only_first: bool = False,
         remove: bool = False,
     ) -> Any | None:
         """Get (a) property by key."""
         if isinstance(key, IgnoreKey):
             return None
-        elem = super()._get_property(key, only_first=only_first, remove=remove)
+        elem = super()._get_property(key, remove=remove)
         if elem is not None:
             if isinstance(elem, list):
                 return [e.to_jsonlike() for e in elem]

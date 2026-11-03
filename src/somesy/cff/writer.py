@@ -74,11 +74,8 @@ class CFF(ProjectMetadataWriter):
         path = path or self.path
 
         # if description have new line characters, it should be saved as multiline string
-        if "abstract" in self._data:
-            if "\n" in self._data["abstract"]:
-                self._data["abstract"] = LiteralScalarString(self._data["abstract"])
-        elif self.description is not None:
-            self._data["abstract"] = str(self.description)
+        if "abstract" in self._data and "\n" in self._data["abstract"]:
+            self._data["abstract"] = LiteralScalarString(self._data["abstract"])
 
         self._yaml.dump(self._data, path)
 

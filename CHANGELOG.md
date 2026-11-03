@@ -83,6 +83,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
     - accept Poetry 2 projects without a `license`
     - warn instead of failing when a `readme` file does not exist, for both
       Poetry and PEP 621 projects
+  - the somesy pre-commit hook runs when `Cargo.toml` or a somesy input file in
+    a subfolder changes
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
