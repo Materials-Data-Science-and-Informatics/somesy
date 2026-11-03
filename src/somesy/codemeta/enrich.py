@@ -171,7 +171,7 @@ def _parse_lock(path: Path) -> dict[str, str]:
 
 def _read_package_json(path: Path, values: dict[str, Any]) -> None:
     data = json.loads(path.read_text())
-    values["languages"].append("JavaScript")
+    values["languages"].append(_javascript_language(path))
     if node := data.get("engines", {}).get("node"):
         values["runtimes"].append(f"Node.js {node}")
     bugs = data.get("bugs")
@@ -179,6 +179,17 @@ def _read_package_json(path: Path, values: dict[str, Any]) -> None:
     for section in ("dependencies", "peerDependencies", "optionalDependencies"):
         for name, version in data.get(section, {}).items():
             _named_requirement(values, name, version, "Node.js")
+
+
+def _javascript_language(path: Path) -> str:
+    """Return the language of the project described by a `package.json`.
+
+    A TypeScript configuration next to the file, such as `tsconfig.json` or a
+    variant like `tsconfig.build.json`, marks the project as TypeScript.
+    """
+    if any(config.is_file() for config in path.parent.glob("tsconfig*.json")):
+        return "TypeScript"
+    return "JavaScript"
 
 
 def _read_toml_project(source_type: str, path: Path, values: dict[str, Any]) -> None:

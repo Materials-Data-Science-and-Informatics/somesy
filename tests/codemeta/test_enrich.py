@@ -64,6 +64,28 @@ def test_enrichment_never_overwrites_canonical_codemeta_values(tmp_path):
     assert codemeta["programmingLanguage"] == "JavaScript"
 
 
+@pytest.mark.parametrize("config", ["tsconfig.json", "tsconfig.build.json"])
+def test_package_json_with_typescript_config_is_typescript(tmp_path, config):
+    (tmp_path / "package.json").write_text('{"engines": {"node": ">=20"}}')
+    (tmp_path / config).write_text("{}")
+
+    codemeta = {}
+    enrich(codemeta, {"package_json": tmp_path / "package.json"}, tmp_path)
+
+    assert codemeta["programmingLanguage"] == "TypeScript"
+    assert codemeta["runtimePlatform"] == "Node.js >=20"
+
+
+def test_typescript_detection_never_overwrites_canonical_language(tmp_path):
+    (tmp_path / "package.json").write_text("{}")
+    (tmp_path / "tsconfig.json").write_text("{}")
+
+    codemeta = {"programmingLanguage": "JavaScript"}
+    enrich(codemeta, {"package_json": tmp_path / "package.json"}, tmp_path)
+
+    assert codemeta["programmingLanguage"] == "JavaScript"
+
+
 def test_enriches_other_supported_language_manifests(tmp_path):
     (tmp_path / "Cargo.toml").write_text(
         '[package]\nrust-version = "1.80"\n[dependencies]\nserde = "1"\n'
