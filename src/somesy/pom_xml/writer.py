@@ -97,7 +97,7 @@ class POM(ProjectMetadataWriter):
             person_id = person.to_name_email_string()
             if person.website:
                 person_id = str(person.website)
-                ret["url"] = person.website
+                ret["url"] = str(person.website)
         ret["id"] = person_id
         ret["name"] = person.full_name
         if person.email:
@@ -107,8 +107,11 @@ class POM(ProjectMetadataWriter):
         return ret
 
     @staticmethod
-    def _to_person(person_obj: dict) -> Entity | Person:
+    def _to_person(person_obj: dict) -> Entity | Person | None:
         """Parse POM XML person to a somesy Person."""
+        if "name" not in person_obj:
+            logger.warning(f"POM person without name, omitting: {person_obj}")
+            return None
         if " " in person_obj["name"]:
             names = person_obj["name"].split()
             gnames = " ".join(names[:-1])
@@ -118,6 +121,8 @@ class POM(ProjectMetadataWriter):
             maybe_orcid = url if url and "orcid.org" in url else None
             if roles := person_obj.get("roles"):
                 contr = roles["role"]
+                if not isinstance(contr, list):
+                    contr = [contr]
             else:
                 contr = None
 
@@ -134,6 +139,8 @@ class POM(ProjectMetadataWriter):
             url = person_obj.get("url")
             if roles := person_obj.get("roles"):
                 contr = roles["role"]
+                if not isinstance(contr, list):
+                    contr = [contr]
             else:
                 contr = None
 
@@ -158,6 +165,8 @@ class POM(ProjectMetadataWriter):
     def authors(self):
         """Return the authors of the project."""
         authors = self._get_property(self._get_key("authors"))
+        if authors is None:
+            return []
         return authors if isinstance(authors, list) else [authors]
 
     @authors.setter
@@ -252,4 +261,6 @@ class POM(ProjectMetadataWriter):
                 if isinstance(licenses, list)
                 else licenses.value
             )
-        self.contributors = self._sync_person_list(self.contributors, metadata.people)
+        self.contributors = self._sync_person_list(
+            self.contributors, metadata.contributors()
+        )

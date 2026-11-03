@@ -42,12 +42,12 @@ class PackageJSON(ProjectMetadataWriter):
     def authors(self):
         """Return the only author of the package.json file as list."""
         # check if the author has the correct format
-        if isinstance(author := self._get_property(self._get_key("authors")), str):
+        author = self._get_property(self._get_key("authors"))
+        if author is None:
+            return []
+        if isinstance(author, str):
             author = PackageJsonConfig.convert_author(author)
-            if author is None:
-                return []
-
-        return [self._get_property(self._get_key("authors"))]
+        return [author]
 
     @authors.setter
     def authors(self, authors: list[Entity | Person]) -> None:
@@ -140,7 +140,7 @@ class PackageJSON(ProjectMetadataWriter):
         else:
             response["name"] = person.name
             if person.website:
-                response["url"] = person.website
+                response["url"] = str(person.website)
 
         if person.email:
             response["email"] = person.email
@@ -169,7 +169,7 @@ class PackageJSON(ProjectMetadataWriter):
             }
             if "email" in person_dict:
                 person_obj["email"] = person_dict["email"].strip()
-            if "url" in person_dict:
+            if "url" in person_dict and "orcid.org" in person_dict["url"]:
                 person_obj["orcid"] = person_dict["url"].strip()
             return Person(**person_obj)
         else:
@@ -177,7 +177,7 @@ class PackageJSON(ProjectMetadataWriter):
             if "email" in person_dict:
                 entity_obj["email"] = person_dict["email"].strip()
             if "url" in person_dict:
-                entity_obj["orcid"] = person_dict["url"].strip()
+                entity_obj["website"] = person_dict["url"].strip()
             return Entity(**entity_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
@@ -186,7 +186,9 @@ class PackageJSON(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
-        self.contributors = self._sync_person_list(self.contributors, metadata.people)
+        self.contributors = self._sync_person_list(
+            self.contributors, metadata.contributors()
+        )
 
     @property
     def repository(self) -> str | dict | None:

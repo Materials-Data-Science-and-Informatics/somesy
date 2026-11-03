@@ -31,6 +31,12 @@ Please consult the changelog to inform yourself about breaking changes and secur
     `[[executable]]` no longer crashes
   - keep `version` in `Project.toml` when the input has none
   - read `fpm.toml` files without an `author`
+  - `package.json` and `pom.xml`: write organizations with a website instead
+    of crashing, list only non-authors as contributors (including
+    organizations), and keep maintainers without an email
+  - `package.json`: read organizations with a `url`
+  - `pom.xml`: read developers with a single role, without a name, or files
+    without `<developers>`
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

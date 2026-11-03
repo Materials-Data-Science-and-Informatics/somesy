@@ -128,8 +128,8 @@ def test_person_merge(package_json_file, person: Person):
     assert pj.authors[0]["name"] == person1b.full_name
     assert pj.authors[0]["email"] == person1b.email
 
-    assert pj.contributors[1]["name"] == person2.full_name
-    assert pj.contributors[1]["email"] == person2.email
+    # authors are not contributors
+    assert len(pj.contributors) == 0
 
     # new person
     person3 = Person(
@@ -151,10 +151,75 @@ def test_person_merge(package_json_file, person: Person):
     pj.sync(pm)
     pj.save()
 
-    assert len(pj.contributors) == 3
+    assert len(pj.contributors) == 1
     assert len(pj.maintainers) == 1
     assert pj.authors[0]["name"] == person1c.full_name
     assert pj.authors[0]["email"] == person1c.email
 
-    assert pj.contributors[2]["name"] == person3.full_name
-    assert pj.contributors[2]["email"] == person3.email
+    assert pj.contributors[0]["name"] == person2.full_name
+    assert pj.contributors[0]["email"] == person2.email
+
+
+def test_entity_website_saved(package_json_file):
+    pj = PackageJSON(package_json_file)
+    pm = ProjectMetadata(
+        name="proj",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[Person(given_names="Jane", family_names="Doe", author=True)],
+        entities=[Entity(name="ACME", website="https://acme.org")],
+    )
+    pj.sync(pm)
+    pj.save()
+    pj = PackageJSON(package_json_file)
+    assert {"name": "ACME", "url": "https://acme.org/"} in pj.contributors
+
+
+def test_sync_contributors_only_non_authors(package_json_file):
+    pj = PackageJSON(package_json_file)
+    pm = ProjectMetadata(
+        name="proj",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(given_names="Jane", family_names="Doe", author=True),
+            Person(given_names="John", family_names="Roe"),
+        ],
+    )
+    pj.sync(pm)
+    names = [c["name"] for c in pj.contributors]
+    assert "Jane Doe" not in names
+    assert "John Roe" in names
+
+
+def test_to_person_entity_url():
+    e = PackageJSON._to_person({"name": "ACME", "url": "https://acme.org"})
+    assert isinstance(e, Entity)
+    assert str(e.website).startswith("https://acme.org")
+
+
+def test_to_person_non_orcid_url():
+    p = PackageJSON._to_person({"name": "Jane Doe", "url": "https://jane.org"})
+    assert isinstance(p, Person)
+    assert p.orcid is None
+
+
+def test_maintainer_without_email_kept():
+    from somesy.package_json.models import PackageJsonConfig
+
+    cfg = PackageJsonConfig(
+        name="pkg",
+        version="1.0.0",
+        description="d",
+        license="MIT",
+        maintainers=[{"name": "Jane Doe"}],
+    )
+    assert len(cfg.maintainers) == 1
+
+
+def test_authors_missing(package_json_file):
+    pj = PackageJSON(package_json_file)
+    pj._data.pop("author", None)
+    assert pj.authors == []

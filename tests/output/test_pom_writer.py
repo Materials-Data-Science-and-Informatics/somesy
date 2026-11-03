@@ -1,6 +1,6 @@
 import pytest
 
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import Entity, LicenseEnum, Person, ProjectMetadata
 from somesy.pom_xml.writer import POM
 
 
@@ -54,6 +54,7 @@ def test_from_to_person(person: Person):
     assert p1["url"] == str(person.orcid)
 
     p = POM._to_person(POM._from_person(person))
+    assert isinstance(p, Person)
     assert p.full_name == person.full_name
     assert p.email == person.email
     assert str(p.orcid) == str(person.orcid)
@@ -122,8 +123,8 @@ def test_person_merge(pom_file, person: Person):
     assert pj.authors[0]["name"] == person1b.full_name
     assert pj.authors[0]["email"] == person1b.email
 
-    assert pj.contributors[1]["name"] == person2.full_name
-    assert pj.contributors[1]["email"] == person2.email
+    # authors are not contributors
+    assert len(pj.contributors) == 0
 
     # new person
     person3 = Person(
@@ -145,11 +146,54 @@ def test_person_merge(pom_file, person: Person):
     pj.sync(pm)
     pj.save()
 
-    assert len(pj.contributors) == 3
+    assert len(pj.contributors) == 1
     assert len(pj.maintainers) == 0
     assert pj.authors[0]["name"] == person1c.full_name
     assert pj.authors[0]["email"] == person1c.email
     print(pj.contributors)
 
-    assert pj.contributors[2]["name"] == person3.full_name
-    assert pj.contributors[2]["email"] == person3.email
+    assert pj.contributors[0]["name"] == person2.full_name
+    assert pj.contributors[0]["email"] == person2.email
+
+
+def test_from_person_entity_website_is_str():
+    entity = Entity(name="ACME", website="https://acme.org")
+    assert POM._from_person(entity)["url"] == str(entity.website)
+    assert isinstance(POM._from_person(entity)["url"], str)
+
+
+def test_sync_entity_contributor_saves(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    metadata = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(given_names="Jane", family_names="Doe", author=True),
+            Person(given_names="John", family_names="Roe"),
+        ],
+        entities=[Entity(name="ACME", website="https://acme.org")],
+    )
+    pom = POM(pom_path, create_if_not_exists=True)
+    pom.sync(metadata)
+    pom.save()
+
+    pom = POM(pom_path)
+    names = [c["name"] for c in pom.contributors]
+    assert sorted(names) == ["ACME", "John Roe"]
+
+
+def test_to_person_single_role():
+    p = POM._to_person({"name": "Jane Doe", "roles": {"role": "code"}})
+    assert [c.value for c in p.contribution_types] == ["code"]
+
+
+def test_authors_without_developers(tmp_path):
+    pom = POM(tmp_path / "pom.xml", create_if_not_exists=True)
+    assert pom.authors == []
+
+
+def test_to_person_without_name(caplog):
+    assert POM._to_person({"email": "a@b.com"}) is None
+    assert POM._parse_people([{"email": "a@b.com"}]) == []
