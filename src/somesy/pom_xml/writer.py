@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from somesy.core.models import Entity, Person
+from somesy.core.types import ContributionTypeEnum
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 from . import POM_ROOT_ATRS, POM_URL
@@ -106,6 +107,20 @@ class POM(ProjectMetadataWriter):
         return ret
 
     @staticmethod
+    def _parse_roles(person_obj: dict) -> list[ContributionTypeEnum] | None:
+        """Return the POM roles that are valid contribution types (roles are free text in POM)."""
+        roles = (person_obj.get("roles") or {}).get("role")
+        if not roles:
+            return None
+        if not isinstance(roles, list):
+            roles = [roles]
+        known = {c.value for c in ContributionTypeEnum}
+        valid = [ContributionTypeEnum(r) for r in roles if r in known]
+        if len(valid) < len(roles):
+            logger.debug(f"Ignoring POM roles that are not contribution types: {roles}")
+        return valid or None
+
+    @staticmethod
     def _to_person(person_obj: dict) -> Entity | Person | None:
         """Parse POM XML person to a somesy Person.
 
@@ -123,12 +138,7 @@ class POM(ProjectMetadataWriter):
             email = person_obj.get("email")
             url = person_obj.get("url")
             maybe_orcid = url if url and "orcid.org" in url else None
-            if roles := person_obj.get("roles"):
-                contr = roles["role"]
-                if not isinstance(contr, list):
-                    contr = [contr]
-            else:
-                contr = None
+            contr = POM._parse_roles(person_obj)
 
             return Person(
                 given_names=gnames,
@@ -141,12 +151,7 @@ class POM(ProjectMetadataWriter):
             name = person_obj["name"]
             email = person_obj.get("email")
             url = person_obj.get("url")
-            if roles := person_obj.get("roles"):
-                contr = roles["role"]
-                if not isinstance(contr, list):
-                    contr = [contr]
-            else:
-                contr = None
+            contr = POM._parse_roles(person_obj)
 
             return Entity(
                 name=name,

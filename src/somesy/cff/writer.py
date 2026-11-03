@@ -1,14 +1,24 @@
 """Citation File Format (CFF) parser and saver."""
 
 import json
+from copy import deepcopy
+from io import StringIO
 from pathlib import Path
 
-from cffconvert.cli.create_citation import create_citation
+from cffconvert import Citation
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+
+
+def _drop_rorid(data) -> None:
+    """Remove `rorid` from entities; earlier somesy versions wrote this non-CFF key."""
+    for key in ("authors", "contact"):
+        for entry in data.get(key) or []:
+            if isinstance(entry, dict) and "name" in entry:
+                entry.pop("rorid", None)
 
 
 class CFF(ProjectMetadataWriter):
@@ -64,8 +74,12 @@ class CFF(ProjectMetadataWriter):
         if self.pass_validation:
             return
         try:
-            citation = create_citation(self.path, None)
-            citation.validate()
+            # validate the loaded data without a stray `rorid` (repaired on sync)
+            data = deepcopy(self._data)
+            _drop_rorid(data)
+            stream = StringIO()
+            self._yaml.dump(data, stream)
+            Citation(stream.getvalue(), src=self.path).validate()
         except ValueError as e:
             raise ValueError(f"CITATION.cff file is not valid!\n{e}") from e
 
@@ -87,6 +101,7 @@ class CFF(ProjectMetadataWriter):
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync CFF metadata."""
+        _drop_rorid(self._data)
         super().sync(metadata)
         # CFF 1.2.0 allows a list of SPDX ids
         if isinstance(metadata.license, list) and len(metadata.license) > 1:
@@ -112,7 +127,9 @@ class CFF(ProjectMetadataWriter):
             },
             by_alias=True,  # e.g. family_names -> family-names, etc.
         )
-        return json.loads(json_str)
+        ret = json.loads(json_str)
+        ret.pop("rorid", None)  # not a CFF field
+        return ret
 
     @staticmethod
     def _to_person(person_obj) -> Person | Entity:

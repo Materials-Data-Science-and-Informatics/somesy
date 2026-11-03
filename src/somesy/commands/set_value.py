@@ -33,7 +33,15 @@ def set_project_value(input_file: Path, field: str, value: str) -> None:
         ProjectMetadata.model_validate({**content["project"], field: value})
     except ValidationError as error:
         first = error.errors()[0]
-        raise ValueError(f"Invalid value for '{field}': {first['msg']}") from None
+        if first["type"] in ("enum", "literal_error"):
+            reason = f"{first['input']!r} is not an allowed value"
+            if field == "license":
+                reason = f"{first['input']!r} is not a known SPDX license identifier"
+        else:
+            reason = first["msg"]
+            if len(reason) > 200:
+                reason = reason[:197] + "..."
+        raise ValueError(f"Invalid value for '{field}': {reason}") from None
     content["project"][field] = value
     with open(input_file, "w", encoding="utf-8") as file:
         tomlkit.dump(content, file)

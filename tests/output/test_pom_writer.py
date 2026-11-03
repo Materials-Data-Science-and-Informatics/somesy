@@ -227,3 +227,33 @@ def test_no_empty_scm_or_site_without_urls(tmp_path, somesy_input):
     content = path.read_text()
     assert "scm" not in content
     assert "distributionManagement" not in content
+
+
+def test_free_text_roles_do_not_crash_sync(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    pom_path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
+        "<name>Jane Doe</name><email>jane@example.org</email>"
+        "<roles><role>architect</role><role>code</role></roles>"
+        "</developer></developers></project>"
+    )
+    person = Person(
+        given_names="Jane", family_names="Doe", email="jane@example.org", author=True
+    )
+    metadata = ProjectMetadata(
+        name="p",
+        description="d",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[person],
+    )
+
+    pom = POM(pom_path)
+    parsed = pom.authors
+    assert len(parsed) == 1
+    pom.sync(metadata)
+    pom.save()
+    assert "Jane Doe" in pom_path.read_text()
+    ignored = POM._to_person({"name": "Jane Doe", "roles": {"role": "architect"}})
+    assert ignored is not None
+    assert ignored.contribution_types is None

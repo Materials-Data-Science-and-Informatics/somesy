@@ -231,3 +231,43 @@ def test_sync_multiple_licenses_as_list(tmp_path, person: Person):
     assert cff.license == ["MIT", "Apache-2.0"]
     cff.sync(_metadata(person))
     assert cff.license == "MIT"
+
+
+def test_entity_rorid_is_not_written_and_stray_rorid_repaired(tmp_path):
+    cff_path = tmp_path / "CITATION.cff"
+    cff_path.write_text(
+        "cff-version: 1.2.0\n"
+        "message: If you use this software, please cite it using these metadata.\n"
+        "type: software\n"
+        "title: edge\n"
+        "authors:\n"
+        "  - name: FZJ\n"
+        "    website: https://fz-juelich.de\n"
+        "    rorid: https://ror.org/02nv7yv05\n"
+    )
+    person = {
+        "name": "FZJ",
+        "website": "https://fz-juelich.de",
+        "rorid": "https://ror.org/02nv7yv05",
+        "author": True,
+    }
+    assert "rorid" not in CFF._from_person(Entity(**person))
+
+    metadata = ProjectMetadata(
+        name="edge",
+        description="edge",
+        license=LicenseEnum.MIT,
+        entities=[Entity(**person)],
+    )
+    before = cff_path.read_text()
+    cff = CFF(cff_path)  # a stray key does not fail validation ...
+    assert cff_path.read_text() == before  # ... and loading does not write
+    cff.sync(metadata)  # syncing repairs it
+    cff.save()
+    first = cff_path.read_text()
+    assert "rorid" not in first
+
+    cff = CFF(cff_path)
+    cff.sync(metadata)
+    cff.save()
+    assert cff_path.read_text() == first

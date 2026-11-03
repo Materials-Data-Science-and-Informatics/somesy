@@ -105,3 +105,14 @@ def test_set_invalid_value_gives_clean_error(
 
     assert result.exit_code == 1
     assert "validation errors for ProjectMetadata" not in result.output
+
+
+def test_set_invalid_license_error_is_one_line(tmp_path, create_files, file_types):
+    """Enum errors do not list every allowed value."""
+    folder = create_files({(file_types.SOMESY, "somesy.toml")})
+
+    with pytest.raises(ValueError, match="NOPE") as error:
+        set_project_value(folder / "somesy.toml", "license", "NOPE")
+
+    assert len(str(error.value).splitlines()) == 1
+    assert len(str(error.value)) < 200

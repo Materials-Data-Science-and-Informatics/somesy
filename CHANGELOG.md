@@ -21,7 +21,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
 - **Fixed**
   - `somesy init config` no longer writes an invalid `sync_package_json` key
   - `somesy init` stops before prompting when the output file already exists
-  - `somesy set` finds `.somesy.toml` and reports invalid values in one line
+  - `somesy set` finds `.somesy.toml` and reports invalid values in one line,
+    without listing every allowed value
   - warn when the input file passed with `-i` does not exist
   - `somesy sync --packages` accepts package directories
   - aborting a prompt no longer prints an empty error
@@ -85,6 +86,9 @@ Please consult the changelog to inform yourself about breaking changes and secur
       Poetry and PEP 621 projects
   - the somesy pre-commit hook runs when `Cargo.toml` or a somesy input file in
     a subfolder changes
+  - `CITATION.cff`: never write the non-CFF `rorid` key for organizations, and
+    remove it on the next sync from files written by earlier versions
+  - `pom.xml`: free-text `<role>` values no longer crash sync
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 
