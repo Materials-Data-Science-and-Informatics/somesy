@@ -246,7 +246,8 @@ class Poetry(PyprojectCommon):
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        self._poetry_version = version or 1
+        version = version or 1
+        self._poetry_version = version
         v2_mappings = {
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
@@ -310,11 +311,12 @@ class Poetry(PyprojectCommon):
             person, poetry_version=self._poetry_version
         )
 
-        # Call parent sync method
-        super().sync(metadata)
-
-        # Restore original _from_person method
-        self._from_person = original_from_person  # type: ignore
+        try:
+            # Call parent sync method
+            super().sync(metadata)
+        finally:
+            # Restore original _from_person method
+            self._from_person = original_from_person  # type: ignore
 
         if metadata.license:
             self.license = license_expression(metadata.license)

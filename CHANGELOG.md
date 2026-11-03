@@ -79,6 +79,10 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - read and write all files as UTF-8, so names such as "Müller" work on systems
     with a different default encoding (e.g. Windows)
   - importing somesy no longer changes `json.dump` for the whole Python process
+  - `pyproject.toml`:
+    - accept Poetry 2 projects without a `license`
+    - warn instead of failing when a `readme` file does not exist, for both
+      Poetry and PEP 621 projects
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

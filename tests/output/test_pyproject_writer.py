@@ -854,3 +854,24 @@ def test_sync_keeps_urls_if_absent(pyproject_setuptools_file, somesy_input):
         "repository": "https://github.com/example/test-package",
         "documentation": "https://example.com/test-package",
     }
+
+
+def test_poetry_version_none_is_normalised(pyproject_poetry2_file):
+    """version=None means Poetry 1, consistently for section and stored version."""
+    writer = Poetry(pyproject_poetry2_file, pass_validation=True, version=None)
+    assert writer._poetry_version == 1
+    assert writer._section == ["tool", "poetry"]
+
+
+def test_poetry_sync_restores_from_person_on_error(pyproject_poetry_file, somesy_input):
+    """A failing sync must not leave _from_person patched on the writer."""
+    writer = Poetry(pyproject_poetry_file)
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("boom")
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(Poetry.__mro__[1], "sync", boom)
+        with pytest.raises(RuntimeError):
+            writer.sync(somesy_input.project)
+    assert writer._from_person is Poetry._from_person
