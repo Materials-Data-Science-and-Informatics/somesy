@@ -5,10 +5,9 @@ from pathlib import Path
 
 import tomlkit
 from rich.pretty import pretty_repr
-from tomlkit.items import InlineTable
 
-from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import ProjectMetadataWriter
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
+from somesy.core.writer import ProjectMetadataWriter, format_toml_data
 
 from .models import JuliaConfig
 
@@ -35,7 +34,7 @@ class Julia(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load Project.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = tomlkit.load(f)
 
     def _validate(self) -> None:
@@ -55,31 +54,9 @@ class Julia(ProjectMetadataWriter):
     def save(self, path: Path | None = None) -> None:
         """Save the julia file."""
         path = path or self.path
-        if "description" in self._data and "\n" in self._data["description"]:
-            self._data["description"] = tomlkit.string(
-                self._data["description"], multiline=True
-            )
+        format_toml_data(self._data)
 
-        # Handle arrays with proper formatting
-        for key, value in self._data.items():
-            if isinstance(value, list):
-                array = tomlkit.array()
-                array.extend(value)
-                array.multiline(True)
-                # Ensure whitespace after commas in inline tables
-                for item in array:
-                    if isinstance(item, InlineTable):
-                        # Rebuild the inline table with desired formatting
-                        formatted_item = tomlkit.inline_table()
-                        for k, v in item.value.items():
-                            formatted_item[k] = v
-                        formatted_item.trivia.trail = " "  # Add space after each comma
-                        array[array.index(item)] = formatted_item
-                self._data[key] = array
-            else:
-                self._data[key] = value
-
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             tomlkit.dump(self._data, f)
 
     @staticmethod
@@ -90,23 +67,15 @@ class Julia(ProjectMetadataWriter):
     @staticmethod
     def _to_person(person_obj: str) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
         # overridden to not sync fields that are not present in the Project.toml file
         if metadata.name is not None:
             self.name = metadata.name
-        self.version = metadata.version
+        if metadata.version:
+            self.version = metadata.version
 
         if metadata.authors():
             self._sync_authors(metadata)

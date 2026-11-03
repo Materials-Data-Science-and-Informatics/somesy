@@ -65,7 +65,7 @@ def pyproject_route(request):
             "authors": authors,
         }
         path = tmp_path / "pyproject.toml"
-        with open(path, "w+") as f:
+        with open(path, "w+", encoding="utf-8") as f:
             dump(wrap(obj), f)
         return path
 
@@ -212,3 +212,62 @@ def test_missing_version_not_dynamic_poetry2_fails(tmp_path):
 
     with pytest.raises(ValueError, match="version"):
         Pyproject(path)
+
+
+def test_poetry2_without_license_validates(tmp_path):
+    """A Poetry 2 file with [tool.poetry] but no license must still load."""
+    obj = {
+        "tool": {"poetry": {}},
+        "project": {
+            "name": "somesy",
+            "version": "1.0.0",
+            "description": "A test package",
+            "authors": [{"name": "John Doe", "email": "john@example.com"}],
+        },
+    }
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump(obj, f)
+
+    Pyproject(path)
+
+
+@pytest.mark.parametrize("config_cls", ["PoetryConfig", "Pep621Config"])
+@pytest.mark.parametrize("readme", ["MISSING.md", ["MISSING.md", "OTHER.md"]])
+def test_missing_readme_warns_and_is_kept(config_cls, readme, caplog):
+    """A missing readme is only warned about and the value is not lost."""
+    from pathlib import Path
+
+    caplog.set_level("WARNING", logger="somesy")
+
+    from somesy.pyproject import models
+
+    extra = {"license": "MIT", "authors": ["A B <a@b.com>"]}
+    if config_cls == "Pep621Config":
+        extra = {"authors": [{"name": "A B", "email": "a@b.com"}]}
+    cfg = getattr(models, config_cls)(
+        name="somesy",
+        version="1.0.0",
+        description="d",
+        readme=readme,
+        **extra,
+    )
+    expected = [Path(r) for r in readme] if isinstance(readme, list) else Path(readme)
+    assert cfg.readme == expected
+    assert "exist" in caplog.text
+
+
+@pytest.mark.parametrize("config_cls", ["PoetryConfig", "Pep621Config"])
+def test_invalid_author_email_raises(config_cls):
+    """Both configs reject invalid author emails."""
+    from somesy.pyproject import models
+
+    authors = (
+        ["A B <a@@b.com>"]
+        if config_cls == "PoetryConfig"
+        else [{"name": "A B", "email": "not-an-email"}]
+    )
+    with pytest.raises(ValidationError):
+        getattr(models, config_cls)(
+            name="somesy", version="1.0.0", description="d", authors=authors
+        )

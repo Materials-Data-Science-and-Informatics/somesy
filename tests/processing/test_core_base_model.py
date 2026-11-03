@@ -206,3 +206,16 @@ def test_make_partial_with_unknown_field():
     model = SampleModel.make_partial(data)
     assert model.name == "John Doe"
     assert model.age == 30
+
+
+def test_unordered_keys_keep_insertion_order():
+    """Keys missing from the custom order keep `dct` insertion order."""
+    model = SampleModel(full_name="John Doe", age=30, email="a@b.c")
+    model.set_key_order(["email"])
+    assert list(model.model_dump()) == ["email", "name", "age"]
+    assert model._reorder_dict({"z": 1, "a": 2, "email": 3, "m": 4}) == {
+        "email": 3,
+        "z": 1,
+        "a": 2,
+        "m": 4,
+    }

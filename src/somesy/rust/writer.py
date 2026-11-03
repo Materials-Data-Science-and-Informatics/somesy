@@ -1,14 +1,20 @@
 """Cargo.toml writer for Rust projects."""
 
 import logging
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
 from rich.pretty import pretty_repr
-from tomlkit import array, dump, inline_table, items, load, string, table
+from tomlkit import dump, load, string, table
 
-from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
+from somesy.core.writer import (
+    FieldKeyMapping,
+    IgnoreKey,
+    ProjectMetadataWriter,
+    toml_array,
+)
 
 from .models import RustConfig, check_keyword
 
@@ -40,7 +46,7 @@ class Rust(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load Cargo.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = load(f)
 
     def _validate(self) -> None:
@@ -49,8 +55,6 @@ class Rust(ProjectMetadataWriter):
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
-        if self.pass_validation:
-            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {RustConfig.__name__}: {pretty_repr(config)}"
@@ -69,7 +73,7 @@ class Rust(ProjectMetadataWriter):
                 self._data["package"]["description"], multiline=True
             )
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             dump(self._data, f)
 
     def _get_property(
@@ -80,13 +84,27 @@ class Rust(ProjectMetadataWriter):
             return None
         key_path = [key] if isinstance(key, str) else key
         full_path = self._section + key_path
-        return super()._get_property(full_path, remove=remove, **kwargs)
+        value = super()._get_property(full_path, remove=remove, **kwargs)
+        if not remove and self._is_workspace_ref(value):
+            return None  # inherited from the workspace, treat as absent
+        return value
+
+    @staticmethod
+    def _is_workspace_ref(value: Any) -> bool:
+        """Check whether value is a workspace inheritance table `{workspace = true}`."""
+        return isinstance(value, Mapping) and value.get("workspace") is True
 
     def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:
         """Set a property in the Cargo.toml file."""
         if isinstance(key, IgnoreKey):
             return
         key_path = [key] if isinstance(key, str) else key
+
+        # keep workspace inheritance, e.g. `version.workspace = true`
+        existing = super()._get_property(self._section + key_path)
+        if self._is_workspace_ref(existing):
+            logger.debug(f"Not setting {key_path}, inherited from workspace.")
+            return
 
         if not value:  # remove value and clean up the sub-dict
             self._get_property(key_path, remove=True)
@@ -104,18 +122,7 @@ class Rust(ProjectMetadataWriter):
 
         # Handle arrays with proper formatting
         if isinstance(value, list):
-            arr = array()
-            arr.extend(value)
-            arr.multiline(True)
-            # Ensure whitespace after commas in inline tables
-            for item in arr:
-                if isinstance(item, items.InlineTable):
-                    # Rebuild the inline table with desired formatting
-                    formatted_item = inline_table()
-                    for k, v in item.value.items():
-                        formatted_item[k] = v
-                    formatted_item.trivia.trail = " "  # Add space after each comma
-                    arr[arr.index(item)] = formatted_item
+            arr = toml_array(value)
             curr[key_path[-1]] = arr
         else:
             curr[key_path[-1]] = value
@@ -131,16 +138,7 @@ class Rust(ProjectMetadataWriter):
 
         Since there is no way to know whether this entry is a person or an entity, we will directly convert to Person.
         """
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     @classmethod
     def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
@@ -171,9 +169,6 @@ class Rust(ProjectMetadataWriter):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync the rust config with the project metadata."""
         super().sync(metadata)
-
-        if isinstance(metadata.license, list):
-            self.license = " OR ".join(license.value for license in metadata.license)
 
         # if there is a license file, remove the license field
         if self._get_property(self._get_key("license_file")):

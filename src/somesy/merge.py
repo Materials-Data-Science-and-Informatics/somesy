@@ -41,8 +41,9 @@ def _repository(value: Any) -> str | None:
         return None
     if match := re.fullmatch(r"git@([^:]+):(.+)", value):
         return f"https://{match[1]}/{match[2]}"
-    if value.startswith("ssh://git@"):
-        return "https://" + value.removeprefix("ssh://git@")
+    # ssh://[user@]host[:port]/path or scp-like ssh://[user@]host:path
+    if match := re.fullmatch(r"ssh://(?:[^@/]+@)?([^:/]+)(?::\d+)?[:/](.+)", value):
+        return f"https://{match[1]}/{match[2]}"
     return value
 
 
@@ -76,17 +77,8 @@ def _merge_people(
     result = list(existing)
     for candidate in incoming:
         for index, person in enumerate(result):
-            same_person = (
-                isinstance(person, Person)
-                and isinstance(candidate, Person)
-                and person.same_person(candidate)
-            )
-            same_entity = (
-                isinstance(person, Entity)
-                and isinstance(candidate, Entity)
-                and person.same_person(candidate)
-            )
-            if same_person or same_entity:
+            # same_person is False for a Person/Entity mix
+            if person.same_person(candidate):
                 result[index] = _merge_person(person, candidate)
                 break
         else:
@@ -96,13 +88,23 @@ def _merge_people(
 
 def _git_person(author: GitAuthor) -> Person | None:
     """Convert a Git author into a Somesy Person."""
+    if author.name.endswith("[bot]"):
+        return None
     identity = author.name
     if author.email:
         identity = f"{identity} <{author.email}>"
+    if len(author.name.split()) < 2:
+        logger.warning(
+            "Skipping Git author '%s': a person needs given and family names. "
+            "Add them to the somesy input manually.",
+            identity,
+        )
+        return None
     try:
         return Person.from_name_email_string(identity).model_copy(
             update={
                 "author": author.author,
+                "publication_author": author.author or None,
                 "contribution_types": author.contribution_types,
             }
         )

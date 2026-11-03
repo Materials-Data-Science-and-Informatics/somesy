@@ -1,14 +1,24 @@
 """Citation File Format (CFF) parser and saver."""
 
 import json
+from copy import deepcopy
+from io import StringIO
 from pathlib import Path
 
-from cffconvert.cli.create_citation import create_citation
+from cffconvert import Citation
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+
+
+def _drop_rorid(data) -> None:
+    """Remove `rorid` from entities; earlier somesy versions wrote this non-CFF key."""
+    for key in ("authors", "contact"):
+        for entry in data.get(key) or []:
+            if isinstance(entry, dict) and "name" in entry:
+                entry.pop("rorid", None)
 
 
 class CFF(ProjectMetadataWriter):
@@ -51,12 +61,12 @@ class CFF(ProjectMetadataWriter):
             "message": "If you use this software, please cite it using these metadata.",
             "type": "software",
         }
-        with open(self.path, "w") as f:
+        with open(self.path, "w", encoding="utf-8") as f:
             self._yaml.dump(self._data, f)
 
     def _load(self):
         """Load the CFF file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = self._yaml.load(f)
 
     def _validate(self) -> None:
@@ -64,8 +74,12 @@ class CFF(ProjectMetadataWriter):
         if self.pass_validation:
             return
         try:
-            citation = create_citation(self.path, None)
-            citation.validate()
+            # validate the loaded data without a stray `rorid` (repaired on sync)
+            data = deepcopy(self._data)
+            _drop_rorid(data)
+            stream = StringIO()
+            self._yaml.dump(data, stream)
+            Citation(stream.getvalue(), src=self.path).validate()
         except ValueError as e:
             raise ValueError(f"CITATION.cff file is not valid!\n{e}") from e
 
@@ -74,11 +88,8 @@ class CFF(ProjectMetadataWriter):
         path = path or self.path
 
         # if description have new line characters, it should be saved as multiline string
-        if "abstract" in self._data:
-            if "\n" in self._data["abstract"]:
-                self._data["abstract"] = LiteralScalarString(self._data["abstract"])
-        elif self.description is not None:
-            self._data["abstract"] = str(self.description)
+        if "abstract" in self._data and "\n" in self._data["abstract"]:
+            self._data["abstract"] = LiteralScalarString(self._data["abstract"])
 
         self._yaml.dump(self._data, path)
 
@@ -90,7 +101,11 @@ class CFF(ProjectMetadataWriter):
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync CFF metadata."""
+        _drop_rorid(self._data)
         super().sync(metadata)
+        # CFF 1.2.0 allows a list of SPDX ids
+        if isinstance(metadata.license, list) and len(metadata.license) > 1:
+            self.license = [license.value for license in metadata.license]
         # an abstract can be longer than a package summary, so prefer it here
         if metadata.abstract:
             self.description = metadata.abstract
@@ -112,7 +127,9 @@ class CFF(ProjectMetadataWriter):
             },
             by_alias=True,  # e.g. family_names -> family-names, etc.
         )
-        return json.loads(json_str)
+        ret = json.loads(json_str)
+        ret.pop("rorid", None)  # not a CFF field
+        return ret
 
     @staticmethod
     def _to_person(person_obj) -> Person | Entity:

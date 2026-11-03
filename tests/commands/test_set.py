@@ -81,3 +81,38 @@ def test_set_command_rejects_unsupported_input(
 
     assert result.exit_code == 1
     assert error in result.stdout
+
+
+def test_set_discovers_input_file(tmp_path, create_files, file_types, monkeypatch):
+    """Without -i, `somesy set` finds the default input file."""
+    create_files({(file_types.SOMESY, ".somesy.toml")})
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["set", "version", "2.0.0"])
+
+    assert result.exit_code == 0, result.output
+    assert get_input_content(tmp_path / ".somesy.toml")["project"]["version"] == "2.0.0"
+
+
+def test_set_invalid_value_gives_clean_error(
+    tmp_path, create_files, file_types, monkeypatch
+):
+    """Invalid values report a short error, not a pydantic dump."""
+    create_files({(file_types.SOMESY, "somesy.toml")})
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["set", "license", "NOPE"])
+
+    assert result.exit_code == 1
+    assert "validation errors for ProjectMetadata" not in result.output
+
+
+def test_set_invalid_license_error_is_one_line(tmp_path, create_files, file_types):
+    """Enum errors do not list every allowed value."""
+    folder = create_files({(file_types.SOMESY, "somesy.toml")})
+
+    with pytest.raises(ValueError, match="NOPE") as error:
+        set_project_value(folder / "somesy.toml", "license", "NOPE")
+
+    assert len(str(error.value).splitlines()) == 1
+    assert len(str(error.value)) < 200

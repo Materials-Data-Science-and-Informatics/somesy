@@ -35,7 +35,7 @@ def write_somesy_file(
     }
     if config is not None:
         content["config"] = config.model_dump(mode="json", by_alias=True)
-    with open(path, "w" if overwrite else "x") as file:
+    with open(path, "w" if overwrite else "x", encoding="utf-8") as file:
         tomlkit.dump(content, file)
 
 
@@ -68,7 +68,7 @@ def init_config(input_path: Path, options: dict) -> None:
             content["tool"]["somesy"] = {}
         content["tool"]["somesy"]["config"] = options
 
-    with open(input_path, "w") as f:
+    with open(input_path, "w", encoding="utf-8") as f:
         tomlkit.dump(content, f)
 
     logger.info(f"Input file ({input_path}) updated.")

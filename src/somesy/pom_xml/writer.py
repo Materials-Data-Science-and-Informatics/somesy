@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from somesy.core.models import Entity, Person
+from somesy.core.types import ContributionTypeEnum
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
 from . import POM_ROOT_ATRS, POM_URL
@@ -70,13 +71,12 @@ class POM(ProjectMetadataWriter):
         self,
         key: str | list[str] | IgnoreKey,
         *,
-        only_first: bool = False,
         remove: bool = False,
     ) -> Any | None:
         """Get (a) property by key."""
         if isinstance(key, IgnoreKey):
             return None
-        elem = super()._get_property(key, only_first=only_first, remove=remove)
+        elem = super()._get_property(key, remove=remove)
         if elem is not None:
             if isinstance(elem, list):
                 return [e.to_jsonlike() for e in elem]
@@ -97,7 +97,7 @@ class POM(ProjectMetadataWriter):
             person_id = person.to_name_email_string()
             if person.website:
                 person_id = str(person.website)
-                ret["url"] = person.website
+                ret["url"] = str(person.website)
         ret["id"] = person_id
         ret["name"] = person.full_name
         if person.email:
@@ -107,8 +107,53 @@ class POM(ProjectMetadataWriter):
         return ret
 
     @staticmethod
-    def _to_person(person_obj: dict) -> Entity | Person:
-        """Parse POM XML person to a somesy Person."""
+    def _parse_roles(person_obj: dict) -> list[ContributionTypeEnum] | None:
+        """Return the POM roles that are valid contribution types (roles are free text in POM)."""
+        roles = (person_obj.get("roles") or {}).get("role")
+        if not roles:
+            return None
+        if not isinstance(roles, list):
+            roles = [roles]
+        known = {c.value for c in ContributionTypeEnum}
+        valid = [ContributionTypeEnum(r) for r in roles if r in known]
+        if len(valid) < len(roles):
+            logger.debug(f"Ignoring POM roles that are not contribution types: {roles}")
+        return valid or None
+
+    def _records_keeping_roles(
+        self, people: list[Entity | Person], existing: list[dict]
+    ) -> list[dict[str, Any]]:
+        """Convert people to POM records, keeping free-text roles of matching existing entries."""
+        known = {c.value for c in ContributionTypeEnum}
+        old_people = [(self._to_person(e), e) for e in existing]
+        records = []
+        for person in people:
+            record = self._from_person(person)
+            for old_person, old in old_people:
+                if old_person is None or not old_person.same_person(person):
+                    continue
+                old_roles = (old.get("roles") or {}).get("role") or []
+                if not isinstance(old_roles, list):
+                    old_roles = [old_roles]
+                roles = record.get("roles", {}).get("role", [])
+                roles += [r for r in dict.fromkeys(old_roles) if r not in known]
+                if roles:
+                    record["roles"] = {"role": roles}
+                break
+            records.append(record)
+        return records
+
+    @staticmethod
+    def _to_person(person_obj: dict) -> Entity | Person | None:
+        """Parse POM XML person to a somesy Person.
+
+        POM has no person/entity distinction, so this is a heuristic: a name
+        containing a space is a Person (last word is the family name),
+        anything else is an Entity.
+        """
+        if "name" not in person_obj:
+            logger.warning(f"POM person without name, omitting: {person_obj}")
+            return None
         if " " in person_obj["name"]:
             names = person_obj["name"].split()
             gnames = " ".join(names[:-1])
@@ -116,10 +161,7 @@ class POM(ProjectMetadataWriter):
             email = person_obj.get("email")
             url = person_obj.get("url")
             maybe_orcid = url if url and "orcid.org" in url else None
-            if roles := person_obj.get("roles"):
-                contr = roles["role"]
-            else:
-                contr = None
+            contr = POM._parse_roles(person_obj)
 
             return Person(
                 given_names=gnames,
@@ -132,10 +174,7 @@ class POM(ProjectMetadataWriter):
             name = person_obj["name"]
             email = person_obj.get("email")
             url = person_obj.get("url")
-            if roles := person_obj.get("roles"):
-                contr = roles["role"]
-            else:
-                contr = None
+            contr = POM._parse_roles(person_obj)
 
             return Entity(
                 name=name,
@@ -158,12 +197,14 @@ class POM(ProjectMetadataWriter):
     def authors(self):
         """Return the authors of the project."""
         authors = self._get_property(self._get_key("authors"))
+        if authors is None:
+            return []
         return authors if isinstance(authors, list) else [authors]
 
     @authors.setter
     def authors(self, authors: list[Entity | Person]) -> None:
         """Set the authors of the project."""
-        author_records = [self._from_person(c) for c in authors]
+        author_records = self._records_keeping_roles(authors, self.authors)
         self._set_property(self._get_key("authors"), author_records)
 
     # contributors must be a list
@@ -178,7 +219,7 @@ class POM(ProjectMetadataWriter):
     @contributors.setter
     def contributors(self, contributors: list[Entity | Person]) -> None:
         """Set the contributors of the project."""
-        contr = [self._from_person(c) for c in contributors]
+        contr = self._records_keeping_roles(contributors, self.contributors)
         self._set_property(self._get_key("contributors"), contr)
 
     # no maintainers supported im POM, only developers and contributors
@@ -221,9 +262,10 @@ class POM(ProjectMetadataWriter):
     @repository.setter
     def repository(self, value: str | dict | None) -> None:
         """Set the repository url of the project."""
-        self._set_property(
-            self._get_key("repository"), {"name": "git repository", "url": value}
-        )
+        if value is None:
+            return
+        # only touch <scm><url>, keep e.g. <connection> intact
+        self._set_property(["scm", "url"], value)
 
     @property
     def documentation(self) -> str | dict | None:
@@ -236,6 +278,8 @@ class POM(ProjectMetadataWriter):
     @documentation.setter
     def documentation(self, value: str | dict | None) -> None:
         """Set the documentation url of the project."""
+        if value is None:
+            return
         self._set_property(
             self._get_key("documentation"), {"name": "documentation site", "url": value}
         )
@@ -252,4 +296,6 @@ class POM(ProjectMetadataWriter):
                 if isinstance(licenses, list)
                 else licenses.value
             )
-        self.contributors = self._sync_person_list(self.contributors, metadata.people)
+        self.contributors = self._sync_person_list(
+            self.contributors, metadata.contributors()
+        )

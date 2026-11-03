@@ -9,7 +9,7 @@ from somesy.core.models import LicenseEnum, Person
 from somesy.git.harvest import harvest
 from somesy.git.models import GitAuthor, GitMetadata
 from somesy.harvest import harvest_sources
-from somesy.merge import merge_metadata
+from somesy.merge import _repository, merge_metadata
 
 
 def test_merge_metadata_prefers_first_scalar_and_fills_people():
@@ -155,3 +155,38 @@ def test_merge_real_endpoint_files_and_multiple_git_authors(
         [str(value) for value in (person.contribution_types or [])] == ["code"]
         for person in git_people.values()
     )
+
+
+def test_merge_skips_single_word_and_bot_git_authors(caplog):
+    result = merge_metadata(
+        [{"name": "project", "description": "d", "license": "MIT"}],
+        GitMetadata(
+            authors=[
+                GitAuthor(name="Cher", email="cher@x.org"),
+                GitAuthor(name="dependabot[bot]"),
+                GitAuthor(name="Jane Doe", author=True),
+            ]
+        ),
+        allow_incomplete=True,
+    )
+
+    assert [p.full_name for p in result.people] == ["Jane Doe"]
+    assert result.people[0].publication_author is True
+    assert not result.entities
+    warnings = [r.message for r in caplog.records if r.levelname == "WARNING"]
+    assert any("Cher" in w for w in warnings)
+    assert not any("dependabot" in w for w in warnings)
+
+
+@pytest.mark.parametrize(
+    ("remote", "expected"),
+    [
+        ("git@github.com:org/repo.git", "https://github.com/org/repo.git"),
+        ("ssh://git@github.com/org/repo.git", "https://github.com/org/repo.git"),
+        ("ssh://git@github.com:22/org/repo.git", "https://github.com/org/repo.git"),
+        ("ssh://git@gitlab.com:org/repo.git", "https://gitlab.com/org/repo.git"),
+        ("https://github.com/org/repo", "https://github.com/org/repo"),
+    ],
+)
+def test_repository_urls_are_normalized(remote, expected):
+    assert _repository(remote) == expected

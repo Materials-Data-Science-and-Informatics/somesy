@@ -178,6 +178,13 @@ class XMLProxy:
 
         return dct if not keep_root else {self._shortened_key(self._node.tag): dct}
 
+    @staticmethod
+    def _new_element(tag: str, *, default_namespace: str | None = None) -> ET.Element:
+        """Create a new element, qualifying the tag with the default namespace."""
+        if default_namespace and tag[0] != "{":
+            tag = "{" + default_namespace + "}" + tag
+        return ET.Element(tag)
+
     @classmethod
     def _from_jsonlike_primitive(
         cls, val, *, elem_name: str | None = None, **kwargs
@@ -202,7 +209,7 @@ class XMLProxy:
         if not elem_name:
             return ret
         else:  # return the value wrapped as an element (needed in from_jsonlike)
-            elem = ET.Element(elem_name)
+            elem = cls._new_element(elem_name, **kwargs)
             elem.text = ret
             return cls(elem, **kwargs)
 
@@ -226,7 +233,7 @@ class XMLProxy:
             return cls._from_jsonlike_primitive(val, elem_name=root_name, **kwargs)
 
         # now the dict case remains
-        elem = ET.Element(root_name or "root")
+        elem = cls._new_element(root_name or "root", **kwargs)
         for k, v in val.items():
             if k.startswith(
                 "__comment_"
@@ -247,7 +254,9 @@ class XMLProxy:
                 elem.append(tmp._node)
             else:  # dict
                 elem.append(
-                    cast(XMLProxy, XMLProxy.from_jsonlike(v, root_name=k))._node
+                    cast(
+                        XMLProxy, XMLProxy.from_jsonlike(v, root_name=k, **kwargs)
+                    )._node
                 )
 
         return cls(elem, **kwargs)
@@ -418,7 +427,12 @@ class XMLProxy:
                 obj = self._wrap(ET.Element("dummy"))
                 obj._node.append(item._node)
             else:
-                obj = cast(XMLProxy, self.from_jsonlike(item, root_name=key_name))
+                obj = cast(
+                    XMLProxy,
+                    self.from_jsonlike(
+                        item, root_name=key_name, default_namespace=self._def_ns
+                    ),
+                )
 
             nvals.append(obj)
 

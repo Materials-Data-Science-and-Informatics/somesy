@@ -7,7 +7,7 @@ from rich.pretty import pretty_repr
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.mkdocs.models import MkDocsConfig
 
@@ -51,13 +51,11 @@ class MkDocs(ProjectMetadataWriter):
 
     def _load(self):
         """Load the MkDocs file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = self._yaml.load(f)
 
     def _validate(self) -> None:
         """Validate the MkDocs file."""
-        if self.pass_validation:
-            return
         config = dict(self._get_property([]))
         logger.debug(
             f"Validating config using {MkDocsConfig.__name__}: {pretty_repr(config)}"
@@ -70,7 +68,9 @@ class MkDocs(ProjectMetadataWriter):
 
         # if description have new line characters, it should be saved as multiline string
         if self._data is not None and "site_description" in self._data:
-            if "\n" in self._data["site_description"]:
+            if isinstance(self._data["site_description"], str) and (
+                "\n" in self._data["site_description"]
+            ):
                 self._data["site_description"] = LiteralScalarString(
                     self._data["site_description"]
                 )
@@ -102,16 +102,7 @@ class MkDocs(ProjectMetadataWriter):
     @staticmethod
     def _to_person(person_obj: str) -> Entity | Person | None:
         """MkDocs Person is a string with full name."""
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync the MkDocs object with the ProjectMetadata object."""
@@ -126,4 +117,9 @@ class MkDocs(ProjectMetadataWriter):
             self.homepage = str(metadata.homepage)
         if metadata.repository:
             self.repository = str(metadata.repository)
-            self.repo_name = metadata.repository.path
+            # display name like "org/repo", only if the user did not set one
+            if not self._get_property("repo_name"):
+                repo_name = metadata.repository.path or ""
+                self._set_property(
+                    "repo_name", repo_name.strip("/").removesuffix(".git")
+                )

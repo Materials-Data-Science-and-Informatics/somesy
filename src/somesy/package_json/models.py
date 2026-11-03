@@ -1,14 +1,11 @@
 """package.json validation models."""
 
 import re
-from logging import getLogger
 from typing import Annotated
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from somesy.core.types import HttpUrlStr
-
-logger = getLogger("somesy")
 
 
 class PackageAuthor(BaseModel):
@@ -115,18 +112,5 @@ class PackageJsonConfig(BaseModel):
         """Validate package maintainers and contributors."""
         people = []
         for p in v:
-            if isinstance(p, str):
-                author = cls.convert_author(p)
-                if author is not None:
-                    people.append(cls.convert_author(p))
-                else:
-                    logger.warning(
-                        f"Invalid email format for maintainer/contributor {p}, omitting."
-                    )
-            elif p.email is not None:
-                people.append(p)
-            else:
-                logger.warning(
-                    f"Invalid email format for maintainer/contributor {p}, omitting."
-                )
+            people.append(cls.convert_author(p) if isinstance(p, str) else p)
         return people

@@ -4,7 +4,7 @@ import logging
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 from rich.pretty import pretty_repr
 
@@ -25,6 +25,36 @@ from somesy.pyproject.writer import Pyproject
 from somesy.rust import Rust
 
 logger = logging.getLogger("somesy")
+
+
+class SyncTarget(NamedTuple):
+    """A metadata file type that somesy can sync.
+
+    The config attributes are `no_sync_<key>` and `<key>_file`.
+    """
+
+    key: str
+    writer: type[Any]  # a ProjectMetadataWriter subclass
+    label: str  # name shown in the CLI log
+    create_if_missing: bool = False  # create the file if it does not exist
+    codemeta_source: bool = False  # enriches codemeta.json under the same key
+    log_gap: bool = False  # CLI log: blank line after this entry
+
+
+# in sync order
+SYNC_TARGETS = [
+    SyncTarget("pyproject", Pyproject, "pyproject.toml", codemeta_source=True),
+    SyncTarget("package_json", PackageJSON, "package.json", codemeta_source=True),
+    SyncTarget("julia", Julia, "Project.toml", codemeta_source=True, log_gap=True),
+    SyncTarget("fortran", Fortran, "fpm.toml(fortran)", codemeta_source=True),
+    SyncTarget("pom_xml", POM, "pom.xml", codemeta_source=True, log_gap=True),
+    SyncTarget("mkdocs", MkDocs, "mkdocs.yml"),
+    SyncTarget("rust", Rust, "Cargo.toml", codemeta_source=True),
+    SyncTarget("cff", CFF, "CITATION.cff", create_if_missing=True),
+    SyncTarget(
+        "codemeta", CodeMeta, "codemeta.json", create_if_missing=True, log_gap=True
+    ),
+]
 
 
 def _semantic_data(data: Any) -> Any:
@@ -160,25 +190,23 @@ def sync(
                 )
                 continue
 
-            if config_file is None:
-                continue
-
-            # Create new config with CLI options and package's input file
-            cli_options = {
-                "no_sync_pyproject": conf.no_sync_pyproject,
-                "no_sync_package_json": conf.no_sync_package_json,
-                "no_sync_julia": conf.no_sync_julia,
-                "no_sync_fortran": conf.no_sync_fortran,
-                "no_sync_pom_xml": conf.no_sync_pom_xml,
-                "no_sync_mkdocs": conf.no_sync_mkdocs,
-                "no_sync_rust": conf.no_sync_rust,
-                "no_sync_cff": conf.no_sync_cff,
-                "no_sync_codemeta": conf.no_sync_codemeta,
-                "merge_codemeta": conf.merge_codemeta,
-                "pass_validation": conf.pass_validation,
-                "packages": None,  # Don't pass packages to avoid recursive package handling
+            # The package's own config is the base; only options explicitly
+            # passed on the root CLI override it (nothing is inherited from the
+            # root config file or defaults).
+            cli_overrides = {
+                key: value
+                for key, value in conf._cli_overrides.items()
+                if key.startswith("no_sync_")
+                or key in ("merge_codemeta", "pass_validation")
             }
-            package_input.config = SomesyConfig(input_file=config_file, **cli_options)
+            package_input.config = SomesyConfig(
+                **{
+                    **package_input.config.model_dump(),
+                    **cli_overrides,
+                    "input_file": config_file,
+                    "packages": None,  # avoid recursive package handling
+                }
+            )
 
             # Set default CFF and CodeMeta paths in package directory if not specified
             if not package_input.config.no_sync_cff:
@@ -201,92 +229,34 @@ def _sync_root_project(
     project_root: Path,
 ) -> None:
     """Sync metadata files for the root project."""
-    # update these only if they exist:
-    if conf.pyproject_file and not conf.no_sync_pyproject:
+    for target in SYNC_TARGETS:
+        if getattr(conf, f"no_sync_{target.key}"):
+            continue
+        files = getattr(conf, f"{target.key}_file")
+        # targets that are not created by default are updated only if they exist
+        if not (files or target.create_if_missing):
+            continue
+        kwargs: dict[str, Any] = {}
+        if target.writer is CodeMeta:
+            kwargs = {
+                "merge_codemeta": conf.merge_codemeta,
+                "codemeta_root": base_dir,
+                "codemeta_project_root": project_root,
+                "codemeta_sources": {
+                    t.key: (
+                        None
+                        if getattr(conf, f"no_sync_{t.key}")
+                        else getattr(conf, f"{t.key}_file")
+                    )
+                    for t in SYNC_TARGETS
+                    if t.codemeta_source
+                },
+            }
         _sync_files(
             metadata,
-            conf.pyproject_file,
-            Pyproject,
+            files,
+            target.writer,
+            create_if_missing=target.create_if_missing,
             pass_validation=conf.pass_validation,
-        )
-
-    if conf.package_json_file and not conf.no_sync_package_json:
-        _sync_files(
-            metadata,
-            conf.package_json_file,
-            PackageJSON,
-            pass_validation=conf.pass_validation,
-        )
-
-    if conf.julia_file and not conf.no_sync_julia:
-        _sync_files(
-            metadata,
-            conf.julia_file,
-            Julia,
-            pass_validation=conf.pass_validation,
-        )
-
-    if conf.fortran_file and not conf.no_sync_fortran:
-        _sync_files(
-            metadata,
-            conf.fortran_file,
-            Fortran,
-            pass_validation=conf.pass_validation,
-        )
-
-    if conf.pom_xml_file and not conf.no_sync_pom_xml:
-        _sync_files(
-            metadata,
-            conf.pom_xml_file,
-            POM,
-            pass_validation=conf.pass_validation,
-        )
-
-    if conf.mkdocs_file and not conf.no_sync_mkdocs:
-        _sync_files(
-            metadata,
-            conf.mkdocs_file,
-            MkDocs,
-            pass_validation=conf.pass_validation,
-        )
-
-    if conf.rust_file and not conf.no_sync_rust:
-        _sync_files(
-            metadata,
-            conf.rust_file,
-            Rust,
-            pass_validation=conf.pass_validation,
-        )
-
-    # create these by default if they are missing:
-    if not conf.no_sync_cff:
-        _sync_files(
-            metadata,
-            conf.cff_file,
-            CFF,
-            create_if_missing=True,
-            pass_validation=conf.pass_validation,
-        )
-
-    if not conf.no_sync_codemeta:
-        _sync_files(
-            metadata,
-            conf.codemeta_file,
-            CodeMeta,
-            create_if_missing=True,
-            merge_codemeta=conf.merge_codemeta,
-            pass_validation=conf.pass_validation,
-            codemeta_root=base_dir,
-            codemeta_project_root=project_root,
-            codemeta_sources={
-                "pyproject": None if conf.no_sync_pyproject else conf.pyproject_file,
-                "package_json": (
-                    None if conf.no_sync_package_json else conf.package_json_file
-                ),
-                "julia": None if conf.no_sync_julia else conf.julia_file,
-                "fortran": None if conf.no_sync_fortran else conf.fortran_file,
-                "pom_xml": None if conf.no_sync_pom_xml else conf.pom_xml_file,
-                "mkdocs": None if conf.no_sync_mkdocs else conf.mkdocs_file,
-                "rust": None if conf.no_sync_rust else conf.rust_file,
-            },
+            **kwargs,
         )

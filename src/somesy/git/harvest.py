@@ -8,36 +8,50 @@ import subprocess
 from collections import Counter
 from datetime import date
 from pathlib import Path
+from urllib.parse import urlsplit, urlunsplit
 
 from .models import GitAuthor, GitMetadata
 
 logger = logging.getLogger("somesy")
+
+_GIT_ERRORS = (subprocess.CalledProcessError, FileNotFoundError)
 
 
 def _git(path: Path, *args: str) -> str:
     """Run Git without invoking a shell."""
     git = shutil.which("git")
     if git is None:
-        raise RuntimeError("Git executable not found")
+        raise FileNotFoundError("Git executable not found")
     result = subprocess.run(  # noqa: S603 - arguments are fixed internal Git commands
         [git, *args],
         cwd=path,
         capture_output=True,
         check=True,
-        text=True,
+        encoding="utf-8",
+        errors="replace",
     )
     return result.stdout.strip()
+
+
+def _strip_credentials(url: str) -> str:
+    """Remove userinfo (user:token) from http(s) URLs; leave other forms as is."""
+    parts = urlsplit(url)
+    if parts.scheme not in ("http", "https") or "@" not in parts.netloc:
+        return url
+    return urlunsplit(parts._replace(netloc=parts.netloc.rpartition("@")[2]))
 
 
 def _remote(path: Path) -> str | None:
     """Return the origin URL, or the first configured remote URL."""
     try:
-        return _git(path, "remote", "get-url", "origin")
-    except (subprocess.CalledProcessError, FileNotFoundError):
+        return _strip_credentials(_git(path, "remote", "get-url", "origin"))
+    except _GIT_ERRORS:
         try:
             remotes = _git(path, "remote").splitlines()
-            return _git(path, "remote", "get-url", remotes[0]) if remotes else None
-        except (subprocess.CalledProcessError, FileNotFoundError):
+            if not remotes:
+                return None
+            return _strip_credentials(_git(path, "remote", "get-url", remotes[0]))
+        except _GIT_ERRORS:
             return None
 
 
@@ -45,7 +59,7 @@ def _authors(path: Path) -> list[GitAuthor]:
     """Return all distinct mailmap-aware Git authors, ranked by commit count."""
     try:
         raw = _git(path, "log", "--all", "--format=%aN%x00%aE")
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    except _GIT_ERRORS:
         return []
 
     identities = []
@@ -68,7 +82,7 @@ def _date(path: Path, *args: str) -> date | None:
     try:
         value = _git(path, *args)
         return date.fromisoformat(value.splitlines()[0]) if value else None
-    except (subprocess.CalledProcessError, FileNotFoundError, ValueError):
+    except (*_GIT_ERRORS, ValueError):
         return None
 
 
@@ -76,20 +90,21 @@ def _is_shallow(path: Path) -> bool:
     """Return whether Git history is incomplete."""
     try:
         return _git(path, "rev-parse", "--is-shallow-repository") == "true"
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    except _GIT_ERRORS:
         return False
 
 
-def harvest(path: Path = Path.cwd()) -> GitMetadata | None:
-    """Harvest Somesy-relevant metadata from ``path`` if it is a Git repository."""
+def harvest(path: Path | None = None) -> GitMetadata | None:
+    """Harvest Somesy-relevant metadata from ``path`` (default: cwd) if it is a Git repository."""
+    path = Path.cwd() if path is None else path
     try:
         root = Path(_git(path, "rev-parse", "--show-toplevel"))
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    except _GIT_ERRORS:
         return None
 
     try:
         version = _git(root, "describe", "--tags", "--abbrev=0") or None
-    except (subprocess.CalledProcessError, FileNotFoundError):
+    except _GIT_ERRORS:
         version = None
 
     shallow = _is_shallow(root)

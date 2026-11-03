@@ -1,5 +1,7 @@
+import json
+
 from somesy.codemeta import CodeMeta
-from somesy.json_wrapper import json
+from somesy.core.core import write_json
 
 
 def test_update_codemeta(somesy_input, tmp_path):
@@ -37,10 +39,9 @@ def test_update_codemeta(somesy_input, tmp_path):
     # fourth time, change the project name back and change version in codemeta.json
     # -> codemeta.json is the same
     somesy_input.project.name = "testproject"
-    with open(codemeta_file, "w") as f:
-        codemeta = json.loads(dat3)
-        codemeta["version"] = "0.0.2"
-        json.dump(codemeta, f)
+    codemeta = json.loads(dat3)
+    codemeta["version"] = "0.0.2"
+    write_json(codemeta, codemeta_file)
     cm.sync(somesy_input.project)
     cm.save()
     assert codemeta_file.is_file()
@@ -132,8 +133,7 @@ def test_update_codemeta_with_merge(somesy_input, tmp_path):
         "contIntegration": "https://example.com/ci",
         "embargoDate": "2024-01-01",
     }
-    with open(codemeta_file, "w") as f:
-        json.dump(initial_data, f)
+    write_json(initial_data, codemeta_file)
 
     # Initialize CodeMeta with merge=True
     cm = CodeMeta(codemeta_file, merge=True)
@@ -228,3 +228,59 @@ def test_update_codemeta_migrates_codemetapy_v2_output(somesy_input, tmp_path):
         "@type": "WebApplication",
         "url": "https://example.com",
     }
+
+
+def test_codemeta_roundtrip_non_orcid_contributor_with_role(somesy_input, tmp_path):
+    codemeta_file = tmp_path / "codemeta.json"
+    project = somesy_input.project.model_copy(deep=True)
+    michael = next(p for p in project.people if p.given_names == "Michael")
+    michael.orcid = None  # no ORCID, but a contribution role is written
+
+    cm = CodeMeta(codemeta_file)
+    cm.sync(project)
+    cm.save()
+
+    harvested = CodeMeta(codemeta_file, merge=True).harvest_metadata()
+    names = [p.given_names for p in harvested["people"] if hasattr(p, "given_names")]
+    assert names.count("Michael") == 1
+
+
+def test_codemeta_harvests_authors(somesy_input, tmp_path):
+    codemeta_file = tmp_path / "codemeta.json"
+    cm = CodeMeta(codemeta_file)
+    cm.sync(somesy_input.project)
+    cm.save()
+
+    harvested = CodeMeta(codemeta_file).harvest_metadata()
+    assert any(p.given_names == "John" for p in harvested["people"])
+
+
+def test_merge_removes_old_doi_keeps_other_identifiers(somesy_input, tmp_path):
+    codemeta_file = tmp_path / "codemeta.json"
+    initial = {
+        "@context": "https://w3id.org/codemeta/3.1",
+        "@type": "SoftwareSourceCode",
+        "name": "x",
+        "identifier": ["https://doi.org/10.1/old", "other-id"],
+    }
+    codemeta_file.write_text(json.dumps(initial))
+    project = somesy_input.project.model_copy(update={"doi": None})
+
+    cm = CodeMeta(codemeta_file, merge=True)
+    cm.sync(project)
+    assert cm._data["identifier"] == "other-id"
+
+
+def test_merge_warns_when_both_ci_keys_exist(somesy_input, tmp_path, caplog):
+    codemeta_file = tmp_path / "codemeta.json"
+    initial = {
+        "@context": "https://w3id.org/codemeta/3.1",
+        "@type": "SoftwareSourceCode",
+        "name": "x",
+        "contIntegration": "https://old.example/ci",
+        "continuousIntegration": "https://new.example/ci",
+    }
+    codemeta_file.write_text(json.dumps(initial))
+
+    CodeMeta(codemeta_file, merge=True).sync(somesy_input.project)
+    assert "contIntegration" in caplog.text

@@ -5,7 +5,7 @@ import pytest
 import tomlkit
 from typer.testing import CliRunner
 
-from somesy.core.log import SomesyLogLevel, set_log_level
+from somesy.core.log import VERBOSE, SomesyLogLevel, set_log_level
 from somesy.main import app
 
 runner = CliRunner()
@@ -94,5 +94,5 @@ def test_log_levels(log_level):
     logger.warning("warning")
     logger.warning({"some": "dict"})
     logger.info("info")
-    logger.verbose("verbose")  # type: ignore
+    logger.log(VERBOSE, "verbose")
     logger.debug("debug")

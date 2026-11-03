@@ -120,6 +120,9 @@ def initialize(
     if ctx.invoked_subcommand is not None:
         return
     root = Path.cwd()
+    output = output_file if output_file.is_absolute() else root / output_file
+    if output.exists() and not overwrite:
+        raise FileExistsError(f"Output file already exists: {output}")
     sources = harvest_sources(root)
     git_metadata = harvest_git(root)
     fallback = _prompt_missing_metadata(sources, git_metadata, non_interactive)
@@ -152,9 +155,22 @@ def initialize(
             }.items()
         }
         config = SomesyConfig.model_validate(config_data)
-    output = output_file if output_file.is_absolute() else root / output_file
     write_somesy_file(metadata, output, config=config, overwrite=overwrite)
     typer.echo(f"Created {output}")
+
+
+# (config key, prompt label, default file, sync by default)
+_CONFIG_TARGETS = [
+    ("cff", "CFF", "CITATION.cff", True),
+    ("codemeta", "codemeta.json", "codemeta.json", True),
+    ("pyproject", "pyproject.toml", "pyproject.toml", True),
+    ("package_json", "package.json", "package.json", False),
+    ("julia", "Project.toml (Julia)", "Project.toml", True),
+    ("fortran", "fpm.toml (Fortran)", "fpm.toml", True),
+    ("pom_xml", "pom.xml", "pom.xml", True),
+    ("mkdocs", "mkdocs.yml", "mkdocs.yml", True),
+    ("rust", "Cargo.toml", "Cargo.toml", True),
+]
 
 
 @app.command()
@@ -168,70 +184,12 @@ def config():
     input_file = Path(typer.prompt("Input file path", default=input_file_default))
     options: dict[str, Any] = {"input_file": Path(input_file)}
 
-    # ----
-
-    options["no_sync_cff"] = not typer.confirm(
-        "Do you want to sync to a CFF file?", default=True
-    )
-    if cff_file := typer.prompt("CFF file path", default="CITATION.cff"):
-        options["cff_file"] = cff_file
-
-    options["no_sync_codemeta"] = not typer.confirm(
-        "Do you want to sync to a codemeta.json file?", default=True
-    )
-    if codemeta_file := typer.prompt(
-        "codemeta.json file path", default="codemeta.json"
-    ):
-        options["codemeta_file"] = codemeta_file
-
-    options["no_sync_pyproject"] = not typer.confirm(
-        "Do you want to sync to a pyproject.toml file?", default=True
-    )
-    if pyproject_file := typer.prompt(
-        "pyproject.toml file path", default="pyproject.toml"
-    ):
-        options["pyproject_file"] = pyproject_file
-
-    options["sync_package_json"] = typer.confirm(
-        "Do you want to sync to a package.json file?", default=False
-    )
-    if package_json_file := typer.prompt(
-        "package.json file path", default="package.json"
-    ):
-        options["package_json_file"] = package_json_file
-
-    options["no_sync_julia"] = not typer.confirm(
-        "Do you want to sync to a Project.toml(Julia) file?", default=True
-    )
-    if julia_file := typer.prompt(
-        "Project.toml (Julia) file path", default="Project.toml"
-    ):
-        options["julia_file"] = julia_file
-
-    options["no_sync_fortran"] = not typer.confirm(
-        "Do you want to sync to a fpm.toml(fortran) file?", default=True
-    )
-    fortran_file = typer.prompt("fpm.toml(fortran) file path", default="fpm.toml")
-    if fortran_file is not None or fortran_file != "":
-        options["fortran_file"] = fortran_file
-
-    options["no_sync_pom_xml"] = not typer.confirm(
-        "Do you want to sync to a pom.xml file?", default=True
-    )
-    if pom_xml_file := typer.prompt("pom.xml file path", default="pom.xml"):
-        options["pom_xml_file"] = pom_xml_file
-
-    options["no_sync_mkdocs"] = not typer.confirm(
-        "Do you want to sync to a mkdocs.yml file?", default=True
-    )
-    if mkdocs_file := typer.prompt("mkdocs.yml file path", default="mkdocs.yml"):
-        options["mkdocs_file"] = mkdocs_file
-
-    options["no_sync_rust"] = not typer.confirm(
-        "Do you want to sync to a Cargo.toml file?", default=True
-    )
-    if rust_file := typer.prompt("Cargo.toml file path", default="Cargo.toml"):
-        options["rust_file"] = rust_file
+    for key, label, default_file, default_sync in _CONFIG_TARGETS:
+        options[f"no_sync_{key}"] = not typer.confirm(
+            f"Do you want to sync to a {label} file?", default=default_sync
+        )
+        if target_file := typer.prompt(f"{label} file path", default=default_file):
+            options[f"{key}_file"] = target_file
 
     # ----
 

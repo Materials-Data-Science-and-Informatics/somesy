@@ -5,10 +5,15 @@ from pathlib import Path
 
 import tomlkit
 from rich.pretty import pretty_repr
-from tomlkit.items import InlineTable
 
-from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
+from somesy.core.writer import (
+    FieldKeyMapping,
+    IgnoreKey,
+    ProjectMetadataWriter,
+    format_toml_data,
+    license_expression,
+)
 
 from .models import FortranConfig
 
@@ -42,13 +47,8 @@ class Fortran(ProjectMetadataWriter):
     @property
     def authors(self):
         """Return the only author of the fpm.toml file as list."""
-        authors = []
-        try:
-            self._to_person(self._get_property(self._get_key("authors")))
-            authors = [self._get_property(self._get_key("authors"))]
-        except ValueError:
-            logger.warning("Cannot convert authors to Person object.")
-        return authors
+        author = self._get_property(self._get_key("authors"))
+        return [author] if author else []
 
     @authors.setter
     def authors(self, authors: list[Person | Entity]) -> None:
@@ -71,7 +71,7 @@ class Fortran(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load fpm.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = tomlkit.load(f)
 
     def _validate(self) -> None:
@@ -91,31 +91,9 @@ class Fortran(ProjectMetadataWriter):
     def save(self, path: Path | None = None) -> None:
         """Save the fpm file."""
         path = path or self.path
-        if "description" in self._data and "\n" in self._data["description"]:
-            self._data["description"] = tomlkit.string(
-                self._data["description"], multiline=True
-            )
+        format_toml_data(self._data)
 
-        # Handle arrays with proper formatting
-        for key, value in self._data.items():
-            if isinstance(value, list):
-                array = tomlkit.array()
-                array.extend(value)
-                array.multiline(True)
-                # Ensure whitespace after commas in inline tables
-                for item in array:
-                    if isinstance(item, InlineTable):
-                        # Rebuild the inline table with desired formatting
-                        formatted_item = tomlkit.inline_table()
-                        for k, v in item.value.items():
-                            formatted_item[k] = v
-                        formatted_item.trivia.trail = " "  # Add space after each comma
-                        array[array.index(item)] = formatted_item
-                self._data[key] = array
-            else:
-                self._data[key] = value
-
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             tomlkit.dump(self._data, f)
 
     @staticmethod
@@ -126,16 +104,7 @@ class Fortran(ProjectMetadataWriter):
     @staticmethod
     def _to_person(person_obj: str) -> Person | Entity | None:
         """Convert from free string to person or entity object."""
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync output file with other metadata files."""
@@ -160,10 +129,7 @@ class Fortran(ProjectMetadataWriter):
             self.maintainers = maintainers
 
         if licenses := metadata.license:
-            self.license = (
-                " OR ".join(license.value for license in licenses)
-                if isinstance(licenses, list)
-                else licenses.value
-            )
+            self.license = license_expression(licenses)
 
-        self.homepage = str(metadata.homepage) if metadata.homepage else None
+        if metadata.homepage:
+            self.homepage = str(metadata.homepage)

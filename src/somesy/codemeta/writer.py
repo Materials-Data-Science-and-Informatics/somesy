@@ -5,18 +5,17 @@ import logging
 import uuid
 from collections import OrderedDict
 from collections.abc import Sequence
-from copy import deepcopy
 from pathlib import Path
 from typing import Any
 
-from somesy.codemeta.utils import validate_codemeta
+from somesy.codemeta.utils import V3_CONTEXT, validate_codemeta
+from somesy.core.core import write_json
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, ProjectMetadataWriter
 
 logger = logging.getLogger("somesy")
 
 V2_CONTEXT = "https://doi.org/10.5063/schema/codemeta-2.0"
-V3_CONTEXT = "https://w3id.org/codemeta/3.1"
 
 
 class CodeMeta(ProjectMetadataWriter):
@@ -53,8 +52,8 @@ class CodeMeta(ProjectMetadataWriter):
 
     @property
     def authors(self):
-        """Return the only author of the codemeta.json file as list."""
-        return self._get_property(self._get_key("publication_authors")) or []
+        """Return the authors of the codemeta.json file."""
+        return self._get_property(self._get_key("authors")) or []
 
     @authors.setter
     def authors(self, authors: list[Person | Entity]) -> None:
@@ -86,7 +85,7 @@ class CodeMeta(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load codemeta.json file."""
-        with self.path.open() as f:
+        with self.path.open(encoding="utf-8") as f:
             self._data = json.load(f, object_pairs_hook=OrderedDict)
 
     def _upgrade_to_v3(self) -> None:
@@ -102,7 +101,12 @@ class CodeMeta(ProjectMetadataWriter):
             ("contIntegration", "continuousIntegration"),
             ("embargoDate", "embargoEndDate"),
         ):
-            if old in self._data and new not in self._data:
+            if old in self._data and new in self._data:
+                logger.warning(
+                    f"Both '{old}' and '{new}' found in codemeta.json, "
+                    f"dropping '{old}' in favor of '{new}'."
+                )
+            elif old in self._data:
                 self._data[new] = self._data[old]
             self._data.pop(old, None)
 
@@ -110,15 +114,11 @@ class CodeMeta(ProjectMetadataWriter):
         """Validate codemeta.json content using pydantic class."""
         if self.pass_validation:
             return
-        loaded_data = self._data
-        if self.merge:
-            self._data = deepcopy(self._data)
-            self._upgrade_to_v3()
-        try:
-            invalid_fields = validate_codemeta(self._data)
-        finally:
-            self._data = loaded_data
-        if invalid_fields and self.merge:
+        if not self.merge:
+            return
+        self._upgrade_to_v3()
+        invalid_fields = validate_codemeta(self._data)
+        if invalid_fields:
             raise ValueError(
                 f"Invalid fields in codemeta.json: {invalid_fields}. Cannot merge with invalid fields."
             )
@@ -127,8 +127,7 @@ class CodeMeta(ProjectMetadataWriter):
         """Create a new codemeta.json file with bare minimum generic data."""
         data = self._new_data()
         # dump to file
-        with self.path.open("w+", newline="\n") as f:
-            json.dump(data, f)
+        write_json(data, self.path)
 
     def _new_data(self) -> dict[str, Any]:
         """Return the bare minimum generic CodeMeta data."""
@@ -157,13 +156,7 @@ class CodeMeta(ProjectMetadataWriter):
                 for license in licenses
             ]
 
-        # if softwareHelp is set, set url to softwareHelp
-        if "softwareHelp" in data:
-            data["url"] = data["softwareHelp"]
-
-        with path.open("w", newline="\n") as f:
-            # codemeta.json indentation is 2 spaces
-            json.dump(data, f)
+        write_json(data, path)
 
     @staticmethod
     def _from_person(person: Person | Entity) -> dict:
@@ -258,8 +251,10 @@ class CodeMeta(ProjectMetadataWriter):
         return result
 
     @staticmethod
-    def _to_person(person_obj) -> Person | Entity:
+    def _to_person(person_obj) -> Person | Entity | None:
         """Convert codemeta.json dict or str for person/entity format to project metadata person object."""
+        if person_obj.get("@type") == "Role":
+            return None
         if "name" in person_obj:
             entity_obj = {"name": person_obj["name"]}
             return Entity(**entity_obj)
@@ -271,7 +266,7 @@ class CodeMeta(ProjectMetadataWriter):
                 person_data["family_names"] = person_obj["familyName"].strip()
             if "email" in person_obj:
                 person_data["email"] = person_obj["email"].strip()
-            if "@id" in person_obj:
+            if "orcid.org/" in person_obj.get("@id", ""):
                 person_data["orcid"] = person_obj["@id"].strip()
             if "address" in person_obj:
                 person_data["address"] = person_obj["address"].strip()
@@ -313,6 +308,20 @@ class CodeMeta(ProjectMetadataWriter):
         super().sync(metadata)
         if metadata.doi:
             self._data["identifier"] = f"https://doi.org/{metadata.doi}"
+        elif "identifier" in self._data:
+            identifiers = self._data["identifier"]
+            identifiers = (
+                identifiers if isinstance(identifiers, list) else [identifiers]
+            )
+            kept = [
+                i
+                for i in identifiers
+                if not (isinstance(i, str) and i.startswith("https://doi.org/"))
+            ]
+            if kept:
+                self._data["identifier"] = kept if len(kept) > 1 else kept[0]
+            else:
+                del self._data["identifier"]
         if licenses := metadata.license:
             self.license = [
                 f"https://spdx.org/licenses/{license.value}"

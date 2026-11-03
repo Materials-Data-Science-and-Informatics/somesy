@@ -59,7 +59,7 @@ repos:
             name: Run somesy sync
             entry: poetry run somesy sync
             language: system
-            files: '^\.somesy\.toml|pyproject\.toml$'
+            files: '(^|/)(\.?somesy\.toml|pyproject\.toml|package\.json|Project\.toml|Cargo\.toml|fpm\.toml)$'
             pass_filenames: false
 
           - id: somesy-fill

@@ -18,6 +18,44 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - warn when the `description` synced into `pyproject.toml` is longer than
     512 characters or spans several lines
   - support `abstract` in `somesy set`
+- **Changed**
+  - keep existing homepage, repository and documentation URLs in output files
+    when the input has none, instead of deleting them
+  - write all licenses: a list in `CITATION.cff`, an `OR` expression in
+    `package.json` and `fpm.toml`
+  - monorepo packages use their own `[config]`; only options passed on the
+    command line override it
+  - list only non-authors (including organizations) as contributors in
+    `package.json` and `pom.xml`
+  - `somesy init` skips Git bot accounts and warns about single-word Git author
+    names
+  - a missing `readme` file in `pyproject.toml` is a warning, not an error
+  - the pre-commit hook also runs for `Cargo.toml` and for input files in
+    subfolders
+- **Fixed**
+  - CLI: `init config` wrote an invalid key; `init` prompted before failing on
+    an existing file; `set` ignored `.somesy.toml` and printed long errors;
+    `sync --packages` rejected directories; a missing `-i` file is now reported
+  - crashes: arrays of tables in `fpm.toml`/`Project.toml`, organizations with a
+    website in `package.json`/`pom.xml`, Poetry dependencies with several
+    constraints, malformed `pom.xml`/`mkdocs.yml` during `init`, missing Git
+  - `CITATION.cff`: never write the non-CFF `rorid` key (removed from existing
+    files on the next sync)
+  - `pom.xml`: keep `<connection>` and free-text `<role>` values, no empty
+    `<scm>`/`<site>` elements, read single roles and developers without a name
+  - `codemeta.json`: read existing authors and non-ORCID contributors, drop a
+    removed DOI, ignore managed and unresolved Maven dependencies
+  - `Cargo.toml`: keep workspace inheritance such as `version.workspace = true`
+  - `mkdocs.yml`: accept free-text `site_name` and an empty `site_description`,
+    write `repo_name`
+  - `Project.toml`: keep `version` when the input has none; `fpm.toml`: read files
+    without an `author`; Poetry 2 projects without a `license` are accepted
+  - Git: strip credentials from the remote URL, handle non-UTF-8 author names,
+    convert `ssh://` URLs with a port to `https://`
+  - stable key order and unescaped non-ASCII names in output files; all files
+    are read and written as UTF-8
+  - do not merge organizations with the same name but different ROR IDs
+  - importing somesy no longer patches `json.dump` globally
 
 ## [v0.8.2](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.8.2) <small>(2026-09-25)</small> { id="0.8.2" }
 

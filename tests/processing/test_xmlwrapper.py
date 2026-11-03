@@ -166,3 +166,12 @@ def test_update_write(xml_examples, tmp_path):
     # check that the namespace of the external key is preserved
     assert "externalKey" not in prs
     assert externalKey in prs
+
+
+def test_set_nested_dict_children_are_qualified(xml_examples):
+    """Nested children of freshly set values must be found with `get`."""
+    prx = XMLProxy.parse(xml_examples("blank_pom.xml"), default_namespace=POM_URL)
+    prx["developers"] = {"developer": [{"name": "A", "roles": {"role": "code"}}]}
+    dev = prx.get("developers").get("developer")
+    assert dev is not None
+    assert dev.get("roles").get("role").to_jsonlike() == "code"

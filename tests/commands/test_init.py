@@ -8,7 +8,7 @@ import pytest
 from typer.testing import CliRunner
 
 from somesy.core.core import get_input_content
-from somesy.core.models import SomesyInput
+from somesy.core.models import SomesyConfig, SomesyInput
 from somesy.git.models import GitAuthor, GitMetadata
 from somesy.main import app
 
@@ -230,3 +230,45 @@ def test_init_harvests_pep621_project_without_poetry(
     assert content["project"]["name"] == "test-package"
     assert content["project"]["people"][0]["email"] == "john.doe@example.com"
     assert "no_sync_pyproject" not in content["config"]
+
+
+def test_init_config_writes_valid_config(
+    tmp_path, create_files, file_types, monkeypatch
+):
+    """`init config` must only write keys that SomesyConfig accepts."""
+    create_files({(file_types.SOMESY, "somesy.toml")})
+    monkeypatch.chdir(tmp_path)
+    # `init config` sets the global log level; restore it after the test
+    monkeypatch.setattr("somesy.core.log._log_level", None)
+
+    result = runner.invoke(app, ["init", "config"], input="\n" * 30)
+
+    assert result.exit_code == 0, result.stdout
+    config = get_input_content(tmp_path / "somesy.toml")["config"]
+    assert "sync_package_json" not in config
+    assert SomesyConfig.model_validate(config).no_sync_package_json is True
+
+
+def test_init_fails_fast_if_output_exists(
+    tmp_path, create_files, file_types, monkeypatch
+):
+    """Existing output without --overwrite fails before any prompt."""
+    create_files({(file_types.SOMESY, "somesy.toml")})
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["init"])
+
+    assert result.exit_code == 1
+    assert "already exists" in result.output
+    assert "?" not in result.output  # no prompt was shown
+
+
+def test_init_abort_is_not_reported_as_empty_error(tmp_path, monkeypatch):
+    """EOF at a prompt aborts cleanly instead of printing an empty error."""
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["init"], input="")
+
+    assert result.exit_code != 0
+    assert "Aborted" in result.output
+    assert "Error: " not in result.output

@@ -1,6 +1,6 @@
 import pytest
 
-from somesy.core.models import LicenseEnum, Person, ProjectMetadata
+from somesy.core.models import Entity, LicenseEnum, Person, ProjectMetadata
 from somesy.pom_xml.writer import POM
 
 
@@ -54,6 +54,7 @@ def test_from_to_person(person: Person):
     assert p1["url"] == str(person.orcid)
 
     p = POM._to_person(POM._from_person(person))
+    assert isinstance(p, Person)
     assert p.full_name == person.full_name
     assert p.email == person.email
     assert str(p.orcid) == str(person.orcid)
@@ -122,8 +123,8 @@ def test_person_merge(pom_file, person: Person):
     assert pj.authors[0]["name"] == person1b.full_name
     assert pj.authors[0]["email"] == person1b.email
 
-    assert pj.contributors[1]["name"] == person2.full_name
-    assert pj.contributors[1]["email"] == person2.email
+    # authors are not contributors
+    assert len(pj.contributors) == 0
 
     # new person
     person3 = Person(
@@ -145,11 +146,160 @@ def test_person_merge(pom_file, person: Person):
     pj.sync(pm)
     pj.save()
 
-    assert len(pj.contributors) == 3
+    assert len(pj.contributors) == 1
     assert len(pj.maintainers) == 0
     assert pj.authors[0]["name"] == person1c.full_name
     assert pj.authors[0]["email"] == person1c.email
     print(pj.contributors)
 
-    assert pj.contributors[2]["name"] == person3.full_name
-    assert pj.contributors[2]["email"] == person3.email
+    assert pj.contributors[0]["name"] == person2.full_name
+    assert pj.contributors[0]["email"] == person2.email
+
+
+def test_from_person_entity_website_is_str():
+    entity = Entity(name="ACME", website="https://acme.org")
+    assert POM._from_person(entity)["url"] == str(entity.website)
+    assert isinstance(POM._from_person(entity)["url"], str)
+
+
+def test_sync_entity_contributor_saves(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    metadata = ProjectMetadata(
+        name="My awesome project",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(given_names="Jane", family_names="Doe", author=True),
+            Person(given_names="John", family_names="Roe"),
+        ],
+        entities=[Entity(name="ACME", website="https://acme.org")],
+    )
+    pom = POM(pom_path, create_if_not_exists=True)
+    pom.sync(metadata)
+    pom.save()
+
+    pom = POM(pom_path)
+    names = [c["name"] for c in pom.contributors]
+    assert sorted(names) == ["ACME", "John Roe"]
+
+
+def test_to_person_single_role():
+    p = POM._to_person({"name": "Jane Doe", "roles": {"role": "code"}})
+    assert [c.value for c in p.contribution_types] == ["code"]
+
+
+def test_authors_without_developers(tmp_path):
+    pom = POM(tmp_path / "pom.xml", create_if_not_exists=True)
+    assert pom.authors == []
+
+
+def test_to_person_without_name(caplog):
+    assert POM._to_person({"email": "a@b.com"}) is None
+    assert POM._parse_people([{"email": "a@b.com"}]) == []
+
+
+def test_sync_keeps_urls_if_absent(pom: POM, somesy_input):
+    before = (pom.homepage, pom.repository, pom.documentation)
+    project = somesy_input.project
+    project.homepage = project.repository = project.documentation = None
+    pom.sync(project)
+    assert (pom.homepage, pom.repository, pom.documentation) == before
+
+
+def test_repository_keeps_scm_connection(pom: POM, somesy_input):
+    somesy_input.project.repository = "https://example.com/new/repo"
+    pom.sync(somesy_input.project)
+    assert pom.repository == "https://example.com/new/repo"
+    scm = pom._get_property(["scm"])
+    assert isinstance(scm, dict)
+    assert scm["url"] == "https://example.com/new/repo"
+    assert scm["connection"] == "scm:git:git@github.com:lampepfl/dotty.git"
+
+
+def test_no_empty_scm_or_site_without_urls(tmp_path, somesy_input):
+    project = somesy_input.project
+    project.homepage = project.repository = project.documentation = None
+    path = tmp_path / "pom.xml"
+    pom = POM(path, create_if_not_exists=True)
+    pom.sync(project)
+    pom.save()
+    content = path.read_text()
+    assert "scm" not in content
+    assert "distributionManagement" not in content
+
+
+def test_free_text_roles_do_not_crash_sync(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    pom_path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
+        "<name>Jane Doe</name><email>jane@example.org</email>"
+        "<roles><role>architect</role><role>code</role></roles>"
+        "</developer></developers></project>"
+    )
+    person = Person(
+        given_names="Jane", family_names="Doe", email="jane@example.org", author=True
+    )
+    metadata = ProjectMetadata(
+        name="p",
+        description="d",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[person],
+    )
+
+    pom = POM(pom_path)
+    parsed = pom.authors
+    assert len(parsed) == 1
+    pom.sync(metadata)
+    pom.save()
+    assert "Jane Doe" in pom_path.read_text()
+    ignored = POM._to_person({"name": "Jane Doe", "roles": {"role": "architect"}})
+    assert ignored is not None
+    assert ignored.contribution_types is None
+
+
+def _sync_roles(pom_path, contribution_types):
+    person = Person(
+        given_names="Jane",
+        family_names="Doe",
+        email="jane@example.org",
+        author=True,
+        contribution_types=contribution_types,
+    )
+    metadata = ProjectMetadata(
+        name="p",
+        description="d",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[person],
+    )
+    pom = POM(pom_path)
+    pom.sync(metadata)
+    pom.save()
+    return POM(pom_path).authors[0]["roles"]["role"]
+
+
+def _write_roles_pom(path, roles):
+    path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
+        "<name>Jane Doe</name><email>jane@example.org</email><roles>"
+        + "".join(f"<role>{r}</role>" for r in roles)
+        + "</roles></developer></developers></project>"
+    )
+
+
+def test_sync_keeps_free_text_roles(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    _write_roles_pom(pom_path, ["architect", "code"])
+    assert _sync_roles(pom_path, ["code"]) == ["code", "architect"]
+
+    first = pom_path.read_text()
+    assert _sync_roles(pom_path, ["code"]) == ["code", "architect"]
+    assert pom_path.read_text() == first
+
+
+def test_sync_keeps_free_text_roles_without_contribution_types(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    _write_roles_pom(pom_path, ["architect"])
+    assert _sync_roles(pom_path, None) == "architect"

@@ -64,3 +64,23 @@ def test_save(tmp_path, fortran):
 
 def test_from_person(person):
     assert Fortran._from_person(person) == f"{person.full_name} <{person.email}>"
+
+
+def test_save_array_of_tables(tmp_path, fortran_file):
+    fortran_file.write_text(
+        fortran_file.read_text()
+        + '\n[[executable]]\nname = "app"\nsource-dir = "app"\nmain = "main.f90"\n'
+    )
+    fortran = Fortran(fortran_file)
+    out = tmp_path / "fpm.toml"
+    fortran.save(out)
+    assert "[[executable]]" in out.read_text()
+
+
+def test_authors_missing(fortran_file):
+    fortran_file.write_text(
+        fortran_file.read_text().replace(
+            'author = "John Doe <john.doe@example.com>"\n', ""
+        )
+    )
+    assert Fortran(fortran_file).authors == []

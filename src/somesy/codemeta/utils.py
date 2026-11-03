@@ -64,7 +64,10 @@ def validate_codemeta(codemeta: dict) -> list:
                 logger.error(f"Invalid schema reference found: {key}")
                 invalid_fields.append(key)
 
-        # Check for unsupported terms by comparing original and compacted keys
+        # Check for unsupported terms by comparing original and compacted keys.
+        # Only top-level keys are checked on purpose: nested objects may use any
+        # valid schema.org term, which the CodeMeta context does not list, so
+        # recursing would report false positives.
         original_keys = set(codemeta.keys())
         compacted_keys = set(compacted)
 

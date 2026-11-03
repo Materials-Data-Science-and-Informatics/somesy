@@ -6,9 +6,47 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+import tomlkit
+from tomlkit.items import AoT, Array, InlineTable
+
 from somesy.core.models import Entity, Person, ProjectMetadata
 
 logger = logging.getLogger("somesy")
+
+
+def toml_array(value: list) -> Array:
+    """Build a multiline tomlkit array, with spaced inline tables."""
+    array = tomlkit.array()
+    array.extend(value)
+    array.multiline(True)
+    # Ensure whitespace after commas in inline tables
+    for item in array:
+        if isinstance(item, InlineTable):
+            # Rebuild the inline table with desired formatting
+            formatted_item = tomlkit.inline_table()
+            for k, v in item.value.items():
+                formatted_item[k] = v
+            formatted_item.trivia.trail = " "  # Add space after each comma
+            array[array.index(item)] = formatted_item
+    return array
+
+
+def multiline_description(table: Any) -> None:
+    """Store a description containing line breaks as a multiline TOML string."""
+    if "description" in table and "\n" in table["description"]:
+        table["description"] = tomlkit.string(table["description"], multiline=True)
+
+
+def format_toml_data(data: Any) -> None:
+    """Prepare a tomlkit document for saving: multiline description, multiline arrays."""
+    multiline_description(data)
+
+    # Handle arrays with proper formatting (snapshot, since we assign while iterating)
+    for key, value in list(data.items()):
+        if isinstance(value, list) and not isinstance(value, AoT):
+            data[key] = toml_array(value)
+        else:
+            data[key] = value
 
 
 class IgnoreKey:
@@ -23,6 +61,14 @@ DictLike = Any
 
 NOTE: This should be probably turned into a proper protocol.
 """
+
+
+def license_expression(licenses) -> str:
+    """Convert one or more license identifiers to an SPDX expression."""
+    return " OR ".join(
+        str(license)
+        for license in (licenses if isinstance(licenses, list) else [licenses])
+    )
 
 
 class ProjectMetadataWriter(ABC):
@@ -49,7 +95,7 @@ class ProjectMetadataWriter(ABC):
 
         Args:
             path: Path to target output file.
-            create_if_not_exists: Create an empty CFF file if not exists. Defaults to True.
+            create_if_not_exists: Create an empty file if not exists. Defaults to False.
             direct_mappings: Dict with direct mappings of keys between somesy and target
             merge: Merge the output file with an existing file. Defaults to False.
             pass_validation: Pass validation for all output files. Defaults to False.
@@ -112,7 +158,6 @@ class ProjectMetadataWriter(ABC):
         self,
         key: str | list[str] | IgnoreKey,
         *,
-        only_first: bool = False,
         remove: bool = False,
     ) -> Any:
         """Get a property from the data.
@@ -122,7 +167,6 @@ class ProjectMetadataWriter(ABC):
 
         Args:
             key: Name of the key or sequence of multiple keys to retrieve the value.
-            only_first: If True, returns only first entry if the value is a list.
             remove: If True, will remove the retrieved value and clean up the dict.
 
         """
@@ -134,7 +178,6 @@ class ProjectMetadataWriter(ABC):
         seq = [curr]
         for k in key_path:
             curr = curr.get(k)
-            curr = curr[0] if isinstance(curr, list) and only_first else curr
             seq.append(curr)
             if curr is None:
                 return None
@@ -149,8 +192,6 @@ class ProjectMetadataWriter(ABC):
                 if not dct.get(path_key):
                     del dct[path_key]
 
-        if isinstance(curr, list) and only_first:
-            return curr[0]
         return curr
 
     def _set_property(self, key: str | list[str] | IgnoreKey, value: Any) -> None:
@@ -311,15 +352,15 @@ class ProjectMetadataWriter(ABC):
         )
 
         if licenses := metadata.license:
-            self.license = (
-                licenses[0].value if isinstance(licenses, list) else licenses.value
-            )
+            self.license = license_expression(licenses)
 
-        self.homepage = str(metadata.homepage) if metadata.homepage else None
-        self.repository = str(metadata.repository) if metadata.repository else None
-        self.documentation = (
-            str(metadata.documentation) if metadata.documentation else None
-        )
+        # keep existing values in the target file if somesy has none
+        if metadata.homepage:
+            self.homepage = str(metadata.homepage)
+        if metadata.repository:
+            self.repository = str(metadata.repository)
+        if metadata.documentation:
+            self.documentation = str(metadata.documentation)
 
     def harvest_metadata(self) -> dict[str, Any]:
         """Return metadata read from this endpoint in Somesy model terms."""
@@ -345,7 +386,11 @@ class ProjectMetadataWriter(ABC):
         entities: list[Entity] = []
         for role in ("authors", "maintainers", "contributors"):
             for person in self._parse_people(getattr(self, role) or []):
-                updates = {"author": True} if role == "authors" else {}
+                updates = (
+                    {"author": True, "publication_author": True}
+                    if role == "authors"
+                    else {}
+                )
                 updates.update({"maintainer": True} if role == "maintainers" else {})
                 person = person.model_copy(update=updates)
                 if isinstance(person, Entity):

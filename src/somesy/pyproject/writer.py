@@ -9,11 +9,17 @@ import tomlkit
 import wrapt
 from rich.pretty import pretty_repr
 from tomlkit import load
-from tomlkit.items import InlineTable, Table
+from tomlkit.items import Table
 
 from somesy.core.log import VERBOSE
-from somesy.core.models import Entity, Person, ProjectMetadata
-from somesy.core.writer import IgnoreKey, ProjectMetadataWriter
+from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
+from somesy.core.writer import (
+    IgnoreKey,
+    ProjectMetadataWriter,
+    license_expression,
+    multiline_description,
+    toml_array,
+)
 
 from .models import Pep621Config, PoetryConfig
 
@@ -34,14 +40,6 @@ def normalize_url_key(name: str) -> str:
     project started from.
     """
     return re.sub(r"[\s_-]+", "", name).lower()
-
-
-def license_expression(licenses) -> str:
-    """Convert one or more license identifiers to an SPDX expression."""
-    return " OR ".join(
-        str(license)
-        for license in (licenses if isinstance(licenses, list) else [licenses])
-    )
 
 
 class PyprojectCommon(ProjectMetadataWriter):
@@ -161,7 +159,7 @@ class PyprojectCommon(ProjectMetadataWriter):
 
     def _load(self) -> None:
         """Load pyproject.toml file."""
-        with open(self.path) as f:
+        with open(self.path, encoding="utf-8") as f:
             self._data = tomlkit.load(f)
 
     def _validate(self) -> None:
@@ -182,7 +180,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         """Save the pyproject file."""
         path = path or self.path
 
-        with open(path, "w") as f:
+        with open(path, "w", encoding="utf-8") as f:
             tomlkit.dump(self._data, f)
 
     def _get_property(
@@ -219,18 +217,7 @@ class PyprojectCommon(ProjectMetadataWriter):
 
         # Handle arrays with proper formatting
         if isinstance(value, list):
-            array = tomlkit.array()
-            array.extend(value)
-            array.multiline(True)
-            # Ensure whitespace after commas in inline tables
-            for item in array:
-                if isinstance(item, InlineTable):
-                    # Rebuild the inline table with desired formatting
-                    formatted_item = tomlkit.inline_table()
-                    for k, v in item.value.items():
-                        formatted_item[k] = v
-                    formatted_item.trivia.trail = " "  # Add space after each comma
-                    array[array.index(item)] = formatted_item
+            array = toml_array(value)
             curr[key_path[-1]] = array
         else:
             curr[key_path[-1]] = value
@@ -254,7 +241,8 @@ class Poetry(PyprojectCommon):
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
-        self._poetry_version = version or 1
+        version = version or 1
+        self._poetry_version = version
         v2_mappings = {
             "homepage": ["urls", "homepage"],
             "repository": ["urls", "repository"],
@@ -282,10 +270,7 @@ class Poetry(PyprojectCommon):
         if poetry_version == 1:
             return person.to_name_email_string()
         else:
-            response = {"name": person.full_name}
-            if person.email:
-                response["email"] = person.email
-            return response
+            return _pep621_person(person)
 
     @staticmethod
     def _to_person(
@@ -297,16 +282,7 @@ class Poetry(PyprojectCommon):
             if "email" in person_obj:
                 temp = f"{temp} <{person_obj['email']}>"
             person_obj = temp
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file."""
@@ -318,24 +294,19 @@ class Poetry(PyprojectCommon):
             person, poetry_version=self._poetry_version
         )
 
-        # Call parent sync method
-        super().sync(metadata)
-
-        # Restore original _from_person method
-        self._from_person = original_from_person  # type: ignore
+        try:
+            # Call parent sync method
+            super().sync(metadata)
+        finally:
+            # Restore original _from_person method
+            self._from_person = original_from_person  # type: ignore
 
         if metadata.license:
             self.license = license_expression(metadata.license)
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
-            if (
-                "description" in self._data["project"]
-                and "\n" in self._data["project"]["description"]
-            ):
-                self._data["project"]["description"] = tomlkit.string(
-                    self._data["project"]["description"], multiline=True
-                )
+            multiline_description(self._data["project"])
             # Move urls section to the end if it exists
             if "urls" in self._data["project"]:
                 urls = self._data["project"].pop("urls")
@@ -372,10 +343,7 @@ class Pep621(PyprojectCommon):
     @staticmethod
     def _from_person(person: Person | Entity):
         """Convert project metadata person object to a PEP 621 person table."""
-        response = {"name": person.full_name}
-        if person.email:
-            response["email"] = person.email
-        return response
+        return _pep621_person(person)
 
     @staticmethod
     def _to_person(person_obj: str | dict) -> Entity | Person | None:
@@ -388,22 +356,21 @@ class Pep621(PyprojectCommon):
                 temp = f"{temp} <{person_obj['email']}>"
             person_obj = temp
 
-        try:
-            return Person.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.info(f"Cannot convert {person_obj} to Person object, trying Entity.")
-
-        try:
-            return Entity.from_name_email_string(person_obj)
-        except (ValueError, AttributeError):
-            logger.warning(f"Cannot convert {person_obj} to Entity.")
-            return None
+        return parse_name_email(person_obj)
 
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file and fix license field."""
         super().sync(metadata)
         if metadata.license:
             self.license = license_expression(metadata.license)
+
+
+def _pep621_person(person: Person | Entity) -> dict[str, str]:
+    """Convert a person/entity to a PEP 621 person table."""
+    response = {"name": person.full_name}
+    if person.email:
+        response["email"] = person.email
+    return response
 
 
 def _builds_with_poetry(data: Any) -> bool:
@@ -445,7 +412,7 @@ class Pyproject(wrapt.ObjectProxy):
         if not path.is_file():
             raise FileNotFoundError(f"pyproject file {path} not found")
 
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             data = load(f)
 
         # inspect file to pick suitable project metadata writer

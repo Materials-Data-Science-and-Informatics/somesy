@@ -222,6 +222,8 @@ repos:
 >
 > Please add the latest version of Somesy to your project. You can update the version of Somesy in your config file now and later to use the newest versions as they become available.
 
+The hook runs when `.somesy.toml`, `somesy.toml`, `pyproject.toml`, `package.json`, `Project.toml`, `Cargo.toml` or `fpm.toml` change, also in subfolders.
+
 Note that `pre-commit` gives `somesy` the [staged](https://git-scm.com/book/en/v2/Getting-Started-What-is-Git%3F) version of files,
 so when using `somesy` with pre-commit, keep in mind that
 
@@ -252,7 +254,7 @@ Here is an overview of all the currently supported files and formats.
 1. `pyproject.toml` support is based on the metadata standard, not on the build backend: the PEP 621 `[project]` table is handled for **uv**, **hatchling**, **flit**, **PDM**, **setuptools** and **Poetry 2.x**, while **Poetry 1.x** is handled through its own `[tool.poetry]` table. `somesy` also supports PEP 621 `dynamic` fields — fields listed in `dynamic` (e.g. `version`) are not overwritten during sync
 2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
-4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses
+4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses. It also does not distinguish persons from organizations, so `somesy` treats a name containing a space as a person and any other name as an entity
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration
 6. For handling `codemeta.json` different options exists: Either (A) `somesy` removes any prior existing `codemata.json` files and re-creates it anew, or (B) `somesy` merges an existing `codemeta.json` with the information handled by `somesy`. See the [user manual](https://materials-data-science-and-informatics.github.io/somesy/main/manual/#codemeta) for additional details about CodeMeta handling.
 

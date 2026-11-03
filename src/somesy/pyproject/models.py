@@ -26,6 +26,27 @@ logger = getLogger("somesy")
 _PACKAGE_NAME_PATTERN = r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$"
 
 
+def _check_version(v):
+    """Validate version using PEP 440."""
+    try:
+        _ = parse_version(v)
+    except ValueError as err:
+        raise ValueError("Invalid version") from err
+    return v
+
+
+def _check_required_unless_dynamic(model):
+    """Validate that version and description are present unless listed in dynamic."""
+    dynamic = model.dynamic or []
+    if model.version is None and "version" not in dynamic:
+        raise ValueError("Field 'version' is required when not listed in 'dynamic'.")
+    if model.description is None and "description" not in dynamic:
+        raise ValueError(
+            "Field 'description' is required when not listed in 'dynamic'."
+        )
+    return model
+
+
 class STPerson(BaseModel):
     """Person model for PEP 621 `[project]` metadata."""
 
@@ -98,21 +119,12 @@ class PoetryConfig(BaseModel):
     @model_validator(mode="after")
     def validate_required_unless_dynamic(self):
         """Validate that version and description are present unless listed in dynamic."""
-        dynamic = self.dynamic or []
-        if self.version is None and "version" not in dynamic:
-            raise ValueError(
-                "Field 'version' is required when not listed in 'dynamic'."
-            )
-        if self.description is None and "description" not in dynamic:
-            raise ValueError(
-                "Field 'description' is required when not listed in 'dynamic'."
-            )
-        return self
+        return _check_required_unless_dynamic(self)
 
     license: Annotated[
         LicenseEnum | list[LicenseEnum] | License | str | None,
         Field(description="An SPDX license identifier."),
-    ]
+    ] = None
 
     # v1 has str, v2 has STPerson
     authors: Annotated[list[str | STPerson], Field(description="Package authors")]
@@ -144,46 +156,27 @@ class PoetryConfig(BaseModel):
     @classmethod
     def validate_version(cls, v):
         """Validate version using PEP 440."""
-        try:
-            _ = parse_version(v)
-        except ValueError as err:
-            raise ValueError("Invalid version") from err
-        return v
+        return _check_version(v)
 
     @field_validator("authors", "maintainers")
     @classmethod
     def validate_email_format(cls, v):
-        """Validate person format, omit person that is not in correct format, don't raise an error."""
+        """Validate person format, raise on invalid emails and drop duplicate persons."""
         if v is None:
             return []
         validated = []
         seen = set()
         for author in v:
             if isinstance(author, STPerson) and author.email:
-                if not EMailAddress.validate_python(author.email):
-                    logger.warning(
-                        f"Invalid email format for author/maintainer {author}."
-                    )
-                else:
-                    author_str = str(author)
-                    if author_str not in seen:
-                        seen.add(author_str)
-                        validated.append(author)
-                    else:
-                        logger.warning(f"Same person {author} is added multiple times.")
-            elif (
-                isinstance(author, str)
-                and "@" in author
-                and EMailAddress.validate_python(author.split(" ")[-1][1:-1])
-            ):
+                EMailAddress.validate_python(author.email)
+            elif isinstance(author, str) and "@" in author:
+                EMailAddress.validate_python(author.split(" ")[-1][1:-1])
+            author_str = str(author)
+            if author_str not in seen:
+                seen.add(author_str)
                 validated.append(author)
             else:
-                author_str = str(author)
-                if author_str not in seen:
-                    seen.add(author_str)
-                    validated.append(author)
-                else:
-                    logger.warning(f"Same person {author} is added multiple times.")
+                logger.warning(f"Same person {author} is added multiple times.")
 
         return validated
 
@@ -197,6 +190,7 @@ class PoetryConfig(BaseModel):
         else:
             if not v.is_file():
                 logger.warning("Readme file does not exist")
+        return v
 
 
 class ContentTypeEnum(Enum):
@@ -247,16 +241,7 @@ class Pep621Config(BaseModel):
     @model_validator(mode="after")
     def validate_required_unless_dynamic(self):
         """Validate that version and description are present unless listed in dynamic."""
-        dynamic = self.dynamic or []
-        if self.version is None and "version" not in dynamic:
-            raise ValueError(
-                "Field 'version' is required when not listed in 'dynamic'."
-            )
-        if self.description is None and "description" not in dynamic:
-            raise ValueError(
-                "Field 'description' is required when not listed in 'dynamic'."
-            )
-        return self
+        return _check_required_unless_dynamic(self)
 
     readme: Path | list[Path] | File | None = None
     license: License | LicenseEnum | str | None = Field(
@@ -272,11 +257,7 @@ class Pep621Config(BaseModel):
     @classmethod
     def validate_version(cls, v):
         """Validate version using PEP 440."""
-        try:
-            _ = parse_version(v)
-        except ValueError as err:
-            raise ValueError("Invalid version") from err
-        return v
+        return _check_version(v)
 
     @field_validator("readme")
     @classmethod
@@ -284,13 +265,14 @@ class Pep621Config(BaseModel):
         """Validate readme file(s) by checking whether files exist."""
         if isinstance(v, list):
             if any(not e.is_file() for e in v):
-                raise ValueError("Some file(s) do not exist")
+                logger.warning("Some readme file(s) do not exist")
         elif type(v) is File:
             if not Path(v.file).is_file():
-                raise ValueError("File does not exist")
+                logger.warning("Readme file does not exist")
         else:
             if not v.is_file():
-                raise ValueError("File does not exist")
+                logger.warning("Readme file does not exist")
+        return v
 
     @field_validator("authors", "maintainers")
     @classmethod

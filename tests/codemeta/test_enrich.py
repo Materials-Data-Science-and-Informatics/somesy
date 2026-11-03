@@ -382,3 +382,50 @@ def test_project_root_defaults_to_the_given_root(tmp_path):
     enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
 
     assert _versions(codemeta)["requests"] == "2.32.3"
+
+
+def test_poetry_multi_constraint_dependency_does_not_crash(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        "[tool.poetry]\nname = 'example'\n\n[tool.poetry.dependencies]\n"
+        "python = '^3.10'\n"
+        "foo = [{version='>=1', python='<3.12'}, {version='>=2', python='>=3.12'}]\n"
+    )
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    (foo,) = codemeta["softwareRequirements"]
+    assert foo["version"] == ">=1, >=2"
+
+
+def test_lock_with_multiple_versions_omits_version(tmp_path):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'example'\ndependencies = ['foo>=1', 'bar']\n"
+    )
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "foo"\nversion = "1.0"\n\n'
+        '[[package]]\nname = "foo"\nversion = "2.0"\n\n'
+        '[[package]]\nname = "bar"\nversion = "3.0"\n'
+    )
+    codemeta = {}
+    enrich(codemeta, {"pyproject": tmp_path / "pyproject.toml"}, tmp_path)
+
+    versions = {r["name"]: r.get("version") for r in codemeta["softwareRequirements"]}
+    assert versions == {"foo": ">=1", "bar": "3.0"}
+
+
+def test_pom_ignores_dependency_management_and_unresolved_versions(tmp_path):
+    (tmp_path / "pom.xml").write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0">'
+        "<dependencyManagement><dependencies><dependency>"
+        "<artifactId>managed</artifactId><version>1</version>"
+        "</dependency></dependencies></dependencyManagement>"
+        "<dependencies><dependency><artifactId>direct</artifactId>"
+        "<version>${direct.version}</version></dependency></dependencies>"
+        "</project>"
+    )
+    codemeta = {}
+    enrich(codemeta, {"pom_xml": tmp_path / "pom.xml"}, tmp_path)
+
+    (req,) = codemeta["softwareRequirements"]
+    assert req["name"] == "direct"
+    assert "version" not in req

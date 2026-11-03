@@ -9,7 +9,9 @@ from somesy.core.models import ProjectMetadata, SomesyConfig
 from somesy.core.types import ContributionTypeEnum, LicenseEnum
 
 
-def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatch):
+def test_discover_input(
+    create_files, file_types, monkeypatch: pytest.MonkeyPatch, caplog
+):
     tmp_path = create_files(
         [
             (file_types.SOMESY, "somesy.toml"),
@@ -37,8 +39,13 @@ def test_discover_input(create_files, file_types, monkeypatch: pytest.MonkeyPatc
 
     # Test 2: input is given but does not exist, instead default exists and selected
     input_file = tmp_path / Path("somesy2.toml")
-    result = discover_input(input_file)
+    with caplog.at_level("WARNING", logger="somesy"):
+        result = discover_input(input_file)
     assert result == Path(".somesy.toml")
+    assert any(
+        r.levelname == "WARNING" and "does not exist" in r.getMessage()
+        for r in caplog.records
+    )
 
     # Test 3: should raise an error when given file or defaults dont exist
     if sys.platform == "win32":
