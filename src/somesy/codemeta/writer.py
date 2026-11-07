@@ -8,6 +8,7 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+from somesy.codemeta.enrich import ENRICHED_KEYS
 from somesy.codemeta.utils import V3_CONTEXT, validate_codemeta
 from somesy.core.core import write_json
 from somesy.core.models import Entity, Person, ProjectMetadata
@@ -32,6 +33,8 @@ class CodeMeta(ProjectMetadataWriter):
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self.merge = merge
+        self._stale: dict[str, Any] = {}
+        self._key_order: list[str] = []
         self._default_context = V3_CONTEXT
         mappings: FieldKeyMapping = {
             "repository": ["codeRepository"],
@@ -142,6 +145,15 @@ class CodeMeta(ProjectMetadataWriter):
 
         # copy the _data
         data = self._data.copy()
+
+        # keep old values of fields nothing refreshed, in their original place
+        for key, value in self._stale.items():
+            data.setdefault(key, value)
+        if self._stale:
+            order = {key: i for i, key in enumerate(self._key_order)}
+            data = OrderedDict(
+                sorted(data.items(), key=lambda kv: order.get(kv[0], len(order)))
+            )
 
         # set license
         if "license" in data:
@@ -298,6 +310,12 @@ class CodeMeta(ProjectMetadataWriter):
         else:
             self._upgrade_to_v3()
             self._data["@type"] = "SoftwareSourceCode"
+            # Fields somesy produces (from metadata or enrichment) are refreshed:
+            # set aside old values, those still absent when saving are kept.
+            self._key_order = list(self._data)
+            self._stale = {
+                key: self._data.pop(key) for key in ENRICHED_KEYS if key in self._data
+            }
             if metadata.authors():
                 self._data["author"] = []
             self._data["maintainer"] = []

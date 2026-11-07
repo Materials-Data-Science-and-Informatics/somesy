@@ -340,9 +340,7 @@ def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, m
     assert data["readme"] == "https://example.org/old-readme"
 
 
-def test_merge_keeps_enrichable_fields_if_nothing_produces_them(
-    somesy_input, tmp_path
-):
+def test_merge_keeps_enrichable_fields_if_nothing_produces_them(somesy_input, tmp_path):
     codemeta_file = tmp_path / "codemeta.json"
     write_json(
         {

@@ -154,7 +154,8 @@ class XMLProxy:
             keep_root: If true, the root tag name will be preserved (`{"root_tag": {...}}`)
 
         """
-        if not len(self):  # leaf -> assume it's a primitive value
+        # leaf -> assume it's a primitive value (comments do not make a node)
+        if all(child.is_comment for child in self):
             return self._node.text or ""
 
         dct = {}
@@ -388,36 +389,20 @@ class XMLProxy:
 
         Note that the passed value must be either an XML element already, or be a pure JSON-like object.
         """
+        # validate and convert everything first, so errors leave the tree untouched
         if isinstance(key, str):
-            nodes = self.get(key, as_nodes=True)
-            # delete all existing elements if multiple exist or are passed
-            if len(nodes) > 1 or (len(nodes) and isinstance(val, list)):
-                del self[key]
-                nodes = []
-            # now we can assume there's zero or one suitable target elements
-            if nodes:  # if it is one, clear it out
-                nodes[0]._clear()
+            key_name: str = self._qualified_key(key)
         else:  # an XMLProxy object was passed as key -> try to use that
             if isinstance(val, list):
                 raise TypeError(
                     "Cannot overwrite a single element with a list of values!"
                 )
-            # ensure the target node is cleared out and use it as target
-            key._clear()
-            nodes = [key]
             if key.tag is None:
                 raise ValueError("Cannot overwrite an XML element without a tag")
-            key = key.tag
-
-        # ensure key string is qualified with a namespace
-        key_name: str = self._qualified_key(key)
+            key_name = self._qualified_key(key.tag)
 
         # normalize passed value(s) to be list (general case)
         vals = val if isinstance(val, list) else [val]
-
-        # ensure there is the required number of target element nodes
-        for _ in range(len(vals) - len(nodes)):
-            nodes.append(self._wrap(ET.SubElement(self._node, key_name)))
 
         # normalize values no XML element nodes
         nvals: list[XMLProxy] = []
@@ -435,6 +420,25 @@ class XMLProxy:
                 )
 
             nvals.append(obj)
+
+        # now mutate the tree
+        if isinstance(key, str):
+            nodes = self.get(key, as_nodes=True)
+            # delete all existing elements if multiple exist or are passed
+            if len(nodes) > 1 or (len(nodes) and isinstance(val, list)):
+                del self[key]
+                nodes = []
+            # now we can assume there's zero or one suitable target elements
+            if nodes:  # if it is one, clear it out
+                nodes[0]._clear()
+        else:
+            # ensure the target node is cleared out and use it as target
+            key._clear()
+            nodes = [key]
+
+        # ensure there is the required number of target element nodes
+        for _ in range(len(vals) - len(nodes)):
+            nodes.append(self._wrap(ET.SubElement(self._node, key_name)))
 
         for node, item in zip(nodes, nvals, strict=False):
             # transplant node contents into existing element (so it is inserted in-place)

@@ -96,6 +96,7 @@ def test_from_to_person(person: Person, entity: Entity):
     assert CFF._from_person(person) == person.model_dump(by_alias=True)
 
     p = CFF._to_person(CFF._from_person(person))
+    assert p is not None
     assert p.full_name == person.full_name
     assert p.email == person.email
     assert p.orcid == str(person.orcid)
@@ -104,6 +105,7 @@ def test_from_to_person(person: Person, entity: Entity):
     assert CFF._from_person(entity) == entity.model_dump(by_alias=True)
 
     e = CFF._to_person(CFF._from_person(entity))
+    assert e is not None
     assert e.name == entity.name
     assert e.email == entity.email
     assert isinstance(e, Entity)
@@ -291,5 +293,4 @@ def test_sync_with_partial_people_does_not_crash(tmp_path, person: Person):
     cff.sync(_metadata(person))
     cff.save()
     names = [a.get("family-names") or a.get("name") for a in cff._data["authors"]]
-    assert person.family_names in names
-    assert "Org" in names
+    assert names == [person.family_names]

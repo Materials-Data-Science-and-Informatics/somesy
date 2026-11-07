@@ -16,6 +16,9 @@ XSI_URL = "http://www.w3.org/2001/XMLSchema-instance"
 
 logger = logging.getLogger("somesy")
 
+_ENTITY_MARK = "__somesy_entity__"
+"""Private record key flagging that a POM person is a known organisation."""
+
 
 class POM(ProjectMetadataWriter):
     """Java Maven pom.xml parser and saver."""
@@ -43,6 +46,7 @@ class POM(ProjectMetadataWriter):
             "authors": ["developers", "developer"],
             "contributors": ["contributors", "contributor"],
         }
+        self._entity_names: set[str] = set()
         super().__init__(
             path,
             create_if_not_exists=create_if_not_exists,
@@ -134,7 +138,7 @@ class POM(ProjectMetadataWriter):
     ) -> list[dict[str, Any]]:
         """Convert people to POM records, keeping free-text roles of matching existing entries."""
         known = {c.value for c in ContributionTypeEnum}
-        old_people = [(self._to_person(e), e) for e in existing]
+        old_people = [(self._to_person(e), e) for e in self._mark_entities(existing)]
         records = []
         for person in people:
             record = self._from_person(person)
@@ -152,18 +156,32 @@ class POM(ProjectMetadataWriter):
             records.append(record)
         return records
 
+    def _mark_entities(self, people: list[dict]) -> list[dict]:
+        """Mark records named like a known organisation, so they are parsed as Entity."""
+        return [
+            {**p, _ENTITY_MARK: True}
+            if isinstance(p, dict) and p.get("name") in self._entity_names
+            else p
+            for p in people
+        ]
+
+    def _sync_person_list(self, old: list[Any], new) -> list[Any]:
+        """Sync people, matching existing records against known organisations first."""
+        return super()._sync_person_list(self._mark_entities(old), new)
+
     @staticmethod
     def _to_person(person_obj: dict) -> Entity | Person | None:
         """Parse POM XML person to a somesy Person.
 
-        POM has no person/entity distinction, so this is a heuristic: a name
-        containing a space is a Person (last word is the family name),
-        anything else is an Entity.
+        POM has no person/entity distinction. During sync, names of organisations
+        known from the input metadata are parsed as Entity. Otherwise this is a
+        heuristic: a name containing a space is a Person (last word is the
+        family name), anything else is an Entity.
         """
         if "name" not in person_obj:
             logger.warning(f"POM person without name, omitting: {person_obj}")
             return None
-        if " " in person_obj["name"]:
+        if " " in person_obj["name"] and not person_obj.get(_ENTITY_MARK):
             names = person_obj["name"].split()
             gnames = " ".join(names[:-1])
             fname = names[-1]
@@ -298,6 +316,7 @@ class POM(ProjectMetadataWriter):
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
+        self._entity_names = {e.name for e in metadata.entities}
         super().sync(metadata)
         if licenses := metadata.license:
             self.license = (
