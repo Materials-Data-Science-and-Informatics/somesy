@@ -293,4 +293,5 @@ def test_sync_with_partial_people_does_not_crash(tmp_path, person: Person):
     cff.sync(_metadata(person))
     cff.save()
     names = [a.get("family-names") or a.get("name") for a in cff._data["authors"]]
-    assert names == [person.family_names]
+    # the incomplete entry cannot be matched, so it is kept untouched
+    assert names == [person.family_names, "Lonely"]
