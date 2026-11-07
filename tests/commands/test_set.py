@@ -116,3 +116,25 @@ def test_set_invalid_license_error_is_one_line(tmp_path, create_files, file_type
 
     assert len(str(error.value).splitlines()) == 1
     assert len(str(error.value)) < 200
+
+
+def test_set_without_project_table_gives_clear_error(tmp_path, monkeypatch):
+    """A somesy.toml without [project] reports a clear error, not KeyError."""
+    (tmp_path / "somesy.toml").write_text("[config]\nno_sync_cff = true\n")
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["set", "name", "x"])
+
+    assert result.exit_code == 1
+    assert "[project]" in result.output
+    assert "KeyError" not in result.output
+
+
+def test_set_works_on_incomplete_somesy_file(tmp_path):
+    """Only the changed field is validated, so incomplete files can be edited."""
+    path = tmp_path / "somesy.toml"
+    path.write_text("[project]\nname = 'p'\n")
+
+    set_project_value(path, "version", "1.0.0")
+
+    assert get_input_content(path)["project"]["version"] == "1.0.0"

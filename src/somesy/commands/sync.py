@@ -1,11 +1,14 @@
 """Sync selected metadata files with given input file."""
 
+import json
 import logging
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from pydantic import ValidationError
+from rich.markup import escape
 from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
@@ -83,6 +86,7 @@ def _sync_file(
 ):
     """Sync metadata to a file using the provided writer."""
     logger.log(VERBOSE, f"Loading '{file.name}' ...")
+    existed = file.exists()
     if writer_cls == CodeMeta:
         writer: ProjectMetadataWriter = writer_cls(
             file, merge=merge_codemeta, pass_validation=pass_validation
@@ -91,13 +95,20 @@ def _sync_file(
         writer = writer_cls(file, pass_validation=pass_validation)
     logger.log(VERBOSE, f"Syncing '{file.name}' ...")
     original_data = _semantic_data(writer._data)
+    if writer_cls == CodeMeta and existed:
+        # the writer may already have upgraded a legacy file in memory:
+        # compare against what is actually on disk
+        try:
+            original_data = _semantic_data(json.loads(file.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            pass
     writer.sync(metadata)
     if writer_cls == CodeMeta and codemeta_sources is not None:
         root = codemeta_root or file.parent
         enrich_codemeta(
             writer._data, codemeta_sources, root, codemeta_project_root or root
         )
-    if _semantic_data(writer._data) != original_data:
+    if not existed or _semantic_data(writer._data) != original_data:
         writer.save(file)
         logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
 
@@ -120,6 +131,16 @@ def _sync_files(
     for file in files:
         if file.is_file() or create_if_missing:
             _sync_file(metadata, file, writer_class, **kwargs)
+
+
+def _describe_error(error: Exception) -> str:
+    """Return a short one-line description of a package loading error."""
+    if isinstance(error, ValidationError):
+        return "; ".join(
+            f"{'.'.join(str(part) for part in err['loc'])}: {err['msg']}"
+            for err in error.errors()
+        )
+    return str(error) or type(error).__name__
 
 
 def sync(
@@ -165,6 +186,7 @@ def sync(
     # Then sync each package if defined
     if conf.packages:
         packages = [conf.packages] if isinstance(conf.packages, Path) else conf.packages
+        skipped: list[Path] = []
         for package in packages:
             logger.info(f"\n[bold blue]Processing package {package}...[/bold blue]")
 
@@ -172,6 +194,7 @@ def sync(
             config_files = [package / file for file in INPUT_FILES_ORDERED]
             package_input = None
             config_file: Path | None = None
+            load_error: Exception | None = None
 
             for config_file in config_files:
                 try:
@@ -182,12 +205,22 @@ def sync(
                     break
                 except (FileNotFoundError, RuntimeError):
                     continue
+                except (ValueError, KeyError, OSError) as error:  # invalid config
+                    load_error = error
+                    break
 
             if package_input is None:
-                logger.warning(
-                    f"No valid somesy config found in package {package} "
-                    f"(tried: {', '.join(str(f) for f in config_files)})"
-                )
+                if load_error is not None:
+                    logger.warning(
+                        f"Skipping package {package}: cannot load '{config_file}': "
+                        f"{escape(_describe_error(load_error))}"
+                    )
+                else:
+                    logger.warning(
+                        f"No valid somesy config found in package {package} "
+                        f"(tried: {', '.join(str(f) for f in config_files)})"
+                    )
+                skipped.append(package)
                 continue
 
             # The package's own config is the base; only options explicitly
@@ -208,17 +241,20 @@ def sync(
                 }
             )
 
-            # Set default CFF and CodeMeta paths in package directory if not specified
-            if not package_input.config.no_sync_cff:
-                package_input.config.cff_file = Path("CITATION.cff")
-            if not package_input.config.no_sync_codemeta:
-                package_input.config.codemeta_file = Path("codemeta.json")
+            # CFF and CodeMeta paths are resolved relative to the package
+            # directory; unset ones fall back to the config defaults.
 
             # Recursively call sync on the package
             sync(
                 package_input,
                 is_package=True,
                 project_root=project_root or base_dir,
+            )
+
+        if skipped:
+            logger.warning(
+                f"Skipped {len(skipped)} package(s) that could not be loaded: "
+                f"{', '.join(str(p) for p in skipped)}"
             )
 
 

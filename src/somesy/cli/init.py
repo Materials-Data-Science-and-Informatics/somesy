@@ -9,7 +9,7 @@ import typer
 from somesy.commands import init_config, write_somesy_file
 from somesy.core.core import discover_input
 from somesy.core.log import SomesyLogLevel, set_log_level
-from somesy.core.models import Person, SomesyConfig
+from somesy.core.models import Person, SomesyConfig, SomesyInput
 from somesy.core.types import LicenseEnum
 from somesy.git.harvest import harvest as harvest_git
 from somesy.harvest import harvest_sources
@@ -118,6 +118,20 @@ def initialize(
 ):
     """Harvest project metadata and create a somesy.toml file."""
     if ctx.invoked_subcommand is not None:
+        ignored = [
+            name
+            for name, given in (
+                ("--output-file", output_file != Path("somesy.toml")),
+                ("--overwrite", overwrite),
+                ("--non-interactive", non_interactive),
+            )
+            if given
+        ]
+        if ignored:
+            logger.warning(
+                f"Option(s) {', '.join(ignored)} of 'init' are ignored by "
+                f"'init {ctx.invoked_subcommand}'."
+            )
         return
     root = Path.cwd()
     output = output_file if output_file.is_absolute() else root / output_file
@@ -178,10 +192,19 @@ _CONFIG_TARGETS = [
 def config():
     """Set CLI configs for somesy."""
     # check if input file exists, if not, try to find it from default list
-    input_file_default = discover_input()
+    try:
+        input_file_default = discover_input()
+    except FileNotFoundError:
+        input_file_default = Path("somesy.toml")  # first-time creation
 
     # prompt for inputs
     input_file = Path(typer.prompt("Input file path", default=input_file_default))
+    # validate the target before asking anything else
+    if not input_file.exists() and not SomesyInput.is_somesy_file_path(input_file):
+        raise FileNotFoundError(
+            f"Input file not found: {input_file} (only somesy.toml files can be "
+            "created by this command)."
+        )
     options: dict[str, Any] = {"input_file": Path(input_file)}
 
     for key, label, default_file, default_sync in _CONFIG_TARGETS:
