@@ -6,6 +6,7 @@ import functools
 import json
 import logging
 import re
+from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
 from typing import Annotated, Any
@@ -700,11 +701,68 @@ def parse_name_email(person_obj: str) -> Person | Entity | None:
         return None
 
 
+def _same_identifier(a, b) -> bool:
+    """Return whether two records share an identifier (orcid or rorid)."""
+    for attr in ("orcid", "rorid"):
+        x, y = getattr(a, attr, None), getattr(b, attr, None)
+        if x is not None and y is not None and str(x) == str(y):
+            return True
+    return False
+
+
+def _distinct_identifiers(a, b) -> bool:
+    """Return whether two records have different identifiers (orcid or rorid)."""
+    for attr in ("orcid", "rorid"):
+        x, y = getattr(a, attr, None), getattr(b, attr, None)
+        if x is not None and y is not None and str(x) != str(y):
+            return True
+    return False
+
+
+def find_matching_person(
+    person: Person | Entity, candidates: Sequence[Person | Entity]
+) -> int | None:
+    """Return the index of the candidate that is the same person, or None.
+
+    If several candidates match, a warning naming them is logged and the
+    candidate with the same ORCID/ROR ID is used (else the first match).
+    """
+    matches = [i for i, c in enumerate(candidates) if c.same_person(person)]
+    if not matches:
+        return None
+    if len(matches) == 1:
+        return matches[0]
+    names = ", ".join(
+        f"'{candidates[i].full_name}' (position {i + 1})" for i in matches
+    )
+    chosen = next(
+        (i for i in matches if _same_identifier(candidates[i], person)), matches[0]
+    )
+    logger.warning(
+        f"'{person.full_name}' matches several people: {names}. "
+        f"Using the one at position {chosen + 1}."
+    )
+    return chosen
+
+
 def _ensure_distinct(items: list, kind: str) -> list:
-    """Raise a ValueError if the same person/entity is listed twice."""
-    for i in range(len(items)):
-        for j in range(i + 1, len(items)):
-            if items[i].same_person(items[j]):
+    """Raise a ValueError if the same person/entity is listed twice.
+
+    A pair is not reported if one of its members is ambiguous, i.e. also matches
+    two entries with different ORCIDs/ROR IDs (e.g. two ORCIDs and one without).
+    """
+    n = len(items)
+    same = [
+        [i != j and items[i].same_person(items[j]) for j in range(n)] for i in range(n)
+    ]
+
+    def ambiguous(i: int) -> bool:
+        nb = [k for k in range(n) if same[i][k]]
+        return any(_distinct_identifiers(items[a], items[b]) for a in nb for b in nb)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if same[i][j] and not ambiguous(i) and not ambiguous(j):
                 a = pretty_repr(json.loads(items[i].model_dump_json()))
                 b = pretty_repr(json.loads(items[j].model_dump_json()))
                 msg = f"Same {kind} is listed twice:\n{a}\n{b}"

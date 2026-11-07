@@ -92,6 +92,9 @@ def test_detect_duplicate_person(somesy_input):
     metadata = somesy_input.project
 
     meta = metadata.model_copy()
+    # the input's own "Jane Doe" (other orcid) would make P3 ambiguous
+    # (see tests/processing/test_people_identity.py), so leave her out here
+    meta.people = [p for p in meta.people if p.given_names != "Jane"]
     meta.people.append(Person(**p1))
     ProjectMetadata(**meta.model_dump())
 
