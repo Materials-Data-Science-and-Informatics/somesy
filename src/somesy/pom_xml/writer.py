@@ -1,19 +1,18 @@
 """Writer adapter for pom.xml files."""
 
-import io
 import logging
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
 
-import defusedxml.ElementTree as DET
-
 from somesy.core.models import Entity, Person
 from somesy.core.types import ContributionTypeEnum
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
-from . import POM_ROOT_ATRS, POM_URL
+from . import POM_PREF, POM_ROOT_ATRS, POM_URL
 from .xmlproxy import XMLProxy
+
+XSI_URL = "http://www.w3.org/2001/XMLSchema-instance"
 
 logger = logging.getLogger("somesy")
 
@@ -53,15 +52,15 @@ class POM(ProjectMetadataWriter):
 
     def _init_new_file(self):
         """Initialize new pom.xml file."""
-        pom = XMLProxy(ET.Element("project", POM_ROOT_ATRS))
-        pom["properties"] = {"info.versionScheme": "semver-spec"}
-        buf = io.BytesIO()
-        ET.ElementTree(pom._node).write(buf, encoding="UTF-8", xml_declaration=True)
-        buf.seek(0)
-        parser = DET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
-        root = DET.parse(buf, parser=parser).getroot()
         ET.register_namespace("", POM_URL)
-        self._data = XMLProxy(root, default_namespace=POM_URL)
+        ET.register_namespace("xsi", XSI_URL)
+        root = ET.Element(
+            POM_PREF + "project",
+            {"{" + XSI_URL + "}schemaLocation": POM_ROOT_ATRS["xsi:schemaLocation"]},
+        )
+        pom = XMLProxy(root, default_namespace=POM_URL)
+        pom["properties"] = {"info.versionScheme": "semver-spec"}
+        self._data = pom
 
     def _load(self):
         """Load the POM file."""
