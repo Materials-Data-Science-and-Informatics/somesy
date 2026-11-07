@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Literal, cast, overload
 
 import defusedxml.ElementTree as DET
+
+from somesy.core.core import atomic_write
 
 # shallow type hint mostly for documentation purpose
 JSONLike = Any
@@ -96,7 +99,9 @@ class XMLProxy:
         if self._def_ns and "default_namespace" not in kwargs:
             kwargs["default_namespace"] = self._def_ns
         indent(et.getroot())
-        et.write(path, encoding="UTF-8", xml_declaration=header, **kwargs)
+        buffer = BytesIO()
+        et.write(buffer, encoding="UTF-8", xml_declaration=header, **kwargs)
+        atomic_write(path, buffer.getvalue())
 
     def __repr__(self):
         """See `object.__repr__`."""

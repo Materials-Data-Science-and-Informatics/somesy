@@ -289,7 +289,6 @@ def test_merge_warns_when_both_ci_keys_exist(somesy_input, tmp_path, caplog):
 def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, mocker):
     from datetime import date
 
-    from somesy.codemeta.enrich import enrich
     from somesy.git.models import GitMetadata
 
     pyproject = tmp_path / "pyproject.toml"
@@ -323,9 +322,14 @@ def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, m
     project.version = None  # version then comes from enrichment
     project.repository = None
 
-    cm = CodeMeta(codemeta_file, merge=True, pass_validation=True)
+    cm = CodeMeta(
+        codemeta_file,
+        merge=True,
+        pass_validation=True,
+        enrich_sources={"pyproject": pyproject},
+        enrich_root=tmp_path,
+    )
     cm.sync(project)
-    enrich(cm._data, {"pyproject": pyproject}, tmp_path)
     cm.save()
 
     data = json.loads(codemeta_file.read_text())
@@ -358,3 +362,47 @@ def test_merge_keeps_enrichable_fields_if_nothing_produces_them(somesy_input, tm
     data = json.loads(codemeta_file.read_text())
     assert data["dateModified"] == "2000-01-01"
     assert data["runtimePlatform"] == "Old 1"
+
+
+def test_merge_enrichment_is_complete_after_sync(somesy_input, tmp_path, mocker):
+    """Enrichment and restoring unrefreshed values happen in sync(), not save()."""
+    from datetime import date
+
+    from somesy.git.models import GitMetadata
+
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[project]\nname = 'x'\ndependencies = ['requests>=3']\n")
+    codemeta_file = tmp_path / "codemeta.json"
+    write_json(
+        {
+            "@context": "https://w3id.org/codemeta/3.1",
+            "@type": "SoftwareSourceCode",
+            "name": "x",
+            "dateModified": "2000-01-01",
+            "readme": "https://example.org/old-readme",
+            "downloadUrl": "https://example.com/download",
+            "softwareRequirements": ["old-dependency"],
+        },
+        codemeta_file,
+    )
+    mocker.patch(
+        "somesy.codemeta.enrich.harvest_git",
+        return_value=GitMetadata(date_modified=date(2024, 5, 6)),
+    )
+    cm = CodeMeta(
+        codemeta_file,
+        merge=True,
+        pass_validation=True,
+        enrich_sources={"pyproject": pyproject},
+        enrich_root=tmp_path,
+    )
+    cm.sync(somesy_input.project)
+
+    # _data is final right after sync: refreshed, kept and original key order
+    assert cm._data["dateModified"] == "2024-05-06"
+    assert cm._data["softwareRequirements"][0]["name"] == "requests"
+    assert cm._data["readme"] == "https://example.org/old-readme"
+    keys = list(cm._data)
+    assert keys.index("dateModified") < keys.index("readme") < keys.index("downloadUrl")
+    assert not hasattr(cm, "_stale")
+    assert not hasattr(cm, "_key_order")

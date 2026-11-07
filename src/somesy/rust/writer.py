@@ -6,8 +6,9 @@ from pathlib import Path
 from typing import Any
 
 from rich.pretty import pretty_repr
-from tomlkit import dump, load, string, table
+from tomlkit import dumps, load, string, table
 
+from somesy.core.core import atomic_write
 from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import (
     FieldKeyMapping,
@@ -78,8 +79,7 @@ class Rust(ProjectMetadataWriter):
                 self._data["package"]["description"], multiline=True
             )
 
-        with open(path, "w", encoding="utf-8") as f:
-            dump(self._data, f)
+        atomic_write(path, dumps(self._data))
 
     def _get_property(
         self, key: str | list[str] | IgnoreKey, *, remove: bool = False, **kwargs

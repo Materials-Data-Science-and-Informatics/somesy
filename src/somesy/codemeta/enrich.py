@@ -58,7 +58,7 @@ def enrich(
     ``codemeta`` already contains data written from somesy.toml.  This function
     therefore only adds optional fields and never replaces an existing value.
     In merge mode, the writer withholds stale values of these fields from
-    ``codemeta`` until saving, so they are refreshed here (see `ENRICHED_KEYS`).
+    ``codemeta`` while enriching, so they are refreshed here (see `ENRICHED_KEYS`).
 
     Args:
         codemeta: The CodeMeta data to fill in place.

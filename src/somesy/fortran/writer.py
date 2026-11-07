@@ -6,6 +6,7 @@ from pathlib import Path
 import tomlkit
 from rich.pretty import pretty_repr
 
+from somesy.core.core import atomic_write
 from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import (
     FieldKeyMapping,
@@ -93,8 +94,7 @@ class Fortran(ProjectMetadataWriter):
         path = path or self.path
         format_toml_data(self._data)
 
-        with open(path, "w", encoding="utf-8") as f:
-            tomlkit.dump(self._data, f)
+        atomic_write(path, tomlkit.dumps(self._data))
 
     @staticmethod
     def _from_person(person: Person | Entity):

@@ -6,6 +6,7 @@ from pathlib import Path
 import tomlkit
 from pydantic import BaseModel
 
+from somesy.core.core import atomic_write
 from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
 
@@ -34,8 +35,7 @@ def write_somesy_file(
     }
     if config is not None:
         content["config"] = config.model_dump(mode="json", by_alias=True)
-    with open(path, "w" if overwrite else "x", encoding="utf-8") as file:
-        tomlkit.dump(content, file)
+    atomic_write(path, tomlkit.dumps(content), exclusive=not overwrite)
 
 
 def init_config(input_path: Path, options: dict) -> None:
@@ -78,8 +78,7 @@ def init_config(input_path: Path, options: dict) -> None:
         table["config"] = tomlkit.table()
     table["config"].update(options)
 
-    with open(input_path, "w", encoding="utf-8") as f:
-        tomlkit.dump(content, f)
+    atomic_write(input_path, tomlkit.dumps(content))
 
     logger.info(f"Input file ({input_path}) updated.")
     logger.debug(f"Input file content: {content}")

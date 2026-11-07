@@ -5,7 +5,7 @@ from pathlib import Path
 import tomlkit
 from pydantic import ValidationError
 
-from somesy.core.core import get_input_content
+from somesy.core.core import atomic_write, get_input_content
 from somesy.core.models import PartialProjectMetadata, SomesyInput
 
 SETTABLE_FIELDS = {
@@ -48,5 +48,4 @@ def set_project_value(input_file: Path, field: str, value: str) -> None:
                 reason = reason[:197] + "..."
         raise ValueError(f"Invalid value for '{field}': {reason}") from None
     content["project"][field] = value
-    with open(input_file, "w", encoding="utf-8") as file:
-        tomlkit.dump(content, file)
+    atomic_write(input_file, tomlkit.dumps(content))
