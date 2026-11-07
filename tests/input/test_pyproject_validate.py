@@ -271,3 +271,23 @@ def test_invalid_author_email_raises(config_cls):
         getattr(models, config_cls)(
             name="somesy", version="1.0.0", description="d", authors=authors
         )
+
+
+def test_missing_description_is_valid_pep621(tmp_path):
+    """PEP 621: description is optional."""
+    path = tmp_path / "pyproject.toml"
+    with open(path, "w+") as f:
+        dump({"project": {"name": "somesy", "version": "1.0.0"}}, f)
+    Pyproject(path)
+
+
+@pytest.mark.parametrize("field", ["authors", "license", "keywords"])
+def test_dynamic_fields_need_not_be_present_poetry2(tmp_path, field):
+    path = tmp_path / "pyproject.toml"
+    obj = {
+        "project": {"name": "somesy", "version": "1.0.0", "dynamic": [field]},
+        "tool": {"poetry": {"dependencies": {"python": "^3.10"}}},
+    }
+    with open(path, "w+") as f:
+        dump(obj, f)
+    Pyproject(path)
