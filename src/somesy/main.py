@@ -7,7 +7,7 @@ import typer
 
 from somesy import __version__
 from somesy.cli import fill, init, set_value, sync
-from somesy.core.log import SomesyLogLevel, init_log, set_log_level
+from somesy.core.log import SomesyLogLevel, init_log, reset_log_level, set_log_level
 
 app = typer.Typer()
 
@@ -47,6 +47,8 @@ def common(
     ),
 ):
     """General flags and arguments for somesy."""
+    # log level is process-global: forget any level from a previous invocation
+    reset_log_level()
     init_log()
 
     if sum(map(int, map(bool, [show_info, verbose, debug]))) > 1:

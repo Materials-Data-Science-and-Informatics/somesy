@@ -149,3 +149,39 @@ def test_multiple_inputs(create_files, file_types):
     assert all(isinstance(p, Path) for p in config.package_json_file)
     assert config.package_json_file[0] == tmp_path / "package.json"
     assert config.package_json_file[1] == tmp_path / "subproject/package.json"
+
+
+def _valid_pyproject(path):
+    path.write_text('[project]\nname = "x"\n\n[tool.somesy.project]\nname = "x"\n')
+
+
+def test_discover_missing_input_warns_naming_both_files(tmp_path, monkeypatch, caplog):
+    monkeypatch.chdir(tmp_path)
+    _valid_pyproject(tmp_path / "pyproject.toml")
+    with caplog.at_level("WARNING", logger="somesy"):
+        result = discover_input(Path("nope.toml"))
+    assert result == Path("pyproject.toml")
+    assert any(
+        "nope.toml" in r.getMessage() and "pyproject.toml" in r.getMessage()
+        for r in caplog.records
+        if r.levelname == "WARNING"
+    )
+
+
+@pytest.mark.parametrize(
+    "name,content",
+    [("somesy.toml", "this is [not toml"), ("pyproject.toml", "also [broken")],
+)
+def test_discover_skips_malformed_candidate(
+    tmp_path, monkeypatch, caplog, name, content
+):
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / name).write_text(content)
+    (tmp_path / "package.json").write_text('{"somesy": {"project": {"name": "x"}}}')
+    if name != "pyproject.toml":
+        _valid_pyproject(tmp_path / "pyproject.toml")
+    expected = Path("package.json" if name == "pyproject.toml" else "pyproject.toml")
+    with caplog.at_level("WARNING", logger="somesy"):
+        result = discover_input()
+    assert result == expected
+    assert any(name in r.getMessage() for r in caplog.records)

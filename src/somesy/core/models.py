@@ -276,17 +276,26 @@ class SomesyConfig(SomesyBaseModel):
 
     def get_input(self) -> SomesyInput:
         """Based on the somesy config, load the complete somesy input."""
-        # get metadata+config from specified input file
+        # only explicitly set fields override the config file
+        explicit = self.model_dump(
+            exclude_unset=True, exclude_defaults=False, exclude_none=False
+        )
+        # get metadata+config from specified input file; the strictness of the
+        # project model follows an explicitly passed pass_validation
         somesy_input = SomesyInput.from_input_file(
             self.input_file or Path("somesy.toml"),
-            allow_incomplete=bool(self.pass_validation),
+            pass_validation=explicit.get("pass_validation"),
         )
         # update input with merged config settings (cli overrides config file)
         dct: dict[str, Any] = {}
-        dct.update(somesy_input.config or {})
-        dct.update(self.model_dump())
+        dct.update(
+            (somesy_input.config or SomesyConfig()).model_dump(
+                exclude_unset=True, exclude_defaults=False, exclude_none=False
+            )
+        )
+        dct.update(explicit)
         somesy_input.config = SomesyConfig(**dct)
-        somesy_input.config._cli_overrides = self.model_dump()
+        somesy_input.config._cli_overrides = explicit
         return somesy_input
 
     def resolve_paths(self, base_dir: Path) -> None:
@@ -890,13 +899,23 @@ class SomesyInput(SomesyBaseModel):
 
     @classmethod
     def from_input_file(
-        cls, path: Path, *, allow_incomplete: bool = False
+        cls,
+        path: Path,
+        *,
+        allow_incomplete: bool = False,
+        pass_validation: bool | None = None,
     ) -> SomesyInput:
-        """Load somesy input from given file."""
+        """Load somesy input from given file.
+
+        If `pass_validation` is given, it overrides the value from the file
+        (and decides whether the project is validated strictly).
+        """
         content = get_input_content(path)
         config = SomesyConfig(**content.get("config", {}))
         if allow_incomplete:
             config.pass_validation = True
+        if pass_validation is not None:
+            config.pass_validation = pass_validation
         project_model = (
             PartialProjectMetadata if config.pass_validation else ProjectMetadata
         )
