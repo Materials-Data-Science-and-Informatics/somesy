@@ -303,3 +303,61 @@ def test_sync_keeps_free_text_roles_without_contribution_types(tmp_path):
     pom_path = tmp_path / "pom.xml"
     _write_roles_pom(pom_path, ["architect"])
     assert _sync_roles(pom_path, None) == "architect"
+
+
+def test_sync_matches_multi_word_organisation_before_whitespace_heuristic(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    pom_path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
+        "<name>Forschungszentrum Jülich</name><roles><role>sponsor</role></roles>"
+        "</developer></developers></project>"
+    )
+    metadata = ProjectMetadata(
+        name="p",
+        description="d",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(given_names="Jane", family_names="Doe", author=True),
+        ],
+        entities=[Entity(name="Forschungszentrum Jülich", author=True)],
+    )
+    pom = POM(pom_path)
+    pom.sync(metadata)
+
+    by_name = {a["name"]: a for a in pom.authors}
+    assert set(by_name) == {"Forschungszentrum Jülich", "Jane Doe"}
+    # the existing record was matched as the organisation, so its free-text role stays
+    assert by_name["Forschungszentrum Jülich"]["roles"]["role"] == "sponsor"
+
+
+def test_unknown_multi_word_name_is_still_a_person(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    pom_path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
+        "<name>Jane Doe</name><roles><role>sponsor</role></roles>"
+        "</developer></developers></project>"
+    )
+    metadata = ProjectMetadata(
+        name="p",
+        description="d",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[Person(given_names="Jane", family_names="Doe", author=True)],
+        entities=[Entity(name="Forschungszentrum Jülich")],
+    )
+    pom = POM(pom_path)
+    pom.sync(metadata)
+    assert pom.authors[0]["roles"]["role"] == "sponsor"
+
+
+def test_url_getters_ignore_comments(tmp_path):
+    pom_path = tmp_path / "pom.xml"
+    pom_path.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0">'
+        "<url>https://x.org<!-- home --></url>"
+        "<scm><url>https://r.org<!-- repo --></url></scm></project>"
+    )
+    pom = POM(pom_path)
+    assert pom.homepage == "https://x.org"
+    assert pom.repository == "https://r.org"
