@@ -113,3 +113,46 @@ def test_sync_keeps_unparseable_entries(tmp_path, monkeypatch):
     cff.sync(_meta(_person()))
     assert weird in cff._data["authors"]
     assert len(cff._data["authors"]) == 2
+
+
+# A3 follow-up: subclass setters only get Person/Entity, raw entries re-attached
+def test_pom_sync_keeps_unparseable_entry_without_crash(tmp_path):
+    from somesy.pom_xml.writer import POM
+
+    pom = POM(tmp_path / "pom.xml", create_if_not_exists=True)
+    weird = {"email": "nameless@x.org"}  # no name -> unparseable
+    pom._set_property(
+        pom._get_key("authors"), [weird, {"name": "Jane Doe", "email": "a@b.org"}]
+    )
+    pom.sync(_meta(_person()))
+    authors = pom._get_property(pom._get_key("authors"))
+    assert weird in authors
+    assert len(authors) == 2
+
+
+def test_codemeta_sync_keeps_unparseable_entry(tmp_path, monkeypatch):
+    from somesy.codemeta import CodeMeta
+
+    cm = CodeMeta(tmp_path / "codemeta.json", merge=True)
+    weird = {"@type": "Person", "familyName": "Weird"}
+    cm._set_property(cm._get_key("authors"), [weird])
+    orig = CodeMeta._to_person
+    monkeypatch.setattr(
+        CodeMeta,
+        "_to_person",
+        staticmethod(lambda o: None if o.get("familyName") == "Weird" else orig(o)),
+    )
+    cm.sync(_meta(_person()))
+    authors = cm._get_property(cm._get_key("authors"))
+    assert weird in authors
+    assert len(authors) == 2
+
+
+def test_single_slot_author_still_works(tmp_path):
+    from somesy.package_json.writer import PackageJSON
+
+    path = tmp_path / "package.json"
+    path.write_text('{"name": "x", "version": "1.0.0", "author": "Foo Bar"}')
+    pj = PackageJSON(path)
+    pj.sync(_meta(_person()))
+    pj.save()
