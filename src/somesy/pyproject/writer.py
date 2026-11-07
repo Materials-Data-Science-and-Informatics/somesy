@@ -11,6 +11,7 @@ from rich.pretty import pretty_repr
 from tomlkit import load
 from tomlkit.items import Table
 
+from somesy.core.core import atomic_write
 from somesy.core.log import VERBOSE
 from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import (
@@ -282,8 +283,7 @@ class PyprojectCommon(ProjectMetadataWriter):
         """Save the pyproject file."""
         path = path or self.path
 
-        with open(path, "w", encoding="utf-8") as f:
-            tomlkit.dump(self._data, f)
+        atomic_write(path, tomlkit.dumps(self._data))
 
     def _get_property(
         self, key: str | list[str] | IgnoreKey, *, remove: bool = False, **kwargs

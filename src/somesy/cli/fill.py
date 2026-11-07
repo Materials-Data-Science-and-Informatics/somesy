@@ -7,6 +7,8 @@ from sys import stdin
 import typer
 from jinja2 import Environment, FunctionLoader, select_autoescape
 
+from somesy.core.core import atomic_write
+
 from .util import (
     existing_file_arg_config,
     file_arg_config,
@@ -65,8 +67,7 @@ def fill(
 
     if output_file:
         logger.debug(f"Writing result to '{output_file}'.")
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(result)
+        atomic_write(output_file, result)
     else:
         logger.debug("Writing result to stdout.")
         print(result)

@@ -289,7 +289,6 @@ def test_merge_warns_when_both_ci_keys_exist(somesy_input, tmp_path, caplog):
 def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, mocker):
     from datetime import date
 
-    from somesy.codemeta.enrich import enrich
     from somesy.git.models import GitMetadata
 
     pyproject = tmp_path / "pyproject.toml"
@@ -323,9 +322,14 @@ def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, m
     project.version = None  # version then comes from enrichment
     project.repository = None
 
-    cm = CodeMeta(codemeta_file, merge=True, pass_validation=True)
+    cm = CodeMeta(
+        codemeta_file,
+        merge=True,
+        pass_validation=True,
+        enrich_sources={"pyproject": pyproject},
+        enrich_root=tmp_path,
+    )
     cm.sync(project)
-    enrich(cm._data, {"pyproject": pyproject}, tmp_path)
     cm.save()
 
     data = json.loads(codemeta_file.read_text())

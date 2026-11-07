@@ -10,6 +10,7 @@ from cffconvert import Citation
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
+from somesy.core.core import atomic_write
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
@@ -97,7 +98,9 @@ class CFF(ProjectMetadataWriter):
         if isinstance(abstract, str) and "\n" in abstract:
             self._data["abstract"] = LiteralScalarString(abstract)
 
-        self._yaml.dump(self._data, path)
+        stream = StringIO()
+        self._yaml.dump(self._data, stream)
+        atomic_write(path, stream.getvalue())
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Ensure that publication authors are added all into author list."""

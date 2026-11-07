@@ -13,7 +13,6 @@ from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
 from somesy.codemeta import CodeMeta
-from somesy.codemeta.enrich import enrich as enrich_codemeta
 from somesy.core.core import INPUT_FILES_ORDERED
 from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
@@ -74,7 +73,19 @@ def _semantic_data(data: Any) -> Any:
     return data
 
 
-def _sync_file(
+class _PendingSave(NamedTuple):
+    """A synced writer whose file still has to be written."""
+
+    file: Path
+    writer: ProjectMetadataWriter
+
+    def save(self) -> None:
+        """Write the file."""
+        self.writer.save(self.file)
+        logger.log(VERBOSE, f"Saved synced '{self.file.name}'.\n")
+
+
+def _prepare_file(
     metadata: ProjectMetadata,
     file: Path,
     writer_cls: type[ProjectMetadataWriter],
@@ -84,12 +95,18 @@ def _sync_file(
     codemeta_root: Path | None = None,
     codemeta_project_root: Path | None = None,
 ):
-    """Sync metadata to a file using the provided writer."""
+    """Sync metadata to a file in memory, return the pending save if it changed."""
     logger.log(VERBOSE, f"Loading '{file.name}' ...")
     existed = file.exists()
     if writer_cls == CodeMeta:
+        enrich_root = codemeta_root or file.parent
         writer: ProjectMetadataWriter = writer_cls(
-            file, merge=merge_codemeta, pass_validation=pass_validation
+            file,
+            merge=merge_codemeta,
+            pass_validation=pass_validation,
+            enrich_sources=codemeta_sources,
+            enrich_root=enrich_root,
+            enrich_project_root=codemeta_project_root or enrich_root,
         )
     else:
         writer = writer_cls(file, pass_validation=pass_validation)
@@ -103,25 +120,34 @@ def _sync_file(
         except (OSError, ValueError):
             pass
     writer.sync(metadata)
-    if writer_cls == CodeMeta and codemeta_sources is not None:
-        root = codemeta_root or file.parent
-        enrich_codemeta(
-            writer._data, codemeta_sources, root, codemeta_project_root or root
-        )
     if not existed or _semantic_data(writer._data) != original_data:
-        writer.save(file)
-        logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
+        return _PendingSave(file, writer)
+    return None
+
+
+def _sync_file(*args, **kwargs) -> None:
+    """Sync metadata to a file using the provided writer and save it if changed."""
+    if pending := _prepare_file(*args, **kwargs):
+        pending.save()
 
 
 def _sync_files(
-    metadata, files, writer_class, create_if_missing: bool = False, **kwargs
+    metadata,
+    files,
+    writer_class,
+    pending: list[_PendingSave],
+    create_if_missing: bool = False,
+    **kwargs,
 ):
-    """Sync metadata to files using the provided writer.
+    """Sync metadata to files in memory using the provided writer.
+
+    Files that need saving are appended to `pending`.
 
     Args:
         metadata: Project metadata to sync
         files: Path or list of paths to sync
         writer_class: Writer class to use
+        pending: Collects the saves of changed or missing files
         create_if_missing: Whether to create the file if it doesn't exist
         **kwargs: Additional arguments passed to the writer
 
@@ -129,8 +155,10 @@ def _sync_files(
     if isinstance(files, Path):
         files = [files]
     for file in files:
-        if file.is_file() or create_if_missing:
-            _sync_file(metadata, file, writer_class, **kwargs)
+        if (file.is_file() or create_if_missing) and (
+            save := _prepare_file(metadata, file, writer_class, **kwargs)
+        ):
+            pending.append(save)
 
 
 def _describe_error(error: Exception) -> str:
@@ -150,6 +178,9 @@ def sync(
 ):
     """Sync selected metadata files with given input file.
 
+    All targets of the project and its packages are synced in memory first;
+    files are only written if that succeeded for every one of them.
+
     Args:
         somesy_input: The input configuration and metadata to sync
         is_package: Whether this is a package (subfolder) being synced
@@ -158,6 +189,19 @@ def sync(
             by all packages, such as a lock file, are looked up from here.
 
     """
+    pending: list[_PendingSave] = []
+    _collect(somesy_input, pending, is_package, project_root)
+    for save in pending:
+        save.save()
+
+
+def _collect(
+    somesy_input: SomesyInput,
+    pending: list[_PendingSave],
+    is_package: bool = False,
+    project_root: Path | None = None,
+) -> None:
+    """Sync the project and its packages in memory, collecting the pending saves."""
     conf, metadata = somesy_input.config, somesy_input.project
 
     # Get the base directory from the input file's location
@@ -181,7 +225,7 @@ def sync(
     logger.debug(f"Project metadata: {pp_metadata}")
 
     # First sync the current project
-    _sync_root_project(conf, metadata, base_dir, project_root or base_dir)
+    _sync_root_project(conf, metadata, base_dir, project_root or base_dir, pending)
 
     # Then sync each package if defined
     if conf.packages:
@@ -245,8 +289,9 @@ def sync(
             # directory; unset ones fall back to the config defaults.
 
             # Recursively call sync on the package
-            sync(
+            _collect(
                 package_input,
+                pending,
                 is_package=True,
                 project_root=project_root or base_dir,
             )
@@ -263,8 +308,9 @@ def _sync_root_project(
     metadata: ProjectMetadata,
     base_dir: Path,
     project_root: Path,
+    pending: list[_PendingSave],
 ) -> None:
-    """Sync metadata files for the root project."""
+    """Sync metadata files for the root project in memory."""
     for target in SYNC_TARGETS:
         if getattr(conf, f"no_sync_{target.key}"):
             continue
@@ -292,6 +338,7 @@ def _sync_root_project(
             metadata,
             files,
             target.writer,
+            pending,
             create_if_missing=target.create_if_missing,
             pass_validation=conf.pass_validation,
             **kwargs,

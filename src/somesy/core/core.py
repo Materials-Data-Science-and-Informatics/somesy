@@ -2,6 +2,9 @@
 
 import json
 import logging
+import os
+import stat
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -23,11 +26,58 @@ INPUT_FILES_ORDERED = [
 """Input files ordered by priority for discovery."""
 
 
+def atomic_write(
+    path: Path,
+    data: str | bytes,
+    *,
+    newline: str | None = None,
+    exclusive: bool = False,
+) -> None:
+    """Write a file atomically: a failure never leaves a truncated or partial file.
+
+    The data is written to a temporary file in the same directory, which then
+    replaces the target. The mode of an existing target is kept; text is
+    encoded as UTF-8.
+
+    Args:
+        path: Target file.
+        data: Text or bytes to write; serialize before calling.
+        newline: Newline translation for text, as for `open`.
+        exclusive: Raise `FileExistsError` instead of replacing an existing file.
+
+    """
+    path = Path(path)
+    if exclusive and path.exists():
+        raise FileExistsError(f"File already exists: {path}")
+    if path.is_symlink():
+        path = path.resolve()
+    if path.exists():
+        mode = stat.S_IMODE(path.stat().st_mode)
+    else:
+        umask = os.umask(0)
+        os.umask(umask)
+        mode = 0o666 & ~umask
+    fd, tmp_name = tempfile.mkstemp(
+        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
+    )
+    try:
+        if isinstance(data, bytes):
+            with os.fdopen(fd, "wb") as binary:
+                binary.write(data)
+        else:
+            with os.fdopen(fd, "w", encoding="utf-8", newline=newline) as text:
+                text.write(data)
+        os.chmod(tmp_name, mode)
+        os.replace(tmp_name, path)
+    except BaseException:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
+
+
 def write_json(data: Any, path: Path) -> None:
     """Write data as UTF-8 JSON with 2-space indentation, unescaped non-ASCII and a trailing newline."""
-    with path.open("w", encoding="utf-8", newline="\n") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+    atomic_write(path, text, newline="\n")
 
 
 def discover_input(input_file: Path | None = None) -> Path:

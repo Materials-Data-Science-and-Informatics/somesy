@@ -1,12 +1,14 @@
 """Project documentation with Markdown (MkDocs) parser and saver."""
 
 import logging
+from io import StringIO
 from pathlib import Path
 
 from rich.pretty import pretty_repr
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
+from somesy.core.core import atomic_write
 from somesy.core.models import Entity, Person, ProjectMetadata, parse_name_email
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.mkdocs.models import MkDocsConfig
@@ -84,7 +86,9 @@ class MkDocs(ProjectMetadataWriter):
             elif self._data["site_description"] is not None:
                 self._data["site_description"] = str(self.description)
 
-        self._yaml.dump(self._data, path)
+        stream = StringIO()
+        self._yaml.dump(self._data, stream)
+        atomic_write(path, stream.getvalue())
 
     @property
     def authors(self):
