@@ -55,7 +55,12 @@ class Rust(ProjectMetadataWriter):
         In order to preserve toml comments and structure, tomlkit library is used.
         Pydantic class only used for validation.
         """
-        config = dict(self._get_property([]))
+        content = self._get_property([])
+        if content is None:
+            raise ValueError(
+                f"{self.path} has no [package] table (is it a workspace root?)."
+            )
+        config = dict(content)
         logger.debug(
             f"Validating config using {RustConfig.__name__}: {pretty_repr(config)}"
         )

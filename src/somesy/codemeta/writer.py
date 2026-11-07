@@ -124,10 +124,8 @@ class CodeMeta(ProjectMetadataWriter):
             )
 
     def _init_new_file(self) -> None:
-        """Create a new codemeta.json file with bare minimum generic data."""
-        data = self._new_data()
-        # dump to file
-        write_json(data, self.path)
+        """Initialize new codemeta.json data (in memory) with bare minimum generic data."""
+        self._data = OrderedDict(self._new_data())
 
     def _new_data(self) -> dict[str, Any]:
         """Return the bare minimum generic CodeMeta data."""

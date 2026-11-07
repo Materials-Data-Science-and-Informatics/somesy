@@ -113,18 +113,18 @@ class ProjectMetadataWriter(ABC):
                 self._validate()
         else:
             if self.create_if_not_exists:
-                self._init_new_file()
-                self._load()
+                self._init_new_file()  # in memory only, written by save()
             else:
                 raise FileNotFoundError(f"The file {self.path} does not exist.")
 
     def _init_new_file(self) -> None:
-        """Create an new suitable target file.
+        """Initialize the data of a new target file (in memory only).
 
-        Override to initialize file with minimal contents, if needed.
+        Override to initialize with minimal contents, if needed.
         Make sure to set `self._data` to match the contents.
+        The file is only created on disk by `save()`.
         """
-        self.path.touch()
+        self._data = {}
 
     @abstractmethod
     def _load(self):
