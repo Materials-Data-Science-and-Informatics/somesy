@@ -170,15 +170,18 @@ def test_discover_missing_input_warns_naming_both_files(tmp_path, monkeypatch, c
 
 @pytest.mark.parametrize(
     "name,content",
-    [("somesy.toml", "this is [not toml"), ("package.json", "{broken")],
+    [("somesy.toml", "this is [not toml"), ("pyproject.toml", "also [broken")],
 )
 def test_discover_skips_malformed_candidate(
     tmp_path, monkeypatch, caplog, name, content
 ):
     monkeypatch.chdir(tmp_path)
     (tmp_path / name).write_text(content)
-    _valid_pyproject(tmp_path / "pyproject.toml")
+    (tmp_path / "package.json").write_text('{"somesy": {"project": {"name": "x"}}}')
+    if name != "pyproject.toml":
+        _valid_pyproject(tmp_path / "pyproject.toml")
+    expected = Path("package.json" if name == "pyproject.toml" else "pyproject.toml")
     with caplog.at_level("WARNING", logger="somesy"):
         result = discover_input()
-    assert result == Path("pyproject.toml")
+    assert result == expected
     assert any(name in r.getMessage() for r in caplog.records)

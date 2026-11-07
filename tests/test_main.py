@@ -74,7 +74,7 @@ def test_app_version():
 
 
 def test_sync_options_have_unique_shortcuts():
-    result = runner.invoke(app, ["sync", "--help"])
+    result = runner.invoke(app, ["sync", "--help"], env={"COLUMNS": "200"})
     output = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", result.stdout)
 
     assert result.exit_code == 0

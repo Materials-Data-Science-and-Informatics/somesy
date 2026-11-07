@@ -150,13 +150,13 @@ def sync(
         **file_arg_config,
     ),
     merge_codemeta: bool | None = typer.Option(
-        False,
+        None,
         "--merge/--overwrite",
         help="Merge codemeta.json with with an existing codemeta.json file (default: False)",
     ),
     pass_validation: bool | None = typer.Option(
-        False,
-        "--pass-validation",
+        None,
+        "--pass-validation/--no-pass-validation",
         "-V",
         help="Allow incomplete input and pass output validation (default: False)",
     ),

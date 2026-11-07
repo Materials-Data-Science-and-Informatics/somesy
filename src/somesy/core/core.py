@@ -43,11 +43,13 @@ def discover_input(input_file: Path | None = None) -> Path:
         somesy configuration file path.
 
     """
+    missing: Path | None = None
     if input_file:
         if input_file.is_file():
             logger.info(f"Using provided file '{input_file}' as somesy input file.")
             return input_file
         else:
+            missing = input_file
             logger.warning(
                 f"Passed file '{input_file}' does not exist. Searching for usable somesy input file..."
             )
@@ -59,7 +61,15 @@ def discover_input(input_file: Path | None = None) -> Path:
                 get_input_content(input_file)
             except RuntimeError:
                 continue
+            except (ValueError, TypeError, KeyError, OSError) as e:
+                # NOTE: tomlkit and json parse errors are ValueError subclasses
+                logger.warning(f"Skipping malformed input file '{input_file}': {e}")
+                continue
 
+            if missing is not None:
+                logger.warning(
+                    f"Input file '{missing}' does not exist, using '{input_file}' instead."
+                )
             msg = f"Using '{input_file}' as somesy input file."
             logger.log(VERBOSE, msg)
             return input_file
