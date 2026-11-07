@@ -259,6 +259,7 @@ def test_sync_file_does_not_rewrite_unchanged_data(tmp_path):
         def save(self, path):
             raise AssertionError("unchanged output should not be saved")
 
+    (tmp_path / "metadata").write_text("existing")
     _sync_file(
         ProjectMetadata(
             name="project",

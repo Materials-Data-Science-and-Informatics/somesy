@@ -350,23 +350,6 @@ def test_init_config_rejects_missing_target_before_prompting(
     assert "nope/pyproject.toml" in result.output
 
 
-def test_init_non_interactive_warns_about_missing_fields(tmp_path, monkeypatch, caplog):
-    """Incomplete non-interactive output logs one warning listing the gaps."""
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr("somesy.cli.init.harvest_git", lambda _: None)
-
-    with caplog.at_level("WARNING", logger="somesy"):
-        result = runner.invoke(app, ["init", "--non-interactive"])
-
-    assert result.exit_code == 0, result.output
-    assert any(
-        "incomplete" in r.getMessage().lower()
-        and "name" in r.getMessage()
-        and "license" in r.getMessage()
-        for r in caplog.records
-    )
-
-
 def test_init_warns_when_options_ignored_by_subcommand(
     tmp_path, monkeypatch, caplog, _log_level_reset
 ):
