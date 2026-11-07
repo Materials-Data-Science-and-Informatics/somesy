@@ -9,7 +9,9 @@ from somesy.core.models import LicenseEnum, Person, ProjectMetadata
 from somesy.pyproject.writer import Poetry, Pyproject
 
 HEAD = '[project]\nname = "test-pkg"\n'
-BUILD = '\n[build-system]\nrequires = ["hatchling"]\nbuild-backend = "hatchling.build"\n'
+BUILD = (
+    '\n[build-system]\nrequires = ["hatchling"]\nbuild-backend = "hatchling.build"\n'
+)
 
 
 @pytest.fixture
@@ -120,7 +122,9 @@ def test_existing_license_table_or_license_files_are_kept(
 def test_license_string_is_still_updated(tmp_path, metadata):
     path = write(
         tmp_path,
-        HEAD + 'version = "1.0.0"\ndescription = "Old"\nlicense = "Apache-2.0"\n' + BUILD,
+        HEAD
+        + 'version = "1.0.0"\ndescription = "Old"\nlicense = "Apache-2.0"\n'
+        + BUILD,
     )
     assert sync(path, metadata)["project"]["license"] == "MIT"
 
@@ -189,7 +193,7 @@ def test_poetry2_legacy_metadata_respects_dynamic(tmp_path, metadata):
         'name = "test-pkg"\nversion = "1.0.0"\ndescription = "Old"\nlicense = "Apache-2.0"\nkeywords',
         'name = "test-pkg"\ndescription = "Old"\nlicense = "Apache-2.0"\nkeywords',
         1,
-    ).replace('[tool.poetry]\nname', 'dynamic = ["version"]\n\n[tool.poetry]\nname', 1)
+    ).replace("[tool.poetry]\nname", 'dynamic = ["version"]\n\n[tool.poetry]\nname', 1)
     doc = sync(write(tmp_path, text), metadata)
     assert doc["tool"]["poetry"]["version"] == "1.0.0"
     assert "version" not in doc["project"]

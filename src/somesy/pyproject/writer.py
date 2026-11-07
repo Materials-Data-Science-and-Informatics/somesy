@@ -67,29 +67,47 @@ class PyprojectCommon(ProjectMetadataWriter):
             direct_mappings=direct_mappings or {},
             pass_validation=pass_validation,
         )
-        self._adopt_url_key_spelling()
 
-    def _adopt_url_key_spelling(self) -> None:
-        """Point the url mappings at the key spellings used in the file.
+    def _get_key(self, key: str) -> str | list[str] | IgnoreKey:
+        """Get a key itself, resolving url keys to their spelling in the file."""
+        mapped = super()._get_key(key)
+        if isinstance(mapped, list) and mapped[:1] == ["urls"]:
+            return ["urls", self._url_key(mapped[-1])]
+        return mapped
 
-        The common project templates capitalize the `[project.urls]` keys
-        ("Homepage", "Bug Tracker"). Without this, somesy would neither read
-        those entries nor update them, and would instead write a second,
-        differently spelled entry next to them. A key somesy adds follows the
-        capitalization of the keys already there, to keep the table uniform.
+    def _url_key(self, name: str, *, warn: bool = False) -> str:
+        """Return the spelling of the `[project.urls]` key `name` to read or write.
+
+        The common project templates capitalize the keys ("Homepage",
+        "Bug Tracker"). An existing entry is used whatever its spelling; if
+        several spellings of the same key exist, the first one is used. A key
+        somesy adds follows the predominant capitalization of the table.
         """
         keys = list(self._get_property(["urls"]) or {})
-        existing = {normalize_url_key(key): key for key in keys}
-        capitalized = bool(keys) and all(key[:1].isupper() for key in keys)
-        for field, key_path in self.direct_mappings.items():
-            if not isinstance(key_path, list) or key_path[:1] != ["urls"]:
-                continue
-            name = key_path[-1]
-            spelling = existing.get(normalize_url_key(name))
-            if spelling is None and capitalized:
-                spelling = name.capitalize()
-            if spelling is not None:
-                self.direct_mappings[field] = ["urls", spelling]
+        matches = [k for k in keys if normalize_url_key(k) == normalize_url_key(name)]
+        if matches:
+            if warn and len(matches) > 1:
+                logger.warning(
+                    "Found several spellings of the url '%s' (%s), updating '%s'.",
+                    name,
+                    ", ".join(f"'{k}'" for k in matches),
+                    matches[0],
+                )
+            return matches[0]
+        capitalized = sum(key[:1].isupper() for key in keys)
+        if capitalized > len(keys) - capitalized:
+            return name.capitalize()
+        return name
+
+    def _is_dynamic(self, field: str, value: Any) -> bool:
+        """Return whether `field` is dynamic, warning if somesy has a value for it."""
+        if field not in self._dynamic_fields:
+            return False
+        if value:
+            logger.warning(
+                f"Field '{field}' is listed as dynamic — skipping sync from somesy."
+            )
+        return True
 
     @property
     def _dynamic_fields(self) -> list[str]:
@@ -104,11 +122,7 @@ class PyprojectCommon(ProjectMetadataWriter):
     @version.setter
     def version(self, version: str | None) -> None:
         """Set version, skipping if listed as dynamic."""
-        if "version" in self._dynamic_fields:
-            if version:
-                logger.warning(
-                    "Field 'version' is listed as dynamic — skipping sync from somesy."
-                )
+        if self._is_dynamic("version", version):
             return
         self._set_property(self._get_key("version"), version)
 
@@ -128,8 +142,100 @@ class PyprojectCommon(ProjectMetadataWriter):
 
     @license.setter
     def license(self, license: str | None) -> None:
-        """Set the license of the project."""
+        """Set the license of the project.
+
+        A `license` table or `license-files` in the file are left untouched,
+        somesy only manages the SPDX expression.
+        """
+        if self._is_dynamic("license", license):
+            return
+        current = self._get_property(["license"])
+        if isinstance(current, dict) or self._get_property(["license-files"]):
+            if license:
+                logger.warning(
+                    "The license of the pyproject file was kept, it is given as a "
+                    "table or with 'license-files' and somesy does not update it."
+                )
+            return
         self._set_property(["license"], license)
+
+    def _person_entries(self, people: list[Person | Entity]) -> list[Any]:
+        """Convert people to the representation used in the file."""
+        return [self._from_person(person) for person in people]
+
+    @property
+    def authors(self):
+        """Return the authors of the project."""
+        return super().authors
+
+    @authors.setter
+    def authors(self, authors: list[Person | Entity]) -> None:
+        """Set authors, skipping if listed as dynamic."""
+        if not self._is_dynamic("authors", authors):
+            self._set_property(self._get_key("authors"), self._person_entries(authors))
+
+    @property
+    def maintainers(self):
+        """Return the maintainers of the project."""
+        return super().maintainers
+
+    @maintainers.setter
+    def maintainers(self, maintainers: list[Person | Entity]) -> None:
+        """Set maintainers, skipping if listed as dynamic."""
+        if not self._is_dynamic("maintainers", maintainers):
+            self._set_property(
+                self._get_key("maintainers"), self._person_entries(maintainers)
+            )
+
+    @property
+    def keywords(self) -> list[str] | None:
+        """Return the keywords of the project."""
+        return super().keywords
+
+    @keywords.setter
+    def keywords(self, keywords: list[str]) -> None:
+        """Set keywords, skipping if listed as dynamic."""
+        if not self._is_dynamic("keywords", keywords):
+            self._set_property(self._get_key("keywords"), keywords)
+
+    def _set_url(self, field: str, value: str | None) -> None:
+        """Set a project url, skipping if `urls` is listed as dynamic."""
+        if self._is_dynamic("urls", value):
+            return
+        key = self._get_key(field)
+        if isinstance(key, list):
+            self._url_key(key[-1], warn=True)
+        self._set_property(key, value)
+
+    @property
+    def homepage(self) -> str | None:
+        """Return the homepage url of the project."""
+        return super().homepage
+
+    @homepage.setter
+    def homepage(self, value: str | None) -> None:
+        """Set the homepage url of the project."""
+        self._set_url("homepage", value)
+
+    @property
+    def repository(self) -> str | dict | None:
+        """Return the repository url of the project."""
+        return super().repository
+
+    @repository.setter
+    def repository(self, value: str | dict | None) -> None:
+        """Set the repository url of the project."""
+        self._set_url("repository", value)  # type: ignore[arg-type]
+
+    @property
+    def documentation(self) -> str | dict | None:
+        """Return the documentation url of the project."""
+        return super().documentation
+
+    @documentation.setter
+    def documentation(self, value: str | dict | None) -> None:
+        """Set the documentation url of the project."""
+        self._set_url("documentation", value)  # type: ignore[arg-type]
 
     @property
     def description(self) -> str | None:
@@ -139,11 +245,7 @@ class PyprojectCommon(ProjectMetadataWriter):
     @description.setter
     def description(self, description: str) -> None:
         """Set description, skipping if listed as dynamic."""
-        if "description" in self._dynamic_fields:
-            if description:
-                logger.warning(
-                    "Field 'description' is listed as dynamic — skipping sync from somesy."
-                )
+        if self._is_dynamic("description", description):
             return
         if description and (
             len(description) > SUMMARY_MAX_LENGTH
@@ -284,25 +386,13 @@ class Poetry(PyprojectCommon):
             person_obj = temp
         return parse_name_email(person_obj)
 
+    def _person_entries(self, people: list[Person | Entity]) -> list[Any]:
+        """Convert people to the person format of the Poetry version."""
+        return [self._from_person(person, self._poetry_version) for person in people]
+
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file."""
-        # Store original _from_person method
-        original_from_person = self._from_person
-
-        # Override _from_person to include poetry_version
-        self._from_person = lambda person: original_from_person(  # type: ignore
-            person, poetry_version=self._poetry_version
-        )
-
-        try:
-            # Call parent sync method
-            super().sync(metadata)
-        finally:
-            # Restore original _from_person method
-            self._from_person = original_from_person  # type: ignore
-
-        if metadata.license:
-            self.license = license_expression(metadata.license)
+        super().sync(metadata)
 
         # For Poetry v2, convert authors and maintainers from array of tables to inline tables
         if self._poetry_version == 2:
@@ -311,6 +401,66 @@ class Poetry(PyprojectCommon):
             if "urls" in self._data["project"]:
                 urls = self._data["project"].pop("urls")
                 self._data["project"]["urls"] = urls
+            self._sync_legacy_metadata(metadata)
+
+    def _sync_legacy_metadata(self, metadata: ProjectMetadata) -> None:
+        """Update the deprecated metadata keys that exist in `[tool.poetry]`.
+
+        Poetry 2.x still accepts them, so they must not go stale next to
+        `[project]`. Keys that are absent are never added.
+        """
+        legacy = self._data.get("tool", {}).get("poetry")
+        if legacy is None:
+            return
+        dynamic = self._dynamic_fields
+
+        def update(key: str, value: Any, field: str | None = None) -> None:
+            if not value or key not in legacy or (field or key) in dynamic:
+                return
+            if isinstance(value, list):
+                if list(legacy[key]) != value:
+                    legacy[key] = toml_array(value)
+            elif legacy[key] != value:
+                legacy[key] = value
+
+        update("name", metadata.name)
+        update("version", metadata.version)
+        update("description", metadata.description)
+
+        keep_license = isinstance(self._get_property(["license"]), dict) or bool(
+            self._get_property(["license-files"])
+        )
+        if metadata.license and not keep_license:
+            update("license", license_expression(metadata.license))
+
+        update("keywords", list(metadata.keywords or []))
+
+        for role, new in (
+            ("authors", metadata.authors()),
+            ("maintainers", metadata.maintainers()),
+        ):
+            if role not in legacy or role in dynamic:
+                continue
+            if role == "authors" and not new:
+                continue
+            people = self._sync_person_list(list(legacy[role]), new)
+            update(role, [p.to_name_email_string() for p in people])
+            if not people:
+                del legacy[role]
+
+        urls = {
+            "homepage": metadata.homepage,
+            "repository": metadata.repository,
+            "documentation": metadata.documentation,
+        }
+        for key, url in urls.items():
+            if url:
+                update(key, str(url), "urls")
+        if "urls" in legacy and "urls" not in dynamic:
+            for old_key in legacy["urls"]:
+                url = urls.get(normalize_url_key(old_key))
+                if url and legacy["urls"][old_key] != str(url):
+                    legacy["urls"][old_key] = str(url)
 
 
 class Pep621(PyprojectCommon):
@@ -361,8 +511,6 @@ class Pep621(PyprojectCommon):
     def sync(self, metadata: ProjectMetadata) -> None:
         """Sync metadata with pyproject.toml file and fix license field."""
         super().sync(metadata)
-        if metadata.license:
-            self.license = license_expression(metadata.license)
 
 
 def _pep621_person(person: Person | Entity) -> dict[str, str]:

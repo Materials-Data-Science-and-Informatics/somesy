@@ -285,7 +285,12 @@ def test_missing_description_is_valid_pep621(tmp_path):
 def test_dynamic_fields_need_not_be_present_poetry2(tmp_path, field):
     path = tmp_path / "pyproject.toml"
     obj = {
-        "project": {"name": "somesy", "version": "1.0.0", "dynamic": [field]},
+        "project": {
+            "name": "somesy",
+            "version": "1.0.0",
+            "dynamic": [field],
+            **({} if field == "authors" else {"authors": [{"name": "A B"}]}),
+        },
         "tool": {"poetry": {"dependencies": {"python": "^3.10"}}},
     }
     with open(path, "w+") as f:
