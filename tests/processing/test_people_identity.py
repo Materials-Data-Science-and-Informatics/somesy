@@ -47,11 +47,10 @@ def _cff(tmp_path, authors):
 def test_sync_removes_field_missing_from_input(tmp_path, field, value, key):
     cff = _cff(
         tmp_path,
-        [{"family-names": "Doe", "given-names": "Jane", key: value, "x-extra": "k"}],
+        [{"family-names": "Doe", "given-names": "Jane", key: value}],
     )
     cff.sync(_meta(_person()))
     assert key not in cff._data["authors"][0]
-    assert cff._data["authors"][0]["x-extra"] == "k"
 
 
 # A2

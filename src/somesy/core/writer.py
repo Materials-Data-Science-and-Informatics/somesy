@@ -9,9 +9,27 @@ from typing import Any
 import tomlkit
 from tomlkit.items import AoT, Array, InlineTable
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import (
+    Entity,
+    Person,
+    ProjectMetadata,
+    find_matching_person,
+)
 
 logger = logging.getLogger("somesy")
+
+# person fields that are role/contribution flags, not part of the person's identity
+_UNMANAGED_PERSON_FIELDS = frozenset(
+    {
+        "author",
+        "publication_author",
+        "maintainer",
+        "contribution",
+        "contribution_types",
+        "contribution_begin",
+        "contribution_end",
+    }
+)
 
 
 def toml_array(value: list) -> Array:
@@ -244,31 +262,37 @@ class ProjectMetadataWriter(ABC):
         # (inefficient, but author list are not that long usually)
         for person_meta in new:
             person_update = person_meta.model_dump()
-            person_existed = False
-            for i in range(len(modified_people)):
-                person = modified_people[i]
-                if not person.same_person(person_meta):
-                    continue
+            index = find_matching_person(person_meta, modified_people)
+            if index is not None:
+                person = modified_people[index]
 
                 # not new person (-> will not append new record)
-                person_existed = True
                 # still exists (-> will not be removed from list)
-                still_exists[i] = True
+                still_exists[index] = True
+
+                # the input is the source of truth for the managed fields:
+                # fields missing in the input are removed from the output person
+                # (unknown extra keys of the output are kept)
+                fields = type(person).model_fields
+                cleared = {
+                    k: fields[k].get_default(call_default_factory=True)
+                    for k in person.model_dump()
+                    if k in fields
+                    and k not in person_update
+                    and k not in _UNMANAGED_PERSON_FIELDS
+                }
+                updated = person.model_copy(update={**person_update, **cleared})
 
                 # if there were changes -> update person
-                overlapping_fields = person.model_dump(
-                    include=set(person_update.keys())
-                )
-                if person_update != overlapping_fields:
-                    modified_people[i] = person.model_copy(update=person_update)
+                if updated.model_dump() != person.model_dump():
+                    modified_people[index] = updated
 
                     # show effective update in debug log
                     old_fmt = self._from_person(person)
-                    new_fmt = self._from_person(modified_people[i])
+                    new_fmt = self._from_person(updated)
                     if old_fmt != new_fmt:
                         logger.debug(f"Updating person\n{old_fmt}\nto\n{new_fmt}")
-
-            if not person_existed:
+            else:
                 new_people.append(person_meta)
 
         # show added and removed people in debug log
@@ -319,7 +343,12 @@ class ProjectMetadataWriter(ABC):
         old_people_unique = filter_unique(old_people)
         new_people_unique = filter_unique(new)
 
-        return self._merge_person_metadata(old_people_unique, new_people_unique)
+        merged: list[Any] = list(
+            self._merge_person_metadata(old_people_unique, new_people_unique)
+        )
+        # keep existing entries we cannot parse untouched
+        merged += [p for p in old if p is not None and self._to_person(p) is None]
+        return merged
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Sync output file authors with authors from metadata.
@@ -469,16 +498,17 @@ class ProjectMetadataWriter(ABC):
         if authors is None or len(authors) == 0:
             return []
 
-        # only return authors that can be converted to Person
-        authors_validated = [
-            author for author in authors if self._to_person(author) is not None
-        ]
-        return authors_validated
+        # NOTE: unparseable entries are returned as-is (so sync can keep them),
+        # use `_parse_people` to get Person/Entity objects only
+        return list(authors)
 
     @authors.setter
     def authors(self, authors: list[Person | Entity]) -> None:
         """Set the authors of the project."""
-        authors = [self._from_person(c) for c in authors]
+        authors = [
+            self._from_person(c) if isinstance(c, (Person, Entity)) else c
+            for c in authors
+        ]
         self._set_property(self._get_key("authors"), authors)
 
     @property
@@ -488,18 +518,16 @@ class ProjectMetadataWriter(ABC):
         if maintainers is None:
             return []
 
-        # only return maintainers that can be converted to Person
-        maintainers_validated = [
-            maintainer
-            for maintainer in maintainers
-            if self._to_person(maintainer) is not None
-        ]
-        return maintainers_validated
+        # NOTE: unparseable entries are returned as-is (so sync can keep them)
+        return list(maintainers)
 
     @maintainers.setter
     def maintainers(self, maintainers: list[Person | Entity]) -> None:
         """Set the maintainers of the project."""
-        maintainers = [self._from_person(c) for c in maintainers]
+        maintainers = [
+            self._from_person(c) if isinstance(c, (Person, Entity)) else c
+            for c in maintainers
+        ]
         self._set_property(self._get_key("maintainers"), maintainers)
 
     @property
@@ -510,7 +538,10 @@ class ProjectMetadataWriter(ABC):
     @contributors.setter
     def contributors(self, contributors: list[Person | Entity]) -> None:
         """Set the contributors of the project."""
-        contributors = [self._from_person(c) for c in contributors]
+        contributors = [
+            self._from_person(c) if isinstance(c, (Person, Entity)) else c
+            for c in contributors
+        ]
         self._set_property(self._get_key("contributors"), contributors)
 
     @property
