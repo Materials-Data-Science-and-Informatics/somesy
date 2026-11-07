@@ -343,12 +343,35 @@ class ProjectMetadataWriter(ABC):
         old_people_unique = filter_unique(old_people)
         new_people_unique = filter_unique(new)
 
-        merged: list[Any] = list(
-            self._merge_person_metadata(old_people_unique, new_people_unique)
-        )
-        # keep existing entries we cannot parse untouched
-        merged += [p for p in old if p is not None and self._to_person(p) is None]
-        return merged
+        return self._merge_person_metadata(old_people_unique, new_people_unique)
+
+    def _unparseable_people(self, role: str) -> tuple[Any, list[Any]]:
+        """Return mapped key and raw existing entries of `role` that can't be parsed.
+
+        Empty list if the target has no list-valued slot for the role.
+        """
+        key = self._get_key(role)
+        raw = self._get_property(key)
+        if not isinstance(raw, list):
+            return key, []
+
+        def unparseable(entry: Any) -> bool:
+            try:
+                return entry is not None and self._to_person(entry) is None
+            except (KeyError, TypeError, ValueError, AttributeError):
+                return entry is not None
+
+        return key, [e for e in raw if unparseable(e)]
+
+    def _reattach_people(self, key: Any, raw_entries: list[Any]) -> None:
+        """Append raw entries (kept untouched) to the list stored under `key`."""
+        if not raw_entries:
+            return
+        current = self._get_property(key)
+        if isinstance(current, dict):  # some formats collapse one-item lists
+            current = [current]
+        if isinstance(current, list):
+            self._set_property(key, current + raw_entries)
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Sync output file authors with authors from metadata.
@@ -374,11 +397,17 @@ class ProjectMetadataWriter(ABC):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
+        # existing entries we cannot parse are kept untouched in the target
+        kept = {r: self._unparseable_people(r) for r in ("authors", "maintainers")}
+
         if metadata.authors():
             self._sync_authors(metadata)
         self.maintainers = self._sync_person_list(
             self.maintainers, metadata.maintainers()
         )
+
+        for key, raw_entries in kept.values():
+            self._reattach_people(key, raw_entries)
 
         if licenses := metadata.license:
             self.license = license_expression(licenses)
@@ -498,17 +527,16 @@ class ProjectMetadataWriter(ABC):
         if authors is None or len(authors) == 0:
             return []
 
-        # NOTE: unparseable entries are returned as-is (so sync can keep them),
-        # use `_parse_people` to get Person/Entity objects only
-        return list(authors)
+        # only return authors that can be converted to Person
+        authors_validated = [
+            author for author in authors if self._to_person(author) is not None
+        ]
+        return authors_validated
 
     @authors.setter
     def authors(self, authors: list[Person | Entity]) -> None:
         """Set the authors of the project."""
-        authors = [
-            self._from_person(c) if isinstance(c, (Person, Entity)) else c
-            for c in authors
-        ]
+        authors = [self._from_person(c) for c in authors]
         self._set_property(self._get_key("authors"), authors)
 
     @property
@@ -518,16 +546,18 @@ class ProjectMetadataWriter(ABC):
         if maintainers is None:
             return []
 
-        # NOTE: unparseable entries are returned as-is (so sync can keep them)
-        return list(maintainers)
+        # only return maintainers that can be converted to Person
+        maintainers_validated = [
+            maintainer
+            for maintainer in maintainers
+            if self._to_person(maintainer) is not None
+        ]
+        return maintainers_validated
 
     @maintainers.setter
     def maintainers(self, maintainers: list[Person | Entity]) -> None:
         """Set the maintainers of the project."""
-        maintainers = [
-            self._from_person(c) if isinstance(c, (Person, Entity)) else c
-            for c in maintainers
-        ]
+        maintainers = [self._from_person(c) for c in maintainers]
         self._set_property(self._get_key("maintainers"), maintainers)
 
     @property
@@ -538,10 +568,7 @@ class ProjectMetadataWriter(ABC):
     @contributors.setter
     def contributors(self, contributors: list[Person | Entity]) -> None:
         """Set the contributors of the project."""
-        contributors = [
-            self._from_person(c) if isinstance(c, (Person, Entity)) else c
-            for c in contributors
-        ]
+        contributors = [self._from_person(c) for c in contributors]
         self._set_property(self._get_key("contributors"), contributors)
 
     @property
