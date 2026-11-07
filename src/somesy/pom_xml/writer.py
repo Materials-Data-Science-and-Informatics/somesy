@@ -1,9 +1,12 @@
 """Writer adapter for pom.xml files."""
 
+import io
 import logging
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
+
+import defusedxml.ElementTree as DET
 
 from somesy.core.models import Entity, Person
 from somesy.core.types import ContributionTypeEnum
@@ -52,7 +55,13 @@ class POM(ProjectMetadataWriter):
         """Initialize new pom.xml file."""
         pom = XMLProxy(ET.Element("project", POM_ROOT_ATRS))
         pom["properties"] = {"info.versionScheme": "semver-spec"}
-        pom.write(self.path)
+        buf = io.BytesIO()
+        ET.ElementTree(pom._node).write(buf, encoding="UTF-8", xml_declaration=True)
+        buf.seek(0)
+        parser = DET.XMLParser(target=ET.TreeBuilder(insert_comments=True))
+        root = DET.parse(buf, parser=parser).getroot()
+        ET.register_namespace("", POM_URL)
+        self._data = XMLProxy(root, default_namespace=POM_URL)
 
     def _load(self):
         """Load the POM file."""
@@ -65,6 +74,7 @@ class POM(ProjectMetadataWriter):
 
     def save(self, path: Path | None = None) -> None:
         """Save the POM DOM to a file."""
+        ET.register_namespace("", POM_URL)
         self._data.write(path or self.path, default_namespace=None)
 
     def _get_property(

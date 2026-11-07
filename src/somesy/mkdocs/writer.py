@@ -54,9 +54,16 @@ class MkDocs(ProjectMetadataWriter):
         with open(self.path, encoding="utf-8") as f:
             self._data = self._yaml.load(f)
 
+    def _config_dict(self) -> dict:
+        """Return the file content as dict, raising a clear error if it is empty."""
+        content = self._get_property([])
+        if not content:
+            raise ValueError(f"{self.path} is empty, expected a MkDocs configuration.")
+        return dict(content)
+
     def _validate(self) -> None:
         """Validate the MkDocs file."""
-        config = dict(self._get_property([]))
+        config = self._config_dict()
         logger.debug(
             f"Validating config using {MkDocsConfig.__name__}: {pretty_repr(config)}"
         )
@@ -74,7 +81,7 @@ class MkDocs(ProjectMetadataWriter):
                 self._data["site_description"] = LiteralScalarString(
                     self._data["site_description"]
                 )
-            else:
+            elif self._data["site_description"] is not None:
                 self._data["site_description"] = str(self.description)
 
         self._yaml.dump(self._data, path)
