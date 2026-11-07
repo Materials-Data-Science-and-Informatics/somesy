@@ -284,3 +284,77 @@ def test_merge_warns_when_both_ci_keys_exist(somesy_input, tmp_path, caplog):
 
     CodeMeta(codemeta_file, merge=True).sync(somesy_input.project)
     assert "contIntegration" in caplog.text
+
+
+def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, mocker):
+    from datetime import date
+
+    from somesy.codemeta.enrich import enrich
+    from somesy.git.models import GitMetadata
+
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_text("[project]\nname = 'x'\ndependencies = ['requests>=3']\n")
+    codemeta_file = tmp_path / "codemeta.json"
+    write_json(
+        {
+            "@context": "https://w3id.org/codemeta/3.1",
+            "@type": "SoftwareSourceCode",
+            "name": "x",
+            "version": "0.0.1",
+            "codeRepository": "https://example.org/old",
+            "dateModified": "2000-01-01",
+            "dateCreated": "1999-01-01",
+            "softwareRequirements": ["old-dependency"],
+            "downloadUrl": "https://example.com/download",
+            "readme": "https://example.org/old-readme",
+        },
+        codemeta_file,
+    )
+    mocker.patch(
+        "somesy.codemeta.enrich.harvest_git",
+        return_value=GitMetadata(
+            repository="https://example.org/new.git",
+            date_created=date(1999, 1, 1),
+            date_modified=date(2024, 5, 6),
+            version="v9",
+        ),
+    )
+    project = somesy_input.project
+    project.version = None  # version then comes from enrichment
+    project.repository = None
+
+    cm = CodeMeta(codemeta_file, merge=True, pass_validation=True)
+    cm.sync(project)
+    enrich(cm._data, {"pyproject": pyproject}, tmp_path)
+    cm.save()
+
+    data = json.loads(codemeta_file.read_text())
+    assert data["version"] == "v9"
+    assert data["codeRepository"] == "https://example.org/new"
+    assert data["dateModified"] == "2024-05-06"
+    assert data["dateCreated"] == "1999-01-01"
+    assert data["softwareRequirements"][0]["name"] == "requests"
+    # not produced by somesy -> kept
+    assert data["downloadUrl"] == "https://example.com/download"
+    # produced only if found in project files: not found here -> kept
+    assert data["readme"] == "https://example.org/old-readme"
+
+
+def test_merge_keeps_enrichable_fields_if_nothing_produces_them(somesy_input, tmp_path):
+    codemeta_file = tmp_path / "codemeta.json"
+    write_json(
+        {
+            "@context": "https://w3id.org/codemeta/3.1",
+            "@type": "SoftwareSourceCode",
+            "name": "x",
+            "dateModified": "2000-01-01",
+            "runtimePlatform": "Old 1",
+        },
+        codemeta_file,
+    )
+    cm = CodeMeta(codemeta_file, merge=True, pass_validation=True)
+    cm.sync(somesy_input.project)
+    cm.save()
+    data = json.loads(codemeta_file.read_text())
+    assert data["dateModified"] == "2000-01-01"
+    assert data["runtimePlatform"] == "Old 1"

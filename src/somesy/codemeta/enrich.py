@@ -32,6 +32,21 @@ _URL_ALIASES = {
 """Normalized `[project.urls]` key names mapped to the CodeMeta field they fill."""
 
 
+ENRICHED_KEYS = (
+    "readme",
+    "issueTracker",
+    "releaseNotes",
+    "softwareRequirements",
+    "programmingLanguage",
+    "runtimePlatform",
+    "codeRepository",
+    "dateCreated",
+    "dateModified",
+    "version",
+)
+"""CodeMeta fields that enrichment may fill (and that merge mode must refresh)."""
+
+
 def enrich(
     codemeta: dict[str, Any],
     sources: dict[str, Path | list[Path] | None],
@@ -42,6 +57,8 @@ def enrich(
 
     ``codemeta`` already contains data written from somesy.toml.  This function
     therefore only adds optional fields and never replaces an existing value.
+    In merge mode, the writer withholds stale values of these fields from
+    ``codemeta`` until saving, so they are refreshed here (see `ENRICHED_KEYS`).
 
     Args:
         codemeta: The CodeMeta data to fill in place.

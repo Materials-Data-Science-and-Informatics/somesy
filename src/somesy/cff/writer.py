@@ -1,6 +1,7 @@
 """Citation File Format (CFF) parser and saver."""
 
 import json
+import logging
 from copy import deepcopy
 from io import StringIO
 from pathlib import Path
@@ -11,6 +12,8 @@ from ruamel.yaml.scalarstring import LiteralScalarString
 
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+
+logger = logging.getLogger("somesy")
 
 
 def _drop_rorid(data) -> None:
@@ -135,15 +138,27 @@ class CFF(ProjectMetadataWriter):
         return ret
 
     @staticmethod
-    def _to_person(person_obj) -> Person | Entity:
-        """Parse CFF Person to a somesy Person or entity."""
+    def _to_person(person_obj) -> Person | Entity | None:
+        """Parse CFF Person to a somesy Person or entity.
+
+        Entries lacking a required field are skipped with a warning.
+        """
         # if the object has key name, it is an entity
         if "name" in person_obj:
-            Entity._aliases()
-            ret = Entity.make_partial(person_obj)
+            model: type[Person | Entity] = Entity
         else:
-            Person._aliases()
-            ret = Person.make_partial(person_obj)
+            model = Person
+        model._aliases()
+        required = {
+            f.alias or k for k, f in model.model_fields.items() if f.is_required()
+        }
+        if missing := required - set(person_obj.keys()):
+            logger.warning(
+                f"Skipping incomplete CITATION.cff person/entity {dict(person_obj)}, "
+                f"missing: {', '.join(sorted(missing))}"
+            )
+            return None
+        ret = model.make_partial(person_obj)
 
         # construct (partial) Person while preserving key order from YAML
         ret.set_key_order(list(person_obj.keys()))
