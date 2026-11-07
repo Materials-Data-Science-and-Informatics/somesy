@@ -77,3 +77,8 @@ def test_mkdocs_empty_file(tmp_path):
     path.write_text("", encoding="utf-8")
     with pytest.raises(ValueError, match="empty"):
         MkDocs(path)
+
+
+def test_cff_new_file_validate_does_not_crash(tmp_path):
+    writer = CFF(tmp_path / "CITATION.cff", create_if_not_exists=True)
+    writer._validate()
