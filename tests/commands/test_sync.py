@@ -833,3 +833,101 @@ def test_explicit_root_cli_flag_overrides_package_config(tmp_path, monkeypatch):
     assert result.exit_code == 0, result.output
     assert not (tmp_path / "CITATION.cff").exists()
     assert not (tmp_path / "pkg" / "CITATION.cff").exists()
+
+
+# ---- state handling regressions -------------------------------------------
+
+
+def _package_root(tmp_path, packages):
+    return SomesyInput(
+        config=SomesyConfig(
+            input_file=tmp_path / "somesy.toml",
+            packages=[Path(p) for p in packages],
+            no_sync_cff=True,
+            no_sync_pyproject=True,
+            no_sync_package_json=True,
+            no_sync_julia=True,
+            no_sync_fortran=True,
+            no_sync_pom_xml=True,
+            no_sync_mkdocs=True,
+            no_sync_rust=True,
+        ),
+        project=_codemeta_metadata(),
+    )
+
+
+_VALID_PKG = "[project]\nname = 'child'\ndescription = 'd'\nlicense = 'MIT'\n[[project.people]]\ngiven-names = 'A'\nfamily-names = 'B'\nauthor = true\n"
+
+
+def test_package_sync_keeps_configured_cff_path(tmp_path):
+    """A package's own cff_file must not be reset to CITATION.cff."""
+    pkg = tmp_path / "pkg"
+    (pkg / "docs").mkdir(parents=True)
+    (pkg / "somesy.toml").write_text(
+        _VALID_PKG + "[config]\nno_sync_pyproject = true\nno_sync_package_json = true\n"
+        "no_sync_julia = true\nno_sync_fortran = true\nno_sync_pom_xml = true\n"
+        "no_sync_mkdocs = true\nno_sync_rust = true\nno_sync_codemeta = true\n"
+        "cff_file = 'docs/CITATION.cff'\n"
+    )
+
+    sync(_package_root(tmp_path, ["pkg"]))
+
+    assert (pkg / "docs" / "CITATION.cff").exists()
+    assert not (pkg / "CITATION.cff").exists()
+
+
+def test_package_sync_skips_invalid_package_and_continues(tmp_path, caplog):
+    """A package with an invalid config is skipped with a warning."""
+    bad = tmp_path / "a_bad"
+    bad.mkdir()
+    (bad / "somesy.toml").write_text("[project]\nname = 'bad'\n")
+    good = tmp_path / "b_good"
+    good.mkdir()
+    (good / "somesy.toml").write_text(_VALID_PKG + "[config]\nno_sync_cff = true\n")
+    root = _package_root(tmp_path, ["a_bad", "b_good"])
+
+    with caplog.at_level("WARNING", logger="somesy"):
+        sync(root)
+
+    assert (good / "codemeta.json").exists()
+    assert "a_bad" in caplog.text
+
+
+def test_sync_file_saves_when_file_missing_on_disk(tmp_path):
+    """A target whose file does not exist is saved even without data changes."""
+    saved = []
+
+    class NoopWriter:
+        def __init__(self, path, **kwargs):
+            self._data = {"x": 1}
+
+        def sync(self, metadata):
+            pass
+
+        def save(self, path):
+            saved.append(path)
+
+    target = tmp_path / "metadata"
+    _sync_file(_codemeta_metadata(), target, NoopWriter)
+
+    assert saved == [target]
+
+
+def test_sync_upgrades_legacy_codemeta_on_disk(tmp_path):
+    """A V2 codemeta file is rewritten as V3 even if nothing else changes."""
+    path = tmp_path / "codemeta.json"
+    metadata = _codemeta_metadata()
+    kwargs = {
+        "merge_codemeta": True,
+        "pass_validation": False,
+        "codemeta_sources": {},
+        "codemeta_root": tmp_path,
+    }
+    _sync_file(metadata, path, CodeMeta, **kwargs)
+    data = json.loads(path.read_text())
+    data["@context"] = ["https://doi.org/10.5063/schema/codemeta-2.0"]
+    path.write_text(json.dumps(data, indent=2) + "\n")
+
+    _sync_file(metadata, path, CodeMeta, **kwargs)
+
+    assert "codemeta-2.0" not in path.read_text()

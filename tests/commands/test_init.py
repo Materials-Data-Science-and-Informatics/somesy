@@ -272,3 +272,109 @@ def test_init_abort_is_not_reported_as_empty_error(tmp_path, monkeypatch):
     assert result.exit_code != 0
     assert "Aborted" in result.output
     assert "Error: " not in result.output
+
+
+# ---- state handling regressions -------------------------------------------
+
+
+@pytest.fixture
+def _log_level_reset(monkeypatch):
+    monkeypatch.setattr("somesy.core.log._log_level", None)
+
+
+def test_init_config_keeps_existing_config_keys(
+    tmp_path, monkeypatch, _log_level_reset
+):
+    """Prompted options are merged into, not replacing, the [config] table."""
+    (tmp_path / "somesy.toml").write_text(
+        "[project]\nname = 'p'\n\n[config]\nmerge_codemeta = true\n"
+        "pass_validation = true\npackages = ['a']\n"
+    )
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["init", "config"], input="\n" * 30)
+
+    assert result.exit_code == 0, result.output
+    config = get_input_content(tmp_path / "somesy.toml")["config"]
+    assert config["merge_codemeta"] is True
+    assert config["pass_validation"] is True
+    assert config["packages"] == ["a"]
+    assert "no_sync_cff" in config
+
+
+def test_init_config_on_pyproject_without_tool_somesy(
+    tmp_path, monkeypatch, _log_level_reset
+):
+    """A pyproject.toml without [tool.somesy] gets one created."""
+    (tmp_path / "pyproject.toml").write_text("[project]\nname = 'p'\n")
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(
+        app, ["init", "config"], input="pyproject.toml\n" + "\n" * 30
+    )
+
+    assert result.exit_code == 0, result.output
+    content = tomlkit_load(tmp_path / "pyproject.toml")
+    assert "no_sync_cff" in content["tool"]["somesy"]["config"]
+    assert content["project"]["name"] == "p"
+
+
+def tomlkit_load(path):
+    import tomlkit
+
+    return tomlkit.loads(path.read_text(encoding="utf-8")).unwrap()
+
+
+def test_init_config_creates_file_when_none_exists(
+    tmp_path, monkeypatch, _log_level_reset
+):
+    """First-time `init config` works without any input file."""
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["init", "config"], input="\n" * 30)
+
+    assert result.exit_code == 0, result.output
+    assert "no_sync_cff" in tomlkit_load(tmp_path / "somesy.toml")["config"]
+
+
+def test_init_config_rejects_missing_target_before_prompting(
+    tmp_path, monkeypatch, _log_level_reset
+):
+    """A non-existent pyproject.toml is reported before the other prompts."""
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(app, ["init", "config"], input="nope/pyproject.toml\n")
+
+    assert result.exit_code == 1
+    assert "CITATION" not in result.output
+    assert "nope/pyproject.toml" in result.output
+
+
+def test_init_non_interactive_warns_about_missing_fields(tmp_path, monkeypatch, caplog):
+    """Incomplete non-interactive output logs one warning listing the gaps."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("somesy.cli.init.harvest_git", lambda _: None)
+
+    with caplog.at_level("WARNING", logger="somesy"):
+        result = runner.invoke(app, ["init", "--non-interactive"])
+
+    assert result.exit_code == 0, result.output
+    assert any(
+        "incomplete" in r.getMessage().lower()
+        and "name" in r.getMessage()
+        and "license" in r.getMessage()
+        for r in caplog.records
+    )
+
+
+def test_init_warns_when_options_ignored_by_subcommand(
+    tmp_path, monkeypatch, caplog, _log_level_reset
+):
+    """Options of `init` are not silently dropped for `init config`."""
+    monkeypatch.chdir(tmp_path)
+
+    with caplog.at_level("WARNING", logger="somesy"):
+        result = runner.invoke(app, ["init", "--overwrite", "config"], input="\n" * 30)
+
+    assert result.exit_code == 0, result.output
+    assert any("ignored" in r.getMessage().lower() for r in caplog.records)
