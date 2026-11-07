@@ -100,7 +100,7 @@ def _prepare_file(
     existed = file.exists()
     if writer_cls == CodeMeta:
         enrich_root = codemeta_root or file.parent
-        writer: ProjectMetadataWriter = writer_cls(
+        writer: ProjectMetadataWriter = CodeMeta(
             file,
             merge=merge_codemeta,
             pass_validation=pass_validation,
