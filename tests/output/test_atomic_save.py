@@ -6,6 +6,7 @@ import shutil
 import stat
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import Any
 
 import pytest
 import tomlkit
@@ -25,7 +26,7 @@ from somesy.rust import Rust
 DATA = Path(__file__).parent.parent / "data"
 
 # (file name, fixture, writer class, serializer kind)
-WRITERS = [
+WRITERS: list[tuple[str, str | None, Any, str]] = [
     ("pyproject.toml", "pyproject.toml", Pyproject, "toml"),
     ("Project.toml", "Project.toml", Julia, "toml"),
     ("fpm.toml", "fpm.toml", Fortran, "toml"),
