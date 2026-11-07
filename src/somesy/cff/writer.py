@@ -56,6 +56,7 @@ class CFF(ProjectMetadataWriter):
 
     def _init_new_file(self):
         """Initialize new CFF file."""
+        self._was_empty = True  # nothing to validate yet
         self._data = {
             "cff-version": "1.2.0",
             "message": "If you use this software, please cite it using these metadata.",
