@@ -223,3 +223,25 @@ def test_authors_missing(package_json_file):
     pj = PackageJSON(package_json_file)
     pj._data.pop("author", None)
     assert pj.authors == []
+
+
+def test_further_authors_become_contributors(package_json_file):
+    pj = PackageJSON(package_json_file)
+    pm = ProjectMetadata(
+        name="proj",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(given_names="Jane", family_names="Doe", author=True),
+            Person(given_names="John", family_names="Roe"),
+            Person(given_names="Ann", family_names="Lee", author=True),
+            Person(given_names="Bob", family_names="Ray", author=True),
+        ],
+    )
+    pj.sync(pm)
+    pj.save()
+    pj = PackageJSON(package_json_file)
+    assert pj.authors[0]["name"] == "Jane Doe"
+    names = [c["name"] for c in pj.contributors]
+    assert names == ["Ann Lee", "Bob Ray", "John Roe"]
