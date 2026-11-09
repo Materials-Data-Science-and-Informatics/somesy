@@ -128,8 +128,8 @@ def test_person_merge(package_json_file, person: Person):
     assert pj.authors[0]["name"] == person1b.full_name
     assert pj.authors[0]["email"] == person1b.email
 
-    # authors are not contributors
-    assert len(pj.contributors) == 0
+    # the written author is not a contributor, the further author is
+    assert [c["email"] for c in pj.contributors] == [person2.email]
 
     # new person
     person3 = Person(
@@ -151,13 +151,15 @@ def test_person_merge(package_json_file, person: Person):
     pj.sync(pm)
     pj.save()
 
-    assert len(pj.contributors) == 1
+    # further author (person3) and non-author contributor (person2)
+    assert len(pj.contributors) == 2
     assert len(pj.maintainers) == 1
     assert pj.authors[0]["name"] == person1c.full_name
     assert pj.authors[0]["email"] == person1c.email
 
-    assert pj.contributors[0]["name"] == person2.full_name
-    assert pj.contributors[0]["email"] == person2.email
+    by_email = {c["email"]: c for c in pj.contributors}
+    assert set(by_email) == {person3.email, person2.email}
+    assert by_email[person2.email]["name"] == person2.full_name
 
 
 def test_entity_website_saved(package_json_file):
