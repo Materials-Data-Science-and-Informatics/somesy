@@ -31,6 +31,10 @@ Please consult the changelog to inform yourself about breaking changes and secur
     skipped during discovery; monorepo packages that fail to load are skipped
     with a warning
 - **Fixed**
+  - `codemeta.json` changed with every new commit or tag, failing
+    `pre-commit run --all-files` in CI: `dateModified` is now the date the
+    content last changed, and a version from a Git tag is only updated together
+    with other changes
   - monorepo packages ignored their own `cff_file` and `codemeta_file`
   - legacy `codemeta.json` files were not upgraded on disk
   - an empty `CITATION.cff` failed to sync; incomplete people and unparseable
