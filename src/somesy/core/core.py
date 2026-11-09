@@ -57,6 +57,9 @@ def atomic_write(
         umask = os.umask(0)
         os.umask(umask)
         mode = 0o666 & ~umask
+    if not path.parent.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Created missing folder '{path.parent}'.")
     fd, tmp_name = tempfile.mkstemp(
         dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
     )
@@ -68,7 +71,25 @@ def atomic_write(
             with os.fdopen(fd, "w", encoding="utf-8", newline=newline) as text:
                 text.write(data)
         os.chmod(tmp_name, mode)
-        os.replace(tmp_name, path)
+        try:
+            os.replace(tmp_name, path)
+        except PermissionError as err:
+            # e.g. on Windows when another program has the target open
+            if not path.exists():
+                raise
+            try:
+                if isinstance(data, bytes):
+                    with open(path, "wb") as binary:
+                        binary.write(data)
+                else:
+                    with open(path, "w", encoding="utf-8", newline=newline) as text:
+                        text.write(data)
+            except OSError:
+                raise err from None
+            logger.warning(
+                f"File '{path}' could not be replaced, wrote it directly instead."
+            )
+            Path(tmp_name).unlink(missing_ok=True)
     except BaseException:
         Path(tmp_name).unlink(missing_ok=True)
         raise
