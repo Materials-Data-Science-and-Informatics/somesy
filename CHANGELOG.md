@@ -4,7 +4,7 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
-## [v0.10.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.10.0) <small>(2026-11-09)</small> { id="0.10.0" }
+## Unreleased
 
 - **Added**
   - `--no-pass-validation` to override `pass_validation = true` from the config

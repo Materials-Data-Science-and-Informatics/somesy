@@ -217,7 +217,7 @@ file in the root folder of your repository:
 repos:
     # ... (your other hooks) ...
     - repo: https://github.com/Materials-Data-Science-and-Informatics/somesy
-      rev: 'v0.10.0'
+      rev: 'v0.9.0'
       hooks:
           - id: somesy
 ```
