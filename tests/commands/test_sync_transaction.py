@@ -130,3 +130,73 @@ def test_second_merge_sync_does_not_rewrite_codemeta(tmp_path):
     data = json.loads(first)
     assert data["dateModified"] == "2000-01-01"
     assert data["runtimePlatform"] == "Old 1"
+
+
+def _no_tmp_files(tmp_path):
+    return not list(tmp_path.rglob(".*.tmp"))
+
+
+def test_failed_save_rolls_back_written_files(tmp_path, monkeypatch):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_bytes(b'[project]\nname = "old"\nversion = "0.0.1"\n')
+    original = pyproject.read_bytes()
+
+    def fail_save(self, path):
+        raise RuntimeError("codemeta save failed")
+
+    monkeypatch.setattr(CodeMeta, "save", fail_save)
+    config = {**NO_OTHERS, "no_sync_pyproject": False}
+    somesy_input = SomesyInput(
+        config=SomesyConfig(
+            input_file=tmp_path / "somesy.toml", pass_validation=True, **config
+        ),
+        project=_metadata(),
+    )
+
+    with pytest.raises(RuntimeError, match="codemeta save failed"):
+        sync(somesy_input)
+
+    assert pyproject.read_bytes() == original
+    assert not (tmp_path / "CITATION.cff").exists()
+    assert not (tmp_path / "codemeta.json").exists()
+    assert _no_tmp_files(tmp_path)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="needs POSIX permissions")
+@pytest.mark.skipif(
+    hasattr(os, "geteuid") and os.geteuid() == 0, reason="root ignores permissions"
+)
+def test_read_only_directory_rolls_back_earlier_files(tmp_path):
+    pyproject = tmp_path / "pyproject.toml"
+    pyproject.write_bytes(b'[project]\nname = "old"\nversion = "0.0.1"\n')
+    original = pyproject.read_bytes()
+    ro = tmp_path / "ro"
+    ro.mkdir()
+    package_json = ro / "package.json"
+    package_json.write_text('{"name": "old", "version": "0.0.1"}\n')
+    package_original = package_json.read_bytes()
+    config = {
+        **NO_OTHERS,
+        "no_sync_pyproject": False,
+        "no_sync_package_json": False,
+        "package_json_file": package_json,
+    }
+    somesy_input = SomesyInput(
+        config=SomesyConfig(
+            input_file=tmp_path / "somesy.toml", pass_validation=True, **config
+        ),
+        project=_metadata(),
+    )
+
+    ro.chmod(0o555)
+    try:
+        with pytest.raises(PermissionError):
+            sync(somesy_input)
+    finally:
+        ro.chmod(0o755)
+
+    assert pyproject.read_bytes() == original
+    assert package_json.read_bytes() == package_original
+    assert not (tmp_path / "CITATION.cff").exists()
+    assert not (tmp_path / "codemeta.json").exists()
+    assert _no_tmp_files(tmp_path)
