@@ -256,7 +256,7 @@ Here is an overview of all the currently supported files and formats.
 **Notes:**
 
 1. `pyproject.toml` support is based on the metadata standard, not on the build backend: the PEP 621 `[project]` table is handled for **uv**, **hatchling**, **flit**, **PDM**, **setuptools** and **Poetry 2.x**, while **Poetry 1.x** is handled through its own `[tool.poetry]` table. `somesy` also supports PEP 621 `dynamic` fields — every synced field listed in `dynamic` (e.g. `version`, `authors`, `urls`) is not overwritten during sync, and `description` is optional. A `license` given as `{ file = ... }` or `license-files` is left untouched with a warning
-2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author (maintainers are written)
+2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author; further authors are listed in `contributors` (maintainers are written)
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses. It also does not distinguish persons from organizations, so `somesy` treats a name containing a space as a person and any other name as an entity
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration

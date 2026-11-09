@@ -13,7 +13,11 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - command line options override the config only when given explicitly, so
     `--overwrite` now wins over `merge_codemeta = true`
   - files are written atomically and only after all targets (including
-    packages) synced successfully; new files are no longer created on failure
+    packages) synced successfully; if writing fails, files already written are
+    restored and new files are not kept
+  - missing output folders are created; a file that cannot be replaced (e.g.
+    open in another program on Windows) is written directly with a warning
+  - `package.json`: further authors are listed in `contributors`
   - removed person fields (e.g. an email) are also removed from output files;
     people are matched by ORCID, then email, then name
   - `pyproject.toml`: `description` is optional; `license = { file = ... }` and
@@ -37,8 +41,9 @@ Please consult the changelog to inform yourself about breaking changes and secur
     and elements holding only a comment were not updated
   - `pyproject.toml` URL key spelling changed between syncs
   - `set` crashed on files without a `[project]` table
-  - conflicting `--quiet`/`--verbose`/`--debug` flags now warn and use the most
-    verbose one
+  - `Cargo.toml` without `authors` or `version` failed validation
+  - conflicting `--info`/`--verbose`/`--debug` flags now warn and use the most
+    verbose one instead of exiting
 
 ## [v0.9.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.9.0) <small>(2026-11-03)</small> { id="0.9.0" }
 

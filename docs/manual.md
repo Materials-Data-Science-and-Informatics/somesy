@@ -186,10 +186,13 @@ In `pom.xml`, free-text `<role>` values are kept; somesy only manages roles
 that are somesy contribution types. In `mkdocs.yml`, `repo_name` is written as
 `org/repo` only when it is not already set, and `site_name` may be free text.
 `Cargo.toml` workspace inheritance (e.g. `version.workspace = true`) is kept
-and such values are ignored when harvesting.
+and such values are ignored when harvesting. As in Cargo, `authors` and
+`version` are optional in an existing `Cargo.toml`.
 
 `package.json` and `fpm.toml` have a single author slot, so only the first
-author is written there (`package.json` maintainers are written as a list).
+author is written there. In `package.json`, further authors are listed first in
+`contributors`, followed by the other contributors, and maintainers are written
+as a list.
 
 #### People in output files
 
@@ -345,16 +348,19 @@ Only flags that are given explicitly override the configuration: for example,
 The `-P` shortcut disables pyproject synchronization, while `-V`
 (`--pass-validation/--no-pass-validation`) passes output validation.
 
-If several of `--quiet`, `--verbose` and `--debug` are given, somesy shows a
+If several of `--info`, `--verbose` and `--debug` are given, somesy shows a
 warning and the most verbose one wins. The `somesy` logger propagates to the root
 logger, so when somesy is used as a library, its log records reach your own
 logging configuration.
 
 Output files are created only when they are saved, so a failed sync does not
-leave new empty files behind. Saves are atomic (a temporary file is renamed over
-the target, and the file mode is kept). A sync is also two-phase: all targets
-(including those of packages) are prepared first and written only if all of
-them succeed.
+leave new empty files behind. Missing output folders are created. Saves are
+atomic (a temporary file is renamed over the target, and the file mode is
+kept). If the target cannot be replaced, for example because another program
+has it open on Windows, somesy writes it directly and shows a warning. A sync is
+also two-phase: all targets (including those of packages) are prepared first
+and written only if all of them succeed. If writing a file fails, the files
+already written are restored and new files are removed.
 
 Clear errors are raised for a `Cargo.toml` without a `[package]` table (e.g. a
 workspace root) and for an empty `mkdocs.yml`. An empty or comment-only
