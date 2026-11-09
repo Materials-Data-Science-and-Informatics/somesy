@@ -15,7 +15,7 @@ from pydantic import (
     model_validator,
 )
 
-from somesy.core.models import LicenseEnum
+from somesy.core.models import LicenseEnum, is_blank_person
 from somesy.core.types import HttpUrlStr
 
 EMailAddress = TypeAdapter(EmailStr)
@@ -275,6 +275,14 @@ class Pep621Config(BaseModel):
         else:
             if not v.is_file():
                 logger.warning("Readme file does not exist")
+        return v
+
+    @field_validator("authors", "maintainers", mode="before")
+    @classmethod
+    def drop_blank_people(cls, v):
+        """Ignore blank person entries."""
+        if isinstance(v, list):
+            return [p for p in v if not is_blank_person(p)]
         return v
 
     @field_validator("authors", "maintainers")

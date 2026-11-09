@@ -14,6 +14,7 @@ from somesy.core.models import (
     Person,
     ProjectMetadata,
     find_matching_person,
+    is_blank_person,
 )
 
 logger = logging.getLogger("somesy")
@@ -356,10 +357,12 @@ class ProjectMetadataWriter(ABC):
             return key, []
 
         def unparseable(entry: Any) -> bool:
+            if entry is None or self._is_blank_person(entry):
+                return False
             try:
-                return entry is not None and self._to_person(entry) is None
+                return self._to_person(entry) is None
             except (KeyError, TypeError, ValueError, AttributeError):
-                return entry is not None
+                return True
 
         return key, [e for e in raw if unparseable(e)]
 
@@ -472,6 +475,11 @@ class ProjectMetadataWriter(ABC):
     def _to_person(person_obj: Any) -> Person | Entity | None:
         """Convert an object representing a person into a `Person` or `Entity` object."""
 
+    @staticmethod
+    def _is_blank_person(person_obj: Any) -> bool:
+        """Return whether an existing person entry is blank, i.e. counts as no person."""
+        return is_blank_person(person_obj)
+
     @classmethod
     def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
         """Return a list of Persons and Entities parsed from list of format-specific people representations."""
@@ -479,7 +487,7 @@ class ProjectMetadataWriter(ABC):
         return [
             person
             for p in people or []
-            if p is not None
+            if p is not None and not cls._is_blank_person(p)
             if (person := cls._to_person(p)) is not None
         ]
 
@@ -529,7 +537,9 @@ class ProjectMetadataWriter(ABC):
 
         # only return authors that can be converted to Person
         authors_validated = [
-            author for author in authors if self._to_person(author) is not None
+            author
+            for author in authors
+            if not self._is_blank_person(author) and self._to_person(author) is not None
         ]
         return authors_validated
 
@@ -550,7 +560,8 @@ class ProjectMetadataWriter(ABC):
         maintainers_validated = [
             maintainer
             for maintainer in maintainers
-            if self._to_person(maintainer) is not None
+            if not self._is_blank_person(maintainer)
+            and self._to_person(maintainer) is not None
         ]
         return maintainers_validated
 

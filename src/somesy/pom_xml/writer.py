@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any
 
-from somesy.core.models import Entity, Person
+from somesy.core.models import Entity, Person, is_blank_person
 from somesy.core.types import ContributionTypeEnum
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 
@@ -178,6 +178,8 @@ class POM(ProjectMetadataWriter):
         heuristic: a name containing a space is a Person (last word is the
         family name), anything else is an Entity.
         """
+        if is_blank_person(person_obj):
+            return None
         if "name" not in person_obj:
             logger.warning(f"POM person without name, omitting: {person_obj}")
             return None

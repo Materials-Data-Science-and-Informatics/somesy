@@ -247,3 +247,49 @@ def test_further_authors_become_contributors(package_json_file):
     assert pj.authors[0]["name"] == "Jane Doe"
     names = [c["name"] for c in pj.contributors]
     assert names == ["Ann Lee", "Bob Ray", "John Roe"]
+
+
+BLANK_PEOPLE = ["", "   ", {}, {"name": ""}, {"name": "  "}]
+
+
+@pytest.fixture
+def blank_pm():
+    return ProjectMetadata(
+        name="proj",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(
+                given_names="Jane", family_names="Doe", author=True, maintainer=True
+            ),
+            Person(given_names="Ann", family_names="Lee", author=True),
+        ],
+    )
+
+
+@pytest.mark.parametrize("blank", BLANK_PEOPLE, ids=repr)
+def test_blank_author_is_replaced(package_json_file, blank_pm, blank):
+    pj = PackageJSON(package_json_file)
+    pj._data["author"] = blank
+    pj.sync(blank_pm)
+    pj.save()
+    pj = PackageJSON(package_json_file)
+    assert pj.authors[0]["name"] == "Jane Doe"
+    assert [c["name"] for c in pj.contributors] == ["Ann Lee"]
+    assert [m["name"] for m in pj.maintainers] == ["Jane Doe"]
+
+
+@pytest.mark.parametrize("blank", BLANK_PEOPLE, ids=repr)
+def test_blank_contributors_and_maintainers_are_replaced(
+    package_json_file, blank_pm, blank
+):
+    pj = PackageJSON(package_json_file)
+    pj._data["contributors"] = [blank, blank]
+    pj._data["maintainers"] = [blank]
+    pj.sync(blank_pm)
+    pj.save()
+    pj = PackageJSON(package_json_file)
+    assert pj.authors[0]["name"] == "Jane Doe"
+    assert [c["name"] for c in pj.contributors] == ["Ann Lee"]
+    assert [m["name"] for m in pj.maintainers] == ["Jane Doe"]

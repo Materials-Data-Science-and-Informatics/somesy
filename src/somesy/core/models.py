@@ -687,8 +687,25 @@ class Person(ContributorBaseModel):
         return self.full_name == other.full_name
 
 
+def is_blank_person(person_obj: Any) -> bool:
+    """Return whether an existing person entry is empty (e.g. `""`, `{}`, `{"name": ""}`).
+
+    Such entries are the normal state of freshly generated files (e.g. `npm init`)
+    and count as "no person".
+    """
+    if isinstance(person_obj, BaseModel):
+        person_obj = person_obj.model_dump()
+    if isinstance(person_obj, str):
+        return not person_obj.strip()
+    if isinstance(person_obj, dict):
+        return all(v is None or is_blank_person(v) for v in person_obj.values())
+    return False
+
+
 def parse_name_email(person_obj: str) -> Person | Entity | None:
     """Parse a "Name <email>" string to a Person, falling back to an Entity."""
+    if is_blank_person(person_obj):
+        return None
     try:
         return Person.from_name_email_string(person_obj)
     except (ValueError, AttributeError):
