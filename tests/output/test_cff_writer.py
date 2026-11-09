@@ -130,7 +130,7 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
 
     # check that serialization preserves key order
     # (load raw dict from yaml and see order of keys)
-    dct = cff._yaml.load(open(cff_path))
+    dct = cff._yaml.load(cff_path.read_text(encoding="utf-8"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person._key_order)
 
     # jane becomes john -> modified person
@@ -164,7 +164,7 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
         by_alias=True, exclude={"author", "publication_author"}
     )
     # existing author field order preserved
-    dct = cff._yaml.load(open(cff_path, "r"))
+    dct = cff._yaml.load(cff_path.read_text(encoding="utf-8"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1b._key_order)
     assert list(dct["authors"][1].keys()) == to_cff_keys(person2._key_order)
 
@@ -196,7 +196,7 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
     assert cff.authors[1] == person3.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
-    dct = cff._yaml.load(open(cff_path, "r"))
+    dct = cff._yaml.load(cff_path.read_text(encoding="utf-8"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1c._key_order)
 
     # add an entity to people list

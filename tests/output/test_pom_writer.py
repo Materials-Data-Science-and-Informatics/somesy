@@ -310,7 +310,8 @@ def test_sync_matches_multi_word_organisation_before_whitespace_heuristic(tmp_pa
     pom_path.write_text(
         '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
         "<name>Forschungszentrum Jülich</name><roles><role>sponsor</role></roles>"
-        "</developer></developers></project>"
+        "</developer></developers></project>",
+        encoding="utf-8",
     )
     metadata = ProjectMetadata(
         name="p",
@@ -336,7 +337,8 @@ def test_unknown_multi_word_name_is_still_a_person(tmp_path):
     pom_path.write_text(
         '<project xmlns="http://maven.apache.org/POM/4.0.0"><developers><developer>'
         "<name>Jane Doe</name><roles><role>sponsor</role></roles>"
-        "</developer></developers></project>"
+        "</developer></developers></project>",
+        encoding="utf-8",
     )
     metadata = ProjectMetadata(
         name="p",
