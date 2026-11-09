@@ -141,6 +141,11 @@ class CFF(ProjectMetadataWriter):
         return ret
 
     @staticmethod
+    def _is_blank_person(person_obj) -> bool:
+        """Incomplete CFF people are kept with a warning, never treated as blank."""
+        return False
+
+    @staticmethod
     def _to_person(person_obj) -> Person | Entity | None:
         """Parse CFF Person to a somesy Person or entity.
 

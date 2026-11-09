@@ -9,7 +9,7 @@ from typing import Any
 from rich.pretty import pretty_repr
 
 from somesy.core.core import write_json
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import Entity, Person, ProjectMetadata, is_blank_person
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
 from somesy.package_json.models import PackageAuthor, PackageJsonConfig
 
@@ -44,7 +44,7 @@ class PackageJSON(ProjectMetadataWriter):
         """Return the only author of the package.json file as list."""
         # check if the author has the correct format
         author = self._get_property(self._get_key("authors"))
-        if author is None:
+        if author is None or is_blank_person(author):
             return []
         if isinstance(author, str):
             author = PackageJsonConfig.convert_author(author)
@@ -68,6 +68,8 @@ class PackageJSON(ProjectMetadataWriter):
         maintainers_valid = []
 
         for maintainer in maintainers:
+            if is_blank_person(maintainer):
+                continue
             if isinstance(maintainer, str):
                 maintainer = PackageJsonConfig.convert_author(maintainer)
                 if maintainer is None:
@@ -93,6 +95,8 @@ class PackageJSON(ProjectMetadataWriter):
         contributors_valid = []
 
         for contributor in contributors:
+            if is_blank_person(contributor):
+                continue
             if isinstance(contributor, str):
                 contributor = PackageJsonConfig.convert_author(contributor)
                 if contributor is None:
