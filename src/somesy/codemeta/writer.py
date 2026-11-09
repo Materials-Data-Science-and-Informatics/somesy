@@ -141,7 +141,12 @@ class CodeMeta(ProjectMetadataWriter):
         So if nothing else changed, the previous `dateModified` and a `version`
         taken from a Git tag are kept. Otherwise `dateModified` is set to today
         (UTC) and the version from the latest tag is used.
+
+        A `dateCreated` that Git cannot provide (shallow history) is kept from
+        the previous file, also when not merging.
         """
+        if previous and "dateCreated" in previous:
+            self._data.setdefault("dateCreated", previous["dateCreated"])
         keys = ["dateModified"] + (["version"] if git_version else [])
 
         def without_keys(data: dict[str, Any]) -> dict[str, Any]:

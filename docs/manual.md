@@ -261,7 +261,8 @@ nothing else changed, the previous `dateModified` and a `version` taken from a
 Git tag are kept. So a sync on committed files, such as
 `pre-commit run --all-files` in CI, leaves `codemeta.json` unchanged. A new tag
 is picked up the next time the metadata changes; a `version` set in
-`somesy.toml` or a language file is always used.
+`somesy.toml` or a language file is always used. If Git history is shallow,
+`dateCreated` cannot be determined and the previous value is kept.
 
 The enrichment never replaces a CodeMeta field written from canonical Somesy
 metadata. When `merge_codemeta` is enabled, unrelated user-managed CodeMeta
