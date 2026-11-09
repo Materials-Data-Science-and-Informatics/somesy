@@ -13,7 +13,7 @@ from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
 from somesy.codemeta import CodeMeta
-from somesy.core.core import INPUT_FILES_ORDERED
+from somesy.core.core import INPUT_FILES_ORDERED, atomic_write
 from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
 from somesy.core.writer import ProjectMetadataWriter
@@ -191,8 +191,37 @@ def sync(
     """
     pending: list[_PendingSave] = []
     _collect(somesy_input, pending, is_package, project_root)
+    _save_all(pending)
+
+
+def _save_all(pending: list[_PendingSave]) -> None:
+    """Save all pending files; if one fails, restore the others and re-raise."""
+    # original bytes per real path (None: did not exist); first occurrence wins
+    originals: dict[Path, bytes | None] = {}
     for save in pending:
-        save.save()
+        path = save.file.resolve()
+        if path not in originals:
+            originals[path] = path.read_bytes() if path.is_file() else None
+    try:
+        for save in pending:
+            save.save()
+    except BaseException:
+        failed = []
+        for path, data in originals.items():
+            try:
+                if data is not None:
+                    if not path.is_file() or path.read_bytes() != data:
+                        atomic_write(path, data)
+                else:
+                    path.unlink(missing_ok=True)
+            except OSError:
+                failed.append(str(path))
+        if failed:
+            logger.error(
+                "Could not restore these files after a failed save: "
+                + ", ".join(failed)
+            )
+        raise
 
 
 def _collect(
