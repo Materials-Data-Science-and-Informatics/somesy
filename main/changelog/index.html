@@ -502,10 +502,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#0.10.0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unreleased
+        v0.10.0 (2026-11-09)
       
     </span>
   </a>
@@ -3078,10 +3078,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#unreleased" class="md-nav__link">
+  <a href="#0.10.0" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Unreleased
+        v0.10.0 (2026-11-09)
       
     </span>
   </a>
@@ -3333,52 +3333,60 @@
 <h1 id="changelog">Changelog<a class="headerlink" href="#changelog" title="Permanent link">&para;</a></h1>
 <p>Here we provide notes that summarize the most important changes in each released version.</p>
 <p>Please consult the changelog to inform yourself about breaking changes and security issues.</p>
-<h2 id="unreleased">Unreleased<a class="headerlink" href="#unreleased" title="Permanent link">&para;</a></h2>
+<h2 id="0.10.0"><a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.10.0">v0.10.0</a> <small>(2026-11-09)</small><a class="headerlink" href="#0.10.0" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Added</strong></li>
 <li><code>--no-pass-validation</code> to override <code>pass_validation = true</code> from the config</li>
-<li>every field synced into <code>pyproject.toml</code> respects PEP 621 <code>dynamic</code></li>
+<li><code>pyproject.toml</code>: all synced fields (not only <code>version</code> and <code>description</code>)
+    respect PEP 621 <code>dynamic</code></li>
 <li><strong>Changed</strong></li>
 <li>command line options override the config only when given explicitly, so
     <code>--overwrite</code> now wins over <code>merge_codemeta = true</code></li>
-<li>files are written atomically and only after all targets (including
-    packages) synced successfully; if writing fails, files already written are
-    restored and new files are not kept</li>
-<li>missing output folders are created; a file that cannot be replaced (e.g.
-    open in another program on Windows) is written directly with a warning</li>
+<li>a sync writes all files or none: files are saved atomically and only after
+    all targets (including packages) succeeded; on a write error, files already
+    written are restored and new files are removed</li>
+<li>people in output files are matched by ORCID, then email, then name; person
+    fields removed from the input (e.g. an email) are removed from the outputs</li>
 <li><code>package.json</code>: further authors are listed in <code>contributors</code></li>
-<li>removed person fields (e.g. an email) are also removed from output files;
-    people are matched by ORCID, then email, then name</li>
-<li><code>pyproject.toml</code>: <code>description</code> is optional; <code>license = { file = ... }</code> and
-    <code>license-files</code> are kept with a warning; Poetry 2 <code>[tool.poetry]</code> keys are
-    updated only if they already exist there</li>
-<li><code>codemeta.json</code> merge mode refreshes enriched values (e.g. <code>version</code>,
-    <code>dateModified</code>) and no longer rewrites an unchanged file</li>
-<li><code>init config</code> merges into the existing config or creates <code>somesy.toml</code></li>
-<li>Git authors are harvested from the <code>HEAD</code> history only</li>
-<li>a missing <code>-i</code> file names the file used instead; malformed input files are
-    skipped during discovery; monorepo packages that fail to load are skipped
-    with a warning</li>
+<li><code>pyproject.toml</code>: <code>description</code> is optional; a <code>license = { text = ... }</code>
+    table is replaced by the SPDX expression, while <code>license = { file = ... }</code>
+    and <code>license-files</code> are kept with a warning; Poetry 2 <code>[tool.poetry]</code> keys
+    are updated only if they already exist</li>
+<li><code>codemeta.json</code> merge mode refreshes enriched fields (e.g.
+    <code>softwareRequirements</code>, <code>codeRepository</code>) instead of keeping old values</li>
+<li><code>codemeta.json</code> no longer changes with every new commit or tag, so
+    <code>pre-commit run --all-files</code> in CI passes: <code>dateModified</code> is the date the
+    content last changed, and a version from a Git tag is updated together with
+    other changes only</li>
+<li><code>init config</code> merges into the existing input file or creates <code>somesy.toml</code></li>
+<li><code>set</code> only validates the changed field, so it works on incomplete input files</li>
+<li>Git authors are taken from the <code>HEAD</code> history only, not from all branches</li>
+<li>the <code>somesy</code> logger propagates to the root logger when used as a library</li>
 <li><strong>Fixed</strong></li>
-<li><code>codemeta.json</code> changed with every new commit or tag, failing
-    <code>pre-commit run --all-files</code> in CI: <code>dateModified</code> is now the date the
-    content last changed, and a version from a Git tag is only updated together
-    with other changes; <code>dateCreated</code> is no longer dropped in shallow clones</li>
-<li>monorepo packages ignored their own <code>cff_file</code> and <code>codemeta_file</code></li>
-<li>legacy <code>codemeta.json</code> files were not upgraded on disk</li>
+<li>monorepo packages ignored their own <code>cff_file</code> and <code>codemeta_file</code>; a
+    package that fails to load is now skipped with a warning</li>
+<li>malformed input files broke discovery; a missing <code>-i</code> file now names the
+    file used instead</li>
+<li>missing output folders were not created; a file that cannot be replaced
+    (e.g. open in another program on Windows) is now written directly with a
+    warning</li>
+<li>a failed sync left new empty output files behind</li>
+<li>legacy <code>codemeta.json</code> files were not upgraded on disk, and an unchanged
+    <code>codemeta.json</code> was rewritten in merge mode</li>
+<li><code>dateCreated</code> was dropped from <code>codemeta.json</code> in shallow Git clones</li>
 <li>an empty <code>CITATION.cff</code> failed to sync; incomplete people and unparseable
     existing entries in output files were dropped</li>
+<li>blank people entries in existing files (e.g. <code>"author": ""</code> from
+    <code>npm init -y</code>) crashed sync</li>
 <li><code>mkdocs.yml</code> got a <code>None</code> description; empty <code>mkdocs.yml</code> and <code>Cargo.toml</code>
     workspace roots now give a clear error</li>
+<li><code>Cargo.toml</code> without <code>authors</code> or <code>version</code> failed validation</li>
 <li><code>pom.xml</code>: organizations with a space in their name were treated as people,
     and elements holding only a comment were not updated</li>
 <li><code>pyproject.toml</code> URL key spelling changed between syncs</li>
 <li><code>set</code> crashed on files without a <code>[project]</code> table</li>
-<li><code>Cargo.toml</code> without <code>authors</code> or <code>version</code> failed validation</li>
-<li>blank people entries in existing files (e.g. <code>"author": ""</code> from
-    <code>npm init -y</code>) crashed sync; they are now replaced from the input</li>
-<li>conflicting <code>--info</code>/<code>--verbose</code>/<code>--debug</code> flags now warn and use the most
-    verbose one instead of exiting</li>
+<li>conflicting <code>--info</code>/<code>--verbose</code>/<code>--debug</code> flags exited with an error
+    instead of using the most verbose one</li>
 </ul>
 <h2 id="0.9.0"><a href="https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.9.0">v0.9.0</a> <small>(2026-11-03)</small><a class="headerlink" href="#0.9.0" title="Permanent link">&para;</a></h2>
 <ul>
