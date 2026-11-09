@@ -104,6 +104,7 @@ def test_sync(
     "writer_fixture, writer_class, version",
     [
         ("pyproject_poetry2_file", Poetry, 2),
+        ("pyproject_setuptools_file", Pep621, None),
         ("pyproject_uv_file", Pep621, None),
     ],
 )
@@ -120,6 +121,7 @@ def test_issue_121_writes_modern_license_string(
     "writer_fixture, writer_class, version",
     [
         ("pyproject_poetry2_file", Poetry, 2),
+        ("pyproject_setuptools_file", Pep621, None),
         ("pyproject_uv_file", Pep621, None),
     ],
 )
@@ -827,9 +829,10 @@ def test_warns_about_description_not_accepted_as_pypi_summary(
     assert ("'abstract'" in caplog.text) is warns
 
 
-def test_abstract_is_not_synced_to_pyproject(pyproject_uv_file, caplog, metadata):
+def test_abstract_is_not_synced_to_pyproject(
+    pyproject_setuptools_file, caplog, metadata
+):
     """The abstract is for CITATION.cff only, the package keeps its summary."""
-    pyproject_setuptools_file = pyproject_uv_file
     pyproject = Pyproject(pyproject_setuptools_file)
 
     with caplog.at_level(logging.WARNING, logger="somesy"):

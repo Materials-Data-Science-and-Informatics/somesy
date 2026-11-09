@@ -96,7 +96,6 @@ def test_dynamic_field_is_not_written(tmp_path, metadata, caplog, field, poetry)
     "license_line",
     [
         'license = { file = "LICENSE" }\n',
-        'license = { text = "Apache-2.0" }\n',
         'license = "Apache-2.0"\nlicense-files = ["LICENSE*"]\n',
         'license-files = ["LICENSE*"]\n',
     ],
@@ -117,6 +116,22 @@ def test_existing_license_table_or_license_files_are_kept(
     assert after.get("license") == before.get("license")
     assert after.get("license-files") == before.get("license-files")
     assert "license" in caplog.text and "kept" in caplog.text
+
+
+def test_license_text_table_is_replaced_by_spdx_expression(tmp_path, metadata, caplog):
+    path = write(
+        tmp_path,
+        HEAD
+        + 'version = "1.0.0"\ndescription = "Old"\n'
+        + 'license = { text = "Apache-2.0" }\n'
+        + BUILD,
+    )
+
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        doc = sync(path, metadata)
+
+    assert doc["project"]["license"] == "MIT"
+    assert "kept" not in caplog.text
 
 
 def test_license_string_is_still_updated(tmp_path, metadata):
@@ -176,6 +191,21 @@ def test_poetry2_updates_existing_legacy_metadata(tmp_path, metadata):
     assert legacy["repository"] == "https://example.com/new-repo"
     assert legacy["urls"]["documentation"] == "https://example.com/new-docs"
     assert legacy["dependencies"]["python"] == "^3.10"
+
+
+def test_poetry2_legacy_license_updated_with_text_table_in_project(
+    tmp_path, metadata, caplog
+):
+    text = POETRY2.replace(
+        'license = "Apache-2.0"\nkeywords = ["old"]',
+        'license = { text = "Apache-2.0" }\nkeywords = ["old"]',
+        1,
+    )
+    with caplog.at_level(logging.WARNING, logger="somesy"):
+        doc = sync(write(tmp_path, text), metadata)
+    assert doc["project"]["license"] == "MIT"
+    assert doc["tool"]["poetry"]["license"] == "MIT"
+    assert "kept" not in caplog.text
 
 
 def test_poetry2_never_adds_keys_to_legacy_table(tmp_path, metadata):
