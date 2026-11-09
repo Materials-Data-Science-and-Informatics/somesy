@@ -15,7 +15,7 @@ from pydantic import (
     model_validator,
 )
 
-from somesy.core.models import LicenseEnum
+from somesy.core.models import LicenseEnum, is_blank_person
 from somesy.core.types import HttpUrlStr
 
 EMailAddress = TypeAdapter(EmailStr)
@@ -36,14 +36,10 @@ def _check_version(v):
 
 
 def _check_required_unless_dynamic(model):
-    """Validate that version and description are present unless listed in dynamic."""
+    """Validate that version is present unless listed in dynamic."""
     dynamic = model.dynamic or []
     if model.version is None and "version" not in dynamic:
         raise ValueError("Field 'version' is required when not listed in 'dynamic'.")
-    if model.description is None and "description" not in dynamic:
-        raise ValueError(
-            "Field 'description' is required when not listed in 'dynamic'."
-        )
     return model
 
 
@@ -118,8 +114,13 @@ class PoetryConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_required_unless_dynamic(self):
-        """Validate that version and description are present unless listed in dynamic."""
-        return _check_required_unless_dynamic(self)
+        """Validate that version is present unless listed in dynamic."""
+        _check_required_unless_dynamic(self)
+        if self.authors is None and "authors" not in (self.dynamic or []):
+            raise ValueError(
+                "Field 'authors' is required when not listed in 'dynamic'."
+            )
+        return self
 
     license: Annotated[
         LicenseEnum | list[LicenseEnum] | License | str | None,
@@ -127,7 +128,9 @@ class PoetryConfig(BaseModel):
     ] = None
 
     # v1 has str, v2 has STPerson
-    authors: Annotated[list[str | STPerson], Field(description="Package authors")]
+    authors: Annotated[
+        list[str | STPerson] | None, Field(description="Package authors")
+    ] = None
     maintainers: Annotated[
         list[str | STPerson] | None, Field(description="Package maintainers")
     ] = None
@@ -220,7 +223,7 @@ class URLs(BaseModel):
 class Pep621Config(BaseModel):
     """PEP 621 `[project]` input model, as written by uv, hatchling, flit, PDM, setuptools and Poetry 2.x.
 
-    Required fields are name, and version and description unless listed as dynamic.
+    Required fields are name, and version unless listed as dynamic.
     """
 
     model_config = {"use_enum_values": True}
@@ -240,7 +243,7 @@ class Pep621Config(BaseModel):
 
     @model_validator(mode="after")
     def validate_required_unless_dynamic(self):
-        """Validate that version and description are present unless listed in dynamic."""
+        """Validate that version is present unless listed in dynamic."""
         return _check_required_unless_dynamic(self)
 
     readme: Path | list[Path] | File | None = None
@@ -272,6 +275,14 @@ class Pep621Config(BaseModel):
         else:
             if not v.is_file():
                 logger.warning("Readme file does not exist")
+        return v
+
+    @field_validator("authors", "maintainers", mode="before")
+    @classmethod
+    def drop_blank_people(cls, v):
+        """Ignore blank person entries."""
+        if isinstance(v, list):
+            return [p for p in v if not is_blank_person(p)]
         return v
 
     @field_validator("authors", "maintainers")

@@ -192,3 +192,17 @@ def test_harvest_defaults_to_current_directory(tmp_path, monkeypatch):
 
     assert metadata is not None
     assert metadata.name == tmp_path.name
+
+
+def test_harvest_authors_only_from_current_revision(tmp_path):
+    """Authors of commits not reachable from HEAD are not harvested."""
+    _init_repo(tmp_path)
+    git(tmp_path, "commit", "-qm", "init")
+    git(tmp_path, "checkout", "-qb", "other")
+    git(tmp_path, "config", "user.name", "Other Person")
+    git(tmp_path, "commit", "-q", "--allow-empty", "-m", "other")
+    git(tmp_path, "checkout", "-q", "-")
+
+    metadata = harvest(tmp_path)
+
+    assert [a.name for a in metadata.authors] == ["Jane Doe"]

@@ -7,7 +7,13 @@ import re
 from collections.abc import Iterable
 from typing import Any
 
-from somesy.core.models import Entity, PartialProjectMetadata, Person, ProjectMetadata
+from somesy.core.models import (
+    Entity,
+    PartialProjectMetadata,
+    Person,
+    ProjectMetadata,
+    find_matching_person,
+)
 from somesy.git.models import GitAuthor, GitMetadata
 
 logger = logging.getLogger("somesy")
@@ -76,13 +82,12 @@ def _merge_people(
     """Merge people using the model's existing identity heuristics."""
     result = list(existing)
     for candidate in incoming:
-        for index, person in enumerate(result):
-            # same_person is False for a Person/Entity mix
-            if person.same_person(candidate):
-                result[index] = _merge_person(person, candidate)
-                break
-        else:
+        # same_person is False for a Person/Entity mix
+        index = find_matching_person(candidate, result)
+        if index is None:
             result.append(candidate)
+        else:
+            result[index] = _merge_person(result[index], candidate)
     return result
 
 
@@ -119,7 +124,12 @@ def merge_metadata(
     *,
     allow_incomplete: bool = False,
 ) -> ProjectMetadata:
-    """Merge harvested endpoint and Git data, optionally allowing missing fields."""
+    """Merge harvested endpoint and Git data, optionally allowing missing fields.
+
+    Precedence of scalar values (name, version, ...): the first source that
+    provides a non-empty value wins, in the order of ``sources``; Git data is
+    appended last and therefore only fills what no other source provides.
+    """
     data: dict[str, Any] = {"people": [], "entities": []}
     keywords: list[str] = []
 

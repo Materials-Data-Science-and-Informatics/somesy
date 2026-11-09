@@ -2,6 +2,9 @@
 
 import json
 import logging
+import os
+import stat
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -23,11 +26,79 @@ INPUT_FILES_ORDERED = [
 """Input files ordered by priority for discovery."""
 
 
+def atomic_write(
+    path: Path,
+    data: str | bytes,
+    *,
+    newline: str | None = None,
+    exclusive: bool = False,
+) -> None:
+    """Write a file atomically: a failure never leaves a truncated or partial file.
+
+    The data is written to a temporary file in the same directory, which then
+    replaces the target. The mode of an existing target is kept; text is
+    encoded as UTF-8.
+
+    Args:
+        path: Target file.
+        data: Text or bytes to write; serialize before calling.
+        newline: Newline translation for text, as for `open`.
+        exclusive: Raise `FileExistsError` instead of replacing an existing file.
+
+    """
+    path = Path(path)
+    if exclusive and path.exists():
+        raise FileExistsError(f"File already exists: {path}")
+    if path.is_symlink():
+        path = path.resolve()
+    if path.exists():
+        mode = stat.S_IMODE(path.stat().st_mode)
+    else:
+        umask = os.umask(0)
+        os.umask(umask)
+        mode = 0o666 & ~umask
+    if not path.parent.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Created missing folder '{path.parent}'.")
+    fd, tmp_name = tempfile.mkstemp(
+        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
+    )
+    try:
+        if isinstance(data, bytes):
+            with os.fdopen(fd, "wb") as binary:
+                binary.write(data)
+        else:
+            with os.fdopen(fd, "w", encoding="utf-8", newline=newline) as text:
+                text.write(data)
+        os.chmod(tmp_name, mode)
+        try:
+            os.replace(tmp_name, path)
+        except PermissionError as err:
+            # e.g. on Windows when another program has the target open
+            if not path.exists():
+                raise
+            try:
+                if isinstance(data, bytes):
+                    with open(path, "wb") as binary:
+                        binary.write(data)
+                else:
+                    with open(path, "w", encoding="utf-8", newline=newline) as text:
+                        text.write(data)
+            except OSError:
+                raise err from None
+            logger.warning(
+                f"File '{path}' could not be replaced, wrote it directly instead."
+            )
+            Path(tmp_name).unlink(missing_ok=True)
+    except BaseException:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
+
+
 def write_json(data: Any, path: Path) -> None:
     """Write data as UTF-8 JSON with 2-space indentation, unescaped non-ASCII and a trailing newline."""
-    with path.open("w", encoding="utf-8", newline="\n") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-        f.write("\n")
+    text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
+    atomic_write(path, text, newline="\n")
 
 
 def discover_input(input_file: Path | None = None) -> Path:
@@ -43,11 +114,13 @@ def discover_input(input_file: Path | None = None) -> Path:
         somesy configuration file path.
 
     """
+    missing: Path | None = None
     if input_file:
         if input_file.is_file():
             logger.info(f"Using provided file '{input_file}' as somesy input file.")
             return input_file
         else:
+            missing = input_file
             logger.warning(
                 f"Passed file '{input_file}' does not exist. Searching for usable somesy input file..."
             )
@@ -59,7 +132,15 @@ def discover_input(input_file: Path | None = None) -> Path:
                 get_input_content(input_file)
             except RuntimeError:
                 continue
+            except (ValueError, TypeError, KeyError, OSError) as e:
+                # NOTE: tomlkit and json parse errors are ValueError subclasses
+                logger.warning(f"Skipping malformed input file '{input_file}': {e}")
+                continue
 
+            if missing is not None:
+                logger.warning(
+                    f"Input file '{missing}' does not exist, using '{input_file}' instead."
+                )
             msg = f"Using '{input_file}' as somesy input file."
             logger.log(VERBOSE, msg)
             return input_file

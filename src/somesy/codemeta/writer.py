@@ -8,6 +8,8 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
+from somesy.codemeta.enrich import ENRICHED_KEYS
+from somesy.codemeta.enrich import enrich as enrich_codemeta
 from somesy.codemeta.utils import V3_CONTEXT, validate_codemeta
 from somesy.core.core import write_json
 from somesy.core.models import Entity, Person, ProjectMetadata
@@ -26,12 +28,23 @@ class CodeMeta(ProjectMetadataWriter):
         path: Path,
         merge: bool | None = False,
         pass_validation: bool | None = False,
+        enrich_sources: dict[str, Path | list[Path] | None] | None = None,
+        enrich_root: Path | None = None,
+        enrich_project_root: Path | None = None,
     ):
         """Codemeta.json parser.
+
+        If `enrich_sources` is given, `sync` also fills optional fields from
+        these project files (see [somesy.codemeta.enrich.enrich][]), relative
+        to `enrich_root` (default: the directory of the file) and
+        `enrich_project_root` (default: `enrich_root`).
 
         See [somesy.core.writer.ProjectMetadataWriter.__init__][].
         """
         self.merge = merge
+        self._enrich_sources = enrich_sources
+        self._enrich_root = enrich_root or Path(path).parent
+        self._enrich_project_root = enrich_project_root or self._enrich_root
         self._default_context = V3_CONTEXT
         mappings: FieldKeyMapping = {
             "repository": ["codeRepository"],
@@ -124,10 +137,8 @@ class CodeMeta(ProjectMetadataWriter):
             )
 
     def _init_new_file(self) -> None:
-        """Create a new codemeta.json file with bare minimum generic data."""
-        data = self._new_data()
-        # dump to file
-        write_json(data, self.path)
+        """Initialize new codemeta.json data (in memory) with bare minimum generic data."""
+        self._data = OrderedDict(self._new_data())
 
     def _new_data(self) -> dict[str, Any]:
         """Return the bare minimum generic CodeMeta data."""
@@ -295,11 +306,19 @@ class CodeMeta(ProjectMetadataWriter):
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
+        stale: dict[str, Any] = {}
+        key_order: list[str] = []
         if not self.merge:
             self._data = self._new_data()
         else:
             self._upgrade_to_v3()
             self._data["@type"] = "SoftwareSourceCode"
+            # Fields somesy produces (from metadata or enrichment) are refreshed:
+            # set aside old values, those still absent after syncing are kept.
+            key_order = list(self._data)
+            stale = {
+                key: self._data.pop(key) for key in ENRICHED_KEYS if key in self._data
+            }
             if metadata.authors():
                 self._data["author"] = []
             self._data["maintainer"] = []
@@ -331,3 +350,20 @@ class CodeMeta(ProjectMetadataWriter):
 
         if "softwareHelp" in self._data:
             self._data["url"] = self._data["softwareHelp"]
+
+        if self._enrich_sources is not None:
+            enrich_codemeta(
+                self._data,
+                self._enrich_sources,
+                self._enrich_root,
+                self._enrich_project_root,
+            )
+
+        if self.merge and stale:
+            # keep old values of fields nothing refreshed, in their original place
+            for key, value in stale.items():
+                self._data.setdefault(key, value)
+            order = {key: i for i, key in enumerate(key_order)}
+            self._data = OrderedDict(
+                sorted(self._data.items(), key=lambda kv: order.get(kv[0], len(order)))
+            )

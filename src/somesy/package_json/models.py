@@ -11,7 +11,7 @@ from somesy.core.types import HttpUrlStr
 class PackageAuthor(BaseModel):
     """Package author model."""
 
-    name: Annotated[str | None, Field(description="Author name")]
+    name: Annotated[str | None, Field(description="Author name")] = None
     email: Annotated[EmailStr | None, Field(description="Author email")] = None
     url: Annotated[
         HttpUrlStr | None, Field(description="Author website or orcid page")

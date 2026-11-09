@@ -59,3 +59,11 @@ def test_harvest_sources_ignores_rust_workspace_values(tmp_path):
         assert not content.get(key)
     merged = merge_metadata([c for _, c in sources], None, allow_incomplete=True)
     assert merged.name == "x"
+
+
+def test_harvest_failure_warning_names_source_and_error(tmp_path, caplog):
+    (tmp_path / "pom.xml").write_text("<project><name>broken</project>")
+    with caplog.at_level("WARNING", logger="somesy"):
+        harvest_sources(tmp_path)
+    assert "pom.xml" in caplog.text
+    assert "mismatched tag" in caplog.text

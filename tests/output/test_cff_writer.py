@@ -96,6 +96,7 @@ def test_from_to_person(person: Person, entity: Entity):
     assert CFF._from_person(person) == person.model_dump(by_alias=True)
 
     p = CFF._to_person(CFF._from_person(person))
+    assert p is not None
     assert p.full_name == person.full_name
     assert p.email == person.email
     assert p.orcid == str(person.orcid)
@@ -104,6 +105,7 @@ def test_from_to_person(person: Person, entity: Entity):
     assert CFF._from_person(entity) == entity.model_dump(by_alias=True)
 
     e = CFF._to_person(CFF._from_person(entity))
+    assert e is not None
     assert e.name == entity.name
     assert e.email == entity.email
     assert isinstance(e, Entity)
@@ -128,7 +130,7 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
 
     # check that serialization preserves key order
     # (load raw dict from yaml and see order of keys)
-    dct = cff._yaml.load(open(cff_path))
+    dct = cff._yaml.load(cff_path.read_text(encoding="utf-8"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person._key_order)
 
     # jane becomes john -> modified person
@@ -162,7 +164,7 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
         by_alias=True, exclude={"author", "publication_author"}
     )
     # existing author field order preserved
-    dct = cff._yaml.load(open(cff_path, "r"))
+    dct = cff._yaml.load(cff_path.read_text(encoding="utf-8"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1b._key_order)
     assert list(dct["authors"][1].keys()) == to_cff_keys(person2._key_order)
 
@@ -194,7 +196,7 @@ def test_person_merge(tmp_path, person: Person, entity: Entity):
     assert cff.authors[1] == person3.model_dump(
         by_alias=True, exclude={"author", "publication_author"}
     )
-    dct = cff._yaml.load(open(cff_path, "r"))
+    dct = cff._yaml.load(cff_path.read_text(encoding="utf-8"))
     assert list(dct["authors"][0].keys()) == to_cff_keys(person1c._key_order)
 
     # add an entity to people list
@@ -271,3 +273,25 @@ def test_entity_rorid_is_not_written_and_stray_rorid_repaired(tmp_path):
     cff.sync(metadata)
     cff.save()
     assert cff_path.read_text() == first
+
+
+def test_to_person_incomplete_entries_are_skipped(caplog):
+    assert CFF._to_person({"family-names": "Doe"}) is None
+    assert CFF._to_person({"given-names": "John"}) is None
+    assert CFF._parse_people([{"email": "a@b.com"}]) == []
+    assert "incomplete" in caplog.text.lower()
+
+
+def test_sync_with_partial_people_does_not_crash(tmp_path, person: Person):
+    path = tmp_path / "CITATION.cff"
+    path.write_text(
+        "cff-version: 1.2.0\ntype: software\nmessage: m\ntitle: t\n"
+        "authors:\n  - family-names: Lonely\n  - name: Org\n"
+        "contact:\n  - email: nobody@example.com\n"
+    )
+    cff = CFF(path, pass_validation=True)
+    cff.sync(_metadata(person))
+    cff.save()
+    names = [a.get("family-names") or a.get("name") for a in cff._data["authors"]]
+    # the incomplete entry cannot be matched, so it is kept untouched
+    assert names == [person.family_names, "Lonely"]

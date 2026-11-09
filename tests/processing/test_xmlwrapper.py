@@ -175,3 +175,51 @@ def test_set_nested_dict_children_are_qualified(xml_examples):
     dev = prx.get("developers").get("developer")
     assert dev is not None
     assert dev.get("roles").get("role").to_jsonlike() == "code"
+
+
+def _proxy(tmp_path, body: str) -> XMLProxy:
+    path = tmp_path / "t.xml"
+    path.write_text(f'<root xmlns="{POM_URL}">{body}</root>')
+    return XMLProxy.parse(path, default_namespace=POM_URL)
+
+
+def _xml(prx: XMLProxy) -> str:
+    import xml.etree.ElementTree as ET
+
+    return ET.tostring(prx._node, encoding="unicode")
+
+
+def test_setitem_comment_key_raises_without_mutating(tmp_path):
+    prx = _proxy(tmp_path, "<a>1</a><!-- note -->")
+    before = _xml(prx)
+    comment = list(iter(prx))[1]
+    assert comment.is_comment
+    with pytest.raises(ValueError):
+        prx[comment] = "x"
+    assert _xml(prx) == before
+
+
+def test_setitem_invalid_value_does_not_mutate(tmp_path):
+    prx = _proxy(tmp_path, "<a><b>1</b></a><c>keep</c>")
+    before = _xml(prx)
+    with pytest.raises(TypeError):
+        prx["a"] = object()
+    assert _xml(prx) == before
+    with pytest.raises(TypeError):
+        prx["c"] = [{"x": "1"}, object()]
+    assert _xml(prx) == before
+
+
+def test_setitem_node_key_with_list_does_not_mutate(tmp_path):
+    prx = _proxy(tmp_path, "<a>1</a>")
+    before = _xml(prx)
+    with pytest.raises(TypeError):
+        prx[prx.get("a", as_nodes=True)[0]] = [1, 2]
+    assert _xml(prx) == before
+
+
+def test_comment_children_do_not_make_a_leaf_a_node(tmp_path):
+    prx = _proxy(tmp_path, "<url>https://x.org<!-- c --></url><n><m>1</m></n>")
+    assert prx["url"].to_jsonlike() == "https://x.org"
+    assert prx.get("url", deep=True) == "https://x.org"
+    assert prx["n"].to_jsonlike() == {"m": "1"}

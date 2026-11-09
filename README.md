@@ -157,7 +157,8 @@ incomplete file, explicitly use `somesy sync --pass-validation` or set
 somesy init --output-file somesy.toml --overwrite
 ```
 
-For manual configuration of sync options, use `somesy init config`.
+For manual configuration of sync options, use `somesy init config`. It merges
+into the existing config and creates `somesy.toml` if there is none.
 
 Update a scalar project-metadata value with `somesy set`:
 
@@ -194,7 +195,10 @@ If you happen to use
 then somesy would also update the respective information there.
 
 You can see call available options with `somesy --help`,
-all of these can also be conveniently set in your `somesy.toml` file.
+all of these can also be conveniently set in your `somesy.toml` file. Options given
+on the command line override the file only when passed explicitly (e.g. `--overwrite`
+overrides `merge_codemeta = true`). Files are written atomically, and only if all
+targets could be synced.
 
 ### Somesy as a pre-commit hook
 
@@ -251,8 +255,8 @@ Here is an overview of all the currently supported files and formats.
 
 **Notes:**
 
-1. `pyproject.toml` support is based on the metadata standard, not on the build backend: the PEP 621 `[project]` table is handled for **uv**, **hatchling**, **flit**, **PDM**, **setuptools** and **Poetry 2.x**, while **Poetry 1.x** is handled through its own `[tool.poetry]` table. `somesy` also supports PEP 621 `dynamic` fields — fields listed in `dynamic` (e.g. `version`) are not overwritten during sync
-2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author
+1. `pyproject.toml` support is based on the metadata standard, not on the build backend: the PEP 621 `[project]` table is handled for **uv**, **hatchling**, **flit**, **PDM**, **setuptools** and **Poetry 2.x**, while **Poetry 1.x** is handled through its own `[tool.poetry]` table. `somesy` also supports PEP 621 `dynamic` fields — every synced field listed in `dynamic` (e.g. `version`, `authors`, `urls`) is not overwritten during sync, and `description` is optional. A `license` given as `{ file = ... }` or `license-files` is left untouched with a warning
+2. `package.json` only supports one author, so `somesy` will pick the _first_ listed author; further authors are listed in `contributors` (maintainers are written)
 3. `fpm.toml` only supports one author and maintainer, so `somesy` will pick the _first_ listed author and maintainer
 4. `pom.xml` has no concept of `maintainers`, but it can have multiple licenses. It also does not distinguish persons from organizations, so `somesy` treats a name containing a space as a person and any other name as an entity
 5. `mkdocs.yml` is a bit special, as it is not a project file, but a documentation file. `somesy` will only update it if it exists and is enabled in the configuration

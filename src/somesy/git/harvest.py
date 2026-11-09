@@ -58,7 +58,7 @@ def _remote(path: Path) -> str | None:
 def _authors(path: Path) -> list[GitAuthor]:
     """Return all distinct mailmap-aware Git authors, ranked by commit count."""
     try:
-        raw = _git(path, "log", "--all", "--format=%aN%x00%aE")
+        raw = _git(path, "log", "HEAD", "--format=%aN%x00%aE")
     except _GIT_ERRORS:
         return []
 

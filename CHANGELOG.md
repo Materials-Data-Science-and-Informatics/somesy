@@ -4,6 +4,49 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
+## Unreleased
+
+- **Added**
+  - `--no-pass-validation` to override `pass_validation = true` from the config
+  - every field synced into `pyproject.toml` respects PEP 621 `dynamic`
+- **Changed**
+  - command line options override the config only when given explicitly, so
+    `--overwrite` now wins over `merge_codemeta = true`
+  - files are written atomically and only after all targets (including
+    packages) synced successfully; if writing fails, files already written are
+    restored and new files are not kept
+  - missing output folders are created; a file that cannot be replaced (e.g.
+    open in another program on Windows) is written directly with a warning
+  - `package.json`: further authors are listed in `contributors`
+  - removed person fields (e.g. an email) are also removed from output files;
+    people are matched by ORCID, then email, then name
+  - `pyproject.toml`: `description` is optional; `license = { file = ... }` and
+    `license-files` are kept with a warning; Poetry 2 `[tool.poetry]` keys are
+    updated only if they already exist there
+  - `codemeta.json` merge mode refreshes enriched values (e.g. `version`,
+    `dateModified`) and no longer rewrites an unchanged file
+  - `init config` merges into the existing config or creates `somesy.toml`
+  - Git authors are harvested from the `HEAD` history only
+  - a missing `-i` file names the file used instead; malformed input files are
+    skipped during discovery; monorepo packages that fail to load are skipped
+    with a warning
+- **Fixed**
+  - monorepo packages ignored their own `cff_file` and `codemeta_file`
+  - legacy `codemeta.json` files were not upgraded on disk
+  - an empty `CITATION.cff` failed to sync; incomplete people and unparseable
+    existing entries in output files were dropped
+  - `mkdocs.yml` got a `None` description; empty `mkdocs.yml` and `Cargo.toml`
+    workspace roots now give a clear error
+  - `pom.xml`: organizations with a space in their name were treated as people,
+    and elements holding only a comment were not updated
+  - `pyproject.toml` URL key spelling changed between syncs
+  - `set` crashed on files without a `[project]` table
+  - `Cargo.toml` without `authors` or `version` failed validation
+  - blank people entries in existing files (e.g. `"author": ""` from
+    `npm init -y`) crashed sync; they are now replaced from the input
+  - conflicting `--info`/`--verbose`/`--debug` flags now warn and use the most
+    verbose one instead of exiting
+
 ## [v0.9.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.9.0) <small>(2026-11-03)</small> { id="0.9.0" }
 
 - **Added**

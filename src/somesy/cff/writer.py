@@ -1,6 +1,7 @@
 """Citation File Format (CFF) parser and saver."""
 
 import json
+import logging
 from copy import deepcopy
 from io import StringIO
 from pathlib import Path
@@ -9,8 +10,11 @@ from cffconvert import Citation
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import LiteralScalarString
 
+from somesy.core.core import atomic_write
 from somesy.core.models import Entity, Person, ProjectMetadata
 from somesy.core.writer import FieldKeyMapping, IgnoreKey, ProjectMetadataWriter
+
+logger = logging.getLogger("somesy")
 
 
 def _drop_rorid(data) -> None:
@@ -56,22 +60,24 @@ class CFF(ProjectMetadataWriter):
 
     def _init_new_file(self):
         """Initialize new CFF file."""
+        self._was_empty = True  # nothing to validate yet
         self._data = {
             "cff-version": "1.2.0",
             "message": "If you use this software, please cite it using these metadata.",
             "type": "software",
         }
-        with open(self.path, "w", encoding="utf-8") as f:
-            self._yaml.dump(self._data, f)
 
     def _load(self):
         """Load the CFF file."""
         with open(self.path, encoding="utf-8") as f:
             self._data = self._yaml.load(f)
+        self._was_empty = not self._data
+        if self._was_empty:  # empty or comment-only file, treat like a new one
+            self._init_new_file()
 
     def _validate(self) -> None:
         """Validate the CFF file."""
-        if self.pass_validation:
+        if self.pass_validation or self._was_empty:
             return
         try:
             # validate the loaded data without a stray `rorid` (repaired on sync)
@@ -88,10 +94,13 @@ class CFF(ProjectMetadataWriter):
         path = path or self.path
 
         # if description have new line characters, it should be saved as multiline string
-        if "abstract" in self._data and "\n" in self._data["abstract"]:
-            self._data["abstract"] = LiteralScalarString(self._data["abstract"])
+        abstract = self._data.get("abstract")
+        if isinstance(abstract, str) and "\n" in abstract:
+            self._data["abstract"] = LiteralScalarString(abstract)
 
-        self._yaml.dump(self._data, path)
+        stream = StringIO()
+        self._yaml.dump(self._data, stream)
+        atomic_write(path, stream.getvalue())
 
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Ensure that publication authors are added all into author list."""
@@ -132,15 +141,32 @@ class CFF(ProjectMetadataWriter):
         return ret
 
     @staticmethod
-    def _to_person(person_obj) -> Person | Entity:
-        """Parse CFF Person to a somesy Person or entity."""
+    def _is_blank_person(person_obj) -> bool:
+        """Incomplete CFF people are kept with a warning, never treated as blank."""
+        return False
+
+    @staticmethod
+    def _to_person(person_obj) -> Person | Entity | None:
+        """Parse CFF Person to a somesy Person or entity.
+
+        Entries lacking a required field are skipped with a warning.
+        """
         # if the object has key name, it is an entity
         if "name" in person_obj:
-            Entity._aliases()
-            ret = Entity.make_partial(person_obj)
+            model: type[Person | Entity] = Entity
         else:
-            Person._aliases()
-            ret = Person.make_partial(person_obj)
+            model = Person
+        model._aliases()
+        required = {
+            f.alias or k for k, f in model.model_fields.items() if f.is_required()
+        }
+        if missing := required - set(person_obj.keys()):
+            logger.warning(
+                f"Skipping incomplete CITATION.cff person/entity {dict(person_obj)}, "
+                f"missing: {', '.join(sorted(missing))}"
+            )
+            return None
+        ret = model.make_partial(person_obj)
 
         # construct (partial) Person while preserving key order from YAML
         ret.set_key_order(list(person_obj.keys()))

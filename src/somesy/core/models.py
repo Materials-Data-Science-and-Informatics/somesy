@@ -6,6 +6,7 @@ import functools
 import json
 import logging
 import re
+from collections.abc import Sequence
 from datetime import date
 from pathlib import Path
 from typing import Annotated, Any
@@ -276,17 +277,26 @@ class SomesyConfig(SomesyBaseModel):
 
     def get_input(self) -> SomesyInput:
         """Based on the somesy config, load the complete somesy input."""
-        # get metadata+config from specified input file
+        # only explicitly set fields override the config file
+        explicit = self.model_dump(
+            exclude_unset=True, exclude_defaults=False, exclude_none=False
+        )
+        # get metadata+config from specified input file; the strictness of the
+        # project model follows an explicitly passed pass_validation
         somesy_input = SomesyInput.from_input_file(
             self.input_file or Path("somesy.toml"),
-            allow_incomplete=bool(self.pass_validation),
+            pass_validation=explicit.get("pass_validation"),
         )
         # update input with merged config settings (cli overrides config file)
         dct: dict[str, Any] = {}
-        dct.update(somesy_input.config or {})
-        dct.update(self.model_dump())
+        dct.update(
+            (somesy_input.config or SomesyConfig()).model_dump(
+                exclude_unset=True, exclude_defaults=False, exclude_none=False
+            )
+        )
+        dct.update(explicit)
         somesy_input.config = SomesyConfig(**dct)
-        somesy_input.config._cli_overrides = self.model_dump()
+        somesy_input.config._cli_overrides = explicit
         return somesy_input
 
     def resolve_paths(self, base_dir: Path) -> None:
@@ -677,8 +687,25 @@ class Person(ContributorBaseModel):
         return self.full_name == other.full_name
 
 
+def is_blank_person(person_obj: Any) -> bool:
+    """Return whether an existing person entry is empty (e.g. `""`, `{}`, `{"name": ""}`).
+
+    Such entries are the normal state of freshly generated files (e.g. `npm init`)
+    and count as "no person".
+    """
+    if isinstance(person_obj, BaseModel):
+        person_obj = person_obj.model_dump()
+    if isinstance(person_obj, str):
+        return not person_obj.strip()
+    if isinstance(person_obj, dict):
+        return all(v is None or is_blank_person(v) for v in person_obj.values())
+    return False
+
+
 def parse_name_email(person_obj: str) -> Person | Entity | None:
     """Parse a "Name <email>" string to a Person, falling back to an Entity."""
+    if is_blank_person(person_obj):
+        return None
     try:
         return Person.from_name_email_string(person_obj)
     except (ValueError, AttributeError):
@@ -691,11 +718,68 @@ def parse_name_email(person_obj: str) -> Person | Entity | None:
         return None
 
 
+def _same_identifier(a, b) -> bool:
+    """Return whether two records share an identifier (orcid or rorid)."""
+    for attr in ("orcid", "rorid"):
+        x, y = getattr(a, attr, None), getattr(b, attr, None)
+        if x is not None and y is not None and str(x) == str(y):
+            return True
+    return False
+
+
+def _distinct_identifiers(a, b) -> bool:
+    """Return whether two records have different identifiers (orcid or rorid)."""
+    for attr in ("orcid", "rorid"):
+        x, y = getattr(a, attr, None), getattr(b, attr, None)
+        if x is not None and y is not None and str(x) != str(y):
+            return True
+    return False
+
+
+def find_matching_person(
+    person: Person | Entity, candidates: Sequence[Person | Entity]
+) -> int | None:
+    """Return the index of the candidate that is the same person, or None.
+
+    If several candidates match, a warning naming them is logged and the
+    candidate with the same ORCID/ROR ID is used (else the first match).
+    """
+    matches = [i for i, c in enumerate(candidates) if c.same_person(person)]
+    if not matches:
+        return None
+    if len(matches) == 1:
+        return matches[0]
+    names = ", ".join(
+        f"'{candidates[i].full_name}' (position {i + 1})" for i in matches
+    )
+    chosen = next(
+        (i for i in matches if _same_identifier(candidates[i], person)), matches[0]
+    )
+    logger.warning(
+        f"'{person.full_name}' matches several people: {names}. "
+        f"Using the one at position {chosen + 1}."
+    )
+    return chosen
+
+
 def _ensure_distinct(items: list, kind: str) -> list:
-    """Raise a ValueError if the same person/entity is listed twice."""
-    for i in range(len(items)):
-        for j in range(i + 1, len(items)):
-            if items[i].same_person(items[j]):
+    """Raise a ValueError if the same person/entity is listed twice.
+
+    A pair is not reported if one of its members is ambiguous, i.e. also matches
+    two entries with different ORCIDs/ROR IDs (e.g. two ORCIDs and one without).
+    """
+    n = len(items)
+    same = [
+        [i != j and items[i].same_person(items[j]) for j in range(n)] for i in range(n)
+    ]
+
+    def ambiguous(i: int) -> bool:
+        nb = [k for k in range(n) if same[i][k]]
+        return any(_distinct_identifiers(items[a], items[b]) for a in nb for b in nb)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            if same[i][j] and not ambiguous(i) and not ambiguous(j):
                 a = pretty_repr(json.loads(items[i].model_dump_json()))
                 b = pretty_repr(json.loads(items[j].model_dump_json()))
                 msg = f"Same {kind} is listed twice:\n{a}\n{b}"
@@ -890,13 +974,23 @@ class SomesyInput(SomesyBaseModel):
 
     @classmethod
     def from_input_file(
-        cls, path: Path, *, allow_incomplete: bool = False
+        cls,
+        path: Path,
+        *,
+        allow_incomplete: bool = False,
+        pass_validation: bool | None = None,
     ) -> SomesyInput:
-        """Load somesy input from given file."""
+        """Load somesy input from given file.
+
+        If `pass_validation` is given, it overrides the value from the file
+        (and decides whether the project is validated strictly).
+        """
         content = get_input_content(path)
         config = SomesyConfig(**content.get("config", {}))
         if allow_incomplete:
             config.pass_validation = True
+        if pass_validation is not None:
+            config.pass_validation = pass_validation
         project_model = (
             PartialProjectMetadata if config.pass_validation else ProjectMetadata
         )

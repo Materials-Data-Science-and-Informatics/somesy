@@ -10,7 +10,7 @@ from rich.markup import escape
 from rich.pretty import pretty_repr
 
 from somesy.core.core import discover_input
-from somesy.core.log import SomesyLogLevel, get_log_level, set_log_level
+from somesy.core.log import SomesyLogLevel, apply_log_level, get_log_level
 from somesy.core.models import SomesyConfig, SomesyInput
 
 logger = logging.getLogger("somesy")
@@ -99,7 +99,7 @@ def resolved_somesy_input(**cli_args) -> SomesyInput:
 
     if cli_log_level is None:
         # no cli log level -> set it according to the loaded configuration
-        set_log_level(somesy_input.config.log_level())
+        apply_log_level(somesy_input.config.log_level())
 
     logger.debug(
         f"Combined config (Defaults + File + CLI):\n{pretty_repr(somesy_input.config)}"

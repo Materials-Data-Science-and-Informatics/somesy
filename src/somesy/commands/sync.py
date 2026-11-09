@@ -1,17 +1,19 @@
 """Sync selected metadata files with given input file."""
 
+import json
 import logging
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, NamedTuple
 
+from pydantic import ValidationError
+from rich.markup import escape
 from rich.pretty import pretty_repr
 
 from somesy.cff.writer import CFF
 from somesy.codemeta import CodeMeta
-from somesy.codemeta.enrich import enrich as enrich_codemeta
-from somesy.core.core import INPUT_FILES_ORDERED
+from somesy.core.core import INPUT_FILES_ORDERED, atomic_write
 from somesy.core.log import VERBOSE
 from somesy.core.models import ProjectMetadata, SomesyConfig, SomesyInput
 from somesy.core.writer import ProjectMetadataWriter
@@ -71,7 +73,19 @@ def _semantic_data(data: Any) -> Any:
     return data
 
 
-def _sync_file(
+class _PendingSave(NamedTuple):
+    """A synced writer whose file still has to be written."""
+
+    file: Path
+    writer: ProjectMetadataWriter
+
+    def save(self) -> None:
+        """Write the file."""
+        self.writer.save(self.file)
+        logger.log(VERBOSE, f"Saved synced '{self.file.name}'.\n")
+
+
+def _prepare_file(
     metadata: ProjectMetadata,
     file: Path,
     writer_cls: type[ProjectMetadataWriter],
@@ -81,36 +95,59 @@ def _sync_file(
     codemeta_root: Path | None = None,
     codemeta_project_root: Path | None = None,
 ):
-    """Sync metadata to a file using the provided writer."""
+    """Sync metadata to a file in memory, return the pending save if it changed."""
     logger.log(VERBOSE, f"Loading '{file.name}' ...")
+    existed = file.exists()
     if writer_cls == CodeMeta:
-        writer: ProjectMetadataWriter = writer_cls(
-            file, merge=merge_codemeta, pass_validation=pass_validation
+        enrich_root = codemeta_root or file.parent
+        writer: ProjectMetadataWriter = CodeMeta(
+            file,
+            merge=merge_codemeta,
+            pass_validation=pass_validation,
+            enrich_sources=codemeta_sources,
+            enrich_root=enrich_root,
+            enrich_project_root=codemeta_project_root or enrich_root,
         )
     else:
         writer = writer_cls(file, pass_validation=pass_validation)
     logger.log(VERBOSE, f"Syncing '{file.name}' ...")
     original_data = _semantic_data(writer._data)
+    if writer_cls == CodeMeta and existed:
+        # the writer may already have upgraded a legacy file in memory:
+        # compare against what is actually on disk
+        try:
+            original_data = _semantic_data(json.loads(file.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            pass
     writer.sync(metadata)
-    if writer_cls == CodeMeta and codemeta_sources is not None:
-        root = codemeta_root or file.parent
-        enrich_codemeta(
-            writer._data, codemeta_sources, root, codemeta_project_root or root
-        )
-    if _semantic_data(writer._data) != original_data:
-        writer.save(file)
-        logger.log(VERBOSE, f"Saved synced '{file.name}'.\n")
+    if not existed or _semantic_data(writer._data) != original_data:
+        return _PendingSave(file, writer)
+    return None
+
+
+def _sync_file(*args, **kwargs) -> None:
+    """Sync metadata to a file using the provided writer and save it if changed."""
+    if pending := _prepare_file(*args, **kwargs):
+        pending.save()
 
 
 def _sync_files(
-    metadata, files, writer_class, create_if_missing: bool = False, **kwargs
+    metadata,
+    files,
+    writer_class,
+    pending: list[_PendingSave],
+    create_if_missing: bool = False,
+    **kwargs,
 ):
-    """Sync metadata to files using the provided writer.
+    """Sync metadata to files in memory using the provided writer.
+
+    Files that need saving are appended to `pending`.
 
     Args:
         metadata: Project metadata to sync
         files: Path or list of paths to sync
         writer_class: Writer class to use
+        pending: Collects the saves of changed or missing files
         create_if_missing: Whether to create the file if it doesn't exist
         **kwargs: Additional arguments passed to the writer
 
@@ -118,8 +155,20 @@ def _sync_files(
     if isinstance(files, Path):
         files = [files]
     for file in files:
-        if file.is_file() or create_if_missing:
-            _sync_file(metadata, file, writer_class, **kwargs)
+        if (file.is_file() or create_if_missing) and (
+            save := _prepare_file(metadata, file, writer_class, **kwargs)
+        ):
+            pending.append(save)
+
+
+def _describe_error(error: Exception) -> str:
+    """Return a short one-line description of a package loading error."""
+    if isinstance(error, ValidationError):
+        return "; ".join(
+            f"{'.'.join(str(part) for part in err['loc'])}: {err['msg']}"
+            for err in error.errors()
+        )
+    return str(error) or type(error).__name__
 
 
 def sync(
@@ -129,6 +178,9 @@ def sync(
 ):
     """Sync selected metadata files with given input file.
 
+    All targets of the project and its packages are synced in memory first;
+    files are only written if that succeeded for every one of them.
+
     Args:
         somesy_input: The input configuration and metadata to sync
         is_package: Whether this is a package (subfolder) being synced
@@ -137,6 +189,48 @@ def sync(
             by all packages, such as a lock file, are looked up from here.
 
     """
+    pending: list[_PendingSave] = []
+    _collect(somesy_input, pending, is_package, project_root)
+    _save_all(pending)
+
+
+def _save_all(pending: list[_PendingSave]) -> None:
+    """Save all pending files; if one fails, restore the others and re-raise."""
+    # original bytes per real path (None: did not exist); first occurrence wins
+    originals: dict[Path, bytes | None] = {}
+    for save in pending:
+        path = save.file.resolve()
+        if path not in originals:
+            originals[path] = path.read_bytes() if path.is_file() else None
+    try:
+        for save in pending:
+            save.save()
+    except BaseException:
+        failed = []
+        for path, data in originals.items():
+            try:
+                if data is not None:
+                    if not path.is_file() or path.read_bytes() != data:
+                        atomic_write(path, data)
+                else:
+                    path.unlink(missing_ok=True)
+            except OSError:
+                failed.append(str(path))
+        if failed:
+            logger.error(
+                "Could not restore these files after a failed save: "
+                + ", ".join(failed)
+            )
+        raise
+
+
+def _collect(
+    somesy_input: SomesyInput,
+    pending: list[_PendingSave],
+    is_package: bool = False,
+    project_root: Path | None = None,
+) -> None:
+    """Sync the project and its packages in memory, collecting the pending saves."""
     conf, metadata = somesy_input.config, somesy_input.project
 
     # Get the base directory from the input file's location
@@ -160,11 +254,12 @@ def sync(
     logger.debug(f"Project metadata: {pp_metadata}")
 
     # First sync the current project
-    _sync_root_project(conf, metadata, base_dir, project_root or base_dir)
+    _sync_root_project(conf, metadata, base_dir, project_root or base_dir, pending)
 
     # Then sync each package if defined
     if conf.packages:
         packages = [conf.packages] if isinstance(conf.packages, Path) else conf.packages
+        skipped: list[Path] = []
         for package in packages:
             logger.info(f"\n[bold blue]Processing package {package}...[/bold blue]")
 
@@ -172,6 +267,7 @@ def sync(
             config_files = [package / file for file in INPUT_FILES_ORDERED]
             package_input = None
             config_file: Path | None = None
+            load_error: Exception | None = None
 
             for config_file in config_files:
                 try:
@@ -182,12 +278,22 @@ def sync(
                     break
                 except (FileNotFoundError, RuntimeError):
                     continue
+                except (ValueError, KeyError, OSError) as error:  # invalid config
+                    load_error = error
+                    break
 
             if package_input is None:
-                logger.warning(
-                    f"No valid somesy config found in package {package} "
-                    f"(tried: {', '.join(str(f) for f in config_files)})"
-                )
+                if load_error is not None:
+                    logger.warning(
+                        f"Skipping package {package}: cannot load '{config_file}': "
+                        f"{escape(_describe_error(load_error))}"
+                    )
+                else:
+                    logger.warning(
+                        f"No valid somesy config found in package {package} "
+                        f"(tried: {', '.join(str(f) for f in config_files)})"
+                    )
+                skipped.append(package)
                 continue
 
             # The package's own config is the base; only options explicitly
@@ -208,17 +314,21 @@ def sync(
                 }
             )
 
-            # Set default CFF and CodeMeta paths in package directory if not specified
-            if not package_input.config.no_sync_cff:
-                package_input.config.cff_file = Path("CITATION.cff")
-            if not package_input.config.no_sync_codemeta:
-                package_input.config.codemeta_file = Path("codemeta.json")
+            # CFF and CodeMeta paths are resolved relative to the package
+            # directory; unset ones fall back to the config defaults.
 
             # Recursively call sync on the package
-            sync(
+            _collect(
                 package_input,
+                pending,
                 is_package=True,
                 project_root=project_root or base_dir,
+            )
+
+        if skipped:
+            logger.warning(
+                f"Skipped {len(skipped)} package(s) that could not be loaded: "
+                f"{', '.join(str(p) for p in skipped)}"
             )
 
 
@@ -227,8 +337,9 @@ def _sync_root_project(
     metadata: ProjectMetadata,
     base_dir: Path,
     project_root: Path,
+    pending: list[_PendingSave],
 ) -> None:
-    """Sync metadata files for the root project."""
+    """Sync metadata files for the root project in memory."""
     for target in SYNC_TARGETS:
         if getattr(conf, f"no_sync_{target.key}"):
             continue
@@ -256,6 +367,7 @@ def _sync_root_project(
             metadata,
             files,
             target.writer,
+            pending,
             create_if_missing=target.create_if_missing,
             pass_validation=conf.pass_validation,
             **kwargs,

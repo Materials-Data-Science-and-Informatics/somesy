@@ -9,9 +9,28 @@ from typing import Any
 import tomlkit
 from tomlkit.items import AoT, Array, InlineTable
 
-from somesy.core.models import Entity, Person, ProjectMetadata
+from somesy.core.models import (
+    Entity,
+    Person,
+    ProjectMetadata,
+    find_matching_person,
+    is_blank_person,
+)
 
 logger = logging.getLogger("somesy")
+
+# person fields that are role/contribution flags, not part of the person's identity
+_UNMANAGED_PERSON_FIELDS = frozenset(
+    {
+        "author",
+        "publication_author",
+        "maintainer",
+        "contribution",
+        "contribution_types",
+        "contribution_begin",
+        "contribution_end",
+    }
+)
 
 
 def toml_array(value: list) -> Array:
@@ -113,18 +132,18 @@ class ProjectMetadataWriter(ABC):
                 self._validate()
         else:
             if self.create_if_not_exists:
-                self._init_new_file()
-                self._load()
+                self._init_new_file()  # in memory only, written by save()
             else:
                 raise FileNotFoundError(f"The file {self.path} does not exist.")
 
     def _init_new_file(self) -> None:
-        """Create an new suitable target file.
+        """Initialize the data of a new target file (in memory only).
 
-        Override to initialize file with minimal contents, if needed.
+        Override to initialize with minimal contents, if needed.
         Make sure to set `self._data` to match the contents.
+        The file is only created on disk by `save()`.
         """
-        self.path.touch()
+        self._data = {}
 
     @abstractmethod
     def _load(self):
@@ -244,31 +263,37 @@ class ProjectMetadataWriter(ABC):
         # (inefficient, but author list are not that long usually)
         for person_meta in new:
             person_update = person_meta.model_dump()
-            person_existed = False
-            for i in range(len(modified_people)):
-                person = modified_people[i]
-                if not person.same_person(person_meta):
-                    continue
+            index = find_matching_person(person_meta, modified_people)
+            if index is not None:
+                person = modified_people[index]
 
                 # not new person (-> will not append new record)
-                person_existed = True
                 # still exists (-> will not be removed from list)
-                still_exists[i] = True
+                still_exists[index] = True
+
+                # the input is the source of truth for the managed fields:
+                # fields missing in the input are removed from the output person
+                # (unknown extra keys of the output are kept)
+                fields = type(person).model_fields
+                cleared = {
+                    k: fields[k].get_default(call_default_factory=True)
+                    for k in person.model_dump()
+                    if k in fields
+                    and k not in person_update
+                    and k not in _UNMANAGED_PERSON_FIELDS
+                }
+                updated = person.model_copy(update={**person_update, **cleared})
 
                 # if there were changes -> update person
-                overlapping_fields = person.model_dump(
-                    include=set(person_update.keys())
-                )
-                if person_update != overlapping_fields:
-                    modified_people[i] = person.model_copy(update=person_update)
+                if updated.model_dump() != person.model_dump():
+                    modified_people[index] = updated
 
                     # show effective update in debug log
                     old_fmt = self._from_person(person)
-                    new_fmt = self._from_person(modified_people[i])
+                    new_fmt = self._from_person(updated)
                     if old_fmt != new_fmt:
                         logger.debug(f"Updating person\n{old_fmt}\nto\n{new_fmt}")
-
-            if not person_existed:
+            else:
                 new_people.append(person_meta)
 
         # show added and removed people in debug log
@@ -321,6 +346,36 @@ class ProjectMetadataWriter(ABC):
 
         return self._merge_person_metadata(old_people_unique, new_people_unique)
 
+    def _unparseable_people(self, role: str) -> tuple[Any, list[Any]]:
+        """Return mapped key and raw existing entries of `role` that can't be parsed.
+
+        Empty list if the target has no list-valued slot for the role.
+        """
+        key = self._get_key(role)
+        raw = self._get_property(key)
+        if not isinstance(raw, list):
+            return key, []
+
+        def unparseable(entry: Any) -> bool:
+            if entry is None or self._is_blank_person(entry):
+                return False
+            try:
+                return self._to_person(entry) is None
+            except (KeyError, TypeError, ValueError, AttributeError):
+                return True
+
+        return key, [e for e in raw if unparseable(e)]
+
+    def _reattach_people(self, key: Any, raw_entries: list[Any]) -> None:
+        """Append raw entries (kept untouched) to the list stored under `key`."""
+        if not raw_entries:
+            return
+        current = self._get_property(key)
+        if isinstance(current, dict):  # some formats collapse one-item lists
+            current = [current]
+        if isinstance(current, list):
+            self._set_property(key, current + raw_entries)
+
     def _sync_authors(self, metadata: ProjectMetadata) -> None:
         """Sync output file authors with authors from metadata.
 
@@ -345,11 +400,17 @@ class ProjectMetadataWriter(ABC):
         if metadata.keywords:
             self.keywords = metadata.keywords
 
+        # existing entries we cannot parse are kept untouched in the target
+        kept = {r: self._unparseable_people(r) for r in ("authors", "maintainers")}
+
         if metadata.authors():
             self._sync_authors(metadata)
         self.maintainers = self._sync_person_list(
             self.maintainers, metadata.maintainers()
         )
+
+        for key, raw_entries in kept.values():
+            self._reattach_people(key, raw_entries)
 
         if licenses := metadata.license:
             self.license = license_expression(licenses)
@@ -414,6 +475,11 @@ class ProjectMetadataWriter(ABC):
     def _to_person(person_obj: Any) -> Person | Entity | None:
         """Convert an object representing a person into a `Person` or `Entity` object."""
 
+    @staticmethod
+    def _is_blank_person(person_obj: Any) -> bool:
+        """Return whether an existing person entry is blank, i.e. counts as no person."""
+        return is_blank_person(person_obj)
+
     @classmethod
     def _parse_people(cls, people: list[Any] | None) -> list[Person | Entity]:
         """Return a list of Persons and Entities parsed from list of format-specific people representations."""
@@ -421,7 +487,7 @@ class ProjectMetadataWriter(ABC):
         return [
             person
             for p in people or []
-            if p is not None
+            if p is not None and not cls._is_blank_person(p)
             if (person := cls._to_person(p)) is not None
         ]
 
@@ -471,7 +537,9 @@ class ProjectMetadataWriter(ABC):
 
         # only return authors that can be converted to Person
         authors_validated = [
-            author for author in authors if self._to_person(author) is not None
+            author
+            for author in authors
+            if not self._is_blank_person(author) and self._to_person(author) is not None
         ]
         return authors_validated
 
@@ -492,7 +560,8 @@ class ProjectMetadataWriter(ABC):
         maintainers_validated = [
             maintainer
             for maintainer in maintainers
-            if self._to_person(maintainer) is not None
+            if not self._is_blank_person(maintainer)
+            and self._to_person(maintainer) is not None
         ]
         return maintainers_validated
 
