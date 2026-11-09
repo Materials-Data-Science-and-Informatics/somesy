@@ -99,7 +99,7 @@
   ],
   "name": "somesy",
   "description": "A CLI tool for synchronizing software project metadata.",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "keywords": [
     "metadata",
     "FAIR"
