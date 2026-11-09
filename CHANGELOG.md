@@ -42,6 +42,8 @@ Please consult the changelog to inform yourself about breaking changes and secur
   - `pyproject.toml` URL key spelling changed between syncs
   - `set` crashed on files without a `[project]` table
   - `Cargo.toml` without `authors` or `version` failed validation
+  - blank people entries in existing files (e.g. `"author": ""` from
+    `npm init -y`) crashed sync; they are now replaced from the input
   - conflicting `--info`/`--verbose`/`--debug` flags now warn and use the most
     verbose one instead of exiting
 
