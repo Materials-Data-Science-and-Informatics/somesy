@@ -100,6 +100,10 @@ jobs:
     # build + deploy documentation (only on push event for certain branches+tags)
     needs: [test, test-build-docs]
     if: github.event_name == 'push'
+    # pipelines (e.g. a main merge and a release tag) push to gh-pages one after another
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     permissions:
       contents: write
