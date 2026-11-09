@@ -161,3 +161,57 @@ def test_atomic_write_creates_missing_parent_folders(tmp_path, caplog):
         r.levelname == "INFO" and str(target.parent) in r.getMessage()
         for r in caplog.records
     )
+
+
+def _deny_replace(monkeypatch):
+    import os
+
+    def deny(src, dst):
+        raise PermissionError("locked")
+
+    monkeypatch.setattr(os, "replace", deny)
+
+
+@pytest.mark.parametrize("data", ["new\nvalue\n", b"\xff\x00new"])
+def test_atomic_write_falls_back_to_direct_write_when_locked(
+    tmp_path, monkeypatch, caplog, data
+):
+    """If the target cannot be replaced, write directly and warn."""
+    from somesy.core.core import atomic_write
+
+    target = tmp_path / "locked.txt"
+    target.write_text("old")
+    _deny_replace(monkeypatch)
+    with caplog.at_level("WARNING", logger="somesy"):
+        atomic_write(target, data, newline="\n")
+    expected = data if isinstance(data, bytes) else data.encode()
+    assert target.read_bytes() == expected
+    assert any(
+        r.levelname == "WARNING" and "locked.txt" in r.getMessage()
+        for r in caplog.records
+    )
+    assert [p.name for p in tmp_path.iterdir()] == ["locked.txt"]
+
+
+def test_atomic_write_reraises_when_direct_write_also_fails(tmp_path, monkeypatch):
+    """If the direct write fails too, the original PermissionError propagates."""
+    import builtins
+
+    from somesy.core.core import atomic_write
+
+    target = tmp_path / "locked.txt"
+    target.write_text("old")
+    _deny_replace(monkeypatch)
+    real_open = builtins.open
+
+    def fake_open(file, *a, **k):
+        if str(file) == str(target):
+            raise PermissionError("still locked")
+        return real_open(file, *a, **k)
+
+    monkeypatch.setattr(builtins, "open", fake_open)
+    with pytest.raises(PermissionError, match="locked"):
+        atomic_write(target, "x")
+    monkeypatch.undo()
+    assert target.read_text() == "old"
+    assert [p.name for p in tmp_path.iterdir()] == ["locked.txt"]
