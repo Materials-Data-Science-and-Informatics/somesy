@@ -2,6 +2,7 @@
 
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -128,7 +129,8 @@ def test_second_merge_sync_does_not_rewrite_codemeta(tmp_path):
     assert codemeta.read_bytes() == first
     assert codemeta.stat().st_mtime_ns == 10**9
     data = json.loads(first)
-    assert data["dateModified"] == "2000-01-01"
+    # the first run changed the file -> modified today
+    assert data["dateModified"] == datetime.now(timezone.utc).date().isoformat()
     assert data["runtimePlatform"] == "Old 1"
 
 

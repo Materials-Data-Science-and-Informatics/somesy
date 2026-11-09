@@ -149,7 +149,9 @@ def test_enriches_missing_dates_and_repository_from_git(tmp_path):
     assert codemeta["codeRepository"] == "https://github.com/example/project"
     assert codemeta["issueTracker"] == "https://github.com/example/project/issues"
     assert codemeta["version"] == "v1.2.3"
-    assert codemeta["dateCreated"] == codemeta["dateModified"]
+    assert "dateCreated" in codemeta
+    # dateModified is set by the writer, not from Git history (issue #156)
+    assert "dateModified" not in codemeta
 
 
 def test_enrichment_omits_unknown_git_creation_date(tmp_path, mocker):
@@ -164,7 +166,7 @@ def test_enrichment_omits_unknown_git_creation_date(tmp_path, mocker):
     enrich(codemeta, {"pyproject": path}, tmp_path)
 
     assert "dateCreated" not in codemeta
-    assert codemeta["dateModified"] == "2024-01-01"
+    assert "dateModified" not in codemeta
 
 
 def test_language_file_issue_tracker_takes_priority_over_git(tmp_path, mocker):
