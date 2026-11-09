@@ -96,3 +96,20 @@ def test_log_levels(log_level):
     logger.info("info")
     logger.log(VERBOSE, "verbose")
     logger.debug("debug")
+
+
+@pytest.mark.parametrize(
+    "flags",
+    [
+        ["--info", "--debug"],
+        ["-v", "-vv"],
+        ["--verbose", "--debug"],
+        ["-v", "-vv", "-vvv"],
+    ],
+)
+def test_conflicting_log_flags_warn_instead_of_exiting(flags):
+    """Several log flags warn visibly and use the most verbose level."""
+    result = runner.invoke(app, [*flags, "sync", "--help"], env={"COLUMNS": "200"})
+    assert result.exit_code == 0, result.output
+    assert "More than one of info, verbose and debug" in result.output
+    assert "Only one of" not in result.output
