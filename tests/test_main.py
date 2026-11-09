@@ -113,3 +113,38 @@ def test_conflicting_log_flags_warn_instead_of_exiting(flags):
     assert result.exit_code == 0, result.output
     assert "More than one of info, verbose and debug" in result.output
     assert "Only one of" not in result.output
+
+
+def test_sync_creates_missing_output_folder(tmp_path, monkeypatch):
+    """`sync -c docs/CITATION.cff` works when docs/ does not exist yet."""
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "somesy.toml").write_text(
+        """\
+[project]
+name = "demo"
+version = "0.1.0"
+description = "demo project"
+license = "MIT"
+
+[[project.people]]
+given-names = "Jane"
+family-names = "Doe"
+email = "jane.doe@example.com"
+author = true
+"""
+    )
+    result = runner.invoke(
+        app,
+        [
+            "sync",
+            "-i",
+            "somesy.toml",
+            "-c",
+            "docs/CITATION.cff",
+            "--no-sync-pyproject",
+            "--no-sync-codemeta",
+        ],
+        env={"COLUMNS": "200"},
+    )
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "docs" / "CITATION.cff").is_file()

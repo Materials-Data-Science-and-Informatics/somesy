@@ -147,3 +147,17 @@ def test_init_config_and_set_value_keep_file_on_failure(
         set_project_value(path, "name", "other")
     assert path.read_bytes() == before
     assert sorted(p.name for p in tmp_path.iterdir()) == ["somesy.toml"]
+
+
+def test_atomic_write_creates_missing_parent_folders(tmp_path, caplog):
+    """Missing parent folders are created and logged at INFO level."""
+    from somesy.core.core import atomic_write
+
+    target = tmp_path / "docs" / "nested" / "out.txt"
+    with caplog.at_level("INFO", logger="somesy"):
+        atomic_write(target, "hello\n")
+    assert target.read_text() == "hello\n"
+    assert any(
+        r.levelname == "INFO" and str(target.parent) in r.getMessage()
+        for r in caplog.records
+    )
