@@ -188,6 +188,22 @@ that are somesy contribution types. In `mkdocs.yml`, `repo_name` is written as
 `Cargo.toml` workspace inheritance (e.g. `version.workspace = true`) is kept
 and such values are ignored when harvesting.
 
+`package.json` and `fpm.toml` have a single author slot, so only the first
+author is written there (`package.json` maintainers are written as a list).
+
+#### People in output files
+
+Existing people in an output file are matched with the people from the somesy
+input by identity: ORCID first, then email, then name. If one person matches
+several existing entries, somesy logs a warning and uses the entry with the same
+ORCID (otherwise the first one). The somesy input is the source of truth for the
+managed person fields: a field that was removed from the input (for example an
+email) is also cleared in the outputs. The role and contribution flags
+(`author`, `maintainer`, `publication_author` and the contribution fields) are
+not touched by this. Existing entries that somesy cannot parse are kept
+untouched, and incomplete people in `CITATION.cff` (missing a required field)
+are kept with a warning.
+
 Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
 poetry only supports a simple string with a name and email (like in git commits)
@@ -228,6 +244,14 @@ configured language files and Git. This preserves the source priority:
 somesy.toml > language file > Git history
 ```
 
+In merge mode, the enriched keys (`readme`, `issueTracker`, `releaseNotes`,
+`softwareRequirements`, `programmingLanguage`, `runtimePlatform`,
+`codeRepository`, `dateCreated`, `dateModified` and `version`) are refreshed on
+every sync; old values are only kept if nothing provides a new one. A repeated
+`somesy sync --merge` does not rewrite an unchanged `codemeta.json`. Legacy
+CodeMeta files are upgraded on disk, and an output file that is missing on disk
+is always written.
+
 The enrichment never replaces a CodeMeta field written from canonical Somesy
 metadata. When `merge_codemeta` is enabled, unrelated user-managed CodeMeta
 fields remain unchanged as well.
@@ -265,12 +289,15 @@ checkout (for GitHub Actions, `fetch-depth: 0`).
 
 For `pyproject.toml` targets using the PEP 621 `[project]` table (uv, hatchling,
 flit, PDM, setuptools) as well as for Poetry v2, somesy respects the
-[PEP 621 `dynamic` field](https://peps.python.org/pep-0621/#dynamic). If
-`version` or `description` is listed in `dynamic`, it means the value is
-provided at build time rather than written statically in the file. In this case
-somesy will:
+[PEP 621 `dynamic` field](https://peps.python.org/pep-0621/#dynamic). Every
+field somesy syncs into `pyproject.toml` honours it: `version`, `description`,
+`license`, `authors`, `maintainers`, `keywords` and `urls` (the homepage,
+repository and documentation URLs). If such a field is listed in `dynamic`, the
+value is provided at build time rather than written statically in the file. In
+this case somesy will:
 
-- **skip validation** of that field (it is not required to be present in the file), and
+- **skip validation** of that field (`version` and `authors` are required in the
+  file unless listed in `dynamic`; `description` is optional), and
 - **not overwrite** the field during sync, logging a warning instead.
 
 For example, if your `pyproject.toml` contains:
@@ -284,6 +311,14 @@ dynamic = ["version", "description"]
 somesy will sync all other managed fields as usual but leave `version` and
 `description` untouched, because they are expected to be set dynamically at
 build time.
+
+For the license, somesy only manages the SPDX expression. A `license = { text = ... }`
+table is replaced by the SPDX expression, but `license = { file = ... }` and
+`license-files` are left untouched, with a warning.
+
+With Poetry 2 and both `[project]` and `[tool.poetry]` present, `[project]` is
+updated. The legacy keys in `[tool.poetry]` (e.g. `version`, `authors`) are
+updated only if they already exist there; missing ones are never added.
 
 **people** and **entities** are mapped to authors/maintainers/contributors depending
 on the output format. Both fields are marked as necessary but what `somesy` need is an
@@ -304,7 +339,27 @@ somesy sync --help
 Everything that can be configured as a CLI flag can also be set in a `somesy.toml` file
 in the `[config]` section. CLI arguments set in an input file override the
 defaults, while options passed as CLI arguments override the configuration.
-The `-P` shortcut disables pyproject synchronization, while `-V` passes output validation.
+Only flags that are given explicitly override the configuration: for example,
+`--overwrite` overrides `merge_codemeta = true` from the config file, and
+`--no-pass-validation` overrides `pass_validation = true`.
+The `-P` shortcut disables pyproject synchronization, while `-V`
+(`--pass-validation/--no-pass-validation`) passes output validation.
+
+If several of `--quiet`, `--verbose` and `--debug` are given, somesy shows a
+warning and the most verbose one wins. The `somesy` logger propagates to the root
+logger, so when somesy is used as a library, its log records reach your own
+logging configuration.
+
+Output files are created only when they are saved, so a failed sync does not
+leave new empty files behind. Saves are atomic (a temporary file is renamed over
+the target, and the file mode is kept). A sync is also two-phase: all targets
+(including those of packages) are prepared first and written only if all of
+them succeed.
+
+Clear errors are raised for a `Cargo.toml` without a `[package]` table (e.g. a
+workspace root) and for an empty `mkdocs.yml`. An empty or comment-only
+`CITATION.cff` is treated like a new file. In `pom.xml`, existing entities are
+matched by name and XML comments are preserved.
 
 Synchronization only writes a target when its parsed metadata changes. Formatter
 choices such as indentation, wrapping, quotes, comments, and mapping-key order are
@@ -340,7 +395,8 @@ any missing required values, and writes the harvested metadata. To synchronize
 an incomplete file, explicitly use `somesy sync --pass-validation` or set
 `pass_validation = true` in the config; missing values are omitted from output.
 
-Git bot accounts (names ending in `[bot]`) are skipped. Git authors with a
+Only the history of the current `HEAD` is used to find Git authors, not that of
+all branches. Git bot accounts (names ending in `[bot]`) are skipped. Git authors with a
 single-word name are not added, with a warning; add them manually.
 
 Detected project files are enabled as synchronization targets. Targets that are
@@ -353,7 +409,9 @@ somesy init --overwrite
 ```
 
 Use `somesy init config` when you want to configure synchronization options
-manually instead of deriving them from the files in the project.
+manually instead of deriving them from the files in the project. It merges the
+answers into the `[config]` section of the existing input file, keeping other
+keys, and creates a `somesy.toml` if no input file exists.
 
 ### Update project metadata
 
@@ -366,7 +424,8 @@ somesy set version 1.2.3
 
 The command supports `name`, `description`, `abstract`, `version`, `license`,
 `homepage`, `repository`, and `documentation`. It does not update structured values such as
-keywords, people, or entities.
+keywords, people, or entities. It gives a clear error if the file has no
+`[project]` table.
 
 Without an input file specifically provided, somesy will check if it can find a valid
 
@@ -381,7 +440,8 @@ Without an input file specifically provided, somesy will check if it can find a 
 which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the `-i` option.
 If the file passed with `-i` does not exist, somesy logs a warning and falls back to
-this discovery. `somesy set` uses the same discovery when `-i` is not given.
+this discovery, naming the file it uses instead (this is not an error). Candidate
+files that are malformed are skipped during discovery. `somesy set` uses the same discovery when `-i` is not given.
 
 ### Somesy Input File
 
@@ -458,7 +518,7 @@ pyproject_toml_file = 'package2/pyproject.toml'
 
 !!! warning
 
-    Each output file, such as package.json file, have its required fields and these fields are enforced by `somesy`. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as `version`. For `pyproject.toml` files, the preferred solution is to list those fields under `dynamic` (e.g. `dynamic = ["version"]`) — somesy will then skip validation and sync for those fields. For other formats, or as a last resort, you can set `pass_validation` to `true` in the somesy config to bypass validation entirely. `somesy` will fail otherwise.
+    Each output file, such as package.json file, have its required fields and these fields are enforced by `somesy`. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as `version`. For `pyproject.toml` files, the preferred solution is to list those fields under `dynamic` (e.g. `dynamic = ["version"]`) — somesy will then skip validation and sync for those fields. For other formats, or as a last resort, you can set `pass_validation` to `true` in the somesy config to bypass validation entirely. `somesy` will fail otherwise. This applies to all synced `pyproject.toml` fields that support `dynamic` (see above).
 
 The example above shows a project with a `package.json` file in the root folder and 2 packages in it. Three files are set here so all of them will be updated according to ground truth of `somesy project metadata`.
 
@@ -478,6 +538,6 @@ A project with multiple packages inside can have completely different metadata s
 packages = ['package1', 'package2', 'package3']
 ```
 
-`packages` (or `--packages/-k` on the command line) takes directories. Each package's own `[config]` is the base; only options explicitly passed on the root command line override it. Values from the root config file are not inherited.
+`packages` (or `--packages/-k` on the command line) takes directories. A package's own `cff_file` and `codemeta_file` settings are honoured (relative to the package directory). Packages that fail to load are skipped with a warning, and a summary lists them at the end. Each package's own `[config]` is the base; only options explicitly passed on the root command line override it. Values from the root config file are not inherited.
 
 Each of these packages (sub-folders) are assumed to have separate somesy metadata in the folder. These packages could be a `somesy` supported language/framework or it could be any other language. `somesy` will create at least `CITATION.CFF` and `codemeta.json` regardless if not instructed otherwise.
