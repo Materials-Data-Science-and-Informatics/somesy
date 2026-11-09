@@ -162,3 +162,22 @@ def test_workspace_inheritance_kept(tmp_path, somesy_input):
         assert f"{key}.workspace = true" in text
     assert 'name = "testproject"' in text
     assert 'description = "old"' not in text
+
+
+@pytest.mark.parametrize(
+    "header",
+    [
+        '[package]\nname = "x"\nversion = "0.1.0"\n',
+        '[package]\nname = "x"\nauthors = ["A B <a@b.org>"]\n',
+        '[package]\nname = "x"\n',
+    ],
+)
+def test_missing_authors_or_version_syncs(tmp_path, somesy_input, header):
+    path = tmp_path / "Cargo.toml"
+    path.write_text(header, encoding="utf-8")
+    rs = Rust(path)
+    rs.sync(somesy_input.project)
+    rs.save()
+    rs = Rust(path)
+    assert rs.version == "1.0.0"
+    assert any("John Doe" in a for a in rs.authors)
