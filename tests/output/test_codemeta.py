@@ -412,13 +412,15 @@ def test_merge_enrichment_is_complete_after_sync(somesy_input, tmp_path, mocker)
     assert not hasattr(cm, "_key_order")
 
 
-def _git_codemeta(mocker, tmp_path, merge, version, modified):
+def _git_codemeta(mocker, tmp_path, merge, version, modified, created=None):
     """Return a CodeMeta writer enriched from mocked Git metadata."""
     from somesy.git.models import GitMetadata
 
     mocker.patch(
         "somesy.codemeta.enrich.harvest_git",
-        return_value=GitMetadata(version=version, date_modified=modified),
+        return_value=GitMetadata(
+            version=version, date_modified=modified, date_created=created
+        ),
     )
     return CodeMeta(
         tmp_path / "codemeta.json",
@@ -499,3 +501,23 @@ def test_canonical_version_is_always_used(somesy_input, tmp_path, mocker, merge)
     data = json.loads(codemeta_file.read_text())
     assert data["version"] == "2.0.0"
     assert data["dateModified"] == datetime.now(timezone.utc).date().isoformat()
+
+
+@pytest.mark.parametrize("merge", [False, True])
+def test_unknown_creation_date_keeps_previous(somesy_input, tmp_path, mocker, merge):
+    """A shallow clone (no creation date from Git) does not drop dateCreated."""
+    from datetime import date
+
+    codemeta_file = tmp_path / "codemeta.json"
+    project = somesy_input.project
+    cm = _git_codemeta(mocker, tmp_path, merge, None, None, date(2020, 1, 1))
+    cm.sync(project)
+    cm.save()
+    first = codemeta_file.read_bytes()
+    assert json.loads(first)["dateCreated"] == "2020-01-01"
+
+    cm = _git_codemeta(mocker, tmp_path, merge, None, None, created=None)
+    cm.sync(project)
+    cm.save()
+
+    assert codemeta_file.read_bytes() == first
