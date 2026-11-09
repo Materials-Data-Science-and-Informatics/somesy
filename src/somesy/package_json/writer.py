@@ -185,8 +185,14 @@ class PackageJSON(ProjectMetadataWriter):
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
         super().sync(metadata)
+
+        # package.json has a single author slot, further authors become contributors
+        written = [self._to_person(a) for a in self.authors]
+        further_authors = [
+            a for a in metadata.authors() if not any(a.same_person(w) for w in written)
+        ]
         self.contributors = self._sync_person_list(
-            self.contributors, metadata.contributors()
+            self.contributors, [*further_authors, *metadata.contributors()]
         )
 
     @property

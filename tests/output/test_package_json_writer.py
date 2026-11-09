@@ -128,8 +128,8 @@ def test_person_merge(package_json_file, person: Person):
     assert pj.authors[0]["name"] == person1b.full_name
     assert pj.authors[0]["email"] == person1b.email
 
-    # authors are not contributors
-    assert len(pj.contributors) == 0
+    # the written author is not a contributor, the further author is
+    assert [c["email"] for c in pj.contributors] == [person2.email]
 
     # new person
     person3 = Person(
@@ -151,13 +151,15 @@ def test_person_merge(package_json_file, person: Person):
     pj.sync(pm)
     pj.save()
 
-    assert len(pj.contributors) == 1
+    # further author (person3) and non-author contributor (person2)
+    assert len(pj.contributors) == 2
     assert len(pj.maintainers) == 1
     assert pj.authors[0]["name"] == person1c.full_name
     assert pj.authors[0]["email"] == person1c.email
 
-    assert pj.contributors[0]["name"] == person2.full_name
-    assert pj.contributors[0]["email"] == person2.email
+    by_email = {c["email"]: c for c in pj.contributors}
+    assert set(by_email) == {person3.email, person2.email}
+    assert by_email[person2.email]["name"] == person2.full_name
 
 
 def test_entity_website_saved(package_json_file):
@@ -223,3 +225,25 @@ def test_authors_missing(package_json_file):
     pj = PackageJSON(package_json_file)
     pj._data.pop("author", None)
     assert pj.authors == []
+
+
+def test_further_authors_become_contributors(package_json_file):
+    pj = PackageJSON(package_json_file)
+    pm = ProjectMetadata(
+        name="proj",
+        description="Project description",
+        license=LicenseEnum.MIT,
+        version="0.1.0",
+        people=[
+            Person(given_names="Jane", family_names="Doe", author=True),
+            Person(given_names="John", family_names="Roe"),
+            Person(given_names="Ann", family_names="Lee", author=True),
+            Person(given_names="Bob", family_names="Ray", author=True),
+        ],
+    )
+    pj.sync(pm)
+    pj.save()
+    pj = PackageJSON(package_json_file)
+    assert pj.authors[0]["name"] == "Jane Doe"
+    names = [c["name"] for c in pj.contributors]
+    assert names == ["Ann Lee", "Bob Ray", "John Roe"]
