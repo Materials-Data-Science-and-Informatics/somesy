@@ -1,7 +1,6 @@
 """Main entry point for the somesy CLI."""
 
 import logging
-import sys
 
 import typer
 
@@ -50,12 +49,6 @@ def common(
     # log level is process-global: forget any level from a previous invocation
     reset_log_level()
     init_log()
-
-    if sum(map(int, map(bool, [show_info, verbose, debug]))) > 1:
-        typer.echo(
-            "Only one of --info, --verbose or --debug may be set!", file=sys.stderr
-        )
-        raise typer.Exit(1)
 
     if show_info or verbose or debug:
         # NOTE: only explicitly setting log level if a flag is passed,
