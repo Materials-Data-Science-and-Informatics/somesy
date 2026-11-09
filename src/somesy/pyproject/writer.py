@@ -127,6 +127,12 @@ class PyprojectCommon(ProjectMetadataWriter):
             return
         self._set_property(self._get_key("version"), version)
 
+    def _keeps_license(self, current: Any) -> bool:
+        """Tell if the license must be left alone (`file` table or `license-files`)."""
+        return (isinstance(current, dict) and "file" in current) or bool(
+            self._get_property(["license-files"])
+        )
+
     @property
     def license(self) -> str | None:
         """Return the license of the project as an SPDX expression.
@@ -140,12 +146,6 @@ class PyprojectCommon(ProjectMetadataWriter):
         if isinstance(license, dict):
             return license.get("text")
         return license
-
-    def _keeps_license(self, current: Any) -> bool:
-        """Tell if the license must be left alone (`file` table or `license-files`)."""
-        return (isinstance(current, dict) and "file" in current) or bool(
-            self._get_property(["license-files"])
-        )
 
     @license.setter
     def license(self, license: str | None) -> None:
