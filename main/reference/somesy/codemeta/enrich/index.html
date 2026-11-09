@@ -3174,8 +3174,7 @@ packages, such as a lock file, are looked up from here. Defaults to
 <span class="normal">90</span>
 <span class="normal">91</span>
 <span class="normal">92</span>
-<span class="normal">93</span>
-<span class="normal">94</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">enrich</span><span class="p">(</span>
+<span class="normal">93</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">enrich</span><span class="p">(</span>
     <span class="n">codemeta</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">sources</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
     <span class="n">root</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
@@ -3216,7 +3215,6 @@ packages, such as a lock file, are looked up from here. Defaults to
         <span class="s2">"codeRepository"</span><span class="p">,</span>
         <span class="s2">"issueTracker"</span><span class="p">,</span>
         <span class="s2">"dateCreated"</span><span class="p">,</span>
-        <span class="s2">"dateModified"</span><span class="p">,</span>
         <span class="s2">"version"</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">_add</span><span class="p">(</span><span class="n">codemeta</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>

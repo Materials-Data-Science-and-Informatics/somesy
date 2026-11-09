@@ -4475,6 +4475,14 @@ every sync; old values are only kept if nothing provides a new one. A repeated
 <code>somesy sync --merge</code> does not rewrite an unchanged <code>codemeta.json</code>. Legacy
 CodeMeta files are upgraded on disk, and an output file that is missing on disk
 is always written.</p>
+<p><code>dateModified</code> is set to the current date (UTC) whenever the content of
+<code>codemeta.json</code> changes. A new commit or tag alone does not change the file: if
+nothing else changed, the previous <code>dateModified</code> and a <code>version</code> taken from a
+Git tag are kept. So a sync on committed files, such as
+<code>pre-commit run --all-files</code> in CI, leaves <code>codemeta.json</code> unchanged. A new tag
+is picked up the next time the metadata changes; a <code>version</code> set in
+<code>somesy.toml</code> or a language file is always used. If Git history is shallow,
+<code>dateCreated</code> cannot be determined and the previous value is kept.</p>
 <p>The enrichment never replaces a CodeMeta field written from canonical Somesy
 metadata. When <code>merge_codemeta</code> is enabled, unrelated user-managed CodeMeta
 fields remain unchanged as well.</p>
@@ -4500,7 +4508,7 @@ fields remain unchanged as well.</p>
 </tr>
 <tr>
 <td>Git</td>
-<td>Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first and latest commit dates</td>
+<td>Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first commit date</td>
 </tr>
 </tbody>
 </table>

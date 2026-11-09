@@ -3360,6 +3360,10 @@
     skipped during discovery; monorepo packages that fail to load are skipped
     with a warning</li>
 <li><strong>Fixed</strong></li>
+<li><code>codemeta.json</code> changed with every new commit or tag, failing
+    <code>pre-commit run --all-files</code> in CI: <code>dateModified</code> is now the date the
+    content last changed, and a version from a Git tag is only updated together
+    with other changes; <code>dateCreated</code> is no longer dropped in shallow clones</li>
 <li>monorepo packages ignored their own <code>cff_file</code> and <code>codemeta_file</code></li>
 <li>legacy <code>codemeta.json</code> files were not upgraded on disk</li>
 <li>an empty <code>CITATION.cff</code> failed to sync; incomplete people and unparseable
