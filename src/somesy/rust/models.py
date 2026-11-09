@@ -31,9 +31,10 @@ class RustConfig(BaseModel):
     ]
     version: Annotated[
         Annotated[str, Field(pattern=r"^\d+(\.\d+)*((a|b|rc)\d+)?(post\d+)?(dev\d+)?$")]
-        | WorkspaceRef,
-        Field(description="Package version"),
-    ]
+        | WorkspaceRef
+        | None,
+        Field(description="Package version, optional (defaults to 0.0.0 in Cargo)"),
+    ] = None
     description: Annotated[str | None, Field(description="Package description")] = None
     license: Annotated[
         str | WorkspaceRef | None,
@@ -41,7 +42,9 @@ class RustConfig(BaseModel):
             description="A combination SPDX license identifiers with AND, OR and so on."
         ),
     ] = None
-    authors: Annotated[set[str] | WorkspaceRef, Field(description="Package authors")]
+    authors: Annotated[
+        set[str] | WorkspaceRef | None, Field(description="Package authors")
+    ] = None
     maintainers: Annotated[
         set[str] | None, Field(description="Package maintainers")
     ] = None
@@ -80,7 +83,7 @@ class RustConfig(BaseModel):
     @classmethod
     def validate_version(cls, v):
         """Validate version using PEP 440."""
-        if isinstance(v, WorkspaceRef):
+        if v is None or isinstance(v, WorkspaceRef):
             return v
         try:
             _ = parse_version(v)
