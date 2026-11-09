@@ -1,4 +1,7 @@
 import json
+from datetime import datetime, timezone
+
+import pytest
 
 from somesy.codemeta import CodeMeta
 from somesy.core.core import write_json
@@ -335,7 +338,8 @@ def test_merge_refreshes_fields_produced_by_enrichment(somesy_input, tmp_path, m
     data = json.loads(codemeta_file.read_text())
     assert data["version"] == "v9"
     assert data["codeRepository"] == "https://example.org/new"
-    assert data["dateModified"] == "2024-05-06"
+    # content changed -> modified today
+    assert data["dateModified"] == datetime.now(timezone.utc).date().isoformat()
     assert data["dateCreated"] == "1999-01-01"
     assert data["softwareRequirements"][0]["name"] == "requests"
     # not produced by somesy -> kept
@@ -399,10 +403,121 @@ def test_merge_enrichment_is_complete_after_sync(somesy_input, tmp_path, mocker)
     cm.sync(somesy_input.project)
 
     # _data is final right after sync: refreshed, kept and original key order
-    assert cm._data["dateModified"] == "2024-05-06"
+    assert cm._data["dateModified"] == datetime.now(timezone.utc).date().isoformat()
     assert cm._data["softwareRequirements"][0]["name"] == "requests"
     assert cm._data["readme"] == "https://example.org/old-readme"
     keys = list(cm._data)
     assert keys.index("dateModified") < keys.index("readme") < keys.index("downloadUrl")
     assert not hasattr(cm, "_stale")
     assert not hasattr(cm, "_key_order")
+
+
+def _git_codemeta(mocker, tmp_path, merge, version, modified, created=None):
+    """Return a CodeMeta writer enriched from mocked Git metadata."""
+    from somesy.git.models import GitMetadata
+
+    mocker.patch(
+        "somesy.codemeta.enrich.harvest_git",
+        return_value=GitMetadata(
+            version=version, date_modified=modified, date_created=created
+        ),
+    )
+    return CodeMeta(
+        tmp_path / "codemeta.json",
+        merge=merge,
+        pass_validation=True,
+        enrich_sources={},
+        enrich_root=tmp_path,
+    )
+
+
+@pytest.mark.parametrize("merge", [False, True])
+def test_git_values_kept_if_nothing_else_changed(somesy_input, tmp_path, mocker, merge):
+    """A new tag or commit alone does not change codemeta.json (issue #156)."""
+    from datetime import date
+
+    codemeta_file = tmp_path / "codemeta.json"
+    project = somesy_input.project
+    project.version = None  # version then comes from the Git tag
+
+    cm = _git_codemeta(mocker, tmp_path, merge, "v1.0.0", date(2024, 1, 1))
+    cm.sync(project)
+    cm.save()
+    data = json.loads(codemeta_file.read_text())
+    data["dateModified"] = "2000-01-01"
+    write_json(data, codemeta_file)
+    first = codemeta_file.read_bytes()
+
+    cm = _git_codemeta(mocker, tmp_path, merge, "v2.0.0", date(2024, 2, 2))
+    cm.sync(project)
+    cm.save()
+
+    assert codemeta_file.read_bytes() == first
+
+
+@pytest.mark.parametrize("merge", [False, True])
+def test_git_values_refreshed_if_other_content_changed(
+    somesy_input, tmp_path, mocker, merge
+):
+    from datetime import date
+
+    codemeta_file = tmp_path / "codemeta.json"
+    project = somesy_input.project
+    project.version = None
+
+    cm = _git_codemeta(mocker, tmp_path, merge, "v1.0.0", date(2024, 1, 1))
+    cm.sync(project)
+    cm.save()
+    data = json.loads(codemeta_file.read_text())
+    data["dateModified"] = "2000-01-01"
+    write_json(data, codemeta_file)
+
+    project.name = "renamed"
+    cm = _git_codemeta(mocker, tmp_path, merge, "v2.0.0", date(2024, 2, 2))
+    cm.sync(project)
+    cm.save()
+
+    data = json.loads(codemeta_file.read_text())
+    assert data["version"] == "v2.0.0"
+    assert data["dateModified"] == datetime.now(timezone.utc).date().isoformat()
+
+
+@pytest.mark.parametrize("merge", [False, True])
+def test_canonical_version_is_always_used(somesy_input, tmp_path, mocker, merge):
+    from datetime import date
+
+    codemeta_file = tmp_path / "codemeta.json"
+    project = somesy_input.project
+    project.version = "1.0.0"
+    cm = _git_codemeta(mocker, tmp_path, merge, "v9", date(2024, 1, 1))
+    cm.sync(project)
+    cm.save()
+
+    project.version = "2.0.0"
+    cm = _git_codemeta(mocker, tmp_path, merge, "v9", date(2024, 1, 1))
+    cm.sync(project)
+    cm.save()
+
+    data = json.loads(codemeta_file.read_text())
+    assert data["version"] == "2.0.0"
+    assert data["dateModified"] == datetime.now(timezone.utc).date().isoformat()
+
+
+@pytest.mark.parametrize("merge", [False, True])
+def test_unknown_creation_date_keeps_previous(somesy_input, tmp_path, mocker, merge):
+    """A shallow clone (no creation date from Git) does not drop dateCreated."""
+    from datetime import date
+
+    codemeta_file = tmp_path / "codemeta.json"
+    project = somesy_input.project
+    cm = _git_codemeta(mocker, tmp_path, merge, None, None, date(2020, 1, 1))
+    cm.sync(project)
+    cm.save()
+    first = codemeta_file.read_bytes()
+    assert json.loads(first)["dateCreated"] == "2020-01-01"
+
+    cm = _git_codemeta(mocker, tmp_path, merge, None, None, created=None)
+    cm.sync(project)
+    cm.save()
+
+    assert codemeta_file.read_bytes() == first

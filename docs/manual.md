@@ -255,6 +255,15 @@ every sync; old values are only kept if nothing provides a new one. A repeated
 CodeMeta files are upgraded on disk, and an output file that is missing on disk
 is always written.
 
+`dateModified` is set to the current date (UTC) whenever the content of
+`codemeta.json` changes. A new commit or tag alone does not change the file: if
+nothing else changed, the previous `dateModified` and a `version` taken from a
+Git tag are kept. So a sync on committed files, such as
+`pre-commit run --all-files` in CI, leaves `codemeta.json` unchanged. A new tag
+is picked up the next time the metadata changes; a `version` set in
+`somesy.toml` or a language file is always used. If Git history is shallow,
+`dateCreated` cannot be determined and the previous value is kept.
+
 The enrichment never replaces a CodeMeta field written from canonical Somesy
 metadata. When `merge_codemeta` is enabled, unrelated user-managed CodeMeta
 fields remain unchanged as well.
@@ -264,7 +273,7 @@ fields remain unchanged as well.
 | `pyproject.toml`, lock file (`uv.lock`, `poetry.lock` or `pdm.lock`) | Python runtime, direct dependencies, README URL, issue tracker, release notes |
 | `package.json` | JavaScript or TypeScript (when a `tsconfig*.json` is next to it), Node.js runtime, runtime/peer/optional dependencies, issue tracker |
 | `Cargo.toml`, `Project.toml`, `fpm.toml`, `pom.xml` | Programming language, runtime version where declared, dependencies |
-| Git | Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first and latest commit dates |
+| Git | Repository, issue tracker for GitHub/GitLab remotes, nearest tag version, first commit date |
 
 Development and test dependencies are not included; neither PEP 735
 `[dependency-groups]` nor `[project.optional-dependencies]` extras are treated

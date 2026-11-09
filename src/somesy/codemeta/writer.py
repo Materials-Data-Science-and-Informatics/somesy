@@ -5,6 +5,7 @@ import logging
 import uuid
 from collections import OrderedDict
 from collections.abc import Sequence
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -122,6 +123,44 @@ class CodeMeta(ProjectMetadataWriter):
             elif old in self._data:
                 self._data[new] = self._data[old]
             self._data.pop(old, None)
+
+    def _read_file(self) -> dict[str, Any] | None:
+        """Return the content of the file on disk, or None if it cannot be read."""
+        try:
+            return json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return None
+
+    def _set_git_dependent_values(
+        self, previous: dict[str, Any] | None, git_version: bool
+    ) -> None:
+        """Set `dateModified`, and keep values that only depend on the Git state.
+
+        A new commit or tag alone must not change the file, otherwise a sync
+        on the committed file (e.g. a pre-commit hook in CI) would modify it.
+        So if nothing else changed, the previous `dateModified` and a `version`
+        taken from a Git tag are kept. Otherwise `dateModified` is set to today
+        (UTC) and the version from the latest tag is used.
+
+        A `dateCreated` that Git cannot provide (shallow history) is kept from
+        the previous file, also when not merging.
+        """
+        if previous and "dateCreated" in previous:
+            self._data.setdefault("dateCreated", previous["dateCreated"])
+        keys = ["dateModified"] + (["version"] if git_version else [])
+
+        def without_keys(data: dict[str, Any]) -> dict[str, Any]:
+            data = json.loads(json.dumps(data, default=str))
+            return {k: v for k, v in data.items() if k not in keys}
+
+        if previous is not None and without_keys(self._data) == without_keys(previous):
+            for key in keys:
+                if key in previous:
+                    self._data[key] = previous[key]
+                else:
+                    self._data.pop(key, None)
+        else:
+            self._data["dateModified"] = datetime.now(timezone.utc).date().isoformat()
 
     def _validate(self) -> None:
         """Validate codemeta.json content using pydantic class."""
@@ -306,6 +345,7 @@ class CodeMeta(ProjectMetadataWriter):
 
         Use existing sync function from ProjectMetadataWriter but update repository and contributors.
         """
+        previous = self._read_file()
         stale: dict[str, Any] = {}
         key_order: list[str] = []
         if not self.merge:
@@ -359,10 +399,15 @@ class CodeMeta(ProjectMetadataWriter):
                 self._enrich_project_root,
             )
 
-        if self.merge and stale:
-            # keep old values of fields nothing refreshed, in their original place
-            for key, value in stale.items():
-                self._data.setdefault(key, value)
+        # keep old values of fields nothing refreshed
+        for key, value in stale.items():
+            self._data.setdefault(key, value)
+
+        if self._enrich_sources is not None:
+            self._set_git_dependent_values(previous, git_version=not metadata.version)
+
+        if self.merge and key_order:
+            # in their original place
             order = {key: i for i, key in enumerate(key_order)}
             self._data = OrderedDict(
                 sorted(self._data.items(), key=lambda kv: order.get(kv[0], len(order)))

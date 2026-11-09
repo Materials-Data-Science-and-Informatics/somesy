@@ -88,7 +88,6 @@ def enrich(
         "codeRepository",
         "issueTracker",
         "dateCreated",
-        "dateModified",
         "version",
     ):
         _add(codemeta, key, values.get(key))
@@ -375,8 +374,5 @@ def _read_git(root: Path, values: dict[str, Any]) -> None:
             _url(values, "issueTracker", values["codeRepository"] + "/issues")
     values["dateCreated"] = (
         metadata.date_created.isoformat() if metadata.date_created else None
-    )
-    values["dateModified"] = (
-        metadata.date_modified.isoformat() if metadata.date_modified else None
     )
     values["version"] = metadata.version
