@@ -57,6 +57,9 @@ def atomic_write(
         umask = os.umask(0)
         os.umask(umask)
         mode = 0o666 & ~umask
+    if not path.parent.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Created missing folder '{path.parent}'.")
     fd, tmp_name = tempfile.mkstemp(
         dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
     )
