@@ -141,17 +141,24 @@ class PyprojectCommon(ProjectMetadataWriter):
             return license.get("text")
         return license
 
+    def _keeps_license(self, current: Any) -> bool:
+        """Tell if the license must be left alone (`file` table or `license-files`)."""
+        return (isinstance(current, dict) and "file" in current) or bool(
+            self._get_property(["license-files"])
+        )
+
     @license.setter
     def license(self, license: str | None) -> None:
         """Set the license of the project.
 
-        A `license` table or `license-files` in the file are left untouched,
-        somesy only manages the SPDX expression.
+        A `license = { file = ... }` table or `license-files` in the file are
+        left untouched, somesy only manages the SPDX expression. A
+        `license = { text = ... }` table is replaced by the expression.
         """
         if self._is_dynamic("license", license):
             return
         current = self._get_property(["license"])
-        if isinstance(current, dict) or self._get_property(["license-files"]):
+        if self._keeps_license(current):
             if license:
                 logger.warning(
                     "The license of the pyproject file was kept, it is given as a "
@@ -427,10 +434,9 @@ class Poetry(PyprojectCommon):
         update("version", metadata.version)
         update("description", metadata.description)
 
-        keep_license = isinstance(self._get_property(["license"]), dict) or bool(
-            self._get_property(["license-files"])
-        )
-        if metadata.license and not keep_license:
+        if metadata.license and not self._keeps_license(
+            self._get_property(["license"])
+        ):
             update("license", license_expression(metadata.license))
 
         update("keywords", list(metadata.keywords or []))
