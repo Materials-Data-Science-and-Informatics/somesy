@@ -3535,8 +3535,8 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">52</span>
-<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">IgnoreKey</span><span class="p">:</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">71</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">IgnoreKey</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Special marker to be passed for dropping a key from serialization."""</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -3574,26 +3574,7 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 93</span>
 <span class="normal"> 94</span>
 <span class="normal"> 95</span>
 <span class="normal"> 96</span>
@@ -4064,7 +4045,76 @@
 <span class="normal">561</span>
 <span class="normal">562</span>
 <span class="normal">563</span>
-<span class="normal">564</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="normal">564</span>
+<span class="normal">565</span>
+<span class="normal">566</span>
+<span class="normal">567</span>
+<span class="normal">568</span>
+<span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
+<span class="normal">593</span>
+<span class="normal">594</span>
+<span class="normal">595</span>
+<span class="normal">596</span>
+<span class="normal">597</span>
+<span class="normal">598</span>
+<span class="normal">599</span>
+<span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span>
+<span class="normal">603</span>
+<span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
+<span class="normal">607</span>
+<span class="normal">608</span>
+<span class="normal">609</span>
+<span class="normal">610</span>
+<span class="normal">611</span>
+<span class="normal">612</span>
+<span class="normal">613</span>
+<span class="normal">614</span>
+<span class="normal">615</span>
+<span class="normal">616</span>
+<span class="normal">617</span>
+<span class="normal">618</span>
+<span class="normal">619</span>
+<span class="normal">620</span>
+<span class="normal">621</span>
+<span class="normal">622</span>
+<span class="normal">623</span>
+<span class="normal">624</span>
+<span class="normal">625</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span>
+<span class="normal">632</span>
+<span class="normal">633</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ProjectMetadataWriter</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Base class for Project Metadata Output Wrapper.</span>
 
 <span class="sd">    All supported output formats are implemented as subclasses.</span>
@@ -4106,18 +4156,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_if_not_exists</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_init_new_file</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_init_new_file</span><span class="p">()</span>  <span class="c1"># in memory only, written by save()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not exist."</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_init_new_file</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Create an new suitable target file.</span>
+<span class="w">        </span><span class="sd">"""Initialize the data of a new target file (in memory only).</span>
 
-<span class="sd">        Override to initialize file with minimal contents, if needed.</span>
+<span class="sd">        Override to initialize with minimal contents, if needed.</span>
 <span class="sd">        Make sure to set `self._data` to match the contents.</span>
+<span class="sd">        The file is only created on disk by `save()`.</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -4237,31 +4287,37 @@
         <span class="c1"># (inefficient, but author list are not that long usually)</span>
         <span class="k">for</span> <span class="n">person_meta</span> <span class="ow">in</span> <span class="n">new</span><span class="p">:</span>
             <span class="n">person_update</span> <span class="o">=</span> <span class="n">person_meta</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
-            <span class="n">person_existed</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modified_people</span><span class="p">)):</span>
-                <span class="n">person</span> <span class="o">=</span> <span class="n">modified_people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">person</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">person_meta</span><span class="p">):</span>
-                    <span class="k">continue</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">find_matching_person</span><span class="p">(</span><span class="n">person_meta</span><span class="p">,</span> <span class="n">modified_people</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">person</span> <span class="o">=</span> <span class="n">modified_people</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
 
                 <span class="c1"># not new person (-&gt; will not append new record)</span>
-                <span class="n">person_existed</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="c1"># still exists (-&gt; will not be removed from list)</span>
-                <span class="n">still_exists</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">still_exists</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="c1"># the input is the source of truth for the managed fields:</span>
+                <span class="c1"># fields missing in the input are removed from the output person</span>
+                <span class="c1"># (unknown extra keys of the output are kept)</span>
+                <span class="n">fields</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">person</span><span class="p">)</span><span class="o">.</span><span class="n">model_fields</span>
+                <span class="n">cleared</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="n">k</span><span class="p">:</span> <span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">get_default</span><span class="p">(</span><span class="n">call_default_factory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">person</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fields</span>
+                    <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">person_update</span>
+                    <span class="ow">and</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_UNMANAGED_PERSON_FIELDS</span>
+                <span class="p">}</span>
+                <span class="n">updated</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">model_copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">person_update</span><span class="p">,</span> <span class="o">**</span><span class="n">cleared</span><span class="p">})</span>
 
                 <span class="c1"># if there were changes -&gt; update person</span>
-                <span class="n">overlapping_fields</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span>
-                    <span class="n">include</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">person_update</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="p">)</span>
-                <span class="k">if</span> <span class="n">person_update</span> <span class="o">!=</span> <span class="n">overlapping_fields</span><span class="p">:</span>
-                    <span class="n">modified_people</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">person</span><span class="o">.</span><span class="n">model_copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">person_update</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">updated</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="o">!=</span> <span class="n">person</span><span class="o">.</span><span class="n">model_dump</span><span class="p">():</span>
+                    <span class="n">modified_people</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">updated</span>
 
                     <span class="c1"># show effective update in debug log</span>
                     <span class="n">old_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">person</span><span class="p">)</span>
-                    <span class="n">new_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">modified_people</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="n">new_fmt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from_person</span><span class="p">(</span><span class="n">updated</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">old_fmt</span> <span class="o">!=</span> <span class="n">new_fmt</span><span class="p">:</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Updating person</span><span class="se">\n</span><span class="si">{</span><span class="n">old_fmt</span><span class="si">}</span><span class="se">\n</span><span class="s2">to</span><span class="se">\n</span><span class="si">{</span><span class="n">new_fmt</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">person_existed</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">new_people</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">person_meta</span><span class="p">)</span>
 
         <span class="c1"># show added and removed people in debug log</span>
@@ -4314,6 +4370,36 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_person_metadata</span><span class="p">(</span><span class="n">old_people_unique</span><span class="p">,</span> <span class="n">new_people_unique</span><span class="p">)</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unparseable_people</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">"""Return mapped key and raw existing entries of `role` that can't be parsed.</span>
+
+<span class="sd">        Empty list if the target has no list-valued slot for the role.</span>
+<span class="sd">        """</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="n">role</span><span class="p">)</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="p">[]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">unparseable</span><span class="p">(</span><span class="n">entry</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank_person</span><span class="p">(</span><span class="n">entry</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">raw</span> <span class="k">if</span> <span class="n">unparseable</span><span class="p">(</span><span class="n">e</span><span class="p">)]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reattach_people</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">raw_entries</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Append raw entries (kept untouched) to the list stored under `key`."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_entries</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>  <span class="c1"># some formats collapse one-item lists</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="p">[</span><span class="n">current</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">current</span> <span class="o">+</span> <span class="n">raw_entries</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_sync_authors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Sync output file authors with authors from metadata.</span>
 
@@ -4338,11 +4424,17 @@
         <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">keywords</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">keywords</span>
 
+        <span class="c1"># existing entries we cannot parse are kept untouched in the target</span>
+        <span class="n">kept</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unparseable_people</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"authors"</span><span class="p">,</span> <span class="s2">"maintainers"</span><span class="p">)}</span>
+
         <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">authors</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sync_authors</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maintainers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">maintainers</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">maintainers</span><span class="p">()</span>
         <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">raw_entries</span> <span class="ow">in</span> <span class="n">kept</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reattach_people</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">raw_entries</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">licenses</span> <span class="o">:=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">license_expression</span><span class="p">(</span><span class="n">licenses</span><span class="p">)</span>
@@ -4407,6 +4499,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_to_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Person</span> <span class="o">|</span> <span class="n">Entity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Convert an object representing a person into a `Person` or `Entity` object."""</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_blank_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return whether an existing person entry is blank, i.e. counts as no person."""</span>
+        <span class="k">return</span> <span class="n">is_blank_person</span><span class="p">(</span><span class="n">person_obj</span><span class="p">)</span>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_people</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">people</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Person</span> <span class="o">|</span> <span class="n">Entity</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">"""Return a list of Persons and Entities parsed from list of format-specific people representations."""</span>
@@ -4414,7 +4511,7 @@
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">person</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">people</span> <span class="ow">or</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_blank_person</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">person</span> <span class="o">:=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">]</span>
 
@@ -4464,7 +4561,9 @@
 
         <span class="c1"># only return authors that can be converted to Person</span>
         <span class="n">authors_validated</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">author</span> <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="n">author</span>
+            <span class="k">for</span> <span class="n">author</span> <span class="ow">in</span> <span class="n">authors</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank_person</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">author</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="n">authors_validated</span>
 
@@ -4485,7 +4584,8 @@
         <span class="n">maintainers_validated</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">maintainer</span>
             <span class="k">for</span> <span class="n">maintainer</span> <span class="ow">in</span> <span class="n">maintainers</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">maintainer</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_blank_person</span><span class="p">(</span><span class="n">maintainer</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">maintainer</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="p">]</span>
         <span class="k">return</span> <span class="n">maintainers_validated</span>
 
@@ -4975,26 +5075,7 @@ requires a customized setter.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
@@ -5014,7 +5095,25 @@ requires a customized setter.</p>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
-<span class="normal">119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -5050,8 +5149,7 @@ requires a customized setter.</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_if_not_exists</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_init_new_file</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_new_file</span><span class="p">()</span>  <span class="c1"># in memory only, written by save()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"The file </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not exist."</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -5085,14 +5183,14 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@abstractmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Save the output file to the given path.</span>
 
@@ -5124,35 +5222,41 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
-<span class="normal">340</span>
-<span class="normal">341</span>
-<span class="normal">342</span>
-<span class="normal">343</span>
-<span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span>
-<span class="normal">352</span>
-<span class="normal">353</span>
-<span class="normal">354</span>
-<span class="normal">355</span>
-<span class="normal">356</span>
-<span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync output file with other metadata files."""</span>
     <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">name</span>
@@ -5165,11 +5269,17 @@ without destroying its other contents or structure.</p>
     <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">keywords</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keywords</span> <span class="o">=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">keywords</span>
 
+    <span class="c1"># existing entries we cannot parse are kept untouched in the target</span>
+    <span class="n">kept</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unparseable_people</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"authors"</span><span class="p">,</span> <span class="s2">"maintainers"</span><span class="p">)}</span>
+
     <span class="k">if</span> <span class="n">metadata</span><span class="o">.</span><span class="n">authors</span><span class="p">():</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sync_authors</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">maintainers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maintainers</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">maintainers</span><span class="p">()</span>
     <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">raw_entries</span> <span class="ow">in</span> <span class="n">kept</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reattach_people</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">raw_entries</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">licenses</span> <span class="o">:=</span> <span class="n">metadata</span><span class="o">.</span><span class="n">license</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">license</span> <span class="o">=</span> <span class="n">license_expression</span><span class="p">(</span><span class="n">licenses</span><span class="p">)</span>
@@ -5205,47 +5315,47 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">365</span>
-<span class="normal">366</span>
-<span class="normal">367</span>
-<span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span>
-<span class="normal">397</span>
-<span class="normal">398</span>
-<span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">harvest_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
+<span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">harvest_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">"""Return metadata read from this endpoint in Somesy model terms."""</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span>
@@ -5319,21 +5429,21 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">toml_array</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Array</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">toml_array</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Build a multiline tomlkit array, with spaced inline tables."""</span>
     <span class="n">array</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
     <span class="n">array</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -5372,10 +5482,10 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">multiline_description</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">multiline_description</span><span class="p">(</span><span class="n">table</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Store a description containing line breaks as a multiline TOML string."""</span>
     <span class="k">if</span> <span class="s2">"description"</span> <span class="ow">in</span> <span class="n">table</span> <span class="ow">and</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">table</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]:</span>
         <span class="n">table</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">string</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="s2">"description"</span><span class="p">],</span> <span class="n">multiline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -5403,16 +5513,16 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">format_toml_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">format_toml_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Prepare a tomlkit document for saving: multiline description, multiline arrays."""</span>
     <span class="n">multiline_description</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -5446,12 +5556,12 @@ without destroying its other contents or structure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/core/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">license_expression</span><span class="p">(</span><span class="n">licenses</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">license_expression</span><span class="p">(</span><span class="n">licenses</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Convert one or more license identifiers to an SPDX expression."""</span>
     <span class="k">return</span> <span class="s2">" OR "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
         <span class="nb">str</span><span class="p">(</span><span class="n">license</span><span class="p">)</span>

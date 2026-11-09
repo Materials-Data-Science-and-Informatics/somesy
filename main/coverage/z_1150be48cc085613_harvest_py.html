@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_1150be48cc085613_models_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.0">coverage.py v7.16.0</a>,
-            created at 2026-11-03 13:31 +0000
+            created at 2026-11-09 11:35 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -140,7 +140,7 @@
     <p class="run"><span class="n"><a id="t58" href="#t58">58</a></span><span class="t"><span class="key">def</span> <span class="nam">_authors</span><span class="op">(</span><span class="nam">path</span><span class="op">:</span> <span class="nam">Path</span><span class="op">)</span> <span class="op">-&gt;</span> <span class="nam">list</span><span class="op">[</span><span class="nam">GitAuthor</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t59" href="#t59">59</a></span><span class="t">    <span class="str">&quot;&quot;&quot;Return all distinct mailmap-aware Git authors, ranked by commit count.&quot;&quot;&quot;</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">        <span class="nam">raw</span> <span class="op">=</span> <span class="nam">_git</span><span class="op">(</span><span class="nam">path</span><span class="op">,</span> <span class="str">&quot;log&quot;</span><span class="op">,</span> <span class="str">&quot;--all&quot;</span><span class="op">,</span> <span class="str">&quot;--format=%aN%x00%aE&quot;</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">        <span class="nam">raw</span> <span class="op">=</span> <span class="nam">_git</span><span class="op">(</span><span class="nam">path</span><span class="op">,</span> <span class="str">&quot;log&quot;</span><span class="op">,</span> <span class="str">&quot;HEAD&quot;</span><span class="op">,</span> <span class="str">&quot;--format=%aN%x00%aE&quot;</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">    <span class="key">except</span> <span class="nam">_GIT_ERRORS</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">        <span class="key">return</span> <span class="op">[</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -214,7 +214,7 @@
             <a class="nav" href="z_1150be48cc085613_models_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.16.0">coverage.py v7.16.0</a>,
-            created at 2026-11-03 13:31 +0000
+            created at 2026-11-09 11:35 +0000
         </p>
     </div>
 </footer>

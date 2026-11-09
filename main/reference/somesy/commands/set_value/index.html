@@ -3009,7 +3009,11 @@
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_project_value</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_project_value</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Set one scalar project-metadata value in a somesy.toml file."""</span>
     <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SETTABLE_FIELDS</span><span class="p">:</span>
         <span class="n">allowed</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">SETTABLE_FIELDS</span><span class="p">))</span>
@@ -3018,8 +3022,13 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"The input file must be a somesy.toml file."</span><span class="p">)</span>
 
     <span class="n">content</span> <span class="o">=</span> <span class="n">get_input_content</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">no_unwrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">"project"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"No [project] table found in </span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">; add one before using 'set'."</span>
+        <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">ProjectMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">({</span><span class="o">**</span><span class="n">content</span><span class="p">[</span><span class="s2">"project"</span><span class="p">],</span> <span class="n">field</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+        <span class="c1"># only the changed field must be valid, the file may be incomplete</span>
+        <span class="n">PartialProjectMetadata</span><span class="o">.</span><span class="n">model_validate</span><span class="p">({</span><span class="o">**</span><span class="n">content</span><span class="p">[</span><span class="s2">"project"</span><span class="p">],</span> <span class="n">field</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
         <span class="n">first</span> <span class="o">=</span> <span class="n">error</span><span class="o">.</span><span class="n">errors</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">first</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"enum"</span><span class="p">,</span> <span class="s2">"literal_error"</span><span class="p">):</span>
@@ -3032,8 +3041,7 @@
                 <span class="n">reason</span> <span class="o">=</span> <span class="n">reason</span><span class="p">[:</span><span class="mi">197</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"..."</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Invalid value for '</span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">reason</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
     <span class="n">content</span><span class="p">[</span><span class="s2">"project"</span><span class="p">][</span><span class="n">field</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">tomlkit</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span>
+    <span class="n">atomic_write</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">tomlkit</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">content</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>

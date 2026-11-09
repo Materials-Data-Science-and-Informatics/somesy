@@ -3154,7 +3154,8 @@ incomplete file, explicitly use <code>somesy sync --pass-validation</code> or se
 <code>pass_validation = true</code> in the config.</p>
 <div class="highlight"><pre><span></span><code>somesy<span class="w"> </span>init<span class="w"> </span>--output-file<span class="w"> </span>somesy.toml<span class="w"> </span>--overwrite
 </code></pre></div>
-<p>For manual configuration of sync options, use <code>somesy init config</code>.</p>
+<p>For manual configuration of sync options, use <code>somesy init config</code>. It merges
+into the existing config and creates <code>somesy.toml</code> if there is none.</p>
 <p>Update a scalar project-metadata value with <code>somesy set</code>:</p>
 <div class="highlight"><pre><span></span><code>somesy<span class="w"> </span><span class="nb">set</span><span class="w"> </span>version<span class="w"> </span><span class="m">1</span>.2.3
 </code></pre></div>
@@ -3181,7 +3182,10 @@ If you happen to use</p>
 </ul>
 <p>then somesy would also update the respective information there.</p>
 <p>You can see call available options with <code>somesy --help</code>,
-all of these can also be conveniently set in your <code>somesy.toml</code> file.</p>
+all of these can also be conveniently set in your <code>somesy.toml</code> file. Options given
+on the command line override the file only when passed explicitly (e.g. <code>--overwrite</code>
+overrides <code>merge_codemeta = true</code>). Files are written atomically, and only if all
+targets could be synced.</p>
 <h3 id="somesy-as-a-pre-commit-hook">Somesy as a pre-commit hook<a class="headerlink" href="#somesy-as-a-pre-commit-hook" title="Permanent link">&para;</a></h3>
 <p>We highly recommend to use <code>somesy</code> as a <a href="https://pre-commit.com/">pre-commit hook</a>.
 A pre-commit hook runs on every commit to automatically point out issues or fix them on the spot,
@@ -3295,8 +3299,8 @@ so when using <code>somesy</code> with pre-commit, keep in mind that</p>
 </table>
 <p><strong>Notes:</strong></p>
 <ol>
-<li><code>pyproject.toml</code> support is based on the metadata standard, not on the build backend: the PEP 621 <code>[project]</code> table is handled for <strong>uv</strong>, <strong>hatchling</strong>, <strong>flit</strong>, <strong>PDM</strong>, <strong>setuptools</strong> and <strong>Poetry 2.x</strong>, while <strong>Poetry 1.x</strong> is handled through its own <code>[tool.poetry]</code> table. <code>somesy</code> also supports PEP 621 <code>dynamic</code> fields — fields listed in <code>dynamic</code> (e.g. <code>version</code>) are not overwritten during sync</li>
-<li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author</li>
+<li><code>pyproject.toml</code> support is based on the metadata standard, not on the build backend: the PEP 621 <code>[project]</code> table is handled for <strong>uv</strong>, <strong>hatchling</strong>, <strong>flit</strong>, <strong>PDM</strong>, <strong>setuptools</strong> and <strong>Poetry 2.x</strong>, while <strong>Poetry 1.x</strong> is handled through its own <code>[tool.poetry]</code> table. <code>somesy</code> also supports PEP 621 <code>dynamic</code> fields — every synced field listed in <code>dynamic</code> (e.g. <code>version</code>, <code>authors</code>, <code>urls</code>) is not overwritten during sync, and <code>description</code> is optional. A <code>license</code> given as <code>{ file = ... }</code> or <code>license-files</code> is left untouched with a warning</li>
+<li><code>package.json</code> only supports one author, so <code>somesy</code> will pick the <em>first</em> listed author; further authors are listed in <code>contributors</code> (maintainers are written)</li>
 <li><code>fpm.toml</code> only supports one author and maintainer, so <code>somesy</code> will pick the <em>first</em> listed author and maintainer</li>
 <li><code>pom.xml</code> has no concept of <code>maintainers</code>, but it can have multiple licenses. It also does not distinguish persons from organizations, so <code>somesy</code> treats a name containing a space as a person and any other name as an entity</li>
 <li><code>mkdocs.yml</code> is a bit special, as it is not a project file, but a documentation file. <code>somesy</code> will only update it if it exists and is enabled in the configuration</li>

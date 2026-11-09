@@ -3202,7 +3202,17 @@
 <span class="normal">208</span>
 <span class="normal">209</span>
 <span class="normal">210</span>
-<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PackageJSON</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PackageJSON</span><span class="p">(</span><span class="n">ProjectMetadataWriter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""package.json parser and saver."""</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -3230,7 +3240,7 @@
 <span class="w">        </span><span class="sd">"""Return the only author of the package.json file as list."""</span>
         <span class="c1"># check if the author has the correct format</span>
         <span class="n">author</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_key</span><span class="p">(</span><span class="s2">"authors"</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">author</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">author</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">is_blank_person</span><span class="p">(</span><span class="n">author</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">author</span> <span class="o">=</span> <span class="n">PackageJsonConfig</span><span class="o">.</span><span class="n">convert_author</span><span class="p">(</span><span class="n">author</span><span class="p">)</span>
@@ -3254,6 +3264,8 @@
         <span class="n">maintainers_valid</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">maintainer</span> <span class="ow">in</span> <span class="n">maintainers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_blank_person</span><span class="p">(</span><span class="n">maintainer</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maintainer</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">maintainer</span> <span class="o">=</span> <span class="n">PackageJsonConfig</span><span class="o">.</span><span class="n">convert_author</span><span class="p">(</span><span class="n">maintainer</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">maintainer</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3279,6 +3291,8 @@
         <span class="n">contributors_valid</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">contributor</span> <span class="ow">in</span> <span class="n">contributors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">is_blank_person</span><span class="p">(</span><span class="n">contributor</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">contributor</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">contributor</span> <span class="o">=</span> <span class="n">PackageJsonConfig</span><span class="o">.</span><span class="n">convert_author</span><span class="p">(</span><span class="n">contributor</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">contributor</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3371,8 +3385,14 @@
 <span class="sd">        Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
+        <span class="c1"># package.json has a single author slot, further authors become contributors</span>
+        <span class="n">written</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">]</span>
+        <span class="n">further_authors</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">authors</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">written</span><span class="p">)</span>
+        <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">further_authors</span><span class="p">,</span> <span class="o">*</span><span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()]</span>
         <span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -3591,12 +3611,12 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/package_json/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Save the package.json file."""</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Saving package.json to </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
@@ -3627,22 +3647,34 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/somesy/package_json/writer.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
 <span class="normal">189</span>
-<span class="normal">190</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="n">ProjectMetadata</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Sync package.json with project metadata.</span>
 
 <span class="sd">    Use existing sync function from ProjectMetadataWriter but update repository and contributors.</span>
 <span class="sd">    """</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span>
+
+    <span class="c1"># package.json has a single author slot, further authors become contributors</span>
+    <span class="n">written</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_to_person</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">authors</span><span class="p">]</span>
+    <span class="n">further_authors</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">authors</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">same_person</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">written</span><span class="p">)</span>
+    <span class="p">]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync_person_list</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contributors</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">further_authors</span><span class="p">,</span> <span class="o">*</span><span class="n">metadata</span><span class="o">.</span><span class="n">contributors</span><span class="p">()]</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>

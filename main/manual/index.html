@@ -702,6 +702,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Metadata Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#people-in-output-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        People in output files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -3050,6 +3067,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Metadata Mapping">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#people-in-output-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        People in output files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -4387,7 +4421,23 @@ already present in an output file are kept, not deleted.</p>
 that are somesy contribution types. In <code>mkdocs.yml</code>, <code>repo_name</code> is written as
 <code>org/repo</code> only when it is not already set, and <code>site_name</code> may be free text.
 <code>Cargo.toml</code> workspace inheritance (e.g. <code>version.workspace = true</code>) is kept
-and such values are ignored when harvesting.</p>
+and such values are ignored when harvesting. As in Cargo, <code>authors</code> and
+<code>version</code> are optional in an existing <code>Cargo.toml</code>.</p>
+<p><code>package.json</code> and <code>fpm.toml</code> have a single author slot, so only the first
+author is written there. In <code>package.json</code>, further authors are listed first in
+<code>contributors</code>, followed by the other contributors, and maintainers are written
+as a list.</p>
+<h4 id="people-in-output-files">People in output files<a class="headerlink" href="#people-in-output-files" title="Permanent link">&para;</a></h4>
+<p>Existing people in an output file are matched with the people from the somesy
+input by identity: ORCID first, then email, then name. If one person matches
+several existing entries, somesy logs a warning and uses the entry with the same
+ORCID (otherwise the first one). The somesy input is the source of truth for the
+managed person fields: a field that was removed from the input (for example an
+email) is also cleared in the outputs. The role and contribution flags
+(<code>author</code>, <code>maintainer</code>, <code>publication_author</code> and the contribution fields) are
+not touched by this. Existing entries that somesy cannot parse are kept
+untouched, and incomplete people in <code>CITATION.cff</code> (missing a required field)
+are kept with a warning.</p>
 <p>Note that the mapping is often not 1-to-1. For example, CITATION.cff allows rich
 specification of author contact information and complex names. In contrast,
 poetry only supports a simple string with a name and email (like in git commits)
@@ -4418,6 +4468,13 @@ from <code>somesy.toml</code>. It then fills <strong>missing</strong> CodeMeta f
 configured language files and Git. This preserves the source priority:</p>
 <div class="highlight"><pre><span></span><code>somesy.toml &gt; language file &gt; Git history
 </code></pre></div>
+<p>In merge mode, the enriched keys (<code>readme</code>, <code>issueTracker</code>, <code>releaseNotes</code>,
+<code>softwareRequirements</code>, <code>programmingLanguage</code>, <code>runtimePlatform</code>,
+<code>codeRepository</code>, <code>dateCreated</code>, <code>dateModified</code> and <code>version</code>) are refreshed on
+every sync; old values are only kept if nothing provides a new one. A repeated
+<code>somesy sync --merge</code> does not rewrite an unchanged <code>codemeta.json</code>. Legacy
+CodeMeta files are upgraded on disk, and an output file that is missing on disk
+is always written.</p>
 <p>The enrichment never replaces a CodeMeta field written from canonical Somesy
 metadata. When <code>merge_codemeta</code> is enabled, unrelated user-managed CodeMeta
 fields remain unchanged as well.</p>
@@ -4469,12 +4526,15 @@ checkout (for GitHub Actions, <code>fetch-depth: 0</code>).</p>
 <h3 id="pep-621-dynamic-fields">PEP 621 <code>dynamic</code> fields<a class="headerlink" href="#pep-621-dynamic-fields" title="Permanent link">&para;</a></h3>
 <p>For <code>pyproject.toml</code> targets using the PEP 621 <code>[project]</code> table (uv, hatchling,
 flit, PDM, setuptools) as well as for Poetry v2, somesy respects the
-<a href="https://peps.python.org/pep-0621/#dynamic">PEP 621 <code>dynamic</code> field</a>. If
-<code>version</code> or <code>description</code> is listed in <code>dynamic</code>, it means the value is
-provided at build time rather than written statically in the file. In this case
-somesy will:</p>
+<a href="https://peps.python.org/pep-0621/#dynamic">PEP 621 <code>dynamic</code> field</a>. Every
+field somesy syncs into <code>pyproject.toml</code> honours it: <code>version</code>, <code>description</code>,
+<code>license</code>, <code>authors</code>, <code>maintainers</code>, <code>keywords</code> and <code>urls</code> (the homepage,
+repository and documentation URLs). If such a field is listed in <code>dynamic</code>, the
+value is provided at build time rather than written statically in the file. In
+this case somesy will:</p>
 <ul>
-<li><strong>skip validation</strong> of that field (it is not required to be present in the file), and</li>
+<li><strong>skip validation</strong> of that field (<code>version</code> and <code>authors</code> are required in the
+  file unless listed in <code>dynamic</code>; <code>description</code> is optional), and</li>
 <li><strong>not overwrite</strong> the field during sync, logging a warning instead.</li>
 </ul>
 <p>For example, if your <code>pyproject.toml</code> contains:</p>
@@ -4485,6 +4545,12 @@ somesy will:</p>
 <p>somesy will sync all other managed fields as usual but leave <code>version</code> and
 <code>description</code> untouched, because they are expected to be set dynamically at
 build time.</p>
+<p>For the license, somesy only manages the SPDX expression. A <code>license = { text = ... }</code>
+table is replaced by the SPDX expression, but <code>license = { file = ... }</code> and
+<code>license-files</code> are left untouched, with a warning.</p>
+<p>With Poetry 2 and both <code>[project]</code> and <code>[tool.poetry]</code> present, <code>[project]</code> is
+updated. The legacy keys in <code>[tool.poetry]</code> (e.g. <code>version</code>, <code>authors</code>) are
+updated only if they already exist there; missing ones are never added.</p>
 <p><strong>people</strong> and <strong>entities</strong> are mapped to authors/maintainers/contributors depending
 on the output format. Both fields are marked as necessary but what <code>somesy</code> need is an
 author either in <strong>people</strong> or <strong>entities</strong>.</p>
@@ -4501,89 +4567,119 @@ contains a <code>rorid</code> key).</p>
  Sync project metadata input with metadata files.                               
 
 <span class=" -Color -Color-Faint">╭─ Options ────────────────────────────────────────────────────────────────────╮</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--input-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-i</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Somesy input file     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        path (default:        <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        discovered)           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pyproject</span>    <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        pyproject.toml file   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Existing              <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        pyproject.toml file   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        path(s) (default:     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        pyproject.toml)       <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-package-js…</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-J</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        package.json file     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-file</span>    <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Existing package.json <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        file path(s)          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default:             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        package.json)         <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-julia</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-L</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        Project.toml (Julia)  <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        file (default: False) <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--julia-file</span>           <span class=" -Color -Color-Bold -Color-Bold-Green">-l</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom Project.toml   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (Julia) file path(s)  <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default:             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        Project.toml)         <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-fortran</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-F</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync fpm.toml  <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (Fortran) file        <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--fortran-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-f</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom fpm.toml       <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (Fortran) file        <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        path(s) (default:     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        fpm.toml)             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pomxml</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-X</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync pom.xml   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (Java Maven) file     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pomxml-file</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-x</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom pom.xml (Java  <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        Maven) file path(s)   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: pom.xml)    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-mkdocs</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-D</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        mkdocs.yml file       <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--mkdocs-file</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-d</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom mkdocs.yml     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        file path(s)          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: mkdocs.yml) <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-rust</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-R</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        Cargo.toml file       <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--rust-file</span>            <span class=" -Color -Color-Bold -Color-Bold-Green">-r</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom Cargo.toml     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        file path(s)          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: Cargo.toml) <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        CITATION.cff file     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>             <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  CITATION.cff file     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        path(s) (default:     <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        CITATION.cff)         <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync           <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        codemeta.json file    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom codemeta.json  <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        file path(s)          <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default:             <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        codemeta.json)        <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--merge</span>                    <span class=" -Color -Color-Bold -Color-Bold-Magenta">--overwrite</span>    <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Merge codemeta.json   <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        with with an existing <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        codemeta.json file    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        (default: False)      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        <span class=" -Color -Color-Faint">[default: overwrite] </span> <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-V</span>                 <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Allow incomplete      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        input and pass output <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        validation (default:  <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        False)                <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--packages</span>             <span class=" -Color -Color-Bold -Color-Bold-Green">-k</span>                 <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">directory</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span>  Packages (subfolders) <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        for monorepos with    <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        their own somesy      <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        config.               <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                                    <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Show this message and <span class=" -Color -Color-Faint">│</span>
-<span class=" -Color -Color-Faint">│</span>                                                        exit.                 <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--input-file</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-i</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Somesy input file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path (default:     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           discovered)        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pyproje…</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-P</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           pyproject.toml     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           file (default:     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           False)             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pyproject-file</span>    <span class=" -Color -Color-Bold -Color-Bold-Green">-p</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Existing           <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           pyproject.toml     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           file path(s)       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default:          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           pyproject.toml)    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-package…</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-J</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           package.json file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--package-json-fi…</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-j</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Existing           <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           package.json file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path(s) (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           package.json)      <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-julia</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-L</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           Project.toml       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (Julia) file       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--julia-file</span>        <span class=" -Color -Color-Bold -Color-Bold-Green">-l</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           Project.toml       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (Julia) file       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path(s) (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           Project.toml)      <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-fortran</span>   <span class=" -Color -Color-Bold -Color-Bold-Green">-F</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           fpm.toml (Fortran) <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           file (default:     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           False)             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--fortran-file</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-f</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom fpm.toml    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (Fortran) file     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path(s) (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           fpm.toml)          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-pomxml</span>    <span class=" -Color -Color-Bold -Color-Bold-Green">-X</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           pom.xml (Java      <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           Maven) file        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pomxml-file</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-x</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom pom.xml     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (Java Maven) file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path(s) (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           pom.xml)           <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-mkdocs</span>    <span class=" -Color -Color-Bold -Color-Bold-Green">-D</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           mkdocs.yml file    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--mkdocs-file</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-d</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom mkdocs.yml  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           file path(s)       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default:          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           mkdocs.yml)        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-rust</span>      <span class=" -Color -Color-Bold -Color-Bold-Green">-R</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           Cargo.toml file    <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--rust-file</span>         <span class=" -Color -Color-Bold -Color-Bold-Green">-r</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom Cargo.toml  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           file path(s)       <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default:          <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           Cargo.toml)        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-cff</span>       <span class=" -Color -Color-Bold -Color-Bold-Green">-C</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           CITATION.cff file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--cff-file</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-c</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  CITATION.cff file  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path(s) (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           CITATION.cff)      <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--no-sync-codemeta</span>  <span class=" -Color -Color-Bold -Color-Bold-Green">-M</span>                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Do not sync        <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           codemeta.json file <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--codemeta-file</span>     <span class=" -Color -Color-Bold -Color-Bold-Green">-m</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">file</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">     </span>  Custom             <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           codemeta.json file <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           path(s) (default:  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           codemeta.json)     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--merge</span>                 <span class=" -Color -Color-Bold -Color-Bold-Magenta">--overwrite</span>          <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Merge              <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           codemeta.json with <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           with an existing   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           codemeta.json file <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--pass-validation</span>   <span class=" -Color -Color-Bold -Color-Bold-Green">-V</span>  <span class=" -Color -Color-Bold -Color-Bold-Magenta">--no-pass-valida…</span>    <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Allow incomplete   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           input and pass     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           output validation  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (default: False)   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--packages</span>          <span class=" -Color -Color-Bold -Color-Bold-Green">-k</span>                       <span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&lt;</span><span class=" -Color -Color-Bold -Color-Bold-Yellow">directory</span><span class=" -Color -Color-Bold -Color-Bold-Faint -Color-Bold-Faint-Yellow">&gt;</span>  Packages           <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           (subfolders) for   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           monorepos with     <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           their own somesy   <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           config.            <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span> <span class=" -Color -Color-Bold -Color-Bold-Cyan">--help</span>                                       <span class=" -Color -Color-Bold -Color-Bold-Yellow">           </span>  Show this message  <span class=" -Color -Color-Faint">│</span>
+<span class=" -Color -Color-Faint">│</span>                                                           and exit.          <span class=" -Color -Color-Faint">│</span>
 <span class=" -Color -Color-Faint">╰──────────────────────────────────────────────────────────────────────────────╯</span>
 </code></pre></div>
 <p>Everything that can be configured as a CLI flag can also be set in a <code>somesy.toml</code> file
 in the <code>[config]</code> section. CLI arguments set in an input file override the
 defaults, while options passed as CLI arguments override the configuration.
-The <code>-P</code> shortcut disables pyproject synchronization, while <code>-V</code> passes output validation.</p>
+Only flags that are given explicitly override the configuration: for example,
+<code>--overwrite</code> overrides <code>merge_codemeta = true</code> from the config file, and
+<code>--no-pass-validation</code> overrides <code>pass_validation = true</code>.
+The <code>-P</code> shortcut disables pyproject synchronization, while <code>-V</code>
+(<code>--pass-validation/--no-pass-validation</code>) passes output validation.</p>
+<p>If several of <code>--info</code>, <code>--verbose</code> and <code>--debug</code> are given, somesy shows a
+warning and the most verbose one wins. The <code>somesy</code> logger propagates to the root
+logger, so when somesy is used as a library, its log records reach your own
+logging configuration.</p>
+<p>Output files are created only when they are saved, so a failed sync does not
+leave new empty files behind. Missing output folders are created. Saves are
+atomic (a temporary file is renamed over the target, and the file mode is
+kept). If the target cannot be replaced, for example because another program
+has it open on Windows, somesy writes it directly and shows a warning. A sync is
+also two-phase: all targets (including those of packages) are prepared first
+and written only if all of them succeed. If writing a file fails, the files
+already written are restored and new files are removed.</p>
+<p>Clear errors are raised for a <code>Cargo.toml</code> without a <code>[package]</code> table (e.g. a
+workspace root) and for an empty <code>mkdocs.yml</code>. An empty or comment-only
+<code>CITATION.cff</code> is treated like a new file. In <code>pom.xml</code>, existing entities are
+matched by name and XML comments are preserved.</p>
 <p>Synchronization only writes a target when its parsed metadata changes. Formatter
 choices such as indentation, wrapping, quotes, comments, and mapping-key order are
 therefore preserved; list order and scalar values remain significant.</p>
@@ -4610,7 +4706,8 @@ prompt is shown only when no author was found in the harvested metadata.</p>
 any missing required values, and writes the harvested metadata. To synchronize
 an incomplete file, explicitly use <code>somesy sync --pass-validation</code> or set
 <code>pass_validation = true</code> in the config; missing values are omitted from output.</p>
-<p>Git bot accounts (names ending in <code>[bot]</code>) are skipped. Git authors with a
+<p>Only the history of the current <code>HEAD</code> is used to find Git authors, not that of
+all branches. Git bot accounts (names ending in <code>[bot]</code>) are skipped. Git authors with a
 single-word name are not added, with a warning; add them manually.</p>
 <p>Detected project files are enabled as synchronization targets. Targets that are
 not present are disabled in the generated <code>[config]</code> section. The generated file
@@ -4619,7 +4716,9 @@ is not overwritten by default (somesy fails before prompting if it exists):</p>
 somesy<span class="w"> </span>init<span class="w"> </span>--overwrite
 </code></pre></div>
 <p>Use <code>somesy init config</code> when you want to configure synchronization options
-manually instead of deriving them from the files in the project.</p>
+manually instead of deriving them from the files in the project. It merges the
+answers into the <code>[config]</code> section of the existing input file, keeping other
+keys, and creates a <code>somesy.toml</code> if no input file exists.</p>
 <h3 id="update-project-metadata">Update project metadata<a class="headerlink" href="#update-project-metadata" title="Permanent link">&para;</a></h3>
 <p>Use <code>somesy set</code> to update one scalar project-metadata value in an existing
 <code>somesy.toml</code> file:</p>
@@ -4627,7 +4726,8 @@ manually instead of deriving them from the files in the project.</p>
 </code></pre></div>
 <p>The command supports <code>name</code>, <code>description</code>, <code>abstract</code>, <code>version</code>, <code>license</code>,
 <code>homepage</code>, <code>repository</code>, and <code>documentation</code>. It does not update structured values such as
-keywords, people, or entities.</p>
+keywords, people, or entities. It gives a clear error if the file has no
+<code>[project]</code> table.</p>
 <p>Without an input file specifically provided, somesy will check if it can find a valid</p>
 <ul>
 <li><code>.somesy.toml</code></li>
@@ -4641,7 +4741,8 @@ keywords, people, or entities.</p>
 <p>which is located in the current working directory. If you want to provide
 the somesy input file from a different location, you can pass it with the <code>-i</code> option.
 If the file passed with <code>-i</code> does not exist, somesy logs a warning and falls back to
-this discovery. <code>somesy set</code> uses the same discovery when <code>-i</code> is not given.</p>
+this discovery, naming the file it uses instead (this is not an error). Candidate
+files that are malformed are skipped during discovery. <code>somesy set</code> uses the same discovery when <code>-i</code> is not given.</p>
 <h3 id="somesy-input-file">Somesy Input File<a class="headerlink" href="#somesy-input-file" title="Permanent link">&para;</a></h3>
 <p>Here is an example how project metadata and <code>somesy</code> can be configured using
 one of the supported input formats:</p>
@@ -4746,7 +4847,7 @@ one of the supported input formats:</p>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Each output file, such as package.json file, have its required fields and these fields are enforced by <code>somesy</code>. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as <code>version</code>. For <code>pyproject.toml</code> files, the preferred solution is to list those fields under <code>dynamic</code> (e.g. <code>dynamic = ["version"]</code>) — somesy will then skip validation and sync for those fields. For other formats, or as a last resort, you can set <code>pass_validation</code> to <code>true</code> in the somesy config to bypass validation entirely. <code>somesy</code> will fail otherwise.</p>
+<p>Each output file, such as package.json file, have its required fields and these fields are enforced by <code>somesy</code>. However, in case of mono-repos or multi-package repositories, some of the fields could be omitted, such as <code>version</code>. For <code>pyproject.toml</code> files, the preferred solution is to list those fields under <code>dynamic</code> (e.g. <code>dynamic = ["version"]</code>) — somesy will then skip validation and sync for those fields. For other formats, or as a last resort, you can set <code>pass_validation</code> to <code>true</code> in the somesy config to bypass validation entirely. <code>somesy</code> will fail otherwise. This applies to all synced <code>pyproject.toml</code> fields that support <code>dynamic</code> (see above).</p>
 </div>
 <p>The example above shows a project with a <code>package.json</code> file in the root folder and 2 packages in it. Three files are set here so all of them will be updated according to ground truth of <code>somesy project metadata</code>.</p>
 <div class="admonition note">
@@ -4761,7 +4862,7 @@ one of the supported input formats:</p>
 <span class="k">[config]</span>
 <span class="n">packages</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s1">'package1'</span><span class="p">,</span><span class="w"> </span><span class="s1">'package2'</span><span class="p">,</span><span class="w"> </span><span class="s1">'package3'</span><span class="p">]</span>
 </code></pre></div>
-<p><code>packages</code> (or <code>--packages/-k</code> on the command line) takes directories. Each package's own <code>[config]</code> is the base; only options explicitly passed on the root command line override it. Values from the root config file are not inherited.</p>
+<p><code>packages</code> (or <code>--packages/-k</code> on the command line) takes directories. A package's own <code>cff_file</code> and <code>codemeta_file</code> settings are honoured (relative to the package directory). Packages that fail to load are skipped with a warning, and a summary lists them at the end. Each package's own <code>[config]</code> is the base; only options explicitly passed on the root command line override it. Values from the root config file are not inherited.</p>
 <p>Each of these packages (sub-folders) are assumed to have separate somesy metadata in the folder. These packages could be a <code>somesy</code> supported language/framework or it could be any other language. <code>somesy</code> will create at least <code>CITATION.CFF</code> and <code>codemeta.json</code> regardless if not instructed otherwise.</p>
 
 

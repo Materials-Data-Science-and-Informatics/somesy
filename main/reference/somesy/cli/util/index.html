@@ -3282,7 +3282,7 @@
 
     <span class="k">if</span> <span class="n">cli_log_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># no cli log level -&gt; set it according to the loaded configuration</span>
-        <span class="n">set_log_level</span><span class="p">(</span><span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log_level</span><span class="p">())</span>
+        <span class="n">apply_log_level</span><span class="p">(</span><span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">log_level</span><span class="p">())</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
         <span class="sa">f</span><span class="s2">"Combined config (Defaults + File + CLI):</span><span class="se">\n</span><span class="si">{</span><span class="n">pretty_repr</span><span class="p">(</span><span class="n">somesy_input</span><span class="o">.</span><span class="n">config</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
