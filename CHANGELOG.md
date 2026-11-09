@@ -4,52 +4,60 @@ Here we provide notes that summarize the most important changes in each released
 
 Please consult the changelog to inform yourself about breaking changes and security issues.
 
-## Unreleased
+## [v0.10.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.10.0) <small>(2026-11-09)</small> { id="0.10.0" }
 
 - **Added**
   - `--no-pass-validation` to override `pass_validation = true` from the config
-  - every field synced into `pyproject.toml` respects PEP 621 `dynamic`
+  - `pyproject.toml`: all synced fields (not only `version` and `description`)
+    respect PEP 621 `dynamic`
 - **Changed**
   - command line options override the config only when given explicitly, so
     `--overwrite` now wins over `merge_codemeta = true`
-  - files are written atomically and only after all targets (including
-    packages) synced successfully; if writing fails, files already written are
-    restored and new files are not kept
-  - missing output folders are created; a file that cannot be replaced (e.g.
-    open in another program on Windows) is written directly with a warning
+  - a sync writes all files or none: files are saved atomically and only after
+    all targets (including packages) succeeded; on a write error, files already
+    written are restored and new files are removed
+  - people in output files are matched by ORCID, then email, then name; person
+    fields removed from the input (e.g. an email) are removed from the outputs
   - `package.json`: further authors are listed in `contributors`
-  - removed person fields (e.g. an email) are also removed from output files;
-    people are matched by ORCID, then email, then name
-  - `pyproject.toml`: `description` is optional; `license = { file = ... }` and
-    `license-files` are kept with a warning; Poetry 2 `[tool.poetry]` keys are
-    updated only if they already exist there
-  - `codemeta.json` merge mode refreshes enriched values (e.g. `version`,
-    `dateModified`) and no longer rewrites an unchanged file
-  - `init config` merges into the existing config or creates `somesy.toml`
-  - Git authors are harvested from the `HEAD` history only
-  - a missing `-i` file names the file used instead; malformed input files are
-    skipped during discovery; monorepo packages that fail to load are skipped
-    with a warning
+  - `pyproject.toml`: `description` is optional; a `license = { text = ... }`
+    table is replaced by the SPDX expression, while `license = { file = ... }`
+    and `license-files` are kept with a warning; Poetry 2 `[tool.poetry]` keys
+    are updated only if they already exist
+  - `codemeta.json` merge mode refreshes enriched fields (e.g.
+    `softwareRequirements`, `codeRepository`) instead of keeping old values
+  - `codemeta.json` no longer changes with every new commit or tag, so
+    `pre-commit run --all-files` in CI passes: `dateModified` is the date the
+    content last changed, and a version from a Git tag is updated together with
+    other changes only
+  - `init config` merges into the existing input file or creates `somesy.toml`
+  - `set` only validates the changed field, so it works on incomplete input files
+  - Git authors are taken from the `HEAD` history only, not from all branches
+  - the `somesy` logger propagates to the root logger when used as a library
 - **Fixed**
-  - `codemeta.json` changed with every new commit or tag, failing
-    `pre-commit run --all-files` in CI: `dateModified` is now the date the
-    content last changed, and a version from a Git tag is only updated together
-    with other changes; `dateCreated` is no longer dropped in shallow clones
-  - monorepo packages ignored their own `cff_file` and `codemeta_file`
-  - legacy `codemeta.json` files were not upgraded on disk
+  - monorepo packages ignored their own `cff_file` and `codemeta_file`; a
+    package that fails to load is now skipped with a warning
+  - malformed input files broke discovery; a missing `-i` file now names the
+    file used instead
+  - missing output folders were not created; a file that cannot be replaced
+    (e.g. open in another program on Windows) is now written directly with a
+    warning
+  - a failed sync left new empty output files behind
+  - legacy `codemeta.json` files were not upgraded on disk, and an unchanged
+    `codemeta.json` was rewritten in merge mode
+  - `dateCreated` was dropped from `codemeta.json` in shallow Git clones
   - an empty `CITATION.cff` failed to sync; incomplete people and unparseable
     existing entries in output files were dropped
+  - blank people entries in existing files (e.g. `"author": ""` from
+    `npm init -y`) crashed sync
   - `mkdocs.yml` got a `None` description; empty `mkdocs.yml` and `Cargo.toml`
     workspace roots now give a clear error
+  - `Cargo.toml` without `authors` or `version` failed validation
   - `pom.xml`: organizations with a space in their name were treated as people,
     and elements holding only a comment were not updated
   - `pyproject.toml` URL key spelling changed between syncs
   - `set` crashed on files without a `[project]` table
-  - `Cargo.toml` without `authors` or `version` failed validation
-  - blank people entries in existing files (e.g. `"author": ""` from
-    `npm init -y`) crashed sync; they are now replaced from the input
-  - conflicting `--info`/`--verbose`/`--debug` flags now warn and use the most
-    verbose one instead of exiting
+  - conflicting `--info`/`--verbose`/`--debug` flags exited with an error
+    instead of using the most verbose one
 
 ## [v0.9.0](https://github.com/Materials-Data-Science-and-Informatics/somesy/tree/v0.9.0) <small>(2026-11-03)</small> { id="0.9.0" }
 
